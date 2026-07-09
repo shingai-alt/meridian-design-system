@@ -15,4 +15,6 @@ Seed color 駆動のカラーシステムと、Primitive → Semantic → Compon
 
 ## 使い方
 
-`meridian-design-systemのコピー.html` をブラウザで直接開くだけで閲覧できます。
+`index.html` をブラウザで直接開くだけで閲覧できます。
+
+公開プレビュー: https://shingai-alt.github.io/meridian-design-system/
