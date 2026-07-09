@@ -1,0 +1,14 @@
+{
+  "font": {
+    "sans": { "$value": "'Inter','Noto Sans JP','Hiragino Sans','Yu Gothic',system-ui,sans-serif", "$type": "fontFamily" },
+    "mono": { "$value": "'JetBrains Mono','Geist Mono','IBM Plex Mono',ui-monospace,'SFMono-Regular',monospace", "$type": "fontFamily" }
+  },
+  "dimension": {
+    "sidebar-w": { "$value": "264px", "$type": "dimension" },
+    "sidebar-w-collapsed": { "$value": "0px", "$type": "dimension" },
+    "topbar-h": { "$value": "52px", "$type": "dimension" },
+    "content-max": { "$value": "880px", "$type": "dimension" },
+    "toc-w": { "$value": "200px", "$type": "dimension" },
+    "focus-w": { "$value": "2px", "$type": "dimension" }
+  }
+}

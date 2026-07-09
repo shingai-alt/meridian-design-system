@@ -1,0 +1,12 @@
+{
+  "name": "meridian-design-system",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Meridian Design System — token source of truth and doc site build scripts.",
+  "scripts": {
+    "build:tokens": "node scripts/build-tokens.mjs",
+    "check:tokens": "node scripts/build-tokens.mjs && git diff --exit-code -- tokens/build/tokens.css",
+    "test": "node --test test/*.test.js"
+  },
+  "license": "UNLICENSED"
+}
