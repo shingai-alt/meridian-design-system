@@ -415,7 +415,7 @@ input[type="range"].sliderc::-webkit-slider-thumb{appearance:none;width:14px;hei
 .hero h1{font-size:40px;font-weight:650;letter-spacing:-.03em;line-height:1.08;margin:var(--sp-3) 0}
 .hero .tg{font-size:16px;color:var(--fg-muted);margin-bottom:var(--sp-5);max-width:420px}
 .hero .pill{display:inline-flex;align-items:center;gap:6px;font-size:var(--text-small);font-weight:550;color:var(--primary);background:var(--primary-subtle);border:1px solid color-mix(in srgb,var(--primary) 25%,transparent);border-radius:var(--radius-full);padding:3px 12px}
-.hero-demo{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-2xl);box-shadow:var(--shadow-lg);overflow:hidden}
+.hero-demo{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-2xl);overflow:hidden}
 .hd-bar{display:flex;align-items:center;gap:6px;padding:var(--sp-25) var(--sp-3);border-bottom:1px solid var(--border);background:var(--surface-muted)}
 .hd-bar i{width:9px;height:9px;border-radius:50%;background:var(--border-strong)}
 .hd-bar span{margin-left:var(--sp-2);font-size:11px;color:var(--fg-subtle);font-family:var(--font-mono)}
@@ -896,7 +896,7 @@ function promptEl(p={}){const st=p.state||'default';
   <textarea placeholder="質問や指示を入力…" ${st==='disabled'?'disabled':''}>${st==='loading'?'テーブルのソート処理をリファクタして':''}</textarea>
   <div class="bar"><button class="tb-btn" aria-label="添付">${I.clip}</button>
   <button class="tb-btn bordered" style="font-size:var(--text-micro)">${I.spark} claude-sonnet-4-6 ${I.chevD}</button>
-  <span class="hint"><span>~1.2k tokens</span><kbd style="border:1px solid var(--border);border-radius:3px;padding:0 4px;font-size:9px">⌘⏎</kbd></span>
+  <span class="hint"><span>~1.2k tokens</span><kbd style="border:1px solid var(--border);border-radius:var(--radius-2xs);padding:0 4px;font-size:9px">⌘⏎</kbd></span>
   <button class="btn" data-variant="primary" data-size="sm" data-icononly ${st==='disabled'?'disabled':''} ${st==='loading'?'data-loading':''} aria-label="送信">${st==='loading'?'<span class="btnspin"><span class="spinner"></span></span>':''}${I.send}</button></div>
   ${st==='error'?`<div style="padding:0 var(--sp-4) var(--sp-2);font-size:var(--text-small);color:var(--danger-fg)">レート制限に達しました。30秒後に再試行してください。</div>`:''}</div>`}
 function agentStatusEl(p={}){const s=p.s||'running';const m={idle:['neutral','Idle','待機中'],thinking:['running','Thinking','コンテキストを分析中…'],running:['running','Running','ツールを実行中 (2/5)'],waiting:['warning','Waiting','ユーザーの承認待ち'],succeeded:['success','Succeeded','12 ステップ完了 · 48s'],failed:['error','Failed','ステップ 4 でエラー'],cancelled:['neutral','Cancelled','ユーザーが中断']};const[tone,label,sub]=m[s];
@@ -968,7 +968,7 @@ function settingsPanelEl(){return `<div class="panel pad" style="width:min(460px
   ${[['デプロイの完了',true],['ビルドの失敗',true],['週次レポート',false]].map(([t,on])=>`<div class="rowflex" style="justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-muted)"><span style="font-size:var(--text-label)">${t}</span>${switchEl({checked:on,label:''})}</div>`).join('')}
   <div class="rowflex" style="justify-content:flex-end;margin-top:16px;gap:8px">${btn({label:'リセット',variant:'ghost',size:'sm'})}${btn({label:'変更を保存',size:'sm'})}</div></div>`}
 function chartContainerEl(){return `<div class="cardc" style="width:min(480px,100%)"><div class="rowflex" style="justify-content:space-between;margin-bottom:4px"><div><b style="font-size:var(--text-label)">API リクエスト数</b><div style="font-size:var(--text-micro);color:var(--fg-subtle)">過去 30 日間</div></div><div class="rowflex">${segEl({items:['日','週','月'],active:1})}<button class="tb-btn" aria-label="メニュー">${I.dots}</button></div></div>${linechart()}
-  <div class="rowflex" style="gap:16px;margin-top:8px;font-size:var(--text-micro);color:var(--fg-muted)"><span class="rowflex" style="gap:5px"><i style="width:8px;height:8px;border-radius:2px;background:var(--chart-1)"></i>Production</span><span class="rowflex" style="gap:5px"><i style="width:8px;height:8px;border-radius:2px;background:var(--chart-3)"></i>Staging</span></div></div>`}
+  <div class="rowflex" style="gap:16px;margin-top:8px;font-size:var(--text-micro);color:var(--fg-muted)"><span class="rowflex" style="gap:5px"><i style="width:8px;height:8px;border-radius:var(--radius-2xs);background:var(--chart-1)"></i>Production</span><span class="rowflex" style="gap:5px"><i style="width:8px;height:8px;border-radius:var(--radius-2xs);background:var(--chart-3)"></i>Staging</span></div></div>`}
 function descListEl(){return `<div class="panel pad" style="width:340px"><b style="display:block;font-size:var(--text-label);margin-bottom:8px">デプロイ情報</b>${kvEl({width:'100%'})}</div>`}
 function listEl(){return `<div class="panel" style="width:320px;overflow:hidden">${[['design-tokens.json','2.4 KB','2分前'],['theme-engine.ts','8.1 KB','1時間前'],['components.css','24.6 KB','昨日']].map(([n,s,t],i)=>`<div class="rowflex" style="padding:9px 14px;gap:10px;${i<2?'border-bottom:1px solid var(--border-muted)':''};cursor:pointer" onmouseover="this.style.background='var(--table-row-hover)'" onmouseout="this.style.background=''">${I.file}<span style="flex:1;font-size:var(--text-label);font-weight:500;font-family:var(--font-mono);font-size:12px">${n}</span><span style="font-size:var(--text-micro);color:var(--fg-subtle)">${s}</span><span style="font-size:var(--text-micro);color:var(--fg-subtle)">${t}</span></div>`).join('')}</div>`}
 function activityFeedEl(){return `<div class="panel pad" style="width:min(400px,100%)"><b style="display:block;font-size:var(--text-label);margin-bottom:12px">最近のアクティビティ</b>
@@ -976,7 +976,7 @@ function activityFeedEl(){return `<div class="panel pad" style="width:min(400px,
 function bannerEl(p={}){const tone=p.tone||'info';return `<div style="width:min(560px,100%);display:flex;align-items:center;gap:10px;padding:8px 16px;border-radius:var(--radius-md);background:${tone==='info'?'var(--primary)':`var(--${tone})`};color:#fff;font-size:var(--text-label)">${I.spark}<span style="flex:1"><b>v2.4 リリース:</b> Dynamic color API が利用可能になりました。</span><button class="btn" data-variant="secondary" data-size="xs">詳細</button><button class="tb-btn" style="color:#fff" aria-label="閉じる">${I.x}</button></div>`}
 function drawerEl(){return `<div class="panel" style="width:300px;height:340px;display:flex;flex-direction:column;box-shadow:var(--shadow-overlay)"><div class="rowflex" style="justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)"><b>MRD-142 の詳細</b><button class="tb-btn" aria-label="閉じる">${I.x}</button></div><div style="flex:1;padding:16px;overflow:auto">${kvEl({width:'100%',items:[['状態','In Progress'],['優先度','High'],['担当','新谷'],['作成','2026-07-01']]})}</div><div style="padding:12px 16px;border-top:1px solid var(--border)">${btn({label:'Issue を開く',size:'sm',full:true})}</div></div>`}
 function popoverEl(){return `<div style="position:relative;display:inline-block">${btn({label:'フィルタ',variant:'secondary',size:'sm'})}<div class="panel" style="position:absolute;top:calc(100% + 6px);left:0;width:220px;padding:12px;box-shadow:var(--shadow-lg);z-index:5">${checkboxEl({label:'Production',checked:true})}<div style="height:8px"></div>${checkboxEl({label:'Staging',checked:true})}<div style="height:8px"></div>${checkboxEl({label:'Development'})}</div><div style="height:130px"></div></div>`}
-function searchFieldEl(p={}){return `<div class="input" data-size="${p.size||'md'}" style="width:260px"><span class="affix">${I.search}</span><input type="search" placeholder="コンポーネントを検索"><span class="affix"><kbd style="border:1px solid var(--border);border-radius:3px;padding:0 5px;font-size:10px">⌘K</kbd></span></div>`}
+function searchFieldEl(p={}){return `<div class="input" data-size="${p.size||'md'}" style="width:260px"><span class="affix">${I.search}</span><input type="search" placeholder="コンポーネントを検索"><span class="affix"><kbd style="border:1px solid var(--border);border-radius:var(--radius-2xs);padding:0 5px;font-size:10px">⌘K</kbd></span></div>`}
 function inputGroupEl(){return `<div style="display:flex"><span style="display:flex;align-items:center;padding:0 10px;background:var(--surface-muted);border:1px solid var(--input-border);border-right:none;border-radius:var(--radius-sm) 0 0 var(--radius-sm);font-size:var(--text-small);color:var(--fg-muted)">https://</span><div class="input" style="border-radius:0"><input value="acme.meridian.app"></div><button class="btn" data-variant="secondary" data-size="md" style="border-radius:0 var(--radius-sm) var(--radius-sm) 0;border-left:none">${I.copy}</button></div>`}
 function comboboxEl(p={}){return `<div style="width:260px;position:relative"><div class="input ${p.state==='focus'?'sim-focus':''}"><span class="affix">${I.search}</span><input placeholder="メンバーを検索…" value="${p.state==='open'?'yu':''}"><span class="affix">${I.chevD}</span></div>
   ${p.state==='open'?`<div class="panel" style="position:absolute;top:calc(100% + 4px);left:0;right:0;padding:4px;box-shadow:var(--shadow-lg);z-index:5">${[['Yuki Kato','yuki@acme.co',true],['Yusuke Mori','mori@acme.co',false]].map(([n,e,sel])=>`<button class="tsb-item ${sel?'on':''}" style="width:100%">${avatar({name:n,size:'xs'})}<span style="flex:1;text-align:left">${n}<span style="color:var(--fg-subtle);font-size:var(--text-micro);margin-left:6px">${e}</span></span>${sel?I.check:''}</button>`).join('')}</div><div style="height:90px"></div>`:''}</div>`}
@@ -988,7 +988,7 @@ function sidebarDemo(){return `<div class="panel" style="width:240px;background:
   <button class="tsb-item" style="font-weight:600;margin-bottom:8px">${avatar({name:'AC',size:'xs'})} Acme Inc. <span style="margin-left:auto">${I.chevD}</span></button>
   <div class="tsb-hd">Workspace</div>
   <div class="tsb-item on">${I.zap} ダッシュボード</div>
-  <div class="tsb-item">${I.folder} プロジェクト <span class="nbadge" style="margin-left:auto;font-size:9.5px;background:var(--primary-subtle);color:var(--primary);padding:0 6px;border-radius:99px">12</span></div>
+  <div class="tsb-item">${I.folder} プロジェクト <span class="nbadge" style="margin-left:auto;font-size:9.5px;background:var(--primary-subtle);color:var(--primary);padding:0 6px;border-radius:var(--radius-full)">12</span></div>
   <div class="tsb-item">${I.users} メンバー</div>
   <div style="padding-left:20px"><div class="tsb-item" style="font-size:var(--text-small)">招待中</div></div>
   <div class="tsb-hd">設定</div>
@@ -996,7 +996,7 @@ function sidebarDemo(){return `<div class="panel" style="width:240px;background:
   <div style="margin-top:auto;border-top:1px solid var(--border-muted);padding-top:8px"><div class="tsb-item">${avatar({name:'SN',size:'xs'})} 新谷 <span style="margin-left:auto">${I.dots}</span></div></div></div>`}
 function topBarDemo(){return `<div class="panel" style="width:min(560px,100%);display:flex;align-items:center;gap:8px;padding:8px 14px">
   ${crumbsEl({items:['Acme','Meridian Docs']})}<div style="margin-left:auto"></div>${searchFieldEl({size:'sm'})}<button class="tb-btn" aria-label="通知">${I.bell}</button>${avatar({name:'SN',size:'sm'})}</div>`}
-function cmdMenuDemo(){return `<div class="cmdk" style="margin:0;width:min(480px,100%)"><div class="ci">${I.search}<input placeholder="コマンドを検索…" value=""><kbd style="font-size:10px;color:var(--fg-subtle);border:1px solid var(--border);border-radius:3px;padding:1px 5px">esc</kbd></div>
+function cmdMenuDemo(){return `<div class="cmdk" style="margin:0;width:min(480px,100%)"><div class="ci">${I.search}<input placeholder="コマンドを検索…" value=""><kbd style="font-size:10px;color:var(--fg-subtle);border:1px solid var(--border);border-radius:var(--radius-2xs);padding:1px 5px">esc</kbd></div>
   <div class="list"><div class="ghd">最近</div>
   <button class="it sel">${I.plus}新しいプロジェクト<span class="k">⌘N</span></button>
   <button class="it">${I.users}メンバーを招待<span class="k">⌘I</span></button>
@@ -1261,7 +1261,7 @@ def({id:'command-menu',name:'Command Menu',group:'Navigation',desc:'⌘K で開�
 def({id:'navigation-item',name:'Navigation Item',group:'Navigation',desc:'Sidebar 内の 1 項目。アイコン・ラベル・バッジ・ネストを持つ。',
  states:['default','hover','active'],
  usage:['アクティブ状態は aria-current="page" で表す。','バッジは未読・件数など動的な情報に限る。'],
- render:p=>`<div style="width:220px;display:flex;flex-direction:column;gap:2px"><div class="tsb-item ${p.state==='active'?'on':''} ${simCls(p.state)}">${I.folder} プロジェクト<span class="nbadge" style="margin-left:auto;font-size:9.5px;background:var(--primary-subtle);color:var(--primary);padding:0 6px;border-radius:99px">12</span></div><div class="tsb-item">${I.users} メンバー</div></div>`,
+ render:p=>`<div style="width:220px;display:flex;flex-direction:column;gap:2px"><div class="tsb-item ${p.state==='active'?'on':''} ${simCls(p.state)}">${I.folder} プロジェクト<span class="nbadge" style="margin-left:auto;font-size:9.5px;background:var(--primary-subtle);color:var(--primary);padding:0 6px;border-radius:var(--radius-full)">12</span></div><div class="tsb-item">${I.users} メンバー</div></div>`,
  code:()=>`<Sidebar.Item icon={<FolderIcon />} badge={12} active>\n  プロジェクト\n</Sidebar.Item>`,related:['sidebar']});
 
 def({id:'product-switcher',name:'Product Switcher',group:'Navigation',desc:'組織内の複数プロダクト・ワークスペースを切り替えるメニュー。',
@@ -1500,6 +1500,14 @@ ${h2('Meridian とは')}
 <p>Meridian(子午線)は、座標の基準となる線です。このシステムでは、Seed color とデザイントークンが UI 全体の「基準線」となり、色・余白・タイポグラフィ・モーションのすべてがそこから導出されます。</p>
 <p class="muted"><b>Tagline:</b> Calm precision for product interfaces — 静かな精密さを、プロダクトの隅々まで。</p>
 <p><b>Concept statement:</b> 装飾ではなく判断を助ける UI を、トークンという再現可能な仕組みで作る。デザイナーとエンジニアが同じ語彙(トークン名)で会話でき、テーマ・密度・ブランド色の変更に設計変更なしで耐えることを目的とします。</p>
+${h2('システムの態度')}
+<p>UI デザインには大きく 3 つの態度があります。装飾を削ぎ落とし余白と精度で階層を作る<b>ミニマル</b>、色のトーンとモーションでブランドを語る<b>表現力</b>、1 画面の情報量を最大化する<b>高密度エンタープライズ</b>です。Meridian はこの 3 つから<b>ミニマル</b>を選択しています。</p>
+<ul class="plain">
+<li>想定用途が SaaS・AI プロダクト・Developer Tool であり、ブランド表現より判断の速さを優先すべきだから。</li>
+<li>色・角丸・影・モーションのトークン数を絞るほど、テーマ / Seed / 密度が変わっても破綻しにくく、保守コストが低いから。</li>
+<li>高密度な画面が必要になった場合も、態度そのものを変えるのではなく <a href="#/foundations/spacing">Density: Compact</a> で対応します。「高密度エンタープライズ型のコンポーネント群」を別途作ることはしません。</li>
+</ul>
+<div class="callout">${I.info}<span>新しいコンポーネントやトークンを追加する前に「これはユーザーの判断を速くするか、それとも装飾か」を問い、後者であれば追加しません。色・影・角丸の具体的な運用ルールは <a href="#/foundations/color">Color</a> / <a href="#/foundations/elevation">Elevation & Border</a> を参照してください。</span></div>
 ${h2('設計思想の要約')}
 <ul class="plain">
 <li><b>Clarity over decoration</b> — 情報の優先順位・状態・アクションが一目で分かることを最優先する。</li>
@@ -1606,6 +1614,14 @@ ${h2('コンポーネントの扱い')}
 <li>コンポーネントを detach して改造しない。要件に合わない場合はシステムへの追加を提案する。</li>
 <li>例外が必要なときは、その値をトークン化してから使う(1 回限りのマジックナンバーを作らない)。</li>
 </ul>
+${h2('新規提案前のチェック(態度の一貫性)')}
+<p>Meridian は<a href="#/overview/introduction">ミニマルという態度</a>を選んでいます。新しい画面・コンポーネントを提案する前に、次を自問してください。</p>
+<ul class="plain">
+<li>その装飾(影・グラデーション・大きな角丸)は、ユーザーの判断を速くするか? しないなら足さない。</li>
+<li>影を足したくなったら、それは静的な Card / Panel ではなく Popover / Dialog / Toast のような浮遊要素か? 静的な面には <a href="#/foundations/elevation">border のみ</a>を使う。</li>
+<li>ブランドを目立たせたい場面(ロゴ・アバター)以外で <code class="inline">accent</code> 色を使おうとしていないか? 状態や強調は Semantic token(<code class="inline">primary</code> / <code class="inline">success</code> / <code class="inline">warning</code> / <code class="inline">danger</code>)で表現する。</li>
+<li>高密度な画面が欲しいだけなら、新しいコンポーネント群ではなく <a href="#/foundations/spacing">Density: Compact</a> で解決できないか、先に検討する。</li>
+</ul>
 ${h2('アクセシビリティとハンドオフ')}
 <ul class="plain">
 <li>フォーカス順・キーボード操作・エラーメッセージ文言までをデザインの成果物に含める。</li>
@@ -1632,6 +1648,14 @@ ${h2('CSS を直接書く場合')}
 ${codeBlock(`.deploy-card {\n  background: var(--surface);\n  border: 1px solid var(--border);\n  border-radius: var(--radius-lg);\n  padding: var(--card-pad); /* density に自動連動 */\n  color: var(--fg);\n}\n.deploy-card:hover { border-color: var(--border-strong); }`,'css','deploy-card.css')}
 ${h2('Token export')}
 ${codeBlock(`import { exportTokens } from "@meridian/tokens";\n\nconst json = exportTokens({ theme: "dark", seed: "#6D5DF6" });\n// → W3C Design Tokens 形式の JSON(Figma Variables 互換)`,'tsx','export.ts')}
+${h2('態度の一貫性チェックリスト(PR レビュー時)')}
+<p>Meridian は<a href="#/overview/introduction">ミニマルという態度</a>を選んでいます。レビューでは実装がこれを裏切っていないかを機械的に確認できます。</p>
+<ul class="plain">
+<li><code class="inline">border-radius</code> / <code class="inline">box-shadow</code> / <code class="inline">transition</code> に raw な px・ms 値を書いていないか(必ず <code class="inline">var(--radius-*)</code> / <code class="inline">var(--shadow-*)</code> / <code class="inline">var(--dur-*)</code> を参照する)</li>
+<li>静的な Card / Panel に <code class="inline">box-shadow</code> を追加していないか(浮遊レイヤー以外は border のみ、<a href="#/foundations/elevation">Elevation & Border</a> 参照)</li>
+<li><code class="inline">var(--accent)</code> をブランドマーク以外(ボタン・バッジ・強調テキストなど)に使っていないか</li>
+<li>高密度な画面を理由に、新しいコンポーネントを増やしていないか(<code class="inline">density="compact"</code> で解決できないか先に検討する)</li>
+</ul>
 ${h2('Accessibility checklist(実装時)')}
 <ul class="plain">
 <li>インタラクティブ要素はネイティブ要素(button / a / input)を優先する</li>
@@ -1645,18 +1669,19 @@ ${nextPrev(['overview/for-designers','For Designers'],['foundations/color','Colo
 /* ============ Foundations: Color ============ */
 docPage('foundations/color',()=>{
   const P=PALETTES,T=SEM;
+  const gb=(good,bad,gt,bt)=>`<div class="dodont"><div class="box do"><div class="cap">${I.check} Do</div><div class="bd">${good}</div><div class="tx">${gt}</div></div><div class="box dont"><div class="cap">${I.x} Don't</div><div class="bd">${bad}</div><div class="tx">${bt}</div></div></div>`;
   const palRow=(name,scale)=>`<div class="pal"><span class="nm">${name}</span>${STEPS.map(s=>`<button class="cell" style="background:${scale[s]}" data-copy="${scale[s]}" title="${name}-${s} ${scale[s]}"><span style="color:${L_MAP[s]>60?'rgba(0,0,0,.55)':'rgba(255,255,255,.8)'}">${s}</span></button>`).join('')}</div>`;
   const themePrev=(th,label)=>{const t=buildSemantics(P,th);return `<div style="background:${t.background};border:1px solid ${t.border};border-radius:var(--radius-lg);padding:14px;flex:1;min-width:220px">
     <div style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:${t['foreground-subtle']};margin-bottom:10px">${label}</div>
-    <div style="background:${t.surface};border:1px solid ${t.border};border-radius:8px;padding:12px">
+    <div style="background:${t.surface};border:1px solid ${t.border};border-radius:var(--radius-md);padding:12px">
       <div style="color:${t.foreground};font-weight:600;font-size:13px;margin-bottom:2px">Deploy service</div>
       <div style="color:${t['foreground-muted']};font-size:12px;margin-bottom:10px">main@a1b2c3 → production</div>
-      <div style="display:flex;gap:6px"><span style="background:${t.primary};color:${t['primary-foreground']};font-size:12px;font-weight:550;padding:5px 12px;border-radius:6px">Deploy</span><span style="border:1px solid ${t.border};color:${t.foreground};font-size:12px;padding:5px 12px;border-radius:6px">Cancel</span></div>
-      <div style="margin-top:10px;display:flex;gap:6px"><span style="background:${t['success-subtle']};color:${t['success-foreground']};font-size:10.5px;font-weight:550;padding:1px 8px;border-radius:99px">Healthy</span><span style="background:${t['danger-subtle']};color:${t['danger-foreground']};font-size:10.5px;font-weight:550;padding:1px 8px;border-radius:99px">2 errors</span></div>
+      <div style="display:flex;gap:6px"><span style="background:${t.primary};color:${t['primary-foreground']};font-size:12px;font-weight:550;padding:5px 12px;border-radius:var(--radius-sm)">Deploy</span><span style="border:1px solid ${t.border};color:${t.foreground};font-size:12px;padding:5px 12px;border-radius:var(--radius-sm)">Cancel</span></div>
+      <div style="margin-top:10px;display:flex;gap:6px"><span style="background:${t['success-subtle']};color:${t['success-foreground']};font-size:10.5px;font-weight:550;padding:1px 8px;border-radius:var(--radius-full)">Healthy</span><span style="background:${t['danger-subtle']};color:${t['danger-foreground']};font-size:10.5px;font-weight:550;padding:1px 8px;border-radius:var(--radius-full)">2 errors</span></div>
     </div></div>`};
   const pairs=[['foreground','background'],['foreground','surface'],['foreground-muted','surface'],['primary-foreground','primary'],['primary','surface'],['success-foreground','success-subtle'],['danger-foreground','danger-subtle']];
   const cRow=p=>{const fg=T[p[0]],bg=T[p[1]];const r=contrast(fg,bg);const pass=r>=4.5?'AA':r>=3?'AA Large':'Fail';
-    return `<tr><td class="mono">${p[0]} / ${p[1]}</td><td><span style="background:${bg};color:${fg};padding:2px 10px;border-radius:4px;border:1px solid var(--border-muted);font-size:12px">Aa テキスト</span></td><td class="mono num" style="text-align:right">${r.toFixed(2)}</td><td>${badge({label:pass,tone:pass==='Fail'?'danger':pass==='AA'?'success':'warning'})}</td></tr>`};
+    return `<tr><td class="mono">${p[0]} / ${p[1]}</td><td><span style="background:${bg};color:${fg};padding:2px 10px;border-radius:var(--radius-xs);border:1px solid var(--border-muted);font-size:12px">Aa テキスト</span></td><td class="mono num" style="text-align:right">${r.toFixed(2)}</td><td>${badge({label:pass,tone:pass==='Fail'?'danger':pass==='AA'?'success':'warning'})}</td></tr>`};
   return shell(`
 ${head('Foundations','Color','1 つの基準色(Seed color)から、OKLCH 色空間で 9 系統の Primitive palette と 40+ の Semantic token を自動生成するカラーシステムです。')}
 ${h2('カラーシステムの目的')}
@@ -1673,7 +1698,7 @@ ${h2('Seed color')}
 <div class="rowflex" style="margin-bottom:var(--sp-3)">
 ${SEED_PRESETS.map(s=>`<button class="seeddot" style="background:${s.hex}" data-seed="${s.hex}" aria-pressed="${STATE.seed.toLowerCase()===s.hex.toLowerCase()}" title="${s.name}" aria-label="Seed: ${s.name}"></button>`).join('')}
 <label class="rowflex" style="gap:8px;margin-left:8px;font-size:var(--text-small);color:var(--fg-muted)">Custom
-<input type="color" value="${STATE.seed}" data-seedpick style="width:34px;height:26px;border:1px solid var(--border);border-radius:6px;background:var(--surface);padding:2px;cursor:pointer"></label>
+<input type="color" value="${STATE.seed}" data-seedpick style="width:34px;height:26px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);padding:2px;cursor:pointer"></label>
 <code class="inline" style="margin-left:auto">${STATE.seed}</code></div>
 <p class="muted" style="font-size:var(--text-small);margin:0">Seed を選ぶと、このサイト全体(Primitive・Semantic・Component・Chart)が即座に再生成されます。</p>
 </div>
@@ -1682,6 +1707,9 @@ ${h2('Primitive palette')}
 <div class="panel pad" style="overflow-x:auto">
 ${palRow('primary',P.primary)}${palRow('secondary',P.secondary)}${palRow('accent',P.accent)}${palRow('neutral',P.neutral)}${palRow('neutral-var',P.neutralVariant)}${palRow('success',P.success)}${palRow('warning',P.warning)}${palRow('danger',P.danger)}${palRow('info',P.info)}
 </div>
+${h2('Accent の使用範囲')}
+<p><code class="inline">accent</code> は Primary とは別軸の第 2 色相で、ロゴマークやアバターのグラデーションなど<b>ブランドアイデンティティ表現専用</b>のトークンです。ボタン・バッジ・強調テキストなど一般的な UI の配色には使用しません。強調や状態の表現は Semantic token(<code class="inline">primary</code> / <code class="inline">success</code> / <code class="inline">warning</code> / <code class="inline">danger</code>)を使ってください。</p>
+${gb(`<span style="width:24px;height:24px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--primary),var(--accent));display:inline-block"></span>`,`<span style="background:var(--accent);color:#fff;padding:5px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:550">Deploy</span>`,'ロゴマーク・アバターのフォールバック画像などブランドを識別させる箇所にのみ使う。','ボタンやバッジの配色に accent を使う。UI の状態や優先度の意味が伝わらず、ブランド色と状態色が混在する。')}
 ${h2('Semantic tokens')}
 <p>UI の「用途」にマッピングされた色です。実装・デザインで使うのはこの層(と Component 層)のみです。全 42 トークンの値は <a href="#/tokens/overview">Token Overview</a> を参照してください。主要なマッピングは以下の通りです。<code class="inline">primary</code> / <code class="inline">secondary</code> / <code class="inline">accent</code> は固定のスケール段ではなく、背景とのコントラスト比が基準(Light / Dark は 4.5:1、High contrast は 7:1)を満たす段まで自動的に探索して選ばれます。</p>
 <div class="tscroll"><table class="ttable"><thead><tr><th>Token</th><th>Light</th><th>Dark</th><th>用途</th></tr></thead><tbody>
@@ -1767,7 +1795,7 @@ ${h2('Spacing philosophy')}
 </ul>
 ${h2('Spacing scale')}
 <p>4px 基数のスケールです。6px / 10px は高密度 UI の微調整用に用意しています。</p>
-<div class="panel pad">${SPACE_SCALE.map(([k,v])=>`<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><code class="inline" style="width:88px;text-align:right">--space-${k}</code><span class="mono" style="width:44px;font-size:11px;color:var(--fg-subtle)">${v}</span><span style="height:14px;width:${v};background:var(--primary);border-radius:2px;min-width:1px"></span></div>`).join('')}</div>
+<div class="panel pad">${SPACE_SCALE.map(([k,v])=>`<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><code class="inline" style="width:88px;text-align:right">--space-${k}</code><span class="mono" style="width:44px;font-size:11px;color:var(--fg-subtle)">${v}</span><span style="height:14px;width:${v};background:var(--primary);border-radius:var(--radius-2xs);min-width:1px"></span></div>`).join('')}</div>
 ${h2('Density modes')}
 <div class="grid3">
 ${[['Compact','高密度な管理画面・テーブル・ログビューア向け。パワーユーザーが 1 画面で多くを見渡す用途。','行高 32px / Body 13px'],['Default','標準。汎用的な SaaS 画面。<b>迷ったらこれを使う。</b>','行高 40px / Body 14px'],['Comfortable','読みやすさ優先。設定・オンボーディング・タッチデバイス。','行高 48px / Body 15px']].map(([t,d,m],i)=>`<div class="cardc"><div class="rowflex" style="justify-content:space-between"><b>${t}</b>${STATE.density===['compact','default','comfortable'][i]?badge({label:'現在',tone:'primary'}):''}</div><p style="font-size:var(--text-small);color:var(--fg-muted);margin:6px 0">${d}</p><code class="inline">${m}</code><div style="margin-top:10px"><button class="btn" data-variant="secondary" data-size="sm" data-setdensity="${['compact','default','comfortable'][i]}">この密度を試す</button></div></div>`).join('')}
@@ -1813,10 +1841,11 @@ ${h2('Elevation tokens')}
 <div class="rowflex" style="gap:var(--sp-4);margin:var(--sp-3) 0;flex-wrap:wrap">
 ${[['none','なし'],['line','border のみ'],['xs','shadow-xs'],['sm','shadow-sm'],['md','shadow-md'],['lg','shadow-lg'],['overlay','shadow-overlay']].map(([k,d])=>`<div style="text-align:center"><div style="width:88px;height:60px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:${k==='none'||k==='line'?'none':`var(--shadow-${k})`};margin-bottom:8px"></div><code class="inline">${k}</code><div style="font-size:10px;color:var(--fg-subtle);margin-top:2px">${d}</div></div>`).join('')}
 </div>
+<div class="callout">${I.info}<span><code class="inline">shadow-xs</code>〜<code class="inline">shadow-overlay</code> は、Surface より上に浮くレイヤー(Raised surface 以上 — Dropdown / Popover / Menu / Dialog / Drawer / Toast)にのみ使用します。Card・Panel など画面のベース面(Surface 層)は静的な要素なので、例外なく border のみで階層を表現し、影を足しません。</span></div>
 <p>Dark テーマでは影が視認しにくいため、影を強めるのではなく <code class="inline">surface-raised</code> の明度差で階層を補います。</p>
 ${h2('Border tokens')}
 <div class="tscroll"><table class="ttable"><thead><tr><th>Token</th><th>プレビュー</th><th>用途</th></tr></thead><tbody>
-${[['border-subtle','--border-muted','テーブル行・リスト区切り'],['border-default','--border','カード・入力の標準'],['border-strong','--border-strong','ホバー・強調'],['border-focus','--primary','フォーカスリング'],['border-danger','--danger','エラー入力'],['border-success','--success','成功状態'],['border-warning','--warning','警告状態']].map(([k,v,u])=>`<tr><td class="mono">${k}</td><td><span style="display:inline-block;width:72px;height:26px;border:1.5px solid var(${v});border-radius:6px;background:var(--surface)"></span></td><td style="color:var(--fg-muted)">${u}</td></tr>`).join('')}
+${[['border-subtle','--border-muted','テーブル行・リスト区切り'],['border-default','--border','カード・入力の標準'],['border-strong','--border-strong','ホバー・強調'],['border-focus','--primary','フォーカスリング'],['border-danger','--danger','エラー入力'],['border-success','--success','成功状態'],['border-warning','--warning','警告状態']].map(([k,v,u])=>`<tr><td class="mono">${k}</td><td><span style="display:inline-block;width:72px;height:26px;border:1.5px solid var(${v});border-radius:var(--radius-sm);background:var(--surface)"></span></td><td style="color:var(--fg-muted)">${u}</td></tr>`).join('')}
 </tbody></table></div>
 ${nextPrev(['foundations/radius','Radius'],['foundations/motion','Motion'])}`));
 
@@ -1864,7 +1893,7 @@ docPage('foundations/accessibility',()=>{
 ${head('Foundations','Accessibility','アクセシビリティはすべてのコンポーネントの受け入れ条件です。WCAG 2.2 AA を基準とします。')}
 ${h2('Color contrast')}
 <p>テキスト 4.5:1 以上(大テキスト 3:1)、UI 部品・フォーカスリングは 3:1 以上。<a href="#/foundations/color">Contrast checker</a> で Seed ごとに検証できます。</p>
-${gb(`<span style="background:var(--primary);color:var(--primary-fg);padding:5px 14px;border-radius:6px;font-size:13px;font-weight:550">Deploy</span>`,`<span style="background:var(--primary-subtle);color:color-mix(in srgb,var(--primary) 45%,var(--primary-subtle));padding:5px 14px;border-radius:6px;font-size:13px">Deploy</span>`,'primary-foreground は Seed に応じて白/黒が自動選択され、AA を満たす。','淡い背景に淡い前景。装飾としては成立しても読めない。')}
+${gb(`<span style="background:var(--primary);color:var(--primary-fg);padding:5px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:550">Deploy</span>`,`<span style="background:var(--primary-subtle);color:color-mix(in srgb,var(--primary) 45%,var(--primary-subtle));padding:5px 14px;border-radius:var(--radius-sm);font-size:13px">Deploy</span>`,'primary-foreground は Seed に応じて白/黒が自動選択され、AA を満たす。','淡い背景に淡い前景。装飾としては成立しても読めない。')}
 ${h2('Keyboard navigation & Focus ring')}
 <p>すべての操作をキーボードだけで完結できること。フォーカスは <code class="inline">--focus-ring</code> の 2px リング(High contrast では 3px)で常に可視化します。</p>
 ${gb(`<button class="btn sim-focus" data-variant="secondary" data-size="sm">フォーカス中</button>`,`<button class="btn" data-variant="secondary" data-size="sm" style="outline:none">フォーカス中(不可視)</button>`,'focus-visible でリングを表示。offset 2px で背景と分離。','outline: none で消す。キーボードユーザーが現在地を失う。')}
@@ -2097,7 +2126,7 @@ docPage('home',()=>{
 <div class="rowflex" style="gap:var(--sp-25)">
 <span style="font-size:var(--text-small);color:var(--fg-subtle)">Seed:</span>
 ${SEED_PRESETS.map(s=>`<button class="seeddot" style="background:${s.hex};width:22px;height:22px" data-seed="${s.hex}" aria-pressed="${STATE.seed.toLowerCase()===s.hex.toLowerCase()}" aria-label="Seed: ${s.name}" title="${s.name}"></button>`).join('')}
-<label style="display:inline-flex"><span class="vh">Custom seed</span><input type="color" value="${STATE.seed}" data-seedpick style="width:26px;height:24px;border:1px solid var(--border);border-radius:6px;background:var(--surface);padding:1px;cursor:pointer"></label>
+<label style="display:inline-flex"><span class="vh">Custom seed</span><input type="color" value="${STATE.seed}" data-seedpick style="width:26px;height:24px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);padding:1px;cursor:pointer"></label>
 </div>
 </div>
 <div class="hero-demo">
@@ -2134,10 +2163,10 @@ ${usageMeterEl({value:72})}
 <div class="grid3">
 ${['light','dark','hc'].map(th=>{const t=buildSemantics(P,th);return `<button class="comp-tile" data-settheme="${th}" style="text-align:left;cursor:pointer">
 <div class="pv" style="background:${t.background};border-bottom:1px solid ${t.border};flex-direction:column;gap:8px;align-items:stretch;padding:16px">
-<div style="background:${t.surface};border:1px solid ${t.border};border-radius:8px;padding:10px">
+<div style="background:${t.surface};border:1px solid ${t.border};border-radius:var(--radius-md);padding:10px">
 <div style="color:${t.foreground};font-size:12px;font-weight:600">Deploy service</div>
 <div style="color:${t['foreground-muted']};font-size:11px;margin:2px 0 8px">main → production</div>
-<span style="background:${t.primary};color:${t['primary-foreground']};font-size:11px;font-weight:550;padding:3px 10px;border-radius:5px">Deploy</span>
+<span style="background:${t.primary};color:${t['primary-foreground']};font-size:11px;font-weight:550;padding:3px 10px;border-radius:var(--radius-sm)">Deploy</span>
 </div></div>
 <div class="nm">${th==='light'?'Light':th==='dark'?'Dark':'High contrast'}<span>${STATE.theme===th?'現在のテーマ':'クリックで切替'}</span></div></button>`}).join('')}
 </div>
@@ -2208,14 +2237,14 @@ function tplShell(vp,side,main,topExtra=''){
     <div class="tpl-body">${main}</div>
   </div></div>`}
 function tplSide(active){
-  const it=(ic,l,on,b)=>`<div class="tsb-item ${on?'on':''}">${ic} ${l}${b?`<span style="margin-left:auto;font-size:9.5px;background:var(--primary-subtle);color:var(--primary);padding:0 6px;border-radius:99px;font-weight:600">${b}</span>`:''}</div>`;
+  const it=(ic,l,on,b)=>`<div class="tsb-item ${on?'on':''}">${ic} ${l}${b?`<span style="margin-left:auto;font-size:9.5px;background:var(--primary-subtle);color:var(--primary);padding:0 6px;border-radius:var(--radius-full);font-weight:600">${b}</span>`:''}</div>`;
   return `<button class="tsb-item" style="font-weight:600;width:100%;margin-bottom:6px">${avatar({name:'AC',size:'xs'})} Acme Inc. <span style="margin-left:auto">${I.chevD}</span></button>
   <div class="tsb-hd">Workspace</div>
   ${it(I.zap,'ダッシュボード',active==='dash')}${it(I.folder,'プロジェクト',active==='proj','12')}${it(I.file,'Issues',active==='issues','48')}${it(I.spark,'AI Workspace',active==='ai')}
   <div class="tsb-hd">Organization</div>
   ${it(I.users,'メンバー',active==='team')}${it(I.cal,'Billing',active==='billing')}${it(I.gear,'設定',active==='settings')}
   <div style="margin-top:16px;border-top:1px solid var(--border-muted);padding-top:8px">${it('',`${avatar({name:'SN',size:'xs'})} 新谷`,false)}</div>`}
-const topSearch=(title)=>`${crumbsEl({items:['Acme',title]})}<div style="margin-left:auto"></div><div class="input" data-size="sm" style="width:200px"><span class="affix">${I.search}</span><input placeholder="検索"><span class="affix"><kbd style="border:1px solid var(--border);border-radius:3px;padding:0 4px;font-size:9px">⌘K</kbd></span></div><button class="tb-btn" aria-label="通知">${I.bell}</button>${avatar({name:'SN',size:'sm'})}`;
+const topSearch=(title)=>`${crumbsEl({items:['Acme',title]})}<div style="margin-left:auto"></div><div class="input" data-size="sm" style="width:200px"><span class="affix">${I.search}</span><input placeholder="検索"><span class="affix"><kbd style="border:1px solid var(--border);border-radius:var(--radius-2xs);padding:0 4px;font-size:9px">⌘K</kbd></span></div><button class="tb-btn" aria-label="通知">${I.bell}</button>${avatar({name:'SN',size:'sm'})}`;
 
 defTpl('saas-dashboard','SaaS Dashboard','KPI → チャート → 明細の標準ダッシュボード構成。',vp=>tplShell(vp,tplSide('dash'),`
 <div class="rowflex" style="justify-content:space-between;margin-bottom:var(--sp-4)">
@@ -2358,7 +2387,7 @@ defTpl('integration-marketplace','Integration Marketplace','連携カード+カ�
 <div class="rowflex" style="justify-content:space-between;margin-bottom:var(--sp-4)">
 <h2 style="font-size:19px;font-weight:650">連携</h2>
 <div class="input" data-size="sm" style="width:220px"><span class="affix">${I.search}</span><input placeholder="連携を検索"></div></div>
-<div class="rowflex" style="margin-bottom:var(--sp-4)">${['すべて','通知','開発','分析','CRM'].map((t,i)=>`<button class="opt" aria-pressed="${i===0}" style="font-size:var(--text-small);padding:3px 12px;border-radius:999px;border:1px solid var(--border);background:${i===0?'var(--primary-subtle)':'var(--surface)'};color:${i===0?'var(--primary)':'var(--fg-muted)'}">${t}</button>`).join('')}</div>
+<div class="rowflex" style="margin-bottom:var(--sp-4)">${['すべて','通知','開発','分析','CRM'].map((t,i)=>`<button class="opt" aria-pressed="${i===0}" style="font-size:var(--text-small);padding:3px 12px;border-radius:var(--radius-full);border:1px solid var(--border);background:${i===0?'var(--primary-subtle)':'var(--surface)'};color:${i===0?'var(--primary)':'var(--fg-muted)'}">${t}</button>`).join('')}</div>
 <div class="rowflex" style="gap:var(--sp-3);align-items:stretch">
 ${integrationCard({name:'Slack',desc:'レビュー結果をチャンネルに通知',state:'connected'})}
 ${integrationCard({name:'GitHub',desc:'PR・Issue と双方向同期',state:'connected'})}
@@ -2385,7 +2414,7 @@ ${[['https://acme.co/hooks/deploy',['success','Healthy']],['https://acme.co/hook
 defTpl('login','Login / Signup','認証カード。SSO・エラー・ローディングの各状態を含む。',vp=>`
 <div style="min-height:520px;display:flex;align-items:center;justify-content:center;background:var(--bg);background-image:radial-gradient(var(--border-muted) 1px,transparent 1px);background-size:24px 24px;padding:var(--sp-6)">
 <div style="width:360px;max-width:100%">
-<div class="rowflex" style="justify-content:center;margin-bottom:var(--sp-5);gap:8px"><span class="mark" style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,var(--primary),var(--accent));display:inline-block"></span><b style="font-size:16px;letter-spacing:-.01em">Meridian</b></div>
+<div class="rowflex" style="justify-content:center;margin-bottom:var(--sp-5);gap:8px"><span class="mark" style="width:24px;height:24px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--primary),var(--accent));display:inline-block"></span><b style="font-size:16px;letter-spacing:-.01em">Meridian</b></div>
 <div class="panel pad" style="padding:var(--sp-6)">
 <h3 style="font-size:16px;font-weight:650;margin-bottom:4px">ログイン</h3>
 <p style="font-size:var(--text-small);color:var(--fg-muted);margin-bottom:var(--sp-4)">Acme Inc. のワークスペースへ</p>
@@ -2482,7 +2511,7 @@ function pgControls(c){
   s+=`<div class="ctl"><span>Global</span><div class="opts">
     <button class="opt" data-cycletheme>theme: ${STATE.theme}</button>
     <button class="opt" data-cycledensity>density: ${STATE.density}</button></div>
-    <div class="rowflex" style="margin-top:8px;gap:5px">${SEED_PRESETS.slice(0,5).map(sd=>`<button class="seeddot" style="background:${sd.hex};width:18px;height:18px" data-seed="${sd.hex}" aria-pressed="${STATE.seed.toLowerCase()===sd.hex.toLowerCase()}" aria-label="Seed ${sd.name}"></button>`).join('')}<input type="color" value="${STATE.seed}" data-seedpick style="width:24px;height:20px;border:1px solid var(--border);border-radius:5px;background:var(--surface);padding:1px;cursor:pointer"></div></div>`;
+    <div class="rowflex" style="margin-top:8px;gap:5px">${SEED_PRESETS.slice(0,5).map(sd=>`<button class="seeddot" style="background:${sd.hex};width:18px;height:18px" data-seed="${sd.hex}" aria-pressed="${STATE.seed.toLowerCase()===sd.hex.toLowerCase()}" aria-label="Seed ${sd.name}"></button>`).join('')}<input type="color" value="${STATE.seed}" data-seedpick style="width:24px;height:20px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);padding:1px;cursor:pointer"></div></div>`;
   return s}
 function pgRefresh(c){
   const stage=$('#pg-stage');if(!stage)return;
@@ -2529,7 +2558,7 @@ ${variantsRow}${sizesRow}${statesRow}
 ${props.length?`${h2('Props / API')}<div class="tscroll"><table class="ttable"><thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>説明</th></tr></thead><tbody>${props.map(p=>`<tr><td class="mono">${p[0]}</td><td class="mono" style="font-size:11px;color:var(--fg-muted)">${esc(p[1])}</td><td class="mono">${esc(p[2])}</td><td style="color:var(--fg-muted)">${p[3]}</td></tr>`).join('')}</tbody></table></div>`:''}
 ${h2('Design tokens')}<div class="rowflex" style="gap:6px">${c.tokens.map(t=>`<button class="tokchip" data-copy="var(${t.startsWith('--')?t:'--'+t})">${t}</button>`).join('')}</div>
 ${h2('Accessibility')}<ul class="plain">${li(c.a11y)}</ul>
-${c.keys?`${h2('Keyboard interaction')}<div class="tscroll"><table class="ttable"><thead><tr><th style="width:180px">Key</th><th>Action</th></tr></thead><tbody>${c.keys.map(k=>`<tr><td><kbd style="border:1px solid var(--border);border-radius:4px;padding:1px 7px;font-size:11px;background:var(--surface-muted)">${k[0]}</kbd></td><td style="color:var(--fg-muted)">${k[1]}</td></tr>`).join('')}</tbody></table></div>`:''}
+${c.keys?`${h2('Keyboard interaction')}<div class="tscroll"><table class="ttable"><thead><tr><th style="width:180px">Key</th><th>Action</th></tr></thead><tbody>${c.keys.map(k=>`<tr><td><kbd style="border:1px solid var(--border);border-radius:var(--radius-2xs);padding:1px 7px;font-size:11px;background:var(--surface-muted)">${k[0]}</kbd></td><td style="color:var(--fg-muted)">${k[1]}</td></tr>`).join('')}</tbody></table></div>`:''}
 ${dodont}
 ${h2('Responsive behavior')}
 <p class="muted" style="font-size:var(--text-label)">サイズ・余白は density トークンに連動し、タッチ環境では Comfortable 密度でヒット領域 40px 以上を確保します。モバイル幅では full width 配置を推奨します。</p>
@@ -2580,7 +2609,7 @@ function settingsMenu(){
   return `<div class="tb-menu" id="tb-menu" role="menu">
   <h4>Theme</h4><div class="seg" style="width:100%">${[['light','Light'],['dark','Dark'],['hc','High contrast']].map(([v,l])=>`<button style="flex:1" aria-pressed="${STATE.theme===v}" data-settheme="${v}">${l}</button>`).join('')}</div>
   <h4>Density</h4><div class="seg" style="width:100%">${[['compact','Compact'],['default','Default'],['comfortable','Comfortable']].map(([v,l])=>`<button style="flex:1" aria-pressed="${STATE.density===v}" data-setdensity="${v}">${l}</button>`).join('')}</div>
-  <h4>Primary color seed</h4><div class="rowflex" style="gap:6px">${SEED_PRESETS.map(s=>`<button class="seeddot" style="background:${s.hex};width:22px;height:22px" data-seed="${s.hex}" aria-pressed="${STATE.seed.toLowerCase()===s.hex.toLowerCase()}" title="${s.name}" aria-label="Seed ${s.name}"></button>`).join('')}<input type="color" value="${STATE.seed}" data-seedpick style="width:28px;height:22px;border:1px solid var(--border);border-radius:6px;background:var(--surface);padding:1px;cursor:pointer" aria-label="Custom seed"></div>
+  <h4>Primary color seed</h4><div class="rowflex" style="gap:6px">${SEED_PRESETS.map(s=>`<button class="seeddot" style="background:${s.hex};width:22px;height:22px" data-seed="${s.hex}" aria-pressed="${STATE.seed.toLowerCase()===s.hex.toLowerCase()}" title="${s.name}" aria-label="Seed ${s.name}"></button>`).join('')}<input type="color" value="${STATE.seed}" data-seedpick style="width:28px;height:22px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);padding:1px;cursor:pointer" aria-label="Custom seed"></div>
   <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-muted);font-size:var(--text-micro);color:var(--fg-subtle)">設定はサイト全体に即時反映され、保存されます。</div>
   </div>`}
 
@@ -2620,7 +2649,7 @@ let cmdSel=0,cmdItems=[];
 function openCmd(){
   const root=$('#overlay-root');
   root.innerHTML=`<div class="ovl" data-closecmd><div class="cmdk" role="dialog" aria-label="コマンドメニュー" onclick="event.stopPropagation()">
-  <div class="ci">${I.search}<input id="cmd-input" placeholder="ページ・コンポーネントを検索…" autocomplete="off"><kbd style="font-size:10px;color:var(--fg-subtle);border:1px solid var(--border);border-radius:3px;padding:1px 5px">esc</kbd></div>
+  <div class="ci">${I.search}<input id="cmd-input" placeholder="ページ・コンポーネントを検索…" autocomplete="off"><kbd style="font-size:10px;color:var(--fg-subtle);border:1px solid var(--border);border-radius:var(--radius-2xs);padding:1px 5px">esc</kbd></div>
   <div class="list" id="cmd-list"></div></div></div>`;
   cmdFilter('');
   const inp=$('#cmd-input');inp.focus();
