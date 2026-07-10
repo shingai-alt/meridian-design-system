@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ja" data-theme="light" data-density="default" data-seed="#1F9D6B">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>家計簿 — Meridian example</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens/build/tokens.css">
+<script src="../src/color-engine.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);font-size:var(--text-body);line-height:var(--lh-normal);color:var(--fg);background:var(--background-subtle)}
+:focus{outline:none}
+:focus-visible{outline:var(--focus-w) solid var(--focus-ring);outline-offset:2px;border-radius:var(--radius-2xs)}
+.app{max-width:420px;margin:0 auto;min-height:100vh;background:var(--background);padding-bottom:var(--sp-24);position:relative}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-4) var(--sp-4) var(--sp-2)}
+.navbtn{width:var(--ctl-md);height:var(--ctl-md);border-radius:var(--radius-full);border:none;background:var(--surface-muted);color:var(--foreground-muted);font-size:16px;cursor:pointer}
+.navbtn:hover{background:var(--border-muted);color:var(--foreground)}
+.month{font-size:var(--text-body);font-weight:650}
+.summary-card{margin:var(--sp-2) var(--sp-4) var(--sp-5);padding:var(--sp-5) var(--sp-4);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl)}
+.summary-label{font-size:var(--text-small);color:var(--foreground-subtle);margin-bottom:var(--sp-1)}
+.summary-balance{font-size:28px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-bottom:var(--sp-3)}
+.summary-row{display:flex;gap:var(--sp-5);font-size:var(--text-label);color:var(--foreground-muted);margin-bottom:var(--sp-3)}
+.summary-row b{color:var(--foreground);font-variant-numeric:tabular-nums;margin-left:4px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.dot.income{background:var(--success)}
+.dot.expense{background:var(--danger)}
+.budget-bar{height:8px;border-radius:var(--radius-full);background:var(--surface-muted);border:1px solid var(--border-muted);overflow:hidden;margin-bottom:var(--sp-2)}
+.budget-bar i{display:block;height:100%;background:var(--primary);border-radius:inherit}
+.budget-caption{font-size:var(--text-small);color:var(--foreground-subtle)}
+.section{padding:0 var(--sp-4);margin-bottom:var(--sp-5)}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-3)}
+.section-hd h2{font-size:var(--text-body);font-weight:600}
+.section-link{font-size:var(--text-small);color:var(--primary);text-decoration:none}
+.cat-row{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) 0}
+.cat-icon{width:36px;height:36px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:var(--text-label);font-weight:600;flex:none}
+.cat-body{flex:1;min-width:0}
+.cat-toprow{display:flex;justify-content:space-between;font-size:var(--text-label);margin-bottom:4px}
+.cat-name{font-weight:550}
+.cat-amount{font-variant-numeric:tabular-nums;color:var(--foreground-muted)}
+.cat-bar{height:5px;border-radius:var(--radius-full);background:var(--surface-muted);overflow:hidden}
+.cat-bar i{display:block;height:100%;border-radius:inherit}
+.txn-date{font-size:var(--text-micro);font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--foreground-subtle);margin:var(--sp-3) 0 var(--sp-1)}
+.txn-date:first-child{margin-top:0}
+.txn-row{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) 0;border-top:1px solid var(--border-muted)}
+.txn-row:first-of-type{border-top:none}
+.txn-icon{width:32px;height:32px;border-radius:50%;background:var(--surface-muted);display:flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+.txn-body{flex:1;min-width:0}
+.txn-merchant{font-size:var(--text-label);font-weight:550}
+.txn-cat{font-size:var(--text-small);color:var(--foreground-subtle)}
+.txn-amount{font-variant-numeric:tabular-nums;font-weight:550;font-size:var(--text-label)}
+.txn-amount.expense{color:var(--danger)}
+.txn-amount.income{color:var(--success)}
+.fab{position:fixed;right:var(--sp-4);bottom:var(--sp-6);width:56px;height:56px;border-radius:var(--radius-full);background:var(--primary);color:var(--primary-foreground);border:none;font-size:26px;line-height:1;cursor:pointer;box-shadow:var(--shadow-md);transition:background var(--dur-fast) var(--ease-standard)}
+.fab:hover{background:var(--primary-hover)}
+@media(min-width:481px){.fab{right:calc(50% - 210px + var(--sp-4))}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <button class="navbtn" aria-label="前の月">‹</button>
+    <div class="month">2026年7月</div>
+    <button class="navbtn" aria-label="次の月">›</button>
+  </header>
+
+  <section class="summary-card">
+    <div class="summary-label">今月の収支</div>
+    <div class="summary-balance">¥128,400</div>
+    <div class="summary-row">
+      <div><span class="dot income"></span>収入<b>¥320,000</b></div>
+      <div><span class="dot expense"></span>支出<b>¥191,600</b></div>
+    </div>
+    <div class="budget-bar"><i style="width:64%"></i></div>
+    <div class="budget-caption">今月の予算 ¥300,000 のうち 64% を使用</div>
+  </section>
+
+  <section class="section">
+    <div class="section-hd"><h2>カテゴリ別支出</h2><a class="section-link" href="#">すべて見る</a></div>
+    <div id="cat-list"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-hd"><h2>最近の取引</h2><a class="section-link" href="#">すべて見る</a></div>
+    <div id="txn-list"></div>
+  </section>
+</div>
+<button class="fab" aria-label="支出を追加">+</button>
+<script>
+(function () {
+  var root = document.documentElement;
+  // Seed は <html data-seed> に置く(design/rules.json の構造的例外)。
+  var theme = root.dataset.theme, density = root.dataset.density, seed = root.dataset.seed;
+  var P = buildPalettes(seed);
+  var T = buildSemantics(P, theme);
+  var CHART = buildCharts(seed, theme);
+  var CHART_FG = chartForegrounds(CHART);
+  var st = root.style;
+  for (var k in T) st.setProperty('--' + k, T[k]);
+  st.setProperty('--fg', T.foreground);
+  st.setProperty('--bg', T.background);
+  for (var i = 0; i < CHART.length; i++) {
+    st.setProperty('--chart-' + (i + 1), CHART[i]);
+    st.setProperty('--chart-fg-' + (i + 1), CHART_FG[i]);
+  }
+
+  var categories = [
+    ['食費', 52400, 80000, 1],
+    ['交通費', 18200, 20000, 2],
+    ['娯楽', 24800, 30000, 3],
+    ['住居', 96000, 100000, 4]
+  ];
+  document.getElementById('cat-list').innerHTML = categories.map(function (c) {
+    var name = c[0], spent = c[1], budget = c[2], chartIdx = c[3];
+    var pct = Math.round((spent / budget) * 100);
+    return '<div class="cat-row">' +
+      '<div class="cat-icon" style="background:var(--chart-' + chartIdx + ');color:var(--chart-fg-' + chartIdx + ')">' + name.slice(0, 1) + '</div>' +
+      '<div class="cat-body"><div class="cat-toprow"><span class="cat-name">' + name + '</span>' +
+        '<span class="cat-amount">¥' + spent.toLocaleString() + ' / ¥' + budget.toLocaleString() + '</span></div>' +
+        '<div class="cat-bar"><i style="width:' + pct + '%;background:var(--chart-' + chartIdx + ')"></i></div></div>' +
+      '</div>';
+  }).join('');
+
+  var txns = [
+    ['今日', [['スーパーマルエツ', '食費', -3240], ['給与', '収入', 320000]]],
+    ['7/8', [['メトロ定期', '交通費', -12000], ['映画館', '娯楽', -3600]]],
+    ['7/6', [['電気代', '住居', -8200]]]
+  ];
+  document.getElementById('txn-list').innerHTML = txns.map(function (g) {
+    var date = g[0], rows = g[1];
+    return '<div class="txn-date">' + date + '</div>' + rows.map(function (r) {
+      var merchant = r[0], cat = r[1], amount = r[2];
+      var isIncome = amount > 0;
+      var sign = isIncome ? '+' : '−';
+      var abs = Math.abs(amount).toLocaleString();
+      return '<div class="txn-row"><div class="txn-icon">' + merchant.slice(0, 1) + '</div>' +
+        '<div class="txn-body"><div class="txn-merchant">' + merchant + '</div><div class="txn-cat">' + cat + '</div></div>' +
+        '<div class="txn-amount ' + (isIncome ? 'income' : 'expense') + '">' + sign + '¥' + abs + '</div></div>';
+    }).join('');
+  }).join('');
+})();
+</script>
+</body>
+</html>

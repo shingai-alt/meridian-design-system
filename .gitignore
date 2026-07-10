@@ -1,2 +1,4 @@
 node_modules/
 .playwright-mcp/
+packages/*/dist/
+.claude/scheduled_tasks.lock

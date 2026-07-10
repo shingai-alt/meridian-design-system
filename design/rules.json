@@ -1,0 +1,97 @@
+[
+  {
+    "id": "NO_RAW_HEX_COLOR",
+    "severity": "error",
+    "detector": "regex",
+    "pattern": "#[0-9a-fA-F]{3,8}\\b",
+    "appliesTo": "生成/編集した HTML・CSS・JSX(tokens/src/**、src/color-engine.js を除く)",
+    "alternative": "var(--token-name) を使う。色の実値は seed / theme に応じて src/color-engine.js が計算するため、コード側で決め打ちしない。ボタンやアイコンなど solid 背景の上の文字色が必要な場合は、hex を直書きせず対応する `-on-solid` トークン(例: danger-on-solid, chart-fg-1)を使う。",
+    "automationStatus": "static",
+    "principle": 3,
+    "structuralException": {
+      "description": "ブランドの Seed color は1箇所だけ設定する必要があり、トークン化しようがない(Seed自体がトークン導出の起点のため)。コメントによる自己申告(悪用され得る)ではなく、構造的な位置で機械的に除外する。",
+      "pattern": "<html ... data-seed=\"#xxxxxx\"> 属性の値のみ。CSS宣言・インラインstyle・JS内の色計算には適用しない。",
+      "howDetected": "scripts/design-lint.mjs が `data-seed=\"#...\"` に一致する箇所のみを除外してスキャンする(自己申告コメントには依存しない)。"
+    }
+  },
+  {
+    "id": "TEXT_ON_SOLID_MUST_USE_TOKEN",
+    "severity": "error",
+    "detector": "context",
+    "pattern": "solid な secondary/accent/success/warning/danger/info/chart 背景の上に、hex や onColor 相当の即席計算ではなく var(--token) 以外の文字色を指定",
+    "appliesTo": "ボタン・バッジ・アイコンなど solid な色面の上のテキスト",
+    "alternative": "var(--{role}-on-solid)(chartの場合は var(--chart-fg-N))を使う。primary-foreground と同じ設計で、secondary/accent/success/warning/danger/info の6ロール全てに -on-solid が用意されている。",
+    "automationStatus": "manual",
+    "principle": 3
+  },
+  {
+    "id": "ACCENT_BRAND_MARK_ONLY",
+    "severity": "error",
+    "detector": "context",
+    "pattern": "var(--accent) をロゴマーク・アバター以外で使用",
+    "appliesTo": "ボタン・バッジ・強調テキストなど一般 UI",
+    "alternative": "accent はブランドアイデンティティ表現専用(ロゴマーク・アバターのグラデーション等)。強調や状態の表現は primary / success / warning / danger を使う。",
+    "automationStatus": "manual",
+    "principle": 3
+  },
+  {
+    "id": "SHADOW_ONLY_ON_FLOATING_LAYER",
+    "severity": "error",
+    "detector": "context",
+    "pattern": "var(--shadow-xs|--shadow-sm|--shadow-md|--shadow-lg|--shadow-overlay) を Card/Panel 等の静的なベース面(Surface 層)に使用",
+    "appliesTo": "Card, Panel, ページの基本ブロック",
+    "alternative": "Surface 層(Card/Panel など)は border のみで階層を表現する。影は Raised surface 以上(Dropdown/Popover/Menu/Dialog/Drawer/Toast)にのみ使う。",
+    "automationStatus": "manual",
+    "principle": 3
+  },
+  {
+    "id": "SPACING_FROM_TOKENS_ONLY",
+    "severity": "error",
+    "detector": "regex",
+    "pattern": "(margin|padding|gap)\\s*:\\s*\\d+px",
+    "appliesTo": "生成/編集した CSS・インラインスタイル",
+    "alternative": "var(--sp-*) を使う。任意の px 値で margin / padding / gap を指定しない。",
+    "automationStatus": "static",
+    "principle": 3
+  },
+  {
+    "id": "RADIUS_FROM_TOKENS_ONLY",
+    "severity": "error",
+    "detector": "regex",
+    "pattern": "border-radius\\s*:\\s*\\d+px",
+    "appliesTo": "生成/編集した CSS・インラインスタイル",
+    "alternative": "var(--radius-*) を使う。",
+    "automationStatus": "static",
+    "principle": 3
+  },
+  {
+    "id": "MOTION_DURATION_FROM_TOKENS_ONLY",
+    "severity": "warning",
+    "detector": "regex",
+    "pattern": "transition-duration\\s*:\\s*\\d+m?s|animation-duration\\s*:\\s*\\d+m?s",
+    "appliesTo": "生成/編集した CSS",
+    "alternative": "var(--dur-*) を使う。標準は 120–180ms(--dur-fast / --dur-normal)。",
+    "automationStatus": "static",
+    "principle": 6
+  },
+  {
+    "id": "FOCUS_VISIBLE_REQUIRED",
+    "severity": "error",
+    "detector": "context",
+    "pattern": "outline:none を :focus-visible の代替なしで指定",
+    "appliesTo": "button, a, input などのインタラクティブ要素",
+    "alternative": "outline を消す場合は必ず :focus-visible に var(--focus-ring) のリングを与える。",
+    "automationStatus": "manual",
+    "principle": 5
+  },
+  {
+    "id": "CONTRAST_AA_MINIMUM",
+    "severity": "error",
+    "detector": "context",
+    "pattern": "独自に配色したテキスト/背景の組み合わせ",
+    "appliesTo": "テキストと背景の配色全般",
+    "alternative": "semantic token(primary/success/warning/danger等の -foreground ペア)をそのまま使えば、4.5:1(High contrast は 7:1)を自動的に満たす。独自に色を組み合わせない。",
+    "automationStatus": "manual",
+    "principle": 5
+  }
+]

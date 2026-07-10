@@ -92,7 +92,7 @@ docPage('foundations/typography',()=>shell(`
 ${head('Foundations','Typography','UI では可読性・密度・階層のバランスを最優先します。過度に大きな文字より、安定した読みやすさを重視します。')}
 ${h2('Typography philosophy')}
 <ul class="plain">
-<li>SaaS / Developer Tool では、1 画面の情報量が多い。見出しを大きくするより、ウェイトと余白で階層を作る。</li>
+<li>情報量の多い画面では、見出しを大きくするより、ウェイトと余白で階層を作る。</li>
 <li>日本語と英数字の混在で破綻しないこと。Inter + Noto Sans JP の組み合わせで x-height と字面を揃える。</li>
 <li>コード・数値・ラベル・本文は役割が異なるため、スタイルを分離する。数値は必ず tabular-nums で桁を揃える。</li>
 </ul>
@@ -131,7 +131,7 @@ ${h2('Spacing scale')}
 <div class="panel pad">${SPACE_SCALE.map(([k,v])=>`<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><code class="inline" style="width:88px;text-align:right">--space-${k}</code><span class="mono" style="width:44px;font-size:11px;color:var(--fg-subtle)">${v}</span><span style="height:14px;width:${v};background:var(--primary);border-radius:var(--radius-2xs);min-width:1px"></span></div>`).join('')}</div>
 ${h2('Density modes')}
 <div class="grid3">
-${[['Compact','高密度な管理画面・テーブル・ログビューア向け。パワーユーザーが 1 画面で多くを見渡す用途。','行高 32px / Body 13px'],['Default','標準。汎用的な SaaS 画面。<b>迷ったらこれを使う。</b>','行高 40px / Body 14px'],['Comfortable','読みやすさ優先。設定・オンボーディング・タッチデバイス。','行高 48px / Body 15px']].map(([t,d,m],i)=>`<div class="cardc"><div class="rowflex" style="justify-content:space-between"><b>${t}</b>${STATE.density===['compact','default','comfortable'][i]?badge({label:'現在',tone:'primary'}):''}</div><p style="font-size:var(--text-small);color:var(--fg-muted);margin:6px 0">${d}</p><code class="inline">${m}</code><div style="margin-top:10px"><button class="btn" data-variant="secondary" data-size="sm" data-setdensity="${['compact','default','comfortable'][i]}">この密度を試す</button></div></div>`).join('')}
+${[['Compact','高密度な管理画面・テーブル・ログビューア向け。パワーユーザーが 1 画面で多くを見渡す用途。','行高 32px / Body 13px'],['Default','標準。汎用的な画面全般。<b>迷ったらこれを使う。</b>','行高 40px / Body 14px'],['Comfortable','読みやすさ優先。設定・オンボーディング・タッチデバイス。','行高 48px / Body 15px']].map(([t,d,m],i)=>`<div class="cardc"><div class="rowflex" style="justify-content:space-between"><b>${t}</b>${STATE.density===['compact','default','comfortable'][i]?badge({label:'現在',tone:'primary'}):''}</div><p style="font-size:var(--text-small);color:var(--fg-muted);margin:6px 0">${d}</p><code class="inline">${m}</code><div style="margin-top:10px"><button class="btn" data-variant="secondary" data-size="sm" data-setdensity="${['compact','default','comfortable'][i]}">この密度を試す</button></div></div>`).join('')}
 </div>
 ${preview(`<div style="width:min(480px,100%)">${tableEl()}</div>`,'Live — テーブルの行高は密度に連動')}
 ${nextPrev(['foundations/typography','Typography'],['foundations/layout','Layout'])}`));
@@ -187,7 +187,7 @@ ${head('Foundations','Motion','動きは状態変化を伝えるために使い�
 ${h2('Motion philosophy')}
 <ul class="plain">
 <li>モーションはブランド演出ではなく認知補助。何が変わったかを目で追えるようにするために動かす。</li>
-<li>SaaS UI の標準は 120–180ms。300ms を超える動きは「待たされている」と感じさせる。</li>
+<li>UI の標準は 120–180ms。300ms を超える動きは「待たされている」と感じさせる。</li>
 <li><code class="inline">prefers-reduced-motion</code> ではすべてのアニメーションを実質無効化する(トークン側で対応済み)。</li>
 </ul>
 ${h2('Duration tokens')}

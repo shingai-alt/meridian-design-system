@@ -15,6 +15,8 @@ jobs:
           node-version: 20
       - name: Rebuild tokens/build/tokens.css and fail on drift
         run: npm run check:tokens
+      - name: Rebuild DESIGN.md and fail on drift
+        run: npm run design:check
 
   test:
     runs-on: ubuntu-latest

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ja" data-theme="light" data-density="default" data-seed="#5B5BD6">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Users — Meridian example</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens/build/tokens.css">
+<script src="../src/color-engine.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);font-size:var(--text-body);line-height:var(--lh-normal);color:var(--fg);background:var(--bg)}
+:focus{outline:none}
+:focus-visible{outline:var(--focus-w) solid var(--focus-ring);outline-offset:2px;border-radius:var(--radius-2xs)}
+.page{max-width:1080px;margin:0 auto;padding:var(--sp-8) var(--sp-6) var(--sp-20)}
+.pagehd{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-5)}
+.pagehd h1{font-size:19px;font-weight:650;letter-spacing:-.015em}
+.pagehd .count{color:var(--foreground-subtle);font-weight:400;font-size:var(--text-body);margin-left:var(--sp-2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-15);height:var(--ctl-md);padding:0 var(--sp-3);border-radius:var(--radius-sm);border:1px solid transparent;font:inherit;font-size:var(--text-label);font-weight:550;cursor:pointer;transition:background var(--dur-fast) var(--ease-standard),border-color var(--dur-fast) var(--ease-standard)}
+.btn.sm{height:var(--ctl-sm);padding:0 var(--sp-25);font-size:var(--text-small)}
+.btn.primary{background:var(--primary);color:var(--primary-foreground)}
+.btn.primary:hover{background:var(--primary-hover)}
+.btn.secondary{background:var(--surface);border-color:var(--border);color:var(--foreground)}
+.btn.secondary:hover{border-color:var(--border-strong)}
+.btn.ghost{background:none;color:var(--foreground-muted)}
+.btn.ghost:hover{background:var(--surface-muted)}
+.toolbar{display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);flex-wrap:wrap}
+.searchbox{display:flex;align-items:center;gap:var(--sp-2);height:var(--ctl-md);padding:0 var(--input-x);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);width:260px}
+.searchbox input{border:none;background:none;outline:none;font:inherit;font-size:var(--text-label);color:var(--foreground);width:100%}
+.searchbox input::placeholder{color:var(--foreground-subtle)}
+.select{height:var(--ctl-md);padding:0 var(--sp-2);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);font:inherit;font-size:var(--text-label);color:var(--foreground)}
+.bulkbar{display:flex;align-items:center;gap:var(--sp-3);margin-left:auto;font-size:var(--text-label);color:var(--foreground-muted)}
+.tablewrap{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;background:var(--surface)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:var(--text-micro);font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--foreground-subtle);padding:var(--sp-2) var(--sp-3);border-bottom:1px solid var(--border);background:var(--surface-muted)}
+td{padding:var(--cell-y) var(--sp-3);border-bottom:1px solid var(--border-muted);font-size:var(--text-label);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--surface-muted)}
+.userrow{display:flex;align-items:center;gap:var(--sp-2)}
+.avatar{width:28px;height:28px;border-radius:50%;background:var(--primary-muted);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex:none}
+.uname{font-weight:550}
+.uemail{font-size:var(--text-small);color:var(--foreground-subtle)}
+.badge{display:inline-flex;align-items:center;gap:var(--sp-1);font-size:var(--text-micro);font-weight:550;padding:var(--sp-05) var(--sp-2);border-radius:var(--radius-full)}
+.badge.primary{background:var(--primary-subtle);color:var(--primary)}
+.badge.neutral{background:var(--surface-muted);color:var(--foreground-muted)}
+.statusdot{display:inline-flex;align-items:center;gap:var(--sp-15);font-size:var(--text-small);color:var(--foreground-muted)}
+.statusdot i{width:8px;height:8px;border-radius:50%;flex:none}
+.statusdot[data-s="active"] i{background:var(--success)}
+.statusdot[data-s="invited"] i{background:var(--warning)}
+.statusdot[data-s="suspended"] i{background:var(--danger)}
+.checkbox{width:16px;height:16px;border:1.5px solid var(--border-strong);border-radius:var(--radius-xs);background:var(--surface);cursor:pointer;appearance:none;display:grid;place-content:center}
+.checkbox:checked{background:var(--primary);border-color:var(--primary)}
+.rowmenu{background:none;border:none;color:var(--foreground-subtle);cursor:pointer;padding:var(--sp-1);border-radius:var(--radius-xs);font-size:16px;line-height:1}
+.rowmenu:hover{background:var(--surface-muted);color:var(--foreground)}
+.pager{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-3);border-top:1px solid var(--border)}
+.pager .info{font-size:var(--text-small);color:var(--foreground-subtle)}
+.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="pagehd">
+    <h1>ユーザー<span class="count">248</span></h1>
+    <button class="btn primary">ユーザーを招待</button>
+  </div>
+
+  <div class="toolbar">
+    <div class="searchbox"><input type="search" placeholder="名前・メールで検索" aria-label="ユーザーを検索"></div>
+    <select class="select" aria-label="ロールで絞り込み">
+      <option>すべてのロール</option>
+      <option>Admin</option>
+      <option>Editor</option>
+      <option>Viewer</option>
+    </select>
+    <select class="select" aria-label="状態で絞り込み">
+      <option>すべての状態</option>
+      <option>Active</option>
+      <option>Invited</option>
+      <option>Suspended</option>
+    </select>
+    <div class="bulkbar">
+      <span>2 件選択中</span>
+      <button class="btn secondary sm">ロールを変更</button>
+      <button class="btn ghost sm">サスペンド</button>
+    </div>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" class="checkbox" aria-label="すべて選択"></th>
+          <th>ユーザー</th>
+          <th>ロール</th>
+          <th>状態</th>
+          <th>最終ログイン</th>
+          <th>登録日</th>
+          <th style="width:36px"></th>
+        </tr>
+      </thead>
+      <tbody id="user-rows"></tbody>
+    </table>
+    <div class="pager">
+      <span class="info">248 件中 1–8 件を表示</span>
+      <div style="display:flex;gap:var(--sp-15)">
+        <button class="btn secondary sm" disabled>前へ</button>
+        <button class="btn secondary sm">次へ</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  // Seed は <html data-seed> に置く(design/rules.json の構造的例外)。
+  var theme = root.dataset.theme, density = root.dataset.density, seed = root.dataset.seed;
+  var P = buildPalettes(seed);
+  var T = buildSemantics(P, theme);
+  var st = root.style;
+  for (var k in T) st.setProperty('--' + k, T[k]);
+  st.setProperty('--fg', T.foreground);
+  st.setProperty('--bg', T.background);
+
+  var users = [
+    ['新谷 尚史', 'sn@acme.co', 'Admin', 'active', '2 分前', '2025-01-14'],
+    ['Yuki Kato', 'yuki@acme.co', 'Editor', 'active', '1 時間前', '2025-02-03'],
+    ['Mori Yusuke', 'mori@acme.co', 'Viewer', 'invited', '—', '2026-07-08'],
+    ['Aya Tanaka', 'aya.tanaka@acme.co', 'Editor', 'active', '3 時間前', '2025-05-22'],
+    ['Kenji Sato', 'kenji@acme.co', 'Viewer', 'suspended', '14 日前', '2024-11-30'],
+    ['Rin Nakamura', 'rin@acme.co', 'Admin', 'active', '5 分前', '2024-09-11'],
+    ['Sora Ito', 'sora.ito@acme.co', 'Editor', 'active', '昨日', '2025-08-19'],
+    ['Haruto Kimura', 'haruto@acme.co', 'Viewer', 'invited', '—', '2026-07-09']
+  ];
+  var statusLabel = { active: 'Active', invited: 'Invited', suspended: 'Suspended' };
+  var initials = function (name) { return name.trim().slice(0, 2); };
+
+  document.getElementById('user-rows').innerHTML = users.map(function (u) {
+    var name = u[0], email = u[1], role = u[2], status = u[3], lastLogin = u[4], joined = u[5];
+    var roleTone = role === 'Admin' ? 'primary' : 'neutral';
+    return '<tr>' +
+      '<td><input type="checkbox" class="checkbox" aria-label="' + name + ' を選択"></td>' +
+      '<td><div class="userrow"><span class="avatar">' + initials(name) + '</span>' +
+        '<div><div class="uname">' + name + '</div><div class="uemail">' + email + '</div></div></div></td>' +
+      '<td><span class="badge ' + roleTone + '">' + role + '</span></td>' +
+      '<td><span class="statusdot" data-s="' + status + '"><i></i>' + statusLabel[status] + '</span></td>' +
+      '<td class="num" style="color:var(--foreground-muted)">' + lastLogin + '</td>' +
+      '<td class="num" style="color:var(--foreground-muted)">' + joined + '</td>' +
+      '<td><button class="rowmenu" aria-label="メニュー">⋯</button></td>' +
+      '</tr>';
+  }).join('');
+})();
+</script>
+</body>
+</html>

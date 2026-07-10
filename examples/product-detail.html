@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ja" data-theme="light" data-density="default" data-seed="#3D74E0">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>商品詳細 — Meridian example</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens/build/tokens.css">
+<script src="../src/color-engine.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);font-size:var(--text-body);line-height:var(--lh-normal);color:var(--fg);background:var(--bg)}
+:focus{outline:none}
+:focus-visible{outline:var(--focus-w) solid var(--focus-ring);outline-offset:2px;border-radius:var(--radius-2xs)}
+a{color:var(--primary)}
+.page{max-width:960px;margin:0 auto;padding:var(--sp-6) var(--sp-6) var(--sp-20)}
+.crumbs{display:flex;align-items:center;gap:var(--sp-15);font-size:var(--text-small);color:var(--foreground-subtle);margin-bottom:var(--sp-5)}
+.crumbs a{color:var(--foreground-subtle);text-decoration:none}
+.crumbs a:hover{color:var(--foreground)}
+.crumbs .cur{color:var(--foreground);font-weight:550}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-8)}
+@media(max-width:720px){.grid{grid-template-columns:1fr;gap:var(--sp-5)}}
+.gallery-main{aspect-ratio:1;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface-muted);display:flex;align-items:center;justify-content:center;color:var(--foreground-subtle);font-size:var(--text-small);margin-bottom:var(--sp-2)}
+.thumbs{display:flex;gap:var(--sp-2)}
+.thumb{width:56px;height:56px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface-muted);cursor:pointer;flex:none}
+.thumb[aria-current="true"]{border-color:var(--primary)}
+.thumb:hover{border-color:var(--border-strong)}
+.title{font-size:22px;font-weight:650;letter-spacing:-.015em;margin-bottom:var(--sp-2)}
+.rating{display:flex;align-items:center;gap:var(--sp-1);font-size:var(--text-label);color:var(--foreground-muted);margin-bottom:var(--sp-4)}
+.rating .stars{color:var(--warning);letter-spacing:1px}
+.rating .stars .empty{color:var(--border-strong)}
+.price{font-size:26px;font-weight:650;font-variant-numeric:tabular-nums;margin-bottom:var(--sp-1)}
+.price .tax{font-size:var(--text-small);font-weight:400;color:var(--foreground-subtle);margin-left:var(--sp-2)}
+.stock{display:inline-flex;align-items:center;gap:var(--sp-15);font-size:var(--text-small);color:var(--success-foreground);margin-bottom:var(--sp-5)}
+.stock i{width:7px;height:7px;border-radius:50%;background:var(--success);flex:none}
+.desc{font-size:var(--text-label);color:var(--foreground-muted);margin-bottom:var(--sp-5);max-width:44ch}
+.field-label{font-size:var(--text-label);font-weight:550;margin-bottom:var(--sp-2)}
+.swatches{display:flex;gap:var(--sp-2);margin-bottom:var(--sp-5)}
+.swatch{height:var(--ctl-sm);padding:0 var(--sp-3);border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);font-size:var(--text-label);color:var(--foreground);cursor:pointer}
+.swatch:hover{border-color:var(--border-strong)}
+.swatch[aria-pressed="true"]{border-color:var(--primary);background:var(--primary-subtle);color:var(--primary);font-weight:550}
+.buyrow{display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-5)}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.qty button{width:var(--ctl-md);height:var(--ctl-md);border:none;background:var(--surface);color:var(--foreground-muted);font-size:16px;cursor:pointer}
+.qty button:hover{background:var(--surface-muted);color:var(--foreground)}
+.qty .val{width:40px;text-align:center;font-variant-numeric:tabular-nums;font-weight:550}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-15);height:var(--ctl-lg);padding:0 var(--sp-5);border-radius:var(--radius-sm);border:1px solid transparent;font:inherit;font-size:var(--text-body);font-weight:550;cursor:pointer;transition:background var(--dur-fast) var(--ease-standard)}
+.btn.primary{background:var(--primary);color:var(--primary-foreground);flex:1}
+.btn.primary:hover{background:var(--primary-hover)}
+.highlights{list-style:none;border-top:1px solid var(--border-muted);padding-top:var(--sp-4)}
+.highlights li{display:flex;gap:var(--sp-2);font-size:var(--text-label);color:var(--foreground-muted);margin-bottom:var(--sp-2)}
+.highlights li b{color:var(--success)}
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="crumbs" aria-label="パンくずリスト">
+    <a href="#">ホーム</a><span>›</span><a href="#">デスク周り</a><span>›</span><span class="cur">アームスタンド ライト</span>
+  </nav>
+
+  <div class="grid">
+    <div>
+      <div class="gallery-main">商品画像</div>
+      <div class="thumbs">
+        <button class="thumb" aria-current="true" aria-label="画像1"></button>
+        <button class="thumb" aria-label="画像2"></button>
+        <button class="thumb" aria-label="画像3"></button>
+        <button class="thumb" aria-label="画像4"></button>
+      </div>
+    </div>
+
+    <div>
+      <h1 class="title">アームスタンド ライト</h1>
+      <div class="rating"><span class="stars">★★★★<span class="empty">★</span></span><span>4.2 (128件のレビュー)</span></div>
+      <div class="price">¥12,800<span class="tax">(税込)</span></div>
+      <div class="stock"><i></i>在庫あり · 通常 1〜2 営業日で発送</div>
+      <p class="desc">画面の近くに置いても圧迫感のない、薄型アームスタンド式のデスクライト。色温度を無段階で調整でき、長時間の作業でも目が疲れにくい配光設計です。</p>
+
+      <div>
+        <div class="field-label">カラー</div>
+        <div class="swatches">
+          <button class="swatch" aria-pressed="true">ホワイト</button>
+          <button class="swatch" aria-pressed="false">ブラック</button>
+          <button class="swatch" aria-pressed="false">シルバー</button>
+        </div>
+      </div>
+
+      <div class="buyrow">
+        <div class="qty">
+          <button aria-label="数量を減らす">−</button>
+          <span class="val" id="qty-val">1</span>
+          <button aria-label="数量を増やす">+</button>
+        </div>
+        <button class="btn primary">カートに追加</button>
+      </div>
+
+      <ul class="highlights">
+        <li><b>✓</b> 色温度 2700K〜6500K 無段階調整</li>
+        <li><b>✓</b> クランプ式・ネジ穴不要で設置</li>
+        <li><b>✓</b> 1年間メーカー保証</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  // Seed は <html data-seed> に置く(design/rules.json の構造的例外)。
+  var theme = root.dataset.theme, density = root.dataset.density, seed = root.dataset.seed;
+  var P = buildPalettes(seed);
+  var T = buildSemantics(P, theme);
+  var st = root.style;
+  for (var k in T) st.setProperty('--' + k, T[k]);
+  st.setProperty('--fg', T.foreground);
+  st.setProperty('--bg', T.background);
+
+  var qty = 1;
+  var qtyEl = document.getElementById('qty-val');
+  var buttons = document.querySelectorAll('.qty button');
+  buttons[0].addEventListener('click', function () { qty = Math.max(1, qty - 1); qtyEl.textContent = qty; });
+  buttons[1].addEventListener('click', function () { qty = qty + 1; qtyEl.textContent = qty; });
+  document.querySelectorAll('.swatch').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.swatch').forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+      btn.setAttribute('aria-pressed', 'true');
+    });
+  });
+})();
+</script>
+</body>
+</html>

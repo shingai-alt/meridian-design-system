@@ -138,12 +138,12 @@ function buildSemantics(P,theme){
     'foreground':n[900],'foreground-muted':n[600],'foreground-subtle':n[500],'foreground-disabled':n[400],
     'border':n[200],'border-muted':mix(n[100],n[200],.45),'border-strong':n[300],
     'primary':prR.base,'primary-hover':prR.hover,'primary-active':prR.active,'primary-subtle':pr[50],'primary-muted':pr[100],'primary-foreground':onColor(prR.base),
-    'secondary':scR.base,'secondary-hover':scR.hover,'secondary-active':scR.active,
-    'accent':acR.base,'accent-hover':acR.hover,'accent-active':acR.active,
-    'success':P.success[600],'success-subtle':P.success[50],'success-foreground':P.success[700],
-    'warning':P.warning[500],'warning-subtle':P.warning[50],'warning-foreground':P.warning[700],
-    'danger':P.danger[600],'danger-subtle':P.danger[50],'danger-foreground':P.danger[700],
-    'info':P.info[600],'info-subtle':P.info[50],'info-foreground':P.info[700],
+    'secondary':scR.base,'secondary-hover':scR.hover,'secondary-active':scR.active,'secondary-on-solid':onColor(scR.base),
+    'accent':acR.base,'accent-hover':acR.hover,'accent-active':acR.active,'accent-on-solid':onColor(acR.base),
+    'success':P.success[600],'success-subtle':P.success[50],'success-foreground':P.success[700],'success-on-solid':onColor(P.success[600]),
+    'warning':P.warning[500],'warning-subtle':P.warning[50],'warning-foreground':P.warning[700],'warning-on-solid':onColor(P.warning[500]),
+    'danger':P.danger[600],'danger-subtle':P.danger[50],'danger-foreground':P.danger[700],'danger-on-solid':onColor(P.danger[600]),
+    'info':P.info[600],'info-subtle':P.info[50],'info-foreground':P.info[700],'info-on-solid':onColor(P.info[600]),
     'focus-ring':pr[500],'selection':pr[100],'highlight':P.warning[100],'disabled':n[300],
     'overlay':alpha(n[950],.5),'scrim':alpha(n[950],.4)
   }}
@@ -160,12 +160,12 @@ function buildSemantics(P,theme){
     'foreground':n[50],'foreground-muted':n[400],'foreground-subtle':n[500],'foreground-disabled':n[600],
     'border':oklchToHex(22,n800.c,n800.h),'border-muted':oklchToHex(18,n800.c,n800.h),'border-strong':oklchToHex(30,n700.c,n700.h),
     'primary':prR.base,'primary-hover':prR.hover,'primary-active':prR.active,'primary-subtle':mix(pr[900],'#000000',.35),'primary-muted':pr[900],'primary-foreground':onColor(prR.base),
-    'secondary':scR.base,'secondary-hover':scR.hover,'secondary-active':scR.active,
-    'accent':acR.base,'accent-hover':acR.hover,'accent-active':acR.active,
-    'success':P.success[500],'success-subtle':mix(P.success[900],'#000',.45),'success-foreground':P.success[400],
-    'warning':P.warning[500],'warning-subtle':mix(P.warning[900],'#000',.45),'warning-foreground':P.warning[400],
-    'danger':P.danger[500],'danger-subtle':mix(P.danger[900],'#000',.45),'danger-foreground':P.danger[400],
-    'info':P.info[500],'info-subtle':mix(P.info[900],'#000',.45),'info-foreground':P.info[400],
+    'secondary':scR.base,'secondary-hover':scR.hover,'secondary-active':scR.active,'secondary-on-solid':onColor(scR.base),
+    'accent':acR.base,'accent-hover':acR.hover,'accent-active':acR.active,'accent-on-solid':onColor(acR.base),
+    'success':P.success[500],'success-subtle':mix(P.success[900],'#000',.45),'success-foreground':P.success[400],'success-on-solid':onColor(P.success[500]),
+    'warning':P.warning[500],'warning-subtle':mix(P.warning[900],'#000',.45),'warning-foreground':P.warning[400],'warning-on-solid':onColor(P.warning[500]),
+    'danger':P.danger[500],'danger-subtle':mix(P.danger[900],'#000',.45),'danger-foreground':P.danger[400],'danger-on-solid':onColor(P.danger[500]),
+    'info':P.info[500],'info-subtle':mix(P.info[900],'#000',.45),'info-foreground':P.info[400],'info-on-solid':onColor(P.info[500]),
     'focus-ring':prR.base,'selection':alpha(pr[500],.32),'highlight':alpha(P.warning[500],.25),'disabled':n[700],
     'overlay':alpha('#000000',.6),'scrim':alpha('#000000',.55)
   }}
@@ -179,12 +179,12 @@ function buildSemantics(P,theme){
     'foreground':'#0a0a0f','foreground-muted':n[800],'foreground-subtle':n[700],'foreground-disabled':n[500],
     'border':n[500],'border-muted':n[300],'border-strong':n[800],
     'primary':prR.base,'primary-hover':prR.hover,'primary-active':prR.active,'primary-subtle':pr[50],'primary-muted':pr[100],'primary-foreground':onColor(prR.base),
-    'secondary':scR.base,'secondary-hover':scR.hover,'secondary-active':scR.active,
-    'accent':acR.base,'accent-hover':acR.hover,'accent-active':acR.active,
-    'success':P.success[700],'success-subtle':P.success[50],'success-foreground':P.success[800],
-    'warning':P.warning[600],'warning-subtle':P.warning[50],'warning-foreground':P.warning[800],
-    'danger':P.danger[700],'danger-subtle':P.danger[50],'danger-foreground':P.danger[800],
-    'info':P.info[700],'info-subtle':P.info[50],'info-foreground':P.info[800],
+    'secondary':scR.base,'secondary-hover':scR.hover,'secondary-active':scR.active,'secondary-on-solid':onColor(scR.base),
+    'accent':acR.base,'accent-hover':acR.hover,'accent-active':acR.active,'accent-on-solid':onColor(acR.base),
+    'success':P.success[700],'success-subtle':P.success[50],'success-foreground':P.success[800],'success-on-solid':onColor(P.success[700]),
+    'warning':P.warning[600],'warning-subtle':P.warning[50],'warning-foreground':P.warning[800],'warning-on-solid':onColor(P.warning[600]),
+    'danger':P.danger[700],'danger-subtle':P.danger[50],'danger-foreground':P.danger[800],'danger-on-solid':onColor(P.danger[700]),
+    'info':P.info[700],'info-subtle':P.info[50],'info-foreground':P.info[800],'info-on-solid':onColor(P.info[700]),
     'focus-ring':'#0a0a0f','selection':pr[100],'highlight':P.warning[100],'disabled':n[400],
     'overlay':alpha('#000000',.6),'scrim':alpha('#000000',.5)
   }}
@@ -194,6 +194,12 @@ function buildCharts(seed,theme){
   const s=hexToOklch(seed);const L=theme==='dark'?68:56;const c=clamp(s.c,0.12,0.19);
   return [0,36,80,148,198,262].map(d=>oklchToHex(L,c,(s.h+d)%360));
 }
+/* chart色(--chart-1..6)はカテゴリの塗り色専用で、その上に乗せる文字色を計算する
+ * semantic tokenが無かった(danger-on-solidと同種の欠落)。buildCharts()の出力に
+ * 対して一律onColor()を適用し、常に対応する文字色を用意できるようにする。 */
+function chartForegrounds(chartColors){
+  return chartColors.map(c=>onColor(c));
+}
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
@@ -202,5 +208,6 @@ if (typeof module !== 'undefined' && module.exports) {
     luminance, contrast, onColor, alpha, hexToOklab, mix, clamp,
     STEPS, L_MAP, C_CURVE, makeScale, makeNeutral, accessibleStepIndex,
     SEED_PRESETS, buildPalettes, roleSteps, buildSemantics, buildCharts,
+    chartForegrounds,
   };
 }

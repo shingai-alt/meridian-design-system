@@ -98,6 +98,8 @@ function applyTheme(){
     st.setProperty('--shadow-overlay',`0 8px 16px ${sc2},0 24px 56px -12px ${alpha(P.neutral[950],.2)}`);
   }
   for(let i=0;i<6;i++)st.setProperty('--chart-'+(i+1),CHART[i]);
+  const CHART_FG=chartForegrounds(CHART);
+  for(let i=0;i<6;i++)st.setProperty('--chart-fg-'+(i+1),CHART_FG[i]);
   st.setProperty('--focus-w',STATE.theme==='hc'?'3px':'2px');
   localStorage.setItem('mrd.theme',STATE.theme);localStorage.setItem('mrd.density',STATE.density);localStorage.setItem('mrd.seed',STATE.seed);
   document.dispatchEvent(new CustomEvent('mrd:theme'));

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ja" data-theme="light" data-density="default" data-seed="#5B5BD6">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings — Meridian example</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens/build/tokens.css">
+<script src="../src/color-engine.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);font-size:var(--text-body);line-height:var(--lh-normal);color:var(--fg);background:var(--bg)}
+:focus{outline:none}
+:focus-visible{outline:var(--focus-w) solid var(--focus-ring);outline-offset:2px;border-radius:var(--radius-2xs)}
+a{color:var(--primary)}
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.side{background:var(--background-subtle);border-right:1px solid var(--border);padding:var(--sp-4)}
+.side h2{font-size:var(--text-micro);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--foreground-subtle);margin:var(--sp-4) 0 var(--sp-2)}
+.side h2:first-child{margin-top:0}
+.navitem{display:block;width:100%;text-align:left;padding:var(--sp-2) var(--sp-2);border-radius:var(--radius-sm);font-size:var(--text-label);color:var(--foreground-muted);background:none;border:none;font:inherit;cursor:pointer;margin-bottom:2px}
+.navitem:hover{background:var(--surface-muted);color:var(--foreground)}
+.navitem[aria-current="page"]{background:var(--primary-subtle);color:var(--primary);font-weight:550}
+.main{padding:var(--sp-8) var(--sp-6) var(--sp-20);max-width:640px}
+.main h1{font-size:19px;font-weight:650;letter-spacing:-.015em;margin-bottom:var(--sp-1)}
+.main .lead{font-size:var(--text-small);color:var(--foreground-subtle);margin-bottom:var(--sp-5)}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--sp-4);margin-bottom:var(--sp-4)}
+.panel h3{font-size:var(--text-body);font-weight:600;margin-bottom:var(--sp-1)}
+.panel .desc{font-size:var(--text-small);color:var(--foreground-muted);margin-bottom:var(--sp-4)}
+.field{display:flex;flex-direction:column;gap:var(--sp-15);margin-bottom:var(--gap-form)}
+.field label{font-size:var(--text-label);font-weight:550;color:var(--foreground)}
+.field .help{font-size:var(--text-small);color:var(--foreground-subtle)}
+.input,.textarea{height:var(--ctl-md);padding:0 var(--input-x);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);font:inherit;font-size:var(--text-label);color:var(--foreground);transition:border-color var(--dur-fast) var(--ease-standard)}
+.input:hover,.textarea:hover{border-color:var(--border-strong)}
+.input:focus-visible,.textarea:focus-visible{border-color:var(--primary)}
+.textarea{height:auto;min-height:72px;padding:var(--sp-2) var(--input-x);resize:vertical;width:100%}
+.row{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);padding:var(--sp-3) 0;border-top:1px solid var(--border-muted)}
+.row:first-of-type{border-top:none;padding-top:0}
+.row .label{font-size:var(--text-label);color:var(--foreground)}
+.row .help{font-size:var(--text-small);color:var(--foreground-subtle)}
+.switch{position:relative;display:inline-flex;width:32px;height:18px;flex:none}
+.switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.switch .track{position:absolute;inset:0;border-radius:var(--radius-full);background:var(--border-strong);transition:background var(--dur-fast) var(--ease-standard)}
+.switch .track::after{content:"";position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--primary-foreground);transition:transform var(--dur-fast) var(--ease-standard)}
+.switch input:checked+.track{background:var(--primary)}
+.switch input:checked+.track::after{transform:translateX(14px)}
+.switch input:focus-visible+.track{outline:var(--focus-w) solid var(--focus-ring);outline-offset:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:var(--ctl-md);padding:0 var(--sp-3);border-radius:var(--radius-sm);border:1px solid transparent;font:inherit;font-size:var(--text-label);font-weight:550;cursor:pointer;transition:background var(--dur-fast) var(--ease-standard),border-color var(--dur-fast) var(--ease-standard)}
+.btn.primary{background:var(--primary);color:var(--primary-foreground)}
+.btn.primary:hover{background:var(--primary-hover)}
+.btn.secondary{background:var(--surface);border-color:var(--border);color:var(--foreground)}
+.btn.secondary:hover{border-color:var(--border-strong)}
+.btn.ghost{background:none;color:var(--foreground-muted)}
+.btn.ghost:hover{background:var(--surface-muted)}
+.btn.danger{background:var(--danger);color:var(--danger-on-solid)}
+.btn.danger:hover{filter:brightness(.92)}
+.danger-panel{border-color:color-mix(in srgb,var(--danger) 40%,var(--border))}
+.danger-panel b{color:var(--danger-foreground)}
+.savebar{display:flex;align-items:center;justify-content:flex-end;gap:var(--sp-2);margin-top:var(--sp-4);padding:var(--sp-3);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md)}
+.savebar .note{margin-right:auto;font-size:var(--text-small);color:var(--foreground-muted)}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="side" aria-label="設定ナビゲーション">
+    <h2>設定</h2>
+    <button class="navitem" aria-current="page">一般</button>
+    <button class="navitem">通知</button>
+    <button class="navitem">メンバー</button>
+    <button class="navitem">API キー</button>
+    <button class="navitem">連携</button>
+    <h2>Organization</h2>
+    <button class="navitem">Billing</button>
+    <button class="navitem">監査ログ</button>
+  </nav>
+  <main class="main">
+    <h1>一般</h1>
+    <p class="lead">ワークスペースの基本設定を管理します。</p>
+
+    <section class="panel">
+      <h3>ワークスペース情報</h3>
+      <p class="desc">この情報はメンバー招待時にも表示されます。</p>
+      <div class="field">
+        <label for="ws-name">ワークスペース名</label>
+        <input id="ws-name" class="input" type="text" value="Acme Inc.">
+      </div>
+      <div class="field">
+        <label for="ws-url">URL</label>
+        <input id="ws-url" class="input" type="text" value="acme.meridian.app">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label for="ws-desc">説明</label>
+        <textarea id="ws-desc" class="textarea">デザインシステムと社内ツールの開発</textarea>
+        <span class="help">メンバー招待時に表示されます。</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h3>通知</h3>
+      <p class="desc">重要なイベントの通知方法を選択します。</p>
+      <div class="row">
+        <div><div class="label">メールで通知を受け取る</div><div class="help">請求・セキュリティに関する重要な通知</div></div>
+        <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+      </div>
+      <div class="row">
+        <div><div class="label">週次サマリー</div><div class="help">利用状況のレポートを毎週送信</div></div>
+        <label class="switch"><input type="checkbox"><span class="track"></span></label>
+      </div>
+    </section>
+
+    <section class="panel danger-panel">
+      <b>Danger zone</b>
+      <div class="row" style="border-top:none;padding-top:12px">
+        <div><div class="label">ワークスペースを削除</div><div class="help">すべてのプロジェクトとデータが完全に削除されます。この操作は取り消せません。</div></div>
+        <button class="btn danger">削除…</button>
+      </div>
+    </section>
+
+    <div class="savebar">
+      <span class="note">未保存の変更があります</span>
+      <button class="btn ghost">破棄</button>
+      <button class="btn primary">変更を保存</button>
+    </div>
+  </main>
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  // Seed は <html data-seed> に置く(design/rules.json の構造的例外)。
+  var theme = root.dataset.theme, density = root.dataset.density, seed = root.dataset.seed;
+  var P = buildPalettes(seed);
+  var T = buildSemantics(P, theme);
+  var st = root.style;
+  for (var k in T) st.setProperty('--' + k, T[k]);
+  st.setProperty('--fg', T.foreground);
+  st.setProperty('--bg', T.background);
+})();
+</script>
+</body>
+</html>

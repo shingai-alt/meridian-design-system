@@ -1,7 +1,7 @@
 "use strict";
 /* ============ Overview ============ */
 docPage('overview/introduction',()=>shell(`
-${head('Overview','Meridian Design System','<b>Meridian</b> は、SaaS・AI プロダクト・Developer Tool のための、トークン駆動のデザインシステムです。1 つの Seed color から、Light / Dark / High contrast のテーマと 3 段階の密度を一貫して導出します。')}
+${head('Overview','Meridian Design System','<b>Meridian</b> は、プロダクトインターフェースのための、トークン駆動のデザインシステムです。1 つの Seed color から、Light / Dark / High contrast のテーマと 3 段階の密度を一貫して導出します。')}
 <div class="rowflex" style="margin-bottom:var(--sp-6)">${badge({label:'v2.4.1',tone:'primary'})}${badge({label:'60+ components',tone:'neutral'})}${badge({label:'WCAG 2.2 AA',tone:'success'})}</div>
 ${h2('Meridian とは')}
 <p>Meridian(子午線)は、座標の基準となる線です。このシステムでは、Seed color とデザイントークンが UI 全体の「基準線」となり、色・余白・タイポグラフィ・モーションのすべてがそこから導出されます。</p>
@@ -10,7 +10,7 @@ ${h2('Meridian とは')}
 ${h2('システムの態度')}
 <p>UI デザインには大きく 3 つの態度があります。装飾を削ぎ落とし余白と精度で階層を作る<b>ミニマル</b>、色のトーンとモーションでブランドを語る<b>表現力</b>、1 画面の情報量を最大化する<b>高密度エンタープライズ</b>です。Meridian はこの 3 つから<b>ミニマル</b>を選択しています。</p>
 <ul class="plain">
-<li>想定用途が SaaS・AI プロダクト・Developer Tool であり、ブランド表現より判断の速さを優先すべきだから。</li>
+<li>業務ツールから消費者向けアプリまで、多くのプロダクトでは、ブランド表現より判断の速さを優先すべき場面の方が多いから。ブランド表現そのものが主目的のプロダクト(マーケティングサイト等)では、この態度を見直す余地があります。</li>
 <li>色・角丸・影・モーションのトークン数を絞るほど、テーマ / Seed / 密度が変わっても破綻しにくく、保守コストが低いから。</li>
 <li>高密度な画面が必要になった場合も、態度そのものを変えるのではなく <a href="#/foundations/spacing">Density: Compact</a> で対応します。「高密度エンタープライズ型のコンポーネント群」を別途作ることはしません。</li>
 </ul>
@@ -35,7 +35,7 @@ docPage('overview/principles',()=>shell(`
 ${head('Overview','Principles','Meridian のすべての設計判断は、以下の 7 原則に基づきます。迷ったときは原則に戻ります。')}
 ${[
 ['1','Clarity over decoration','UI は装飾ではなく、意思決定を助けるためのものです。情報の優先順位・状態・実行できるアクションが一目で分かることを、視覚的な新しさよりも優先します。要素を足す前に「これはユーザーの判断を速くするか」を問います。'],
-['2','Density with rhythm','SaaS や Developer Tool では高密度な情報表示が必要です。ただし詰め込むのではなく、余白・線・階層・コントラストで「読みやすい密度」を作ります。行の高さ・余白は Density トークンでリズムとして管理します。'],
+['2','Density with rhythm','業務ツールやダッシュボードに限らず、情報量の多い画面では高密度な表示が必要になります。ただし詰め込むのではなく、余白・線・階層・コントラストで「読みやすい密度」を作ります。行の高さ・余白は Density トークンでリズムとして管理します。'],
 ['3','Tokens before components','すべてのコンポーネントはトークンから構成されます。色・余白・角丸・影・フォント・モーションをトークン化することで、テーマや密度の変更、ブランド色の差し替えに設計変更なしで耐えます。hex を直接書いた時点で、その UI はシステムの外にあります。'],
 ['4','Adaptive by default','Light / Dark / High contrast、Compact / Default / Comfortable、Primary color seed の変更に自然に対応します。「ダークモード対応」は後付けの作業ではなく、Semantic token を使っていれば自動的に成立する性質です。'],
 ['5','Accessible precision','アクセシビリティは後付けではなく、初期設計に含めます。フォーカスリング・キーボード操作・コントラスト比・色に依存しない状態表現を、すべてのコンポーネントの受け入れ条件とします。'],
@@ -112,7 +112,7 @@ ${h2('アクションの優先度')}
 ${h2('密度の選び方')}
 <ul class="plain">
 <li><b>Compact</b>: テーブル中心の管理画面、ログビューア、パワーユーザー向け</li>
-<li><b>Default</b>: 迷ったらこれ。汎用的な SaaS 画面</li>
+<li><b>Default</b>: 迷ったらこれ。汎用的な画面全般</li>
 <li><b>Comfortable</b>: 設定・オンボーディング・タッチデバイス</li>
 </ul>
 ${h2('コンポーネントの扱い')}

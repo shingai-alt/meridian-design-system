@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "description": "Meridian Design System — token source of truth and doc site build scripts.",
+  "packageManager": "pnpm@10.33.2",
   "scripts": {
     "build:tokens": "node scripts/build-tokens.mjs",
     "check:tokens": "node scripts/build-tokens.mjs && git diff --exit-code -- tokens/build/tokens.css",
+    "design:build": "node scripts/build-design-md.mjs",
+    "design:check": "node scripts/build-design-md.mjs && git diff --exit-code -- DESIGN.md",
+    "design:lint": "node scripts/design-lint.mjs",
     "test": "node --test test/*.test.js"
   },
   "license": "UNLICENSED"

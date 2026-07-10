@@ -8,7 +8,7 @@ Seed color 駆動のカラーシステムと、Primitive → Semantic → Compon
 - Foundations — 色・タイポグラフィ・余白・角丸・影・アクセシビリティ
 - Tokens — 全トークンの一覧、CSS Variables / JSON 出力
 - Components — 60+ のコンポーネント詳細と Playground
-- Patterns / Templates — 画面設計の定石パターン、SaaSプロダクト相当の画面テンプレート
+- Patterns / Templates — 画面設計の定石パターン、実プロダクト相当の画面テンプレート
 - Resources — 実装ガイド・チェックリスト
 
 テーマ（Light / Dark / High contrast）、密度（Compact / Default / Comfortable）、Seed color の切り替えに対応しています。

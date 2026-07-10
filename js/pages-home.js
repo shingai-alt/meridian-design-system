@@ -7,7 +7,7 @@ docPage('home',()=>{
 <div>
 <span class="pill">${I.spark} v2.4 — Dynamic color API</span>
 <h1>Meridian<br><span style="color:var(--fg-muted);font-weight:550;font-size:.62em;letter-spacing:-.01em">Calm precision for product interfaces</span></h1>
-<p class="tg">SaaS・AI プロダクト・Developer Tool のためのデザインシステム。1 つの Seed color から、テーマ・密度・60+ コンポーネントを一貫して導出します。</p>
+<p class="tg">プロダクトインターフェースのためのデザインシステム。1 つの Seed color から、テーマ・密度・60+ コンポーネントを一貫して導出します。</p>
 <div class="rowflex" style="margin-bottom:var(--sp-5)">
 <a href="#/overview/getting-started" class="btn" data-variant="primary" data-size="lg">Getting started</a>
 <a href="#/components/button" class="btn" data-variant="secondary" data-size="lg">Components</a>
