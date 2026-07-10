@@ -27,3 +27,65 @@ jobs:
           node-version: 20
       - name: Run unit tests (color engine)
         run: npm test
+
+  design-lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # PR では差分ファイルのみ、main への push ではリポジトリ全体の
+      # html/css/js を対象にする(node_modules・生成物は除外)。
+      - name: Determine target files
+        id: files
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch origin "${{ github.base_ref }}" --depth=1
+            FILES=$(git diff --name-only --diff-filter=ACMRT "origin/${{ github.base_ref }}...HEAD" -- '*.html' '*.css' '*.js' \
+              | grep -vE '^(node_modules/|tokens/build/)' || true)
+          else
+            FILES=$(git ls-files '*.html' '*.css' '*.js' \
+              | grep -vE '^(node_modules/|tokens/build/)' || true)
+          fi
+          echo "files<<DESIGN_LINT_FILES_EOF" >> "$GITHUB_OUTPUT"
+          echo "$FILES" >> "$GITHUB_OUTPUT"
+          echo "DESIGN_LINT_FILES_EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Run design-lint
+        if: steps.files.outputs.files != ''
+        id: lint
+        run: |
+          set +e
+          node scripts/design-lint.mjs ${{ steps.files.outputs.files }} > design-lint.log 2>&1
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          cat design-lint.log
+
+      - uses: reviewdog/action-setup@v1
+        if: github.event_name == 'pull_request' && steps.files.outputs.files != ''
+
+      # design-lint.mjs の出力("ERROR file:line [ID] ..." / "WARN  file:line [ID] ...")
+      # を reviewdog の errorformat で読み、PR の該当行にインライン注釈として投稿する。
+      # ERROR/WARN の区別は reviewdog 側の Error/Warning 表示にそのままマップされる。
+      - name: Post annotations via reviewdog
+        if: github.event_name == 'pull_request' && steps.files.outputs.files != ''
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sed -E 's/^WARN +/WARN /' design-lint.log | reviewdog \
+            -efm='%tRROR %f:%l %m' \
+            -efm='%tARN %f:%l %m' \
+            -name="design-lint" \
+            -reporter=github-pr-review \
+            -filter-mode=nofilter \
+            -fail-on-error=false
+
+      - name: Fail if ERROR-severity violations were found
+        if: steps.files.outputs.files != '' && steps.lint.outputs.exit_code != '0'
+        run: exit 1
