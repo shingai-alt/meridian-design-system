@@ -1,34 +1,46 @@
 #!/usr/bin/env node
 // Phase 1 harness — Layer 3 (verification): scans files an AI agent just
 // wrote/edited for violations of design/rules.json's automatically-detectable
-// ("automationStatus": "static") rules, e.g. raw hex colors, hardcoded px
-// spacing/radius, hardcoded motion durations instead of tokens, and
-// shadow-sm+ used on non-floating layout blocks.
+// ("automationStatus": "static") rules: raw hex colors, hardcoded
+// spacing/radius/motion, shadow-sm+ on non-floating layout blocks, accent
+// used outside brand marks, outline:none without a :focus-visible fallback,
+// and background/color token pairs that fail WCAG contrast.
 //
 // Usage:
 //   node scripts/design-lint.mjs <file> [<file> ...]
 //
 // Exits 1 if any "error"-severity violation is found (fails CI / blocks a
 // hook), exits 0 otherwise. "warning"-severity violations are reported but
-// do not fail the run. Rules with "automationStatus": "manual" (e.g. accent
-// misuse, missing focus-visible, contrast) cannot be checked reliably at all
-// — they are listed as reminders, not enforced here.
+// do not fail the run. Rules with "automationStatus": "manual" cannot be
+// checked reliably at all — they are listed as reminders, not enforced here.
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, relative } from 'node:path';
+import { createRequire } from 'node:module';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const rules = JSON.parse(readFileSync(join(root, 'design/rules.json'), 'utf8'));
+
+// color-engine.js is a classic-script/CJS hybrid (see its own header comment)
+// so it's `require()`-ed via createRequire rather than `import`-ed, even
+// though this file is ESM.
+const require = createRequire(import.meta.url);
+const { buildPalettes, buildSemantics, contrast, SEED_PRESETS } = require(
+  join(root, 'src/color-engine.js')
+);
 
 // Paths where token/engine source code is expected to contain the exact
 // patterns these rules forbid elsewhere (e.g. the literal hex values that
 // back the seed color presets). Never lint these files against NO_RAW_HEX_COLOR.
 const EXEMPT_PATH_PREFIXES = ['tokens/src/', 'src/color-engine.js'];
 
-// SHADOW_ONLY_ON_FLOATING_LAYER has a bespoke detector (below), not a single
-// regex, so it's excluded from the generic regex loop.
+// Rules with a bespoke detector (below), not a single regex, are excluded
+// from the generic regex loop.
 const regexStaticRules = rules.filter((r) => r.automationStatus === 'static' && r.detector === 'regex');
 const shadowLayerRule = rules.find((r) => r.id === 'SHADOW_ONLY_ON_FLOATING_LAYER');
+const accentRule = rules.find((r) => r.id === 'ACCENT_BRAND_MARK_ONLY');
+const focusVisibleRule = rules.find((r) => r.id === 'FOCUS_VISIBLE_REQUIRED');
+const contrastRule = rules.find((r) => r.id === 'CONTRAST_AA_MINIMUM');
 const manualRules = rules.filter((r) => r.automationStatus === 'manual');
 
 const targets = process.argv.slice(2);
@@ -69,6 +81,16 @@ function seedExemptRanges(content) {
   return ranges;
 }
 
+// Iterates every flat (non-nested) `selector{ declarations }` CSS rule block
+// in the file. Shared by the shadow/accent/contrast detectors below.
+function forEachCssRule(content, fn) {
+  const ruleRe = /([^{}]+)\{([^{}]*)\}/g;
+  let m;
+  while ((m = ruleRe.exec(content))) {
+    fn(m[1], m[2], m.index, m[0]);
+  }
+}
+
 // shadow-xs is treated as a small-control tactile affordance (Button, Input,
 // Slider thumb, Avatar ring) and is exempt regardless of whether the element
 // floats — only shadow-sm/md/lg/overlay are true "layer elevation" and are
@@ -81,22 +103,94 @@ const FLOATING_KEYWORDS = /dropdown|popover|menu|dialog|drawer|toast|tooltip|ove
 
 function findShadowLayerViolations(content) {
   const violations = [];
-  // Matches flat (non-nested) CSS rule blocks: `selector{ declarations }`.
-  const ruleRe = /([^{}]+)\{([^{}]*)\}/g;
-  let m;
-  while ((m = ruleRe.exec(content))) {
-    const [whole, selector, body] = m;
+  forEachCssRule(content, (selector, body, index, whole) => {
     const shadowMatch = /box-shadow\s*:[^;]*var\(--shadow-(sm|md|lg|overlay)\)/.exec(body);
-    if (!shadowMatch) continue;
+    if (!shadowMatch) return;
     const isFloating =
       FLOATING_KEYWORDS.test(selector) || /position\s*:\s*(fixed|absolute)/.test(body);
-    if (isFloating) continue;
-    const shadowIndex = m.index + whole.indexOf(shadowMatch[0]);
+    if (isFloating) return;
+    const shadowIndex = index + whole.indexOf(shadowMatch[0]);
     violations.push({
       line: lineNumberOf(content, shadowIndex),
       snippet: `${selector.trim()} { ${shadowMatch[0]} }`,
     });
-  }
+  });
+  return violations;
+}
+
+// accent (and accent-hover/-active/-on-solid) is reserved for brand-identity
+// marks: logo marks and avatar gradients/fallbacks. Recognized by selector
+// keyword, not by full DOM/semantic analysis — inline `style="..."`
+// attributes are not scanned (only <style> block rules), same limitation as
+// the shadow detector.
+const BRAND_MARK_KEYWORDS = /mark|avatar|logo|brand/i;
+
+function findAccentMisuseViolations(content) {
+  const violations = [];
+  forEachCssRule(content, (selector, body, index, whole) => {
+    const accentMatch = /var\(--accent\b[^)]*\)/.exec(body);
+    if (!accentMatch) return;
+    if (BRAND_MARK_KEYWORDS.test(selector)) return;
+    const accentIndex = index + whole.indexOf(accentMatch[0]);
+    violations.push({
+      line: lineNumberOf(content, accentIndex),
+      snippet: `${selector.trim()} { ${accentMatch[0]} }`,
+    });
+  });
+  return violations;
+}
+
+// File-level check: if anything resets outline:none, at least one
+// :focus-visible rule must restore a real (non-none) outline. This is the
+// pattern used throughout the codebase (a single global `:focus{outline:none}`
+// + `:focus-visible{outline:var(--focus-w)...}` pair covers every element),
+// so a whole-file check — not a per-selector pairing — matches how it's
+// actually used. It cannot catch a one-off `.foo:focus{outline:none}` with
+// no matching `:focus-visible` anywhere while a *different* element's pair
+// exists; that residual gap stays a manual-review concern.
+function findFocusVisibleViolations(content) {
+  if (!/outline\s*:\s*none/.test(content)) return [];
+  const hasRealFocusVisible = /:focus-visible[^{]*\{[^}]*outline\s*:\s*(?!none\b)[^;}]+/.test(content);
+  if (hasRealFocusVisible) return [];
+  return [{ line: 1, snippet: 'outline:none はあるが、outline を実際に描く :focus-visible ルールが見つからない' }];
+}
+
+// Only catches the case where a single CSS rule declares BOTH a semantic
+// background and a semantic foreground color directly (the common pattern in
+// this codebase — see e.g. `.badge.primary{background:...;color:...}`).
+// Cannot resolve cascaded/inherited backgrounds from a separate rule or
+// element. Aliases --fg/--bg to the buildSemantics() key names since
+// applyTheme() sets both the full name and that short alias.
+const TOKEN_ALIASES = { fg: 'foreground', bg: 'background' };
+
+function findContrastViolations(content) {
+  const violations = [];
+  const themes = ['light', 'dark', 'hc'];
+  forEachCssRule(content, (selector, body, index, whole) => {
+    const bgMatch = /(?:^|[;{])\s*background(?:-color)?\s*:\s*var\(--([a-zA-Z0-9-]+)\)/.exec(body);
+    const fgMatch = /(?:^|[;{])\s*color\s*:\s*var\(--([a-zA-Z0-9-]+)\)/.exec(body);
+    if (!bgMatch || !fgMatch) return;
+    const bgToken = TOKEN_ALIASES[bgMatch[1]] || bgMatch[1];
+    const fgToken = TOKEN_ALIASES[fgMatch[1]] || fgMatch[1];
+
+    for (const seedPreset of SEED_PRESETS) {
+      for (const theme of themes) {
+        const T = buildSemantics(buildPalettes(seedPreset.hex), theme);
+        const bgHex = T[bgToken];
+        const fgHex = T[fgToken];
+        if (!bgHex || !fgHex) return; // one/both tokens aren't semantic color roles — not checkable here
+        const target = theme === 'hc' ? 7 : 4.5;
+        const ratio = contrast(fgHex, bgHex);
+        if (ratio < target) {
+          violations.push({
+            line: lineNumberOf(content, index),
+            snippet: `${selector.trim()} { color:var(--${fgMatch[1]}) on background:var(--${bgMatch[1]}) } — ${seedPreset.name} seed / ${theme}: ${ratio.toFixed(2)}:1 < ${target}`,
+          });
+          return; // one report per rule is enough
+        }
+      }
+    }
+  });
   return violations;
 }
 
@@ -130,9 +224,16 @@ for (const target of targets) {
   }
 
   if (shadowLayerRule) {
-    for (const v of findShadowLayerViolations(content)) {
-      violations.push({ rule: shadowLayerRule, line: v.line, snippet: v.snippet });
-    }
+    for (const v of findShadowLayerViolations(content)) violations.push({ rule: shadowLayerRule, ...v });
+  }
+  if (accentRule) {
+    for (const v of findAccentMisuseViolations(content)) violations.push({ rule: accentRule, ...v });
+  }
+  if (focusVisibleRule) {
+    for (const v of findFocusVisibleViolations(content)) violations.push({ rule: focusVisibleRule, ...v });
+  }
+  if (contrastRule) {
+    for (const v of findContrastViolations(content)) violations.push({ rule: contrastRule, ...v });
   }
 
   if (violations.length === 0) {
@@ -149,6 +250,8 @@ for (const target of targets) {
 if (manualRules.length) {
   console.log(`\n手動レビューが必要なルール(自動検出不可、design/rules.json 参照):`);
   for (const r of manualRules) console.log(`  - [${r.id}] ${r.alternative}`);
+} else {
+  console.log('\n手動レビューのみのルールはもう残っていません(8/8が自動検出対応)。');
 }
 
 process.exit(hasError ? 1 : 0);

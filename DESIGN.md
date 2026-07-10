@@ -182,4 +182,4 @@ Light / Dark / High contrast、Compact / Default / Comfortable、Primary color s
 - **RADIUS_FROM_TOKENS_ONLY** (error) — var(--radius-*) を使う。
 - **MOTION_DURATION_FROM_TOKENS_ONLY** (warning) — var(--dur-*) を使う。標準は 120–180ms(--dur-fast / --dur-normal)。
 - **FOCUS_VISIBLE_REQUIRED** (error) — outline を消す場合は必ず :focus-visible に var(--focus-ring) のリングを与える。
-- **CONTRAST_AA_MINIMUM** (error) — semantic token(primary/success/warning/danger等の -foreground ペア)をそのまま使えば、4.5:1(High contrast は 7:1)を自動的に満たす。独自に色を組み合わせない。
+- **CONTRAST_AA_MINIMUM** (error) — semantic token(primary/success/warning/danger等の -foreground / -on-solid ペア)をそのまま使えば、4.5:1(High contrast は 7:1)を自動的に満たす。独自に色を組み合わせない。

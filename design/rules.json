@@ -27,11 +27,11 @@
   {
     "id": "ACCENT_BRAND_MARK_ONLY",
     "severity": "error",
-    "detector": "context",
-    "pattern": "var(--accent) をロゴマーク・アバター以外で使用",
-    "appliesTo": "ボタン・バッジ・強調テキストなど一般 UI",
+    "detector": "css-accent-context",
+    "pattern": "var(--accent*) を、mark/avatar/logo/brand のいずれでもないセレクタで使用",
+    "appliesTo": "ボタン・バッジ・強調テキストなど一般 UI(<style> 内の CSS ルールのみ検出。インライン style は対象外)",
     "alternative": "accent はブランドアイデンティティ表現専用(ロゴマーク・アバターのグラデーション等)。強調や状態の表現は primary / success / warning / danger を使う。",
-    "automationStatus": "manual",
+    "automationStatus": "static",
     "principle": 3
   },
   {
@@ -77,21 +77,21 @@
   {
     "id": "FOCUS_VISIBLE_REQUIRED",
     "severity": "error",
-    "detector": "context",
-    "pattern": "outline:none を :focus-visible の代替なしで指定",
-    "appliesTo": "button, a, input などのインタラクティブ要素",
+    "detector": "outline-focus-visible-pair",
+    "pattern": "outline:none がファイル内に存在するのに、outline を実際に描く :focus-visible ルールが1つも無い",
+    "appliesTo": "button, a, input などのインタラクティブ要素(ファイル単位の存在チェック。個別要素ごとの厳密なペア判定はしない)",
     "alternative": "outline を消す場合は必ず :focus-visible に var(--focus-ring) のリングを与える。",
-    "automationStatus": "manual",
+    "automationStatus": "static",
     "principle": 5
   },
   {
     "id": "CONTRAST_AA_MINIMUM",
     "severity": "error",
-    "detector": "context",
-    "pattern": "独自に配色したテキスト/背景の組み合わせ",
-    "appliesTo": "テキストと背景の配色全般",
-    "alternative": "semantic token(primary/success/warning/danger等の -foreground ペア)をそのまま使えば、4.5:1(High contrast は 7:1)を自動的に満たす。独自に色を組み合わせない。",
-    "automationStatus": "manual",
+    "detector": "css-contrast-pair",
+    "pattern": "同一 CSS ルール内で background(-color) と color が両方 semantic token のとき、seed 全プリセット × light/dark/hc の全組み合わせで src/color-engine.js の contrast() が 4.5(hc は 7)を下回る",
+    "appliesTo": "同一ルールで background と color を両方 var(--token) で指定している箇所(片方だけ指定・別ルールでの継承は検出不可)",
+    "alternative": "semantic token(primary/success/warning/danger等の -foreground / -on-solid ペア)をそのまま使えば、4.5:1(High contrast は 7:1)を自動的に満たす。独自に色を組み合わせない。",
+    "automationStatus": "static",
     "principle": 5
   }
 ]
