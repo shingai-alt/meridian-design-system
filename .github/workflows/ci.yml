@@ -79,7 +79,6 @@ jobs:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           sed -E 's/^WARN +/WARN /' design-lint.log | reviewdog \
-            -f=errorformat \
             -efm='%tRROR %f:%l %m' \
             -efm='%tARN %f:%l %m' \
             -name="design-lint" \
