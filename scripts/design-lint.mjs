@@ -2,7 +2,8 @@
 // Phase 1 harness — Layer 3 (verification): scans files an AI agent just
 // wrote/edited for violations of design/rules.json's automatically-detectable
 // ("automationStatus": "static") rules, e.g. raw hex colors, hardcoded px
-// spacing/radius, hardcoded motion durations instead of tokens.
+// spacing/radius, hardcoded motion durations instead of tokens, and
+// shadow-sm+ used on non-floating layout blocks.
 //
 // Usage:
 //   node scripts/design-lint.mjs <file> [<file> ...]
@@ -10,8 +11,8 @@
 // Exits 1 if any "error"-severity violation is found (fails CI / blocks a
 // hook), exits 0 otherwise. "warning"-severity violations are reported but
 // do not fail the run. Rules with "automationStatus": "manual" (e.g. accent
-// misuse, shadow-on-base-surface, missing focus-visible, contrast) cannot be
-// regex-checked reliably — they are listed as reminders, not enforced here.
+// misuse, missing focus-visible, contrast) cannot be checked reliably at all
+// — they are listed as reminders, not enforced here.
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, relative } from 'node:path';
@@ -24,7 +25,10 @@ const rules = JSON.parse(readFileSync(join(root, 'design/rules.json'), 'utf8'));
 // back the seed color presets). Never lint these files against NO_RAW_HEX_COLOR.
 const EXEMPT_PATH_PREFIXES = ['tokens/src/', 'src/color-engine.js'];
 
-const staticRules = rules.filter((r) => r.automationStatus === 'static');
+// SHADOW_ONLY_ON_FLOATING_LAYER has a bespoke detector (below), not a single
+// regex, so it's excluded from the generic regex loop.
+const regexStaticRules = rules.filter((r) => r.automationStatus === 'static' && r.detector === 'regex');
+const shadowLayerRule = rules.find((r) => r.id === 'SHADOW_ONLY_ON_FLOATING_LAYER');
 const manualRules = rules.filter((r) => r.automationStatus === 'manual');
 
 const targets = process.argv.slice(2);
@@ -65,6 +69,37 @@ function seedExemptRanges(content) {
   return ranges;
 }
 
+// shadow-xs is treated as a small-control tactile affordance (Button, Input,
+// Slider thumb, Avatar ring) and is exempt regardless of whether the element
+// floats — only shadow-sm/md/lg/overlay are true "layer elevation" and are
+// checked here. A rule block is exempt if its selector names a known
+// floating-UI pattern, or if its own declaration block sets position:fixed /
+// position:absolute (the actual structural signal for "floats above other
+// content" — see Atlassian's elevation guidance: floating buttons get
+// elevation because they float, not because they're buttons).
+const FLOATING_KEYWORDS = /dropdown|popover|menu|dialog|drawer|toast|tooltip|overlay|modal|sheet|fab|cmdk/i;
+
+function findShadowLayerViolations(content) {
+  const violations = [];
+  // Matches flat (non-nested) CSS rule blocks: `selector{ declarations }`.
+  const ruleRe = /([^{}]+)\{([^{}]*)\}/g;
+  let m;
+  while ((m = ruleRe.exec(content))) {
+    const [whole, selector, body] = m;
+    const shadowMatch = /box-shadow\s*:[^;]*var\(--shadow-(sm|md|lg|overlay)\)/.exec(body);
+    if (!shadowMatch) continue;
+    const isFloating =
+      FLOATING_KEYWORDS.test(selector) || /position\s*:\s*(fixed|absolute)/.test(body);
+    if (isFloating) continue;
+    const shadowIndex = m.index + whole.indexOf(shadowMatch[0]);
+    violations.push({
+      line: lineNumberOf(content, shadowIndex),
+      snippet: `${selector.trim()} { ${shadowMatch[0]} }`,
+    });
+  }
+  return violations;
+}
+
 let hasError = false;
 
 for (const target of targets) {
@@ -75,7 +110,7 @@ for (const target of targets) {
   const seedRanges = seedExemptRanges(content);
   const violations = [];
 
-  for (const rule of staticRules) {
+  for (const rule of regexStaticRules) {
     if (isExempt && rule.id === 'NO_RAW_HEX_COLOR') continue;
     const re = new RegExp(rule.pattern, 'g');
     let match;
@@ -91,6 +126,12 @@ for (const target of targets) {
         });
       }
       if (match.index === re.lastIndex) re.lastIndex++; // guard against zero-width matches
+    }
+  }
+
+  if (shadowLayerRule) {
+    for (const v of findShadowLayerViolations(content)) {
+      violations.push({ rule: shadowLayerRule, line: v.line, snippet: v.snippet });
     }
   }
 

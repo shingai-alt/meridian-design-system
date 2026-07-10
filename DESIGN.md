@@ -177,7 +177,7 @@ Light / Dark / High contrast、Compact / Default / Comfortable、Primary color s
 - **NO_RAW_HEX_COLOR** (error) — var(--token-name) を使う。色の実値は seed / theme に応じて src/color-engine.js が計算するため、コード側で決め打ちしない。ボタンやアイコンなど solid 背景の上の文字色が必要な場合は、hex を直書きせず対応する `-on-solid` トークン(例: danger-on-solid, chart-fg-1)を使う。
 - **TEXT_ON_SOLID_MUST_USE_TOKEN** (error) — var(--{role}-on-solid)(chartの場合は var(--chart-fg-N))を使う。primary-foreground と同じ設計で、secondary/accent/success/warning/danger/info の6ロール全てに -on-solid が用意されている。
 - **ACCENT_BRAND_MARK_ONLY** (error) — accent はブランドアイデンティティ表現専用(ロゴマーク・アバターのグラデーション等)。強調や状態の表現は primary / success / warning / danger を使う。
-- **SHADOW_ONLY_ON_FLOATING_LAYER** (error) — Surface 層(Card/Panel など)は border のみで階層を表現する。影は Raised surface 以上(Dropdown/Popover/Menu/Dialog/Drawer/Toast)にのみ使う。
+- **SHADOW_ONLY_ON_FLOATING_LAYER** (error) — shadow-xs はボタン・インプット・スライダーなど小さな操作コントロールの触感表現として、浮いているかどうかに関わらず許容する。shadow-sm 以上は「本当に他のコンテンツの上に浮いている要素」(position:fixed/absolute、または Dropdown/Popover/Menu/Dialog/Drawer/Toast/Tooltip/Overlay/Modal/Sheet/FAB)にのみ使う。Card/Panel/Tile/Frame のような静的なブロックは border のみで階層を表現する(Material Design 3 の tonal elevation の考え方と同じ)。
 - **SPACING_FROM_TOKENS_ONLY** (error) — var(--sp-*) を使う。任意の px 値で margin / padding / gap を指定しない。
 - **RADIUS_FROM_TOKENS_ONLY** (error) — var(--radius-*) を使う。
 - **MOTION_DURATION_FROM_TOKENS_ONLY** (warning) — var(--dur-*) を使う。標準は 120–180ms(--dur-fast / --dur-normal)。

@@ -37,11 +37,11 @@
   {
     "id": "SHADOW_ONLY_ON_FLOATING_LAYER",
     "severity": "error",
-    "detector": "context",
-    "pattern": "var(--shadow-xs|--shadow-sm|--shadow-md|--shadow-lg|--shadow-overlay) を Card/Panel 等の静的なベース面(Surface 層)に使用",
-    "appliesTo": "Card, Panel, ページの基本ブロック",
-    "alternative": "Surface 層(Card/Panel など)は border のみで階層を表現する。影は Raised surface 以上(Dropdown/Popover/Menu/Dialog/Drawer/Toast)にのみ使う。",
-    "automationStatus": "manual",
+    "detector": "css-shadow-layer",
+    "pattern": "var(--shadow-sm|--shadow-md|--shadow-lg|--shadow-overlay) を、構造的に浮いていない要素(position:fixed/absoluteでなく、Dropdown/Popover/Menu/Dialog/Drawer/Toast/Tooltip/Overlay/Modal/Sheet/FABのいずれでもないセレクタ)に使用",
+    "appliesTo": "Card, Panel, Tile, Frame のような静的なレイアウトブロック(shadow-xs は対象外)",
+    "alternative": "shadow-xs はボタン・インプット・スライダーなど小さな操作コントロールの触感表現として、浮いているかどうかに関わらず許容する。shadow-sm 以上は「本当に他のコンテンツの上に浮いている要素」(position:fixed/absolute、または Dropdown/Popover/Menu/Dialog/Drawer/Toast/Tooltip/Overlay/Modal/Sheet/FAB)にのみ使う。Card/Panel/Tile/Frame のような静的なブロックは border のみで階層を表現する(Material Design 3 の tonal elevation の考え方と同じ)。",
+    "automationStatus": "static",
     "principle": 3
   },
   {
