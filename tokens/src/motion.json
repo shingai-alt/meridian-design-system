@@ -1,15 +1,71 @@
 {
   "duration": {
-    "instant": { "$value": "50ms", "$type": "duration" },
-    "fast": { "$value": "120ms", "$type": "duration" },
-    "normal": { "$value": "180ms", "$type": "duration" },
-    "slow": { "$value": "240ms", "$type": "duration" },
-    "slower": { "$value": "320ms", "$type": "duration" }
+    "$type": "duration",
+    "instant": {
+      "$description": "ごく短いcolor/border feedback。Focus indicatorにはtransitionを使わない。",
+      "$value": { "value": 50, "unit": "ms" },
+      "$extensions": { "com.meridian": { "usage": "hover、pressed color feedback" } }
+    },
+    "fast": {
+      "$description": "Controlのmicro-interaction。",
+      "$value": { "value": 120, "unit": "ms" },
+      "$extensions": { "com.meridian": { "usage": "button、input、toggle state" } }
+    },
+    "normal": {
+      "$description": "小さなsurfaceのenter/exitとdisclosure。",
+      "$value": { "value": 180, "unit": "ms" },
+      "$extensions": { "com.meridian": { "usage": "menu、popover、toast、collapse" } }
+    },
+    "slow": {
+      "$description": "大きなoverlayまたは長いdistanceのtransition。",
+      "$value": { "value": 240, "unit": "ms" },
+      "$extensions": { "com.meridian": { "usage": "dialog、drawer、large expansion" } }
+    },
+    "slower": {
+      "$description": "Page-level continuityが必要な限定transition。",
+      "$value": { "value": 320, "unit": "ms" },
+      "$extensions": { "com.meridian": { "usage": "rare page-level transition only" } }
+    }
   },
   "easing": {
-    "standard": { "$value": "cubic-bezier(.2,0,0,1)", "$type": "cubicBezier" },
-    "enter": { "$value": "cubic-bezier(0,0,.2,1)", "$type": "cubicBezier" },
-    "exit": { "$value": "cubic-bezier(.4,0,1,1)", "$type": "cubicBezier" },
-    "emphasized": { "$value": "cubic-bezier(.2,0,0,1.08)", "$type": "cubicBezier" }
+    "$type": "cubicBezier",
+    "standard": {
+      "$description": "開始から終了まで見えているstate change。",
+      "$value": [0.2, 0, 0, 1],
+      "$extensions": { "com.meridian": { "usage": "state change、expansion" } }
+    },
+    "enter": {
+      "$description": "素早く現れ、停止へ減速する。",
+      "$value": [0, 0, 0.2, 1],
+      "$extensions": { "com.meridian": { "usage": "surface enter" } }
+    },
+    "exit": {
+      "$description": "画面外へ加速して消える。",
+      "$value": [0.4, 0, 1, 1],
+      "$extensions": { "com.meridian": { "usage": "surface exit; enterより短くする" } }
+    },
+    "emphasized": {
+      "$description": "重要な一度限りのsystem feedback。反復操作には使わない。",
+      "$value": [0.2, 0, 0, 1],
+      "$extensions": { "com.meridian": { "usage": "rare system feedback; bounce禁止" } }
+    }
+  },
+  "distance": {
+    "$type": "dimension",
+    "none": {
+      "$description": "Spatial movementを使わない。",
+      "$value": { "value": 0, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "color/opacity-only feedback" } }
+    },
+    "sm": {
+      "$description": "近接surfaceのenter/exit距離。",
+      "$value": { "value": 4, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "menu、popover、dialog" } }
+    },
+    "md": {
+      "$description": "Drawerなど方向が意味を持つ大きなsurfaceの上限。",
+      "$value": { "value": 8, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "drawer、page continuity" } }
+    }
   }
 }

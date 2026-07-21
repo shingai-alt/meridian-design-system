@@ -1,0 +1,73 @@
+{
+  "color": {
+    "$type": "color",
+    "soft": {
+      "$description": "最も近いambient shadow color。",
+      "$value": { "colorSpace": "srgb", "components": [0.04, 0.04, 0.06], "alpha": 0.05 },
+      "$extensions": { "com.meridian": { "modes": {
+        "dark": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.24 }
+      } } }
+    },
+    "default": {
+      "$description": "標準floating surfaceのshadow color。",
+      "$value": { "colorSpace": "srgb", "components": [0.04, 0.04, 0.06], "alpha": 0.08 },
+      "$extensions": { "com.meridian": { "modes": {
+        "dark": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.32 }
+      } } }
+    },
+    "strong": {
+      "$description": "高いfloating surfaceのshadow color。",
+      "$value": { "colorSpace": "srgb", "components": [0.04, 0.04, 0.06], "alpha": 0.13 },
+      "$extensions": { "com.meridian": { "modes": {
+        "dark": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.42 }
+      } } }
+    },
+    "overlay": {
+      "$description": "Modalと最上位overlayのshadow color。",
+      "$value": { "colorSpace": "srgb", "components": [0.04, 0.04, 0.06], "alpha": 0.22 },
+      "$extensions": { "com.meridian": { "modes": {
+        "dark": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.58 }
+      } } }
+    }
+  },
+  "level": {
+    "$type": "shadow",
+    "xs": {
+      "$description": "Controlまたはごく小さな一時surfaceの触感。",
+      "$value": { "color": "{color.soft}", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 1, "unit": "px" }, "blur": { "value": 2, "unit": "px" }, "spread": { "value": 0, "unit": "px" } },
+      "$extensions": { "com.meridian": { "usage": "control tactile cue、small transient surface" } }
+    },
+    "sm": {
+      "$description": "Dropdown、Menuなど近いoverlay。",
+      "$value": [
+        { "color": "{color.soft}", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 1, "unit": "px" }, "blur": { "value": 2, "unit": "px" }, "spread": { "value": 0, "unit": "px" } },
+        { "color": "{color.default}", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 2, "unit": "px" }, "blur": { "value": 6, "unit": "px" }, "spread": { "value": -1, "unit": "px" } }
+      ],
+      "$extensions": { "com.meridian": { "usage": "dropdown、menu、calendar popover" } }
+    },
+    "md": {
+      "$description": "Popover、Tooltipなど明確に重なるsurface。",
+      "$value": [
+        { "color": "{color.soft}", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 2, "unit": "px" }, "blur": { "value": 4, "unit": "px" }, "spread": { "value": 0, "unit": "px" } },
+        { "color": "{color.default}", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 6, "unit": "px" }, "blur": { "value": 16, "unit": "px" }, "spread": { "value": -4, "unit": "px" } }
+      ],
+      "$extensions": { "com.meridian": { "usage": "popover、tooltip、floating panel" } }
+    },
+    "lg": {
+      "$description": "Toastや高い一時surface。",
+      "$value": [
+        { "color": "{color.soft}", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 4, "unit": "px" }, "blur": { "value": 8, "unit": "px" }, "spread": { "value": 0, "unit": "px" } },
+        { "color": "{color.strong}", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 12, "unit": "px" }, "blur": { "value": 32, "unit": "px" }, "spread": { "value": -8, "unit": "px" } }
+      ],
+      "$extensions": { "com.meridian": { "usage": "toast、high transient surface" } }
+    },
+    "overlay": {
+      "$description": "Dialog、Drawerなどmodal layer。",
+      "$value": [
+        { "color": "{color.soft}", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 8, "unit": "px" }, "blur": { "value": 16, "unit": "px" }, "spread": { "value": 0, "unit": "px" } },
+        { "color": "{color.overlay}", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 24, "unit": "px" }, "blur": { "value": 56, "unit": "px" }, "spread": { "value": -12, "unit": "px" } }
+      ],
+      "$extensions": { "com.meridian": { "usage": "dialog、drawer、modal overlay" } }
+    }
+  }
+}

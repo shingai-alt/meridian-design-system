@@ -1,0 +1,4612 @@
+{
+  "$description": "Meridian Design System tokens resolved for Light / High.",
+  "$extensions": {
+    "com.meridian": {
+      "specification": "DTCG 2025.10",
+      "generated": true,
+      "defaultSeed": "#5B5BD6",
+      "modifiers": {
+        "theme": "light",
+        "contrast": "high"
+      },
+      "resolutionOrder": [
+        "theme",
+        "contrast"
+      ]
+    }
+  },
+  "color": {
+    "$description": "Generated reference palettes and resolved semantic colors.",
+    "reference": {
+      "primary": {
+        "50": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.952941,
+              0.956863,
+              1
+            ],
+            "hex": "#f3f4ff"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.890196,
+              0.901961,
+              0.988235
+            ],
+            "hex": "#e3e6fc"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.784314,
+              0.807843,
+              0.972549
+            ],
+            "hex": "#c8cef8"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.65098,
+              0.682353,
+              0.945098
+            ],
+            "hex": "#a6aef1"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.513725,
+              0.545098,
+              0.909804
+            ],
+            "hex": "#838be8"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.4,
+              0.415686,
+              0.858824
+            ],
+            "hex": "#666adb"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.305882,
+              0.294118,
+              0.772549
+            ],
+            "hex": "#4e4bc5"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.223529,
+              0.192157,
+              0.631373
+            ],
+            "hex": "#3931a1"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.14902,
+              0.101961,
+              0.47451
+            ],
+            "hex": "#261a79"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.086275,
+              0.039216,
+              0.32549
+            ],
+            "hex": "#160a53"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.027451,
+              0.007843,
+              0.176471
+            ],
+            "hex": "#07022d"
+          }
+        },
+        "$type": "color",
+        "$description": "primary generated reference palette"
+      },
+      "secondary": {
+        "50": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.956863,
+              0.960784,
+              0.972549
+            ],
+            "hex": "#f4f5f8"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.901961,
+              0.905882,
+              0.933333
+            ],
+            "hex": "#e6e7ee"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.807843,
+              0.815686,
+              0.870588
+            ],
+            "hex": "#ced0de"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.686275,
+              0.701961,
+              0.784314
+            ],
+            "hex": "#afb3c8"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.560784,
+              0.576471,
+              0.694118
+            ],
+            "hex": "#8f93b1"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.45098,
+              0.470588,
+              0.607843
+            ],
+            "hex": "#73789b"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.345098,
+              0.364706,
+              0.509804
+            ],
+            "hex": "#585d82"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.254902,
+              0.270588,
+              0.396078
+            ],
+            "hex": "#414565"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.168627,
+              0.180392,
+              0.286275
+            ],
+            "hex": "#2b2e49"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.098039,
+              0.105882,
+              0.184314
+            ],
+            "hex": "#191b2f"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.035294,
+              0.039216,
+              0.086275
+            ],
+            "hex": "#090a16"
+          }
+        },
+        "$type": "color",
+        "$description": "secondary generated reference palette"
+      },
+      "accent": {
+        "50": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.980392,
+              0.94902,
+              0.984314
+            ],
+            "hex": "#faf2fb"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.945098,
+              0.886275,
+              0.956863
+            ],
+            "hex": "#f1e2f4"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.886275,
+              0.776471,
+              0.909804
+            ],
+            "hex": "#e2c6e8"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.811765,
+              0.635294,
+              0.847059
+            ],
+            "hex": "#cfa2d8"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.72549,
+              0.47451,
+              0.780392
+            ],
+            "hex": "#b979c7"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.639216,
+              0.333333,
+              0.705882
+            ],
+            "hex": "#a355b4"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.541176,
+              0.203922,
+              0.611765
+            ],
+            "hex": "#8a349c"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.423529,
+              0.101961,
+              0.486275
+            ],
+            "hex": "#6c1a7c"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.305882,
+              0.015686,
+              0.356863
+            ],
+            "hex": "#4e045b"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.196078,
+              0,
+              0.235294
+            ],
+            "hex": "#32003c"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.094118,
+              0,
+              0.113725
+            ],
+            "hex": "#18001d"
+          }
+        },
+        "$type": "color",
+        "$description": "accent generated reference palette"
+      },
+      "neutral": {
+        "0": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              1,
+              1
+            ],
+            "hex": "#ffffff"
+          }
+        },
+        "25": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.972549,
+              0.980392,
+              0.988235
+            ],
+            "hex": "#f8fafc"
+          }
+        },
+        "50": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.960784,
+              0.960784,
+              0.960784
+            ],
+            "hex": "#f5f5f5"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.905882,
+              0.909804,
+              0.909804
+            ],
+            "hex": "#e7e8e8"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.815686,
+              0.819608,
+              0.823529
+            ],
+            "hex": "#d0d1d2"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.701961,
+              0.705882,
+              0.709804
+            ],
+            "hex": "#b3b4b5"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.580392,
+              0.584314,
+              0.592157
+            ],
+            "hex": "#949597"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.47451,
+              0.478431,
+              0.486275
+            ],
+            "hex": "#797a7c"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.372549,
+              0.376471,
+              0.388235
+            ],
+            "hex": "#5f6063"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.27451,
+              0.282353,
+              0.290196
+            ],
+            "hex": "#46484a"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.184314,
+              0.188235,
+              0.196078
+            ],
+            "hex": "#2f3032"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.109804,
+              0.113725,
+              0.117647
+            ],
+            "hex": "#1c1d1e"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.043137,
+              0.043137,
+              0.047059
+            ],
+            "hex": "#0b0b0c"
+          }
+        },
+        "$type": "color",
+        "$description": "neutral generated reference palette"
+      },
+      "neutral-variant": {
+        "0": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              1,
+              1
+            ],
+            "hex": "#ffffff"
+          }
+        },
+        "25": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.972549,
+              0.976471,
+              1
+            ],
+            "hex": "#f8f9ff"
+          }
+        },
+        "50": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.960784,
+              0.960784,
+              0.964706
+            ],
+            "hex": "#f5f5f6"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.905882,
+              0.909804,
+              0.913725
+            ],
+            "hex": "#e7e8e9"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.815686,
+              0.819608,
+              0.827451
+            ],
+            "hex": "#d0d1d3"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.701961,
+              0.705882,
+              0.721569
+            ],
+            "hex": "#b3b4b8"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.580392,
+              0.584314,
+              0.607843
+            ],
+            "hex": "#94959b"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.47451,
+              0.478431,
+              0.505882
+            ],
+            "hex": "#797a81"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.372549,
+              0.376471,
+              0.403922
+            ],
+            "hex": "#5f6067"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.27451,
+              0.278431,
+              0.305882
+            ],
+            "hex": "#46474e"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.184314,
+              0.188235,
+              0.207843
+            ],
+            "hex": "#2f3035"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.109804,
+              0.113725,
+              0.129412
+            ],
+            "hex": "#1c1d21"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.043137,
+              0.043137,
+              0.05098
+            ],
+            "hex": "#0b0b0d"
+          }
+        },
+        "$type": "color",
+        "$description": "neutralVariant generated reference palette"
+      },
+      "success": {
+        "50": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.941176,
+              0.972549,
+              0.945098
+            ],
+            "hex": "#f0f8f1"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.866667,
+              0.929412,
+              0.878431
+            ],
+            "hex": "#ddede0"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.737255,
+              0.854902,
+              0.756863
+            ],
+            "hex": "#bcdac1"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.568627,
+              0.764706,
+              0.603922
+            ],
+            "hex": "#91c39a"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.368627,
+              0.662745,
+              0.439216
+            ],
+            "hex": "#5ea970"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.172549,
+              0.564706,
+              0.298039
+            ],
+            "hex": "#2c904c"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0.458824,
+              0.2
+            ],
+            "hex": "#007533"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0.341176,
+              0.141176
+            ],
+            "hex": "#005724"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0.235294,
+              0.090196
+            ],
+            "hex": "#003c17"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0.145098,
+              0.043137
+            ],
+            "hex": "#00250b"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0.062745,
+              0.011765
+            ],
+            "hex": "#001003"
+          }
+        },
+        "$type": "color",
+        "$description": "success generated reference palette"
+      },
+      "warning": {
+        "50": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.980392,
+              0.956863,
+              0.92549
+            ],
+            "hex": "#faf4ec"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.94902,
+              0.901961,
+              0.839216
+            ],
+            "hex": "#f2e6d6"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.898039,
+              0.803922,
+              0.67451
+            ],
+            "hex": "#e5cdac"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.831373,
+              0.678431,
+              0.470588
+            ],
+            "hex": "#d4ad78"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.752941,
+              0.537255,
+              0.2
+            ],
+            "hex": "#c08933"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.643137,
+              0.431373,
+              0
+            ],
+            "hex": "#a46e00"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.509804,
+              0.337255,
+              0
+            ],
+            "hex": "#825600"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.384314,
+              0.25098,
+              0
+            ],
+            "hex": "#624000"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.262745,
+              0.168627,
+              0
+            ],
+            "hex": "#432b00"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.164706,
+              0.098039,
+              0
+            ],
+            "hex": "#2a1900"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.07451,
+              0.035294,
+              0
+            ],
+            "hex": "#130900"
+          }
+        },
+        "$type": "color",
+        "$description": "warning generated reference palette"
+      },
+      "danger": {
+        "50": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              1,
+              0.94902,
+              0.941176
+            ],
+            "hex": "#fff2f0"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.984314,
+              0.882353,
+              0.870588
+            ],
+            "hex": "#fbe1de"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.960784,
+              0.764706,
+              0.741176
+            ],
+            "hex": "#f5c3bd"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.917647,
+              0.615686,
+              0.580392
+            ],
+            "hex": "#ea9d94"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.862745,
+              0.443137,
+              0.403922
+            ],
+            "hex": "#dc7167"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.792157,
+              0.286275,
+              0.254902
+            ],
+            "hex": "#ca4941"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.690196,
+              0.121569,
+              0.121569
+            ],
+            "hex": "#b01f1f"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.545098,
+              0,
+              0.039216
+            ],
+            "hex": "#8b000a"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.380392,
+              0,
+              0.019608
+            ],
+            "hex": "#610005"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.247059,
+              0,
+              0.007843
+            ],
+            "hex": "#3f0002"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.121569,
+              0,
+              0
+            ],
+            "hex": "#1f0000"
+          }
+        },
+        "$type": "color",
+        "$description": "danger generated reference palette"
+      },
+      "info": {
+        "50": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.941176,
+              0.964706,
+              0.992157
+            ],
+            "hex": "#f0f6fd"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.870588,
+              0.913725,
+              0.968627
+            ],
+            "hex": "#dee9f7"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.745098,
+              0.827451,
+              0.937255
+            ],
+            "hex": "#bed3ef"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.584314,
+              0.717647,
+              0.890196
+            ],
+            "hex": "#95b7e3"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.407843,
+              0.596078,
+              0.835294
+            ],
+            "hex": "#6898d5"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.254902,
+              0.486275,
+              0.772549
+            ],
+            "hex": "#417cc5"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.113725,
+              0.376471,
+              0.678431
+            ],
+            "hex": "#1d60ad"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0.27451,
+              0.54902
+            ],
+            "hex": "#00468c"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0.184314,
+              0.384314
+            ],
+            "hex": "#002f62"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0.109804,
+              0.25098
+            ],
+            "hex": "#001c40"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0.039216,
+              0.12549
+            ],
+            "hex": "#000a20"
+          }
+        },
+        "$type": "color",
+        "$description": "info generated reference palette"
+      }
+    },
+    "semantic": {
+      "$type": "color",
+      "$description": "UIの用途と状態を表すSemantic color tokens。",
+      "background": {
+        "$description": "ページ全体の最下層。アプリ背景",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "background",
+            "cssVariable": "--bg",
+            "usage": "アプリ背景"
+          }
+        }
+      },
+      "background-subtle": {
+        "$description": "背景の一段上。セクション背景・サイドバー",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.960784,
+            0.960784,
+            0.960784
+          ],
+          "hex": "#f5f5f5"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "background-subtle",
+            "cssVariable": "--bg-subtle",
+            "usage": "セクション背景・サイドバー"
+          }
+        }
+      },
+      "surface": {
+        "$description": "カード・パネルの標準面。Flat Card / Panel",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "surface",
+            "cssVariable": "--surface",
+            "usage": "Flat Card / Panel"
+          }
+        }
+      },
+      "surface-muted": {
+        "$description": "控えめな非操作面。Table header / Subtle section",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.960784,
+            0.960784,
+            0.960784
+          ],
+          "hex": "#f5f5f5"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "surface-muted",
+            "cssVariable": "--surface-muted",
+            "usage": "Table header / Subtle section"
+          }
+        }
+      },
+      "surface-sunken": {
+        "$description": "標準面より奥まった面。Well / Recessed region / Dark field",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.905882,
+            0.909804,
+            0.909804
+          ],
+          "hex": "#e7e8e8"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "surface-sunken",
+            "cssVariable": "--surface-sunken",
+            "usage": "Well / Recessed region / Dark field"
+          }
+        }
+      },
+      "surface-raised": {
+        "$description": "浮いた面。Dropdown / Hover card",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "surface-raised",
+            "cssVariable": "--surface-raised",
+            "usage": "Dropdown / Hover card"
+          }
+        }
+      },
+      "surface-overlay": {
+        "$description": "オーバーレイ面。Dialog / Popover",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "surface-overlay",
+            "cssVariable": "--surface-overlay",
+            "usage": "Dialog / Popover"
+          }
+        }
+      },
+      "surface-inverse": {
+        "$description": "反転面。Tooltip",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "hex": "#000000"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "surface-inverse",
+            "cssVariable": "--surface-inverse",
+            "usage": "Tooltip"
+          }
+        }
+      },
+      "control-background": {
+        "$description": "Neutral controlの通常面。Secondary Button / Neutral action",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "control-background",
+            "cssVariable": "--control-bg",
+            "usage": "Secondary Button / Neutral action"
+          }
+        }
+      },
+      "control-background-hover": {
+        "$description": "Neutral controlのhover面。Secondary Button hover",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.960784,
+            0.960784,
+            0.960784
+          ],
+          "hex": "#f5f5f5"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "control-background-hover",
+            "cssVariable": "--control-bg-hover",
+            "usage": "Secondary Button hover"
+          }
+        }
+      },
+      "control-background-active": {
+        "$description": "Neutral controlのpressed面。Secondary Button pressed",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.905882,
+            0.909804,
+            0.909804
+          ],
+          "hex": "#e7e8e8"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "control-background-active",
+            "cssVariable": "--control-bg-active",
+            "usage": "Secondary Button pressed"
+          }
+        }
+      },
+      "control-border": {
+        "$description": "Neutral controlの通常境界。Secondary Button boundary",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.039216,
+            0.039216,
+            0.058824
+          ],
+          "hex": "#0a0a0f"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "control-border",
+            "cssVariable": "--control-border",
+            "usage": "Secondary Button boundary"
+          }
+        }
+      },
+      "control-border-hover": {
+        "$description": "Neutral controlの強調境界。Secondary Button hover / pressed boundary",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.039216,
+            0.039216,
+            0.058824
+          ],
+          "hex": "#0a0a0f"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "control-border-hover",
+            "cssVariable": "--control-border-hover",
+            "usage": "Secondary Button hover / pressed boundary"
+          }
+        }
+      },
+      "foreground": {
+        "$description": "主要テキスト。見出し・本文",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.039216,
+            0.039216,
+            0.058824
+          ],
+          "hex": "#0a0a0f"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "foreground",
+            "cssVariable": "--fg",
+            "usage": "見出し・本文"
+          }
+        }
+      },
+      "foreground-muted": {
+        "$description": "補助テキスト。説明文・ラベル",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.184314,
+            0.188235,
+            0.196078
+          ],
+          "hex": "#2f3032"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "foreground-muted",
+            "cssVariable": "--fg-muted",
+            "usage": "説明文・ラベル"
+          }
+        }
+      },
+      "foreground-subtle": {
+        "$description": "弱いテキスト。placeholder・メタ情報",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.27451,
+            0.282353,
+            0.290196
+          ],
+          "hex": "#46484a"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "foreground-subtle",
+            "cssVariable": "--fg-subtle",
+            "usage": "placeholder・メタ情報"
+          }
+        }
+      },
+      "foreground-disabled": {
+        "$description": "無効テキスト。Disabled状態",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.47451,
+            0.478431,
+            0.486275
+          ],
+          "hex": "#797a7c"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "foreground-disabled",
+            "cssVariable": "--fg-disabled",
+            "usage": "Disabled状態"
+          }
+        }
+      },
+      "border": {
+        "$description": "標準の境界線。Card / Input / Divider",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.47451,
+            0.478431,
+            0.486275
+          ],
+          "hex": "#797a7c"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "border",
+            "cssVariable": "--border",
+            "usage": "Card / Input / Divider"
+          }
+        }
+      },
+      "border-muted": {
+        "$description": "弱い境界線。Table row / List",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.701961,
+            0.705882,
+            0.709804
+          ],
+          "hex": "#b3b4b5"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "border-muted",
+            "cssVariable": "--border-muted",
+            "usage": "Table row / List"
+          }
+        }
+      },
+      "border-strong": {
+        "$description": "強い境界線。Hover / 強調",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.184314,
+            0.188235,
+            0.196078
+          ],
+          "hex": "#2f3032"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "border-strong",
+            "cssVariable": "--border-strong",
+            "usage": "Hover / 強調"
+          }
+        }
+      },
+      "primary": {
+        "$description": "ブランド主要色。Primary button / Active",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.223529,
+            0.192157,
+            0.631373
+          ],
+          "hex": "#3931a1"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "primary",
+            "cssVariable": "--primary",
+            "usage": "Primary button / Active"
+          }
+        }
+      },
+      "primary-hover": {
+        "$description": "Primary hover。Button hover",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.14902,
+            0.101961,
+            0.47451
+          ],
+          "hex": "#261a79"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "primary-hover",
+            "cssVariable": "--primary-hover",
+            "usage": "Button hover"
+          }
+        }
+      },
+      "primary-active": {
+        "$description": "Primary active。Button pressed",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.086275,
+            0.039216,
+            0.32549
+          ],
+          "hex": "#160a53"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "primary-active",
+            "cssVariable": "--primary-active",
+            "usage": "Button pressed"
+          }
+        }
+      },
+      "primary-subtle": {
+        "$description": "Primary の淡い面。Selected bg / Tertiary btn",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.952941,
+            0.956863,
+            1
+          ],
+          "hex": "#f3f4ff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "primary-subtle",
+            "cssVariable": "--primary-subtle",
+            "usage": "Selected bg / Tertiary btn"
+          }
+        }
+      },
+      "primary-muted": {
+        "$description": "Primary の中間面。Avatar bg / Chip",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.890196,
+            0.901961,
+            0.988235
+          ],
+          "hex": "#e3e6fc"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "primary-muted",
+            "cssVariable": "--primary-muted",
+            "usage": "Avatar bg / Chip"
+          }
+        }
+      },
+      "primary-foreground": {
+        "$description": "Primary 上のテキスト。Button label",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "primary-foreground",
+            "cssVariable": "--primary-fg",
+            "usage": "Button label"
+          }
+        }
+      },
+      "secondary": {
+        "$description": "第二の色相。補助的なUI",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.254902,
+            0.270588,
+            0.396078
+          ],
+          "hex": "#414565"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "secondary",
+            "cssVariable": "--secondary",
+            "usage": "補助的なUI"
+          }
+        }
+      },
+      "secondary-hover": {
+        "$description": "Secondary hover。Secondary solid action hover",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.168627,
+            0.180392,
+            0.286275
+          ],
+          "hex": "#2b2e49"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "secondary-hover",
+            "cssVariable": "--secondary-hover",
+            "usage": "Secondary solid action hover"
+          }
+        }
+      },
+      "secondary-active": {
+        "$description": "Secondary active。Secondary solid action pressed",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.098039,
+            0.105882,
+            0.184314
+          ],
+          "hex": "#191b2f"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "secondary-active",
+            "cssVariable": "--secondary-active",
+            "usage": "Secondary solid action pressed"
+          }
+        }
+      },
+      "secondary-on-solid": {
+        "$description": "secondary の solid 背景の上の文字色。secondary ボタンの label(solid背景時)",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "secondary-on-solid",
+            "cssVariable": "--secondary-on-solid",
+            "usage": "secondary ボタンの label(solid背景時)"
+          }
+        }
+      },
+      "accent": {
+        "$description": "ブランド識別用アクセント色。ロゴマーク・アバターなどの識別表現",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.423529,
+            0.101961,
+            0.486275
+          ],
+          "hex": "#6c1a7c"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "accent",
+            "cssVariable": "--accent",
+            "usage": "ロゴマーク・アバターなどの識別表現"
+          }
+        }
+      },
+      "accent-hover": {
+        "$description": "Accent hover。ブランド識別要素が操作可能な場合のhover",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.305882,
+            0.015686,
+            0.356863
+          ],
+          "hex": "#4e045b"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "accent-hover",
+            "cssVariable": "--accent-hover",
+            "usage": "ブランド識別要素が操作可能な場合のhover"
+          }
+        }
+      },
+      "accent-active": {
+        "$description": "Accent active。ブランド識別要素が操作可能な場合のpressed",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.196078,
+            0,
+            0.235294
+          ],
+          "hex": "#32003c"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "accent-active",
+            "cssVariable": "--accent-active",
+            "usage": "ブランド識別要素が操作可能な場合のpressed"
+          }
+        }
+      },
+      "accent-on-solid": {
+        "$description": "accent の solid 背景の上の文字色。ロゴマーク・アバターの文字色",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "accent-on-solid",
+            "cssVariable": "--accent-on-solid",
+            "usage": "ロゴマーク・アバターの文字色"
+          }
+        }
+      },
+      "success": {
+        "$description": "成功。完了・正常",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0.341176,
+            0.141176
+          ],
+          "hex": "#005724"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "success",
+            "cssVariable": "--success",
+            "usage": "完了・正常"
+          }
+        }
+      },
+      "success-subtle": {
+        "$description": "成功の淡い面。Alert / Badge bg",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.941176,
+            0.972549,
+            0.945098
+          ],
+          "hex": "#f0f8f1"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "success-subtle",
+            "cssVariable": "--success-subtle",
+            "usage": "Alert / Badge bg"
+          }
+        }
+      },
+      "success-foreground": {
+        "$description": "成功テキスト(subtle背景の上)。Badge / Alert text",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0.235294,
+            0.090196
+          ],
+          "hex": "#003c17"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "success-foreground",
+            "cssVariable": "--success-fg",
+            "usage": "Badge / Alert text"
+          }
+        }
+      },
+      "success-on-solid": {
+        "$description": "success の solid 背景の上の文字色。success ボタンの label(solid背景時)",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "success-on-solid",
+            "cssVariable": "--success-on-solid",
+            "usage": "success ボタンの label(solid背景時)"
+          }
+        }
+      },
+      "warning": {
+        "$description": "警告。注意喚起",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.509804,
+            0.337255,
+            0
+          ],
+          "hex": "#825600"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "warning",
+            "cssVariable": "--warning",
+            "usage": "注意喚起"
+          }
+        }
+      },
+      "warning-subtle": {
+        "$description": "警告の淡い面。Banner bg",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.980392,
+            0.956863,
+            0.92549
+          ],
+          "hex": "#faf4ec"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "warning-subtle",
+            "cssVariable": "--warning-subtle",
+            "usage": "Banner bg"
+          }
+        }
+      },
+      "warning-foreground": {
+        "$description": "警告テキスト(subtle背景の上)。Banner text",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.262745,
+            0.168627,
+            0
+          ],
+          "hex": "#432b00"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "warning-foreground",
+            "cssVariable": "--warning-fg",
+            "usage": "Banner text"
+          }
+        }
+      },
+      "warning-on-solid": {
+        "$description": "warning の solid 背景の上の文字色。warning ボタンの label(solid背景時)",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "warning-on-solid",
+            "cssVariable": "--warning-on-solid",
+            "usage": "warning ボタンの label(solid背景時)"
+          }
+        }
+      },
+      "danger": {
+        "$description": "危険・破壊的。削除・エラー",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.545098,
+            0,
+            0.039216
+          ],
+          "hex": "#8b000a"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "danger",
+            "cssVariable": "--danger",
+            "usage": "削除・エラー"
+          }
+        }
+      },
+      "danger-subtle": {
+        "$description": "危険の淡い面。Error alert bg",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            0.94902,
+            0.941176
+          ],
+          "hex": "#fff2f0"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "danger-subtle",
+            "cssVariable": "--danger-subtle",
+            "usage": "Error alert bg"
+          }
+        }
+      },
+      "danger-foreground": {
+        "$description": "危険テキスト(subtle背景の上)。Error text",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.380392,
+            0,
+            0.019608
+          ],
+          "hex": "#610005"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "danger-foreground",
+            "cssVariable": "--danger-fg",
+            "usage": "Error text"
+          }
+        }
+      },
+      "danger-on-solid": {
+        "$description": "danger の solid 背景の上の文字色。danger ボタンの label(solid背景時)",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "danger-on-solid",
+            "cssVariable": "--danger-on-solid",
+            "usage": "danger ボタンの label(solid背景時)"
+          }
+        }
+      },
+      "info": {
+        "$description": "情報。ヒント・通知",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0.27451,
+            0.54902
+          ],
+          "hex": "#00468c"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "info",
+            "cssVariable": "--info",
+            "usage": "ヒント・通知"
+          }
+        }
+      },
+      "info-subtle": {
+        "$description": "情報の淡い面。Info alert bg",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.941176,
+            0.964706,
+            0.992157
+          ],
+          "hex": "#f0f6fd"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "info-subtle",
+            "cssVariable": "--info-subtle",
+            "usage": "Info alert bg"
+          }
+        }
+      },
+      "info-foreground": {
+        "$description": "情報テキスト(subtle背景の上)。Info text",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0.184314,
+            0.384314
+          ],
+          "hex": "#002f62"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "info-foreground",
+            "cssVariable": "--info-fg",
+            "usage": "Info text"
+          }
+        }
+      },
+      "info-on-solid": {
+        "$description": "info の solid 背景の上の文字色。info ボタンの label(solid背景時)",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "info-on-solid",
+            "cssVariable": "--info-on-solid",
+            "usage": "info ボタンの label(solid背景時)"
+          }
+        }
+      },
+      "chart-1": {
+        "$description": "カテゴリチャート色1。最初のカテゴリ系列",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.376471,
+            0.380392,
+            0.866667
+          ],
+          "hex": "#6061dd"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "chart-1",
+            "cssVariable": "--chart-1",
+            "usage": "最初のカテゴリ系列"
+          }
+        }
+      },
+      "chart-2": {
+        "$description": "カテゴリチャート色2。2番目のカテゴリ系列",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.607843,
+            0.290196,
+            0.745098
+          ],
+          "hex": "#9b4abe"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "chart-2",
+            "cssVariable": "--chart-2",
+            "usage": "2番目のカテゴリ系列"
+          }
+        }
+      },
+      "chart-3": {
+        "$description": "カテゴリチャート色3。3番目のカテゴリ系列",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.764706,
+            0.211765,
+            0.45098
+          ],
+          "hex": "#c33673"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "chart-3",
+            "cssVariable": "--chart-3",
+            "usage": "3番目のカテゴリ系列"
+          }
+        }
+      },
+      "chart-4": {
+        "$description": "カテゴリチャート色4。4番目のカテゴリ系列",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.643137,
+            0.388235,
+            0
+          ],
+          "hex": "#a46300"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "chart-4",
+            "cssVariable": "--chart-4",
+            "usage": "4番目のカテゴリ系列"
+          }
+        }
+      },
+      "chart-5": {
+        "$description": "カテゴリチャート色5。5番目のカテゴリ系列",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.443137,
+            0.490196,
+            0
+          ],
+          "hex": "#717d00"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "chart-5",
+            "cssVariable": "--chart-5",
+            "usage": "5番目のカテゴリ系列"
+          }
+        }
+      },
+      "chart-6": {
+        "$description": "カテゴリチャート色6。6番目のカテゴリ系列",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0.529412,
+            0.466667
+          ],
+          "hex": "#008777"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "chart-6",
+            "cssVariable": "--chart-6",
+            "usage": "6番目のカテゴリ系列"
+          }
+        }
+      },
+      "chart-fg-1": {
+        "$description": "chart-1 の上の文字色。カテゴリアイコン・凡例ラベル",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "chart-fg-1",
+            "cssVariable": "--chart-fg-1",
+            "usage": "カテゴリアイコン・凡例ラベル"
+          }
+        }
+      },
+      "chart-fg-2": {
+        "$description": "chart-2 の上の文字色。カテゴリアイコン・凡例ラベル",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "chart-fg-2",
+            "cssVariable": "--chart-fg-2",
+            "usage": "カテゴリアイコン・凡例ラベル"
+          }
+        }
+      },
+      "chart-fg-3": {
+        "$description": "chart-3 の上の文字色。カテゴリアイコン・凡例ラベル",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "chart-fg-3",
+            "cssVariable": "--chart-fg-3",
+            "usage": "カテゴリアイコン・凡例ラベル"
+          }
+        }
+      },
+      "chart-fg-4": {
+        "$description": "chart-4 の上の文字色。カテゴリアイコン・凡例ラベル",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "chart-fg-4",
+            "cssVariable": "--chart-fg-4",
+            "usage": "カテゴリアイコン・凡例ラベル"
+          }
+        }
+      },
+      "chart-fg-5": {
+        "$description": "chart-5 の上の文字色。カテゴリアイコン・凡例ラベル",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "chart-fg-5",
+            "cssVariable": "--chart-fg-5",
+            "usage": "カテゴリアイコン・凡例ラベル"
+          }
+        }
+      },
+      "chart-fg-6": {
+        "$description": "chart-6 の上の文字色。カテゴリアイコン・凡例ラベル",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "chart-fg-6",
+            "cssVariable": "--chart-fg-6",
+            "usage": "カテゴリアイコン・凡例ラベル"
+          }
+        }
+      },
+      "focus-ring": {
+        "$description": "フォーカスリング。キーボードフォーカス",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.039216,
+            0.039216,
+            0.058824
+          ],
+          "hex": "#0a0a0f"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "focus-ring",
+            "cssVariable": "--focus-ring",
+            "usage": "キーボードフォーカス"
+          }
+        }
+      },
+      "selection": {
+        "$description": "テキスト選択。::selection",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.890196,
+            0.901961,
+            0.988235
+          ],
+          "hex": "#e3e6fc"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "selection",
+            "cssVariable": "--selection",
+            "usage": "::selection"
+          }
+        }
+      },
+      "highlight": {
+        "$description": "ハイライト。検索一致など",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.94902,
+            0.901961,
+            0.839216
+          ],
+          "hex": "#f2e6d6"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "highlight",
+            "cssVariable": "--highlight",
+            "usage": "検索一致など"
+          }
+        }
+      },
+      "disabled": {
+        "$description": "無効UI面。Disabled control",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.580392,
+            0.584314,
+            0.592157
+          ],
+          "hex": "#949597"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "disabled",
+            "cssVariable": "--disabled",
+            "usage": "Disabled control"
+          }
+        }
+      },
+      "overlay": {
+        "$description": "汎用オーバーレイ。画像上の暗幕",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.043137,
+            0.043137,
+            0.047059
+          ],
+          "hex": "#0b0b0c",
+          "alpha": 0.6
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "overlay",
+            "cssVariable": "--overlay",
+            "usage": "画像上の暗幕"
+          }
+        }
+      },
+      "scrim": {
+        "$description": "モーダル背景。Dialog scrim",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.043137,
+            0.043137,
+            0.047059
+          ],
+          "hex": "#0b0b0c",
+          "alpha": 0.5
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "scrim",
+            "cssVariable": "--scrim",
+            "usage": "Dialog scrim"
+          }
+        }
+      }
+    }
+  },
+  "spacing": {
+    "0": {
+      "$description": "余白を明示的に取り除く。",
+      "$value": {
+        "value": 0,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "resetとedge alignment"
+        }
+      }
+    },
+    "1": {
+      "$description": "密接した要素の最小gap。",
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "icon内部・密接したmetadata"
+        }
+      }
+    },
+    "2": {
+      "$description": "関連するcontrolやinline要素の標準gap。",
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "inline group・iconとlabel"
+        }
+      }
+    },
+    "3": {
+      "$description": "小groupとcompact containerの標準gap。",
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "small group・compact card"
+        }
+      }
+    },
+    "4": {
+      "$description": "component内paddingとform field間の標準値。",
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "component padding・form gap"
+        }
+      }
+    },
+    "5": {
+      "$description": "comfortable componentのpadding。",
+      "$value": {
+        "value": 20,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "comfortable container"
+        }
+      }
+    },
+    "6": {
+      "$description": "page gutterと大きなcomponent group。",
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "page padding・large group"
+        }
+      }
+    },
+    "8": {
+      "$description": "section内の大きな区切り。",
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "section gap"
+        }
+      }
+    },
+    "10": {
+      "$description": "独立したcontent block間の余白。",
+      "$value": {
+        "value": 40,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "content block separation"
+        }
+      }
+    },
+    "12": {
+      "$description": "page section間の余白。",
+      "$value": {
+        "value": 48,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "page section"
+        }
+      }
+    },
+    "15": {
+      "$description": "compact UIの補助step。",
+      "$value": {
+        "value": 6,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "compact controlの内部gap"
+        }
+      }
+    },
+    "16": {
+      "$description": "大きなpage region間の余白。",
+      "$value": {
+        "value": 64,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "major region"
+        }
+      }
+    },
+    "20": {
+      "$description": "広いviewportのmajor region間隔。",
+      "$value": {
+        "value": 80,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "wide layout region"
+        }
+      }
+    },
+    "24": {
+      "$description": "独立したheroまたはlarge empty region。",
+      "$value": {
+        "value": 96,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "large regionのみ"
+        }
+      }
+    },
+    "25": {
+      "$description": "compact componentのpadding補助step。",
+      "$value": {
+        "value": 10,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "compact control padding"
+        }
+      }
+    },
+    "$type": "dimension",
+    "05": {
+      "$description": "borderやiconの光学調整に限るhalf step。",
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "optical adjustmentのみ"
+        }
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "none": {
+      "$description": "直線edgeまたは隣接面の連結。",
+      "$value": {
+        "value": 0,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "table cell、divider、connected edge"
+        }
+      }
+    },
+    "2xs": {
+      "$description": "code chipや極小indicator。",
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "code、focus clipping補助"
+        }
+      }
+    },
+    "xs": {
+      "$description": "小型controlとtable内highlight。",
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "xs control、table row state"
+        }
+      }
+    },
+    "sm": {
+      "$description": "標準controlのshape。",
+      "$value": {
+        "value": 6,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "button、input、navigation item"
+        }
+      }
+    },
+    "md": {
+      "$description": "静的なcontainerとcardの上限。",
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "card、panel、tile、framed tool"
+        }
+      }
+    },
+    "lg": {
+      "$description": "小さなfloating surface。",
+      "$value": {
+        "value": 10,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "menu、popover、tooltip surface"
+        }
+      }
+    },
+    "xl": {
+      "$description": "Dialogと大きなinput surface。",
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "dialog、command menu、prompt input"
+        }
+      }
+    },
+    "2xl": {
+      "$description": "独立したhero mediaまたはlarge showcase。",
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "hero mediaのみ"
+        }
+      }
+    },
+    "full": {
+      "$description": "円形またはcontent長に依存するpill。",
+      "$value": {
+        "value": 999,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.meridian": {
+          "usage": "avatar、status dot、badge pill"
+        }
+      }
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$description": "ごく短いcolor/border feedback。Focus indicatorにはtransitionを使わない。",
+        "$value": {
+          "value": 50,
+          "unit": "ms"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "hover、pressed color feedback"
+          }
+        }
+      },
+      "fast": {
+        "$description": "Controlのmicro-interaction。",
+        "$value": {
+          "value": 120,
+          "unit": "ms"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "button、input、toggle state"
+          }
+        }
+      },
+      "normal": {
+        "$description": "小さなsurfaceのenter/exitとdisclosure。",
+        "$value": {
+          "value": 180,
+          "unit": "ms"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "menu、popover、toast、collapse"
+          }
+        }
+      },
+      "slow": {
+        "$description": "大きなoverlayまたは長いdistanceのtransition。",
+        "$value": {
+          "value": 240,
+          "unit": "ms"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "dialog、drawer、large expansion"
+          }
+        }
+      },
+      "slower": {
+        "$description": "Page-level continuityが必要な限定transition。",
+        "$value": {
+          "value": 320,
+          "unit": "ms"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "rare page-level transition only"
+          }
+        }
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$description": "開始から終了まで見えているstate change。",
+        "$value": [
+          0.2,
+          0,
+          0,
+          1
+        ],
+        "$extensions": {
+          "com.meridian": {
+            "usage": "state change、expansion"
+          }
+        }
+      },
+      "enter": {
+        "$description": "素早く現れ、停止へ減速する。",
+        "$value": [
+          0,
+          0,
+          0.2,
+          1
+        ],
+        "$extensions": {
+          "com.meridian": {
+            "usage": "surface enter"
+          }
+        }
+      },
+      "exit": {
+        "$description": "画面外へ加速して消える。",
+        "$value": [
+          0.4,
+          0,
+          1,
+          1
+        ],
+        "$extensions": {
+          "com.meridian": {
+            "usage": "surface exit; enterより短くする"
+          }
+        }
+      },
+      "emphasized": {
+        "$description": "重要な一度限りのsystem feedback。反復操作には使わない。",
+        "$value": [
+          0.2,
+          0,
+          0,
+          1
+        ],
+        "$extensions": {
+          "com.meridian": {
+            "usage": "rare system feedback; bounce禁止"
+          }
+        }
+      }
+    },
+    "distance": {
+      "$type": "dimension",
+      "none": {
+        "$description": "Spatial movementを使わない。",
+        "$value": {
+          "value": 0,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "color/opacity-only feedback"
+          }
+        }
+      },
+      "sm": {
+        "$description": "近接surfaceのenter/exit距離。",
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "menu、popover、dialog"
+          }
+        }
+      },
+      "md": {
+        "$description": "Drawerなど方向が意味を持つ大きなsurfaceの上限。",
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "drawer、page continuity"
+          }
+        }
+      }
+    }
+  },
+  "layout": {
+    "font": {
+      "$type": "fontFamily",
+      "sans": {
+        "$description": "Web UIとreading contentのsans-serif stack。",
+        "$value": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ]
+      },
+      "mono": {
+        "$description": "Codeと比較する数値のmonospace stack。",
+        "$value": [
+          "JetBrains Mono",
+          "Geist Mono",
+          "IBM Plex Mono",
+          "ui-monospace",
+          "SFMono-Regular",
+          "monospace"
+        ]
+      }
+    },
+    "dimension": {
+      "$type": "dimension",
+      "sidebar-w": {
+        "$description": "常設navigation railの幅。",
+        "$value": {
+          "value": 264,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "desktop app shell sidebar"
+          }
+        }
+      },
+      "sidebar-w-collapsed": {
+        "$description": "navigationを完全に閉じたときのgrid track。",
+        "$value": {
+          "value": 0,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "collapsed shell track"
+          }
+        }
+      },
+      "topbar-h": {
+        "$description": "global top barの高さ。",
+        "$value": {
+          "value": 52,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "sticky top bar"
+          }
+        }
+      },
+      "content-max": {
+        "$description": "標準documentationとform contentの最大幅。",
+        "$value": {
+          "value": 880,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "standard content region"
+          }
+        }
+      },
+      "content-wide": {
+        "$description": "table、dashboard、galleryなどwide contentの最大幅。",
+        "$value": {
+          "value": 1280,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "wide data region"
+          }
+        }
+      },
+      "reading-max": {
+        "$description": "複数段落のreading measure上限。",
+        "$value": {
+          "value": 640,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "reading text and callout"
+          }
+        }
+      },
+      "toc-w": {
+        "$description": "On this page navigationの幅。",
+        "$value": {
+          "value": 200,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "documentation table of contents"
+          }
+        }
+      },
+      "page-pad-inline": {
+        "$description": "標準pageのinline gutter。",
+        "$value": "{spacing.6}",
+        "$extensions": {
+          "com.meridian": {
+            "usage": "page inline padding"
+          }
+        }
+      },
+      "page-pad-block": {
+        "$description": "標準pageの開始側block gutter。",
+        "$value": "{spacing.8}",
+        "$extensions": {
+          "com.meridian": {
+            "usage": "page block padding"
+          }
+        }
+      },
+      "section-gap": {
+        "$description": "同一page内の主要section間隔。",
+        "$value": "{spacing.8}",
+        "$extensions": {
+          "com.meridian": {
+            "usage": "major section separation"
+          }
+        }
+      },
+      "dialog-w-sm": {
+        "$description": "確認など短いdialogの上限幅。",
+        "$value": {
+          "value": 400,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "short confirmation dialog"
+          }
+        }
+      },
+      "dialog-w-md": {
+        "$description": "標準dialogの上限幅。",
+        "$value": {
+          "value": 480,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "standard dialog"
+          }
+        }
+      },
+      "dialog-w-lg": {
+        "$description": "複数fieldを含むdialogの上限幅。",
+        "$value": {
+          "value": 640,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "large form dialog"
+          }
+        }
+      },
+      "drawer-w": {
+        "$description": "side drawerの標準幅。",
+        "$value": {
+          "value": 420,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "detail and edit drawer"
+          }
+        }
+      },
+      "command-w": {
+        "$description": "command menuの上限幅。",
+        "$value": {
+          "value": 560,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "command menu and compact tool"
+          }
+        }
+      },
+      "focus-w": {
+        "$description": "standard contrastでのfocus indicator幅。contrast modifierがhigh時に上書きする。",
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "legacy location; accessibility sourceへ移行予定"
+          }
+        }
+      }
+    },
+    "breakpoint": {
+      "$type": "dimension",
+      "column-stack-max": {
+        "$description": "generic multi-column compositionを1 columnへstackする上限。",
+        "$value": {
+          "value": 600,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "content composition, not device detection"
+          }
+        }
+      },
+      "navigation-overlay-max": {
+        "$description": "常設sidebarをoverlay navigationへ切り替える上限。",
+        "$value": {
+          "value": 900,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "app shell navigation"
+          }
+        }
+      },
+      "toc-hide-max": {
+        "$description": "補助TOCを隠してmain contentを優先する上限。",
+        "$value": {
+          "value": 1080,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "documentation shell"
+          }
+        }
+      }
+    }
+  },
+  "typography": {
+    "$type": "typography",
+    "display": {
+      "$description": "ページやproductの最上位タイトル。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 1.75,
+          "unit": "rem"
+        },
+        "fontWeight": 650,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.2
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Display",
+          "usage": "ページタイトル・product title"
+        }
+      }
+    },
+    "h1": {
+      "$description": "画面の主見出し。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 1.5,
+          "unit": "rem"
+        },
+        "fontWeight": 650,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.25
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Heading 1",
+          "usage": "画面見出し"
+        }
+      }
+    },
+    "h2": {
+      "$description": "大きなsectionの見出し。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 1.1875,
+          "unit": "rem"
+        },
+        "fontWeight": 600,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.3
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Heading 2",
+          "usage": "section見出し"
+        }
+      }
+    },
+    "h3": {
+      "$description": "小sectionやcard groupの見出し。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 1,
+          "unit": "rem"
+        },
+        "fontWeight": 600,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.4
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Heading 3",
+          "usage": "小section・card見出し"
+        }
+      }
+    },
+    "h4": {
+      "$description": "compactなpanel内の見出し。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "fontWeight": 600,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.4
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Heading 4",
+          "usage": "compact panel見出し"
+        }
+      }
+    },
+    "h5": {
+      "$description": "labelに近い最小見出し。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 0.8125,
+          "unit": "rem"
+        },
+        "fontWeight": 600,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.4
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Heading 5",
+          "usage": "label的見出し"
+        }
+      }
+    },
+    "reading": {
+      "$description": "複数paragraphを読む本文。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 1,
+          "unit": "rem"
+        },
+        "fontWeight": 400,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.65
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Reading",
+          "usage": "長文・help・documentation"
+        }
+      }
+    },
+    "body-lg": {
+      "$description": "短いlead文や余裕のある設定画面。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 0.9375,
+          "unit": "rem"
+        },
+        "fontWeight": 400,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.6
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Body Large",
+          "usage": "lead文・設定画面"
+        }
+      }
+    },
+    "body": {
+      "$description": "標準の短いUI本文。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "fontWeight": 400,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.55
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Body",
+          "usage": "標準UI本文"
+        }
+      }
+    },
+    "body-sm": {
+      "$description": "短い補助説明。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 0.8125,
+          "unit": "rem"
+        },
+        "fontWeight": 400,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.5
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Body Small",
+          "usage": "補助説明"
+        }
+      }
+    },
+    "label-lg": {
+      "$description": "大きなcontrolのlabel。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "fontWeight": 550,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.4
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Label Large",
+          "usage": "large control label"
+        }
+      }
+    },
+    "label": {
+      "$description": "標準controlとformのlabel。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 0.8125,
+          "unit": "rem"
+        },
+        "fontWeight": 550,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.4
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Label",
+          "usage": "button・form label"
+        }
+      }
+    },
+    "label-sm": {
+      "$description": "compact controlのlabel。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 0.75,
+          "unit": "rem"
+        },
+        "fontWeight": 550,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.4
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Label Small",
+          "usage": "tab・small control"
+        }
+      }
+    },
+    "caption": {
+      "$description": "短いmetadata。重要情報には使わない。",
+      "$value": {
+        "fontFamily": [
+          "Inter",
+          "Noto Sans JP",
+          "Hiragino Sans",
+          "Yu Gothic",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": {
+          "value": 0.6875,
+          "unit": "rem"
+        },
+        "fontWeight": 500,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.4
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Caption",
+          "usage": "metadata・timestamp"
+        }
+      }
+    },
+    "code": {
+      "$description": "code blockの標準本文。",
+      "$value": {
+        "fontFamily": [
+          "JetBrains Mono",
+          "Geist Mono",
+          "IBM Plex Mono",
+          "ui-monospace",
+          "monospace"
+        ],
+        "fontSize": {
+          "value": 0.8125,
+          "unit": "rem"
+        },
+        "fontWeight": 400,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.6
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Code",
+          "usage": "code block"
+        }
+      }
+    },
+    "code-sm": {
+      "$description": "密度の高いlogやdiff。",
+      "$value": {
+        "fontFamily": [
+          "JetBrains Mono",
+          "Geist Mono",
+          "IBM Plex Mono",
+          "ui-monospace",
+          "monospace"
+        ],
+        "fontSize": {
+          "value": 0.71875,
+          "unit": "rem"
+        },
+        "fontWeight": 400,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.6
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Code Small",
+          "usage": "log・diff"
+        }
+      }
+    },
+    "numeric": {
+      "$description": "比較するtabular numeric data。",
+      "$value": {
+        "fontFamily": [
+          "JetBrains Mono",
+          "Geist Mono",
+          "IBM Plex Mono",
+          "ui-monospace",
+          "monospace"
+        ],
+        "fontSize": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "fontWeight": 500,
+        "letterSpacing": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "lineHeight": 1.4
+      },
+      "$extensions": {
+        "com.meridian": {
+          "label": "Numeric",
+          "usage": "table数値・metric"
+        }
+      }
+    }
+  },
+  "density": {
+    "default": {
+      "ctl-xs": {
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "ctl-sm": {
+        "$value": {
+          "value": 28,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "ctl-md": {
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "ctl-lg": {
+        "$value": {
+          "value": 38,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "ctl-xl": {
+        "$value": {
+          "value": 44,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "text-body": {
+        "$value": {
+          "value": 14,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "text-label": {
+        "$value": {
+          "value": 13,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "text-small": {
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "text-micro": {
+        "$value": {
+          "value": 11,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "lh-normal": {
+        "$value": 1.55,
+        "$type": "number"
+      },
+      "lh-tight": {
+        "$value": 1.4,
+        "$type": "number"
+      },
+      "row-h": {
+        "$value": {
+          "value": 40,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "cell-y": {
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "card-pad": {
+        "$value": "{spacing.4}",
+        "$type": "dimension"
+      },
+      "gap-form": {
+        "$value": "{spacing.4}",
+        "$type": "dimension"
+      },
+      "input-x": {
+        "$value": {
+          "value": 10,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      }
+    },
+    "compact": {
+      "ctl-xs": {
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "ctl-sm": {
+        "$value": {
+          "value": 26,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "ctl-md": {
+        "$value": {
+          "value": 28,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "ctl-lg": {
+        "$value": {
+          "value": 34,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "ctl-xl": {
+        "$value": {
+          "value": 40,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "text-body": {
+        "$value": {
+          "value": 13,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "text-label": {
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "text-small": {
+        "$value": {
+          "value": 11,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "text-micro": {
+        "$value": {
+          "value": 10,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "lh-normal": {
+        "$value": 1.45,
+        "$type": "number"
+      },
+      "lh-tight": {
+        "$value": 1.3,
+        "$type": "number"
+      },
+      "row-h": {
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "cell-y": {
+        "$value": {
+          "value": 5,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "card-pad": {
+        "$value": "{spacing.3}",
+        "$type": "dimension"
+      },
+      "gap-form": {
+        "$value": "{spacing.3}",
+        "$type": "dimension"
+      },
+      "input-x": {
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      }
+    },
+    "comfortable": {
+      "ctl-xs": {
+        "$value": {
+          "value": 26,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "ctl-sm": {
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "ctl-md": {
+        "$value": {
+          "value": 36,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "ctl-lg": {
+        "$value": {
+          "value": 42,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "ctl-xl": {
+        "$value": {
+          "value": 48,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "text-body": {
+        "$value": {
+          "value": 15,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "text-label": {
+        "$value": {
+          "value": 14,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "text-small": {
+        "$value": {
+          "value": 13,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "text-micro": {
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "lh-normal": {
+        "$value": 1.65,
+        "$type": "number"
+      },
+      "lh-tight": {
+        "$value": 1.5,
+        "$type": "number"
+      },
+      "row-h": {
+        "$value": {
+          "value": 48,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "cell-y": {
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "card-pad": {
+        "$value": "{spacing.5}",
+        "$type": "dimension"
+      },
+      "gap-form": {
+        "$value": "{spacing.5}",
+        "$type": "dimension"
+      },
+      "input-x": {
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      }
+    }
+  },
+  "shadow": {
+    "color": {
+      "$type": "color",
+      "soft": {
+        "$description": "最も近いambient shadow color。",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.04,
+            0.04,
+            0.06
+          ],
+          "alpha": 0.05
+        },
+        "$extensions": {
+          "com.meridian": {
+            "modes": {
+              "dark": {
+                "colorSpace": "srgb",
+                "components": [
+                  0,
+                  0,
+                  0
+                ],
+                "alpha": 0.24
+              }
+            }
+          }
+        }
+      },
+      "default": {
+        "$description": "標準floating surfaceのshadow color。",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.04,
+            0.04,
+            0.06
+          ],
+          "alpha": 0.08
+        },
+        "$extensions": {
+          "com.meridian": {
+            "modes": {
+              "dark": {
+                "colorSpace": "srgb",
+                "components": [
+                  0,
+                  0,
+                  0
+                ],
+                "alpha": 0.32
+              }
+            }
+          }
+        }
+      },
+      "strong": {
+        "$description": "高いfloating surfaceのshadow color。",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.04,
+            0.04,
+            0.06
+          ],
+          "alpha": 0.13
+        },
+        "$extensions": {
+          "com.meridian": {
+            "modes": {
+              "dark": {
+                "colorSpace": "srgb",
+                "components": [
+                  0,
+                  0,
+                  0
+                ],
+                "alpha": 0.42
+              }
+            }
+          }
+        }
+      },
+      "overlay": {
+        "$description": "Modalと最上位overlayのshadow color。",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.04,
+            0.04,
+            0.06
+          ],
+          "alpha": 0.22
+        },
+        "$extensions": {
+          "com.meridian": {
+            "modes": {
+              "dark": {
+                "colorSpace": "srgb",
+                "components": [
+                  0,
+                  0,
+                  0
+                ],
+                "alpha": 0.58
+              }
+            }
+          }
+        }
+      }
+    },
+    "level": {
+      "$type": "shadow",
+      "xs": {
+        "$description": "Controlまたはごく小さな一時surfaceの触感。",
+        "$value": {
+          "color": "{shadow.color.soft}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 1,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 2,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "control tactile cue、small transient surface"
+          }
+        }
+      },
+      "sm": {
+        "$description": "Dropdown、Menuなど近いoverlay。",
+        "$value": [
+          {
+            "color": "{shadow.color.soft}",
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 2,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          {
+            "color": "{shadow.color.default}",
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 2,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 6,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -1,
+              "unit": "px"
+            }
+          }
+        ],
+        "$extensions": {
+          "com.meridian": {
+            "usage": "dropdown、menu、calendar popover"
+          }
+        }
+      },
+      "md": {
+        "$description": "Popover、Tooltipなど明確に重なるsurface。",
+        "$value": [
+          {
+            "color": "{shadow.color.soft}",
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 2,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 4,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          {
+            "color": "{shadow.color.default}",
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 6,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 16,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -4,
+              "unit": "px"
+            }
+          }
+        ],
+        "$extensions": {
+          "com.meridian": {
+            "usage": "popover、tooltip、floating panel"
+          }
+        }
+      },
+      "lg": {
+        "$description": "Toastや高い一時surface。",
+        "$value": [
+          {
+            "color": "{shadow.color.soft}",
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 4,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 8,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          {
+            "color": "{shadow.color.strong}",
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 12,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 32,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -8,
+              "unit": "px"
+            }
+          }
+        ],
+        "$extensions": {
+          "com.meridian": {
+            "usage": "toast、high transient surface"
+          }
+        }
+      },
+      "overlay": {
+        "$description": "Dialog、Drawerなどmodal layer。",
+        "$value": [
+          {
+            "color": "{shadow.color.soft}",
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 8,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 16,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          {
+            "color": "{shadow.color.overlay}",
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 24,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 56,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -12,
+              "unit": "px"
+            }
+          }
+        ],
+        "$extensions": {
+          "com.meridian": {
+            "usage": "dialog、drawer、modal overlay"
+          }
+        }
+      }
+    }
+  },
+  "component": {
+    "$description": "Policy gateを通過した公開Component token。各tokenはSemantic tokenを既定値として参照し、独立変更が必要な箇所だけを公開する。",
+    "button": {
+      "primary": {
+        "background": {
+          "default": {
+            "$type": "color",
+            "$value": "{color.semantic.primary}",
+            "$extensions": {
+              "com.meridian": {
+                "cssVariable": "--button-primary-bg",
+                "trigger": "public-component-api",
+                "reason": "Buttonの主要action面をFigmaと将来のReact packageで安定したcustomization APIとして公開する。"
+              }
+            }
+          },
+          "hover": {
+            "$type": "color",
+            "$value": "{color.semantic.primary-hover}",
+            "$extensions": {
+              "com.meridian": {
+                "cssVariable": "--button-primary-bg-hover",
+                "trigger": "component-anatomy",
+                "reason": "Buttonのinteractive state一式をcomponent境界で固定する。"
+              }
+            }
+          },
+          "active": {
+            "$type": "color",
+            "$value": "{color.semantic.primary-active}",
+            "$extensions": {
+              "com.meridian": {
+                "cssVariable": "--button-primary-bg-active",
+                "trigger": "component-anatomy",
+                "reason": "Buttonのinteractive state一式をcomponent境界で固定する。"
+              }
+            }
+          }
+        },
+        "foreground": {
+          "default": {
+            "$type": "color",
+            "$value": "{color.semantic.primary-foreground}",
+            "$extensions": {
+              "com.meridian": {
+                "cssVariable": "--button-primary-fg",
+                "trigger": "public-component-api",
+                "reason": "主要action面とのcontrast pairをButtonの公開APIとして保持する。"
+              }
+            }
+          }
+        }
+      }
+    },
+    "input": {
+      "background": {
+        "default": {
+          "$type": "color",
+          "$value": "{color.semantic.surface}",
+          "$extensions": {
+            "com.meridian": {
+              "cssVariable": "--input-bg",
+              "trigger": "semantic-divergence",
+              "reason": "Dark themeでは入力面を周囲から識別するためsurface-sunkenへ切り替える。",
+              "modes": {
+                "dark": "{color.semantic.surface-sunken}"
+              }
+            }
+          }
+        }
+      },
+      "border": {
+        "default": {
+          "$type": "color",
+          "$value": "{color.semantic.border-strong}",
+          "$extensions": {
+            "com.meridian": {
+              "cssVariable": "--input-border",
+              "trigger": "semantic-divergence",
+              "reason": "High contrastでは入力境界だけをborder-strongへ強める。",
+              "modes": {
+                "high": "{color.semantic.border-strong}"
+              }
+            }
+          }
+        },
+        "focus": {
+          "$type": "color",
+          "$value": "{color.semantic.primary}",
+          "$extensions": {
+            "com.meridian": {
+              "cssVariable": "--input-border-focus",
+              "trigger": "component-anatomy",
+              "reason": "Inputのfocus border slotをcomponent contractで固定する。"
+            }
+          }
+        }
+      },
+      "placeholder": {
+        "$type": "color",
+        "$value": "{color.semantic.foreground-subtle}",
+        "$extensions": {
+          "com.meridian": {
+            "cssVariable": "--input-placeholder",
+            "trigger": "component-anatomy",
+            "reason": "Input固有のplaceholder anatomyへ安定してbindingする。"
+          }
+        }
+      }
+    },
+    "table": {
+      "row": {
+        "background": {
+          "hover": {
+            "$type": "color",
+            "$value": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.028,
+              "hex": "#000000"
+            },
+            "$extensions": {
+              "com.meridian": {
+                "cssVariable": "--table-row-hover",
+                "trigger": "intrinsic-component-value",
+                "reason": "大量行で反復するTable hoverはsurface tokenより弱い固有濃度を必要とする。",
+                "modes": {
+                  "dark": {
+                    "colorSpace": "srgb",
+                    "components": [
+                      1,
+                      1,
+                      1
+                    ],
+                    "alpha": 0.035,
+                    "hex": "#ffffff"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sidebar": {
+      "background": {
+        "default": {
+          "$type": "color",
+          "$value": "{color.semantic.background-subtle}",
+          "$extensions": {
+            "com.meridian": {
+              "cssVariable": "--sidebar-bg",
+              "trigger": "semantic-divergence",
+              "reason": "Dark themeでは常設navigationをcanvasへ統合し、Lightではsubtle面として区別する。",
+              "modes": {
+                "dark": "{color.semantic.background}"
+              }
+            }
+          }
+        }
+      },
+      "item": {
+        "background": {
+          "active": {
+            "$type": "color",
+            "$value": "{color.semantic.primary-subtle}",
+            "$extensions": {
+              "com.meridian": {
+                "cssVariable": "--sidebar-item-active-bg",
+                "trigger": "component-anatomy",
+                "reason": "Sidebar itemのcurrent state slotをcomponent contractで固定する。"
+              }
+            }
+          }
+        }
+      }
+    },
+    "tooltip": {
+      "background": {
+        "default": {
+          "$type": "color",
+          "$value": "{color.semantic.surface-inverse}",
+          "$extensions": {
+            "com.meridian": {
+              "cssVariable": "--tooltip-bg",
+              "trigger": "component-anatomy",
+              "reason": "Tooltipのinverse surface anatomyをcomponent境界で固定する。"
+            }
+          }
+        }
+      }
+    }
+  }
+}

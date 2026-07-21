@@ -1,0 +1,88 @@
+{
+  "$type": "typography",
+  "display": {
+    "$description": "ページやproductの最上位タイトル。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 1.75, "unit": "rem" }, "fontWeight": 650, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.2 },
+    "$extensions": { "com.meridian": { "label": "Display", "usage": "ページタイトル・product title" } }
+  },
+  "h1": {
+    "$description": "画面の主見出し。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 1.5, "unit": "rem" }, "fontWeight": 650, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.25 },
+    "$extensions": { "com.meridian": { "label": "Heading 1", "usage": "画面見出し" } }
+  },
+  "h2": {
+    "$description": "大きなsectionの見出し。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 1.1875, "unit": "rem" }, "fontWeight": 600, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.3 },
+    "$extensions": { "com.meridian": { "label": "Heading 2", "usage": "section見出し" } }
+  },
+  "h3": {
+    "$description": "小sectionやcard groupの見出し。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 1, "unit": "rem" }, "fontWeight": 600, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.4 },
+    "$extensions": { "com.meridian": { "label": "Heading 3", "usage": "小section・card見出し" } }
+  },
+  "h4": {
+    "$description": "compactなpanel内の見出し。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 0.875, "unit": "rem" }, "fontWeight": 600, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.4 },
+    "$extensions": { "com.meridian": { "label": "Heading 4", "usage": "compact panel見出し" } }
+  },
+  "h5": {
+    "$description": "labelに近い最小見出し。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 0.8125, "unit": "rem" }, "fontWeight": 600, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.4 },
+    "$extensions": { "com.meridian": { "label": "Heading 5", "usage": "label的見出し" } }
+  },
+  "reading": {
+    "$description": "複数paragraphを読む本文。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 1, "unit": "rem" }, "fontWeight": 400, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.65 },
+    "$extensions": { "com.meridian": { "label": "Reading", "usage": "長文・help・documentation" } }
+  },
+  "body-lg": {
+    "$description": "短いlead文や余裕のある設定画面。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 0.9375, "unit": "rem" }, "fontWeight": 400, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.6 },
+    "$extensions": { "com.meridian": { "label": "Body Large", "usage": "lead文・設定画面" } }
+  },
+  "body": {
+    "$description": "標準の短いUI本文。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 0.875, "unit": "rem" }, "fontWeight": 400, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.55 },
+    "$extensions": { "com.meridian": { "label": "Body", "usage": "標準UI本文" } }
+  },
+  "body-sm": {
+    "$description": "短い補助説明。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 0.8125, "unit": "rem" }, "fontWeight": 400, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.5 },
+    "$extensions": { "com.meridian": { "label": "Body Small", "usage": "補助説明" } }
+  },
+  "label-lg": {
+    "$description": "大きなcontrolのlabel。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 0.875, "unit": "rem" }, "fontWeight": 550, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.4 },
+    "$extensions": { "com.meridian": { "label": "Label Large", "usage": "large control label" } }
+  },
+  "label": {
+    "$description": "標準controlとformのlabel。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 0.8125, "unit": "rem" }, "fontWeight": 550, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.4 },
+    "$extensions": { "com.meridian": { "label": "Label", "usage": "button・form label" } }
+  },
+  "label-sm": {
+    "$description": "compact controlのlabel。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 0.75, "unit": "rem" }, "fontWeight": 550, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.4 },
+    "$extensions": { "com.meridian": { "label": "Label Small", "usage": "tab・small control" } }
+  },
+  "caption": {
+    "$description": "短いmetadata。重要情報には使わない。",
+    "$value": { "fontFamily": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"], "fontSize": { "value": 0.6875, "unit": "rem" }, "fontWeight": 500, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.4 },
+    "$extensions": { "com.meridian": { "label": "Caption", "usage": "metadata・timestamp" } }
+  },
+  "code": {
+    "$description": "code blockの標準本文。",
+    "$value": { "fontFamily": ["JetBrains Mono", "Geist Mono", "IBM Plex Mono", "ui-monospace", "monospace"], "fontSize": { "value": 0.8125, "unit": "rem" }, "fontWeight": 400, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.6 },
+    "$extensions": { "com.meridian": { "label": "Code", "usage": "code block" } }
+  },
+  "code-sm": {
+    "$description": "密度の高いlogやdiff。",
+    "$value": { "fontFamily": ["JetBrains Mono", "Geist Mono", "IBM Plex Mono", "ui-monospace", "monospace"], "fontSize": { "value": 0.71875, "unit": "rem" }, "fontWeight": 400, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.6 },
+    "$extensions": { "com.meridian": { "label": "Code Small", "usage": "log・diff" } }
+  },
+  "numeric": {
+    "$description": "比較するtabular numeric data。",
+    "$value": { "fontFamily": ["JetBrains Mono", "Geist Mono", "IBM Plex Mono", "ui-monospace", "monospace"], "fontSize": { "value": 0.875, "unit": "rem" }, "fontWeight": 500, "letterSpacing": { "value": 0, "unit": "rem" }, "lineHeight": 1.4 },
+    "$extensions": { "com.meridian": { "label": "Numeric", "usage": "table数値・metric" } }
+  }
+}

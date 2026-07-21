@@ -1,14 +1,114 @@
 {
   "font": {
-    "sans": { "$value": "'Inter','Noto Sans JP','Hiragino Sans','Yu Gothic',system-ui,sans-serif", "$type": "fontFamily" },
-    "mono": { "$value": "'JetBrains Mono','Geist Mono','IBM Plex Mono',ui-monospace,'SFMono-Regular',monospace", "$type": "fontFamily" }
+    "$type": "fontFamily",
+    "sans": {
+      "$description": "Web UIとreading contentのsans-serif stack。",
+      "$value": ["Inter", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "system-ui", "sans-serif"]
+    },
+    "mono": {
+      "$description": "Codeと比較する数値のmonospace stack。",
+      "$value": ["JetBrains Mono", "Geist Mono", "IBM Plex Mono", "ui-monospace", "SFMono-Regular", "monospace"]
+    }
   },
   "dimension": {
-    "sidebar-w": { "$value": "264px", "$type": "dimension" },
-    "sidebar-w-collapsed": { "$value": "0px", "$type": "dimension" },
-    "topbar-h": { "$value": "52px", "$type": "dimension" },
-    "content-max": { "$value": "880px", "$type": "dimension" },
-    "toc-w": { "$value": "200px", "$type": "dimension" },
-    "focus-w": { "$value": "2px", "$type": "dimension" }
+    "$type": "dimension",
+    "sidebar-w": {
+      "$description": "常設navigation railの幅。",
+      "$value": { "value": 264, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "desktop app shell sidebar" } }
+    },
+    "sidebar-w-collapsed": {
+      "$description": "navigationを完全に閉じたときのgrid track。",
+      "$value": { "value": 0, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "collapsed shell track" } }
+    },
+    "topbar-h": {
+      "$description": "global top barの高さ。",
+      "$value": { "value": 52, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "sticky top bar" } }
+    },
+    "content-max": {
+      "$description": "標準documentationとform contentの最大幅。",
+      "$value": { "value": 880, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "standard content region" } }
+    },
+    "content-wide": {
+      "$description": "table、dashboard、galleryなどwide contentの最大幅。",
+      "$value": { "value": 1280, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "wide data region" } }
+    },
+    "reading-max": {
+      "$description": "複数段落のreading measure上限。",
+      "$value": { "value": 640, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "reading text and callout" } }
+    },
+    "toc-w": {
+      "$description": "On this page navigationの幅。",
+      "$value": { "value": 200, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "documentation table of contents" } }
+    },
+    "page-pad-inline": {
+      "$description": "標準pageのinline gutter。",
+      "$value": "{spacing.6}",
+      "$extensions": { "com.meridian": { "usage": "page inline padding" } }
+    },
+    "page-pad-block": {
+      "$description": "標準pageの開始側block gutter。",
+      "$value": "{spacing.8}",
+      "$extensions": { "com.meridian": { "usage": "page block padding" } }
+    },
+    "section-gap": {
+      "$description": "同一page内の主要section間隔。",
+      "$value": "{spacing.8}",
+      "$extensions": { "com.meridian": { "usage": "major section separation" } }
+    },
+    "dialog-w-sm": {
+      "$description": "確認など短いdialogの上限幅。",
+      "$value": { "value": 400, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "short confirmation dialog" } }
+    },
+    "dialog-w-md": {
+      "$description": "標準dialogの上限幅。",
+      "$value": { "value": 480, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "standard dialog" } }
+    },
+    "dialog-w-lg": {
+      "$description": "複数fieldを含むdialogの上限幅。",
+      "$value": { "value": 640, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "large form dialog" } }
+    },
+    "drawer-w": {
+      "$description": "side drawerの標準幅。",
+      "$value": { "value": 420, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "detail and edit drawer" } }
+    },
+    "command-w": {
+      "$description": "command menuの上限幅。",
+      "$value": { "value": 560, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "command menu and compact tool" } }
+    },
+    "focus-w": {
+      "$description": "standard contrastでのfocus indicator幅。contrast modifierがhigh時に上書きする。",
+      "$value": { "value": 2, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "legacy location; accessibility sourceへ移行予定" } }
+    }
+  },
+  "breakpoint": {
+    "$type": "dimension",
+    "column-stack-max": {
+      "$description": "generic multi-column compositionを1 columnへstackする上限。",
+      "$value": { "value": 600, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "content composition, not device detection" } }
+    },
+    "navigation-overlay-max": {
+      "$description": "常設sidebarをoverlay navigationへ切り替える上限。",
+      "$value": { "value": 900, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "app shell navigation" } }
+    },
+    "toc-hide-max": {
+      "$description": "補助TOCを隠してmain contentを優先する上限。",
+      "$value": { "value": 1080, "unit": "px" },
+      "$extensions": { "com.meridian": { "usage": "documentation shell" } }
+    }
   }
 }

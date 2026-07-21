@@ -1,0 +1,183 @@
+{
+  "$schema": "../schemas/token-policy.schema.json",
+  "schemaVersion": "0.1.0",
+  "namingVersion": "0.1.0",
+  "inputs": [
+    {
+      "id": "seed-color",
+      "kind": "generator-input",
+      "description": "Color engineへ渡す任意の基準色。Reference paletteを生成する入力であり、token layerではない。",
+      "tokenLayer": false
+    },
+    {
+      "id": "brand-config",
+      "kind": "configuration",
+      "description": "ブランドごとのgenerator設定と許可されたidentity表現。",
+      "tokenLayer": false
+    }
+  ],
+  "layers": [
+    {
+      "id": "reference",
+      "order": 1,
+      "description": "実値または生成値を持つ基礎scale。UIの用途を表さない。",
+      "allowedReferences": [],
+      "directConsumers": ["semantic-tokens", "generator", "resolver"]
+    },
+    {
+      "id": "semantic",
+      "order": 2,
+      "description": "対象、用途、状態を表す共通語彙。通常のUI実装とcomponent bindingが参照する。",
+      "allowedReferences": ["reference"],
+      "directConsumers": ["product-ui", "component-bindings", "component-tokens"]
+    },
+    {
+      "id": "component",
+      "order": 3,
+      "description": "特定componentだけを独立して変更するための安定した公開binding。必要な場合だけ作る。",
+      "allowedReferences": ["semantic", "reference-with-explicit-reason", "intrinsic-value-with-explicit-reason"],
+      "directConsumers": ["component-implementation", "figma-component", "react-theme-api", "native-component"]
+    }
+  ],
+  "modifiers": [
+    {
+      "id": "theme",
+      "contexts": ["light", "dark"],
+      "default": "light",
+      "owns": ["surface luminance", "foreground luminance", "theme-relative color mapping"],
+      "mustNotOwn": ["density", "viewport layout", "brand identity"]
+    },
+    {
+      "id": "contrast",
+      "contexts": ["standard", "high"],
+      "default": "standard",
+      "owns": ["contrast target", "focus width", "border strength"],
+      "mustNotOwn": ["light versus dark selection", "density"]
+    },
+    {
+      "id": "density",
+      "contexts": ["compact", "default", "comfortable"],
+      "default": "default",
+      "owns": ["control size", "text size", "component padding", "row height"],
+      "mustNotOwn": ["viewport layout", "color theme"]
+    },
+    {
+      "id": "platform",
+      "contexts": ["web", "ios", "android"],
+      "default": "web",
+      "owns": ["platform font", "native focus expression", "platform-specific metric when required"],
+      "mustNotOwn": ["product breakpoint", "component selection"]
+    },
+    {
+      "id": "motion",
+      "contexts": ["standard", "reduced"],
+      "default": "standard",
+      "owns": ["duration", "transition distance", "nonessential animation removal"],
+      "mustNotOwn": ["interaction state meaning", "layout"]
+    }
+  ],
+  "componentTokenDecision": {
+    "requiredWhen": [
+      {
+        "id": "independent-customization",
+        "description": "Semantic tokenを変えず、そのcomponentだけ変更する必要がある。"
+      },
+      {
+        "id": "public-component-api",
+        "description": "Figma、React、Nativeでcomponent単位の安定したcustomization APIとして公開する。"
+      },
+      {
+        "id": "semantic-divergence",
+        "description": "同じSemantic roleでも、そのcomponentでは独立した値が必要になる。"
+      },
+      {
+        "id": "component-anatomy",
+        "description": "component固有のanatomy、variant、stateを表し、一般Semanticへ昇格できない。"
+      },
+      {
+        "id": "cross-platform-stability",
+        "description": "複数platform間でcomponent固有の設計判断を固定する。"
+      },
+      {
+        "id": "intrinsic-component-value",
+        "description": "component固有の寸法など、Semanticに一般化できない固有値を保持する。"
+      }
+    ],
+    "directSemanticWhen": [
+      "Semantic tokenとvisual slotが1対1で対応する。",
+      "同じroleを持つ全componentが一緒に変わるべきである。",
+      "component名を外してもtokenの意味と利用範囲を説明できる。"
+    ],
+    "prohibitedReasons": [
+      {
+        "id": "implementation-convenience",
+        "description": "CSSや実装コードで短い別名が欲しいだけ。"
+      },
+      {
+        "id": "duplicate-alias",
+        "description": "独立変更要件がないSemantic tokenの単純な複製。"
+      },
+      {
+        "id": "one-off-exception",
+        "description": "systemへ説明できない一度限りの見た目調整。"
+      },
+      {
+        "id": "visual-preference",
+        "description": "利用判断や保守境界ではなく、個人の見た目の好みだけに基づく。"
+      }
+    ]
+  },
+  "bindingRules": {
+    "requiredFields": ["slot", "source", "scope", "componentToken", "aliases", "trigger", "reason"],
+    "coverage": {
+      "draftAllowed": ["partial", "complete"],
+      "stableRequired": "complete"
+    },
+    "scopes": {
+      "semantic": {
+        "description": "共通Semantic tokenを直接bindingする。",
+        "requiresTrigger": false,
+        "requiresAlias": false
+      },
+      "component": {
+        "description": "公開Component tokenをbindingし、原則としてSemantic tokenへaliasする。",
+        "requiresTrigger": true,
+        "requiresAlias": true
+      },
+      "reference": {
+        "description": "Semanticに一般化できないcomponent固有値だけが利用できる。",
+        "requiresTrigger": true,
+        "requiresAlias": false
+      },
+      "literal": {
+        "description": "token化して意味が増えないCSS keywordだけを許可する。",
+        "requiresTrigger": false,
+        "requiresAlias": false,
+        "allowedLiterals": ["transparent", "currentColor", "inherit", "none", "0"]
+      }
+    },
+    "legacyCssVariables": {
+      "allowed": true,
+      "untilContractSchemaVersion": "0.2.0",
+      "migrationTarget": "DTCG canonical path such as {color.action.primary.background.default}"
+    }
+  },
+  "naming": {
+    "canonicalSeparator": ".",
+    "reference": "category.family.step",
+    "semantic": "category.property.role.state",
+    "component": "component.name.variant.anatomy.property.state",
+    "cssOutput": "Canonical pathをkebab-caseへ変換し、-- prefixを付ける。"
+  },
+  "invariants": [
+    "SeedとBrand configはtoken layerとして数えない。",
+    "UI implementationはReference tokenを直接参照しない。",
+    "Semantic tokenはReference tokenだけを参照する。",
+    "Component tokenは原則Semantic tokenを参照する。",
+    "全visual slotはcomponent contractにtoken bindingを持つ。",
+    "Component tokenにはpolicyで許可されたtriggerと具体的なreasonが必要である。",
+    "modifierは可能な限り直交させる。",
+    "Viewportとinput methodは原則responsiveBehaviorとlayout patternで扱う。",
+    "循環alias、未解決alias、未使用Component tokenをrelease前に拒否する。"
+  ]
+}

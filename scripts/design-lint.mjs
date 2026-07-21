@@ -165,7 +165,10 @@ const TOKEN_ALIASES = { fg: 'foreground', bg: 'background' };
 
 function findContrastViolations(content) {
   const violations = [];
-  const themes = ['light', 'dark', 'hc'];
+  const contexts = [
+    ['light', 'standard'], ['dark', 'standard'],
+    ['light', 'high'], ['dark', 'high'],
+  ];
   forEachCssRule(content, (selector, body, index, whole) => {
     const bgMatch = /(?:^|[;{])\s*background(?:-color)?\s*:\s*var\(--([a-zA-Z0-9-]+)\)/.exec(body);
     const fgMatch = /(?:^|[;{])\s*color\s*:\s*var\(--([a-zA-Z0-9-]+)\)/.exec(body);
@@ -174,17 +177,17 @@ function findContrastViolations(content) {
     const fgToken = TOKEN_ALIASES[fgMatch[1]] || fgMatch[1];
 
     for (const seedPreset of SEED_PRESETS) {
-      for (const theme of themes) {
-        const T = buildSemantics(buildPalettes(seedPreset.hex), theme);
+      for (const [theme, contrastMode] of contexts) {
+        const T = buildSemantics(buildPalettes(seedPreset.hex), theme, contrastMode);
         const bgHex = T[bgToken];
         const fgHex = T[fgToken];
         if (!bgHex || !fgHex) return; // one/both tokens aren't semantic color roles — not checkable here
-        const target = theme === 'hc' ? 7 : 4.5;
+        const target = contrastMode === 'high' ? 7 : 4.5;
         const ratio = contrast(fgHex, bgHex);
         if (ratio < target) {
           violations.push({
             line: lineNumberOf(content, index),
-            snippet: `${selector.trim()} { color:var(--${fgMatch[1]}) on background:var(--${bgMatch[1]}) } — ${seedPreset.name} seed / ${theme}: ${ratio.toFixed(2)}:1 < ${target}`,
+            snippet: `${selector.trim()} { color:var(--${fgMatch[1]}) on background:var(--${bgMatch[1]}) } — ${seedPreset.name} seed / ${theme}-${contrastMode}: ${ratio.toFixed(2)}:1 < ${target}`,
           });
           return; // one report per rule is enough
         }
