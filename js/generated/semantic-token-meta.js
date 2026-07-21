@@ -217,6 +217,16 @@ const SEM_META=[
     "削除・エラー"
   ],
   [
+    "danger-hover",
+    "破壊的操作のhover面",
+    "Danger Button hover"
+  ],
+  [
+    "danger-active",
+    "破壊的操作のpressed面",
+    "Danger Button pressed"
+  ],
+  [
     "danger-subtle",
     "危険の淡い面",
     "Error alert bg"

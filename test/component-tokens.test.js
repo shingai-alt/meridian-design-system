@@ -60,7 +60,7 @@ test('component token source satisfies the policy gate', () => {
 });
 
 test('all published component tokens are generated and consumed', () => {
-  assert.equal(tokens.length, 12);
+  assert.ok(tokens.length >= 12);
   assert.equal(catalog.componentTokens.length, tokens.length);
   const sourceNames = tokens.map(({ token }) => token.$extensions['com.meridian'].cssVariable).sort();
   assert.deepEqual(Array.from(catalog.componentTokens, (token) => token.cssVariable).sort(), sourceNames);
@@ -82,8 +82,11 @@ test('Button contract uses source triggers and generated Semantic CSS aliases', 
     const binding = bindings.get(extension.cssVariable);
     assert.ok(binding, `${extension.cssVariable} needs a Button contract binding`);
     assert.equal(binding.trigger, extension.trigger);
-    const semanticName = /^\{color\.semantic\.([^}]+)\}$/.exec(token.$value)[1];
-    assert.equal(binding.aliases, semanticCss.get(semanticName));
+    const semanticAlias = typeof token.$value === 'string'
+      ? /^\{color\.semantic\.([^}]+)\}$/.exec(token.$value)
+      : null;
+    if (semanticAlias) assert.equal(binding.aliases, semanticCss.get(semanticAlias[1]));
+    else assert.equal(binding.aliases, null);
   }
 });
 

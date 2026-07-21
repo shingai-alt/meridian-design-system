@@ -44,6 +44,14 @@ function dtcgColorToCss(value) {
   return value.hex ?? `rgb(${channels.join(',')})`;
 }
 
+function dtcgValueToCss(value) {
+  if (value?.colorSpace === 'srgb') return dtcgColorToCss(value);
+  if (typeof value?.value === 'number' && typeof value?.unit === 'string') return `${value.value}${value.unit}`;
+  if (typeof value === 'number' || typeof value === 'string') return String(value);
+  if (Array.isArray(value) && value.length === 4) return `cubic-bezier(${value.join(',')})`;
+  throw new Error(`Unsupported CSS token output: ${JSON.stringify(value)}`);
+}
+
 function paletteGroup(palettes) {
   return Object.fromEntries(Object.entries(palettes).map(([family, scale]) => [
     family === 'neutralVariant' ? 'neutral-variant' : family,
@@ -171,7 +179,7 @@ function componentCssValues(bundle) {
   for (const entry of collectDtcgTokens(bundle.component)) {
     const cssVariable = entry.token.$extensions?.['com.meridian']?.cssVariable;
     if (!cssVariable) continue;
-    values[cssVariable] = dtcgColorToCss(resolveDtcgValue(bundle, `component.${entry.path}`));
+    values[cssVariable] = dtcgValueToCss(resolveDtcgValue(bundle, `component.${entry.path}`));
   }
   return values;
 }
@@ -207,7 +215,7 @@ function themeCss({ bundles, resolved, palettes, sources, engine }) {
     };
     return `${selector}{\n${declarations(values)}\n}`;
   });
-  return `\n/* Generated reference colors for the default seed (${DEFAULT_SEED}). */\n:root{\n${declarations(primitiveValues)}\n}\n/* Theme and contrast mappings. Runtime seed selection may override these declarations inline. */\n${blocks.join('\n')}\n@media (prefers-reduced-motion: reduce){\n  :root{--dur-instant:0ms;--dur-fast:0ms;--dur-normal:0ms;--dur-slow:0ms;--dur-slower:0ms;--motion-distance-sm:0px;--motion-distance-md:0px}\n}\n`;
+  return `\n/* Generated reference colors for the default seed (${DEFAULT_SEED}). */\n:root{\n${declarations(primitiveValues)}\n}\n/* Theme and contrast mappings. Runtime seed selection may override these declarations inline. */\n${blocks.join('\n')}\n@media (prefers-reduced-motion: reduce){\n  :root{--dur-instant:0ms;--dur-fast:0ms;--dur-normal:0ms;--dur-slow:0ms;--dur-slower:0ms;--dur-loop:0ms;--motion-distance-sm:0px;--motion-distance-md:0px}\n}\n`;
 }
 
 function cssValue(value) {
@@ -224,7 +232,7 @@ function catalog({ bundles, resolved, palettes, metadata, sources }) {
       trigger: extension.trigger,
       reason: extension.reason,
       aliases: Object.fromEntries(CONTEXTS.map((context) => [context.id, contextValue(entry.token, context)])),
-      values: Object.fromEntries(CONTEXTS.map(({ id }) => [id, dtcgColorToCss(resolveDtcgValue(bundles[id], `component.${entry.path}`))])),
+      values: Object.fromEntries(CONTEXTS.map(({ id }) => [id, dtcgValueToCss(resolveDtcgValue(bundles[id], `component.${entry.path}`))])),
     };
   });
   const densityRows = Object.fromEntries(Object.entries(sources.density).map(([mode, group]) => [

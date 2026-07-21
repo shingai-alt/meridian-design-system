@@ -65,7 +65,7 @@ ${chartContainerEl()}
 defTpl('project-management','Project Management','カンバンボード型のプロジェクト管理画面。',vp=>tplShell(vp,tplSide('proj'),`
 <div class="rowflex" style="justify-content:space-between;margin-bottom:var(--sp-4)">
 <div class="rowflex">${crumbsEl({items:['プロジェクト','Meridian Docs']})}${badge({label:'On track',tone:'success',dot:true})}</div>
-<div class="rowflex">${btn({label:'⌘K',variant:'outline',size:'sm'})}${btn({label:'フィルタ',variant:'secondary',size:'sm'})}<span class="avstack">${avatar({name:'SN',size:'xs'})}${avatar({name:'YK',size:'xs'})}${avatar({name:'+3',size:'xs'})}</span>${btn({label:'タスクを追加',size:'sm'})}</div></div>
+<div class="rowflex">${btn({label:'⌘K',variant:'secondary',size:'sm'})}${btn({label:'フィルタ',variant:'secondary',size:'sm'})}<span class="avstack">${avatar({name:'SN',size:'xs'})}${avatar({name:'YK',size:'xs'})}${avatar({name:'+3',size:'xs'})}</span>${btn({label:'タスクを追加',size:'sm'})}</div></div>
 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-3);align-items:start">
 ${[['Todo','3',[taskCard()]],['In Progress','2',[`<div class="cardc" style="padding:12px"><div class="rowflex" style="gap:4px;margin-bottom:6px">${badge({label:'feature',tone:'primary'})}</div><div style="font-weight:550;font-size:var(--text-label);margin-bottom:8px">Playground に Density selector を追加</div><div class="rowflex" style="justify-content:space-between"><span style="font-family:var(--font-mono);font-size:10.5px;color:var(--fg-subtle)">MRD-141</span>${avatar({name:'SN',size:'xs'})}</div></div>`]],['Done','8',[`<div class="cardc" style="padding:12px;opacity:.7"><div style="font-weight:550;font-size:var(--text-label);margin-bottom:8px;text-decoration:line-through">Seed picker の実装</div><div class="rowflex" style="justify-content:space-between"><span style="font-family:var(--font-mono);font-size:10.5px;color:var(--fg-subtle)">MRD-120</span>${badge({label:'Done',tone:'success'})}</div></div>`]]].map(([t,n,cards])=>`
 <div><div class="rowflex" style="justify-content:space-between;margin-bottom:8px;padding:0 2px"><b style="font-size:var(--text-label)">${t} <span style="color:var(--fg-subtle);font-weight:400">${n}</span></b><button class="tb-btn" aria-label="追加">${I.plus}</button></div>
@@ -149,7 +149,7 @@ ${planCard({name:'Enterprise',price:'お問い合わせ',feats:['メンバー無
 </div>
 <h3 style="font-size:15px;font-weight:600;margin-bottom:var(--sp-3)">請求書</h3>
 <div class="tscroll"><table class="tbl"><thead><tr><th>日付</th><th>内容</th><th class="num">金額</th><th>状態</th><th></th></tr></thead><tbody>
-${[['2026-07-01','Pro プラン(月額)','¥5,800',['success','支払済み']],['2026-06-01','Pro プラン(月額)','¥5,800',['success','支払済み']],['2026-05-01','Pro プラン(月額)+ 超過分','¥6,420',['success','支払済み']]].map(r=>`<tr><td class="mono" style="font-size:12px">${r[0]}</td><td>${r[1]}</td><td class="num">${r[2]}</td><td>${statusEl({s:r[3][0],label:r[3][1]})}</td><td><button class="btn" data-variant="link" data-size="xs">PDF</button></td></tr>`).join('')}
+${[['2026-07-01','Pro プラン(月額)','¥5,800',['success','支払済み']],['2026-06-01','Pro プラン(月額)','¥5,800',['success','支払済み']],['2026-05-01','Pro プラン(月額)+ 超過分','¥6,420',['success','支払済み']]].map(r=>`<tr><td class="mono" style="font-size:12px">${r[0]}</td><td>${r[1]}</td><td class="num">${r[2]}</td><td>${statusEl({s:r[3][0],label:r[3][1]})}</td><td><a href="#" class="btn" data-variant="ghost" data-size="xs">PDF</a></td></tr>`).join('')}
 </tbody></table></div>`,topSearch('Billing')),
 ['現在のプラン+Usage Meter を最初に提示。','プラン比較は現在のプランを primary ボーダーで明示。','請求書テーブルは数値右揃え+tabular-nums。']);
 

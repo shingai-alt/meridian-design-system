@@ -5,7 +5,7 @@
     "phase1_team_invitation"
   ],
   "exceptionApprovals": [],
-  "translationPackDigest": "sha256-0183e37d772d938042a98063426412505dce847213b3648225dab190d1ecbd8b",
+  "translationPackDigest": "sha256-543b8641662656715407ff1cd9ab3d599e8a14aa54ac0ba32c558148b755fa84",
   "draftAllowlist": [
     "button",
     "text-field",
@@ -25,9 +25,9 @@
       "id": "button",
       "name": "Button",
       "status": "draft",
-      "contractVersion": "0.1.0",
+      "contractVersion": "0.2.0",
       "source": "design/contracts/components/button.contract.json",
-      "sourceDigest": "sha256-c788bac60513db39533b701411374df39c3fc5f2164d16228aebf115362d146c",
+      "sourceDigest": "sha256-33a67f96b1c8cf06d1f1753a74a4c4bbd4f182a8acd027952796fa71daa5651a",
       "pilotScope": [
         "team-invitation"
       ],
@@ -36,10 +36,7 @@
         "secondary",
         "tertiary",
         "ghost",
-        "outline",
-        "danger",
-        "success",
-        "link"
+        "danger"
       ],
       "states": [
         "default",
@@ -58,8 +55,15 @@
       ],
       "props": [
         {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "操作結果を示す可視ラベル。テキストを含め、アイコンだけにしない。"
+        },
+        {
           "name": "variant",
-          "type": "\"primary\" | \"secondary\" | \"tertiary\" | \"ghost\" | \"outline\" | \"danger\" | \"success\" | \"link\"",
+          "type": "\"primary\" | \"secondary\" | \"tertiary\" | \"ghost\" | \"danger\"",
           "required": false,
           "default": "primary",
           "description": "視覚的な優先度と文脈。"
@@ -70,6 +74,20 @@
           "required": false,
           "default": "md",
           "description": "密度 token に連動する高さと余白。"
+        },
+        {
+          "name": "leadingIcon",
+          "type": "ReactNode",
+          "required": false,
+          "default": null,
+          "description": "ラベルの意味を補強する先頭アイコン。装飾としてaria-hiddenにする。"
+        },
+        {
+          "name": "trailingIcon",
+          "type": "ReactNode",
+          "required": false,
+          "default": null,
+          "description": "展開や次方向を補足する末尾アイコン。装飾としてaria-hiddenにする。"
         },
         {
           "name": "loading",
@@ -86,18 +104,25 @@
           "description": "操作不可。フォーム送信対象から外す場合に使う。"
         },
         {
-          "name": "aria-label",
-          "type": "string",
-          "required": false,
-          "default": null,
-          "description": "iconOnly または視覚ラベルがない場合に必須。"
-        },
-        {
           "name": "fullWidth",
           "type": "boolean",
           "required": false,
           "default": "false",
           "description": "親コンテナ幅いっぱいに広げる。モバイルの主要アクションで使う。"
+        },
+        {
+          "name": "type",
+          "type": "\"button\" | \"submit\" | \"reset\"",
+          "required": false,
+          "default": "button",
+          "description": "native button type。フォーム送信時だけsubmitを明示する。"
+        },
+        {
+          "name": "ref",
+          "type": "ForwardedRef<HTMLButtonElement>",
+          "required": false,
+          "default": null,
+          "description": "native button要素へforwardするref。"
         }
       ],
       "runtime": {
@@ -114,19 +139,31 @@
         "attributes": [
           "type",
           "disabled",
-          "aria-disabled",
-          "aria-label",
-          "aria-busy"
+          "name",
+          "value",
+          "form",
+          "formAction",
+          "formEncType",
+          "formMethod",
+          "formNoValidate",
+          "formTarget",
+          "aria-*",
+          "data-*"
         ],
         "stateModel": [
           "data-meridian-variant",
           "data-meridian-state"
         ],
         "events": [
-          "click"
+          "click",
+          "keydown",
+          "focus",
+          "blur"
         ],
         "relations": [
-          "accessible-name"
+          "accessible-name",
+          "description",
+          "native-button-props-passthrough"
         ],
         "provenance": [
           "component",
@@ -145,6 +182,14 @@
           "--button-primary-bg-active",
           "--button-primary-fg"
         ],
+        "componentDimension": [
+          "--button-icon-size-xs",
+          "--button-icon-size-sm",
+          "--button-icon-size-md",
+          "--button-icon-size-lg",
+          "--button-icon-size-xl",
+          "--button-spinner-stroke"
+        ],
         "semanticColor": [
           "--primary",
           "--primary-hover",
@@ -161,13 +206,10 @@
           "--surface-muted",
           "--fg",
           "--fg-disabled",
-          "--border",
-          "--border-muted",
-          "--border-strong",
           "--danger",
+          "--danger-hover",
+          "--danger-active",
           "--danger-on-solid",
-          "--success",
-          "--success-on-solid",
           "--disabled",
           "--focus-ring"
         ],
@@ -196,7 +238,8 @@
         ],
         "motion": [
           "--dur-fast",
-          "--dur-normal"
+          "--dur-loop",
+          "--ease-standard"
         ]
       }
     },

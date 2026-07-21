@@ -152,7 +152,7 @@ function buildSemantics(P,theme,contrastMode='standard'){
     'accent':acR.base,'accent-hover':acR.hover,'accent-active':acR.active,'accent-on-solid':onColor(acR.base),
     'success':P.success[high?700:600],'success-subtle':P.success[50],'success-foreground':P.success[high?800:700],'success-on-solid':onColor(P.success[high?700:600]),
     'warning':P.warning[high?600:500],'warning-subtle':P.warning[50],'warning-foreground':P.warning[high?800:700],'warning-on-solid':onColor(P.warning[high?600:500]),
-    'danger':P.danger[high?700:600],'danger-subtle':P.danger[50],'danger-foreground':P.danger[high?800:700],'danger-on-solid':onColor(P.danger[high?700:600]),
+    'danger':P.danger[high?700:600],'danger-hover':P.danger[high?800:700],'danger-active':P.danger[high?900:800],'danger-subtle':P.danger[50],'danger-foreground':P.danger[high?800:700],'danger-on-solid':onColor(P.danger[high?700:600]),
     'info':P.info[high?700:600],'info-subtle':P.info[50],'info-foreground':P.info[high?800:700],'info-on-solid':onColor(P.info[high?700:600]),
     'focus-ring':high?'#0a0a0f':pr[500],'selection':pr[100],'highlight':P.warning[100],'disabled':n[high?400:300],
     'overlay':alpha(n[950],high?.6:.5),'scrim':alpha(n[950],high?.5:.4)
@@ -179,7 +179,7 @@ function buildSemantics(P,theme,contrastMode='standard'){
     'accent':acR.base,'accent-hover':acR.hover,'accent-active':acR.active,'accent-on-solid':onColor(acR.base),
     'success':P.success[statusStep],'success-subtle':mix(P.success[900],'#000',high?.6:.45),'success-foreground':P.success[statusFgStep],'success-on-solid':onColor(P.success[statusStep]),
     'warning':P.warning[statusStep],'warning-subtle':mix(P.warning[900],'#000',high?.6:.45),'warning-foreground':P.warning[statusFgStep],'warning-on-solid':onColor(P.warning[statusStep]),
-    'danger':P.danger[statusStep],'danger-subtle':mix(P.danger[900],'#000',high?.6:.45),'danger-foreground':P.danger[statusFgStep],'danger-on-solid':onColor(P.danger[statusStep]),
+    'danger':P.danger[statusStep],'danger-hover':P.danger[high?300:600],'danger-active':P.danger[high?200:700],'danger-subtle':mix(P.danger[900],'#000',high?.6:.45),'danger-foreground':P.danger[statusFgStep],'danger-on-solid':onColor(P.danger[statusStep]),
     'info':P.info[statusStep],'info-subtle':mix(P.info[900],'#000',high?.6:.45),'info-foreground':P.info[statusFgStep],'info-on-solid':onColor(P.info[statusStep]),
     'focus-ring':prR.base,'selection':alpha(pr[high?400:500],high?.45:.32),'highlight':alpha(P.warning[high?400:500],high?.35:.25),'disabled':n[700],
     'overlay':alpha('#000000',high?.7:.6),'scrim':alpha('#000000',high?.65:.55)

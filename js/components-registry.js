@@ -33,16 +33,16 @@ function def(c){
 
 /* ---- Core ---- */
 def({id:'button',name:'Button',group:'Core',desc:'ユーザーが明確なアクションを実行するための基本コントロール。操作の重要度と危険度を variant で示す。',
- variants:['primary','secondary','tertiary','ghost','outline','danger','success','link'],
+ variants:['primary','secondary','tertiary','ghost','danger'],
  sizes:['xs','sm','md','lg','xl'],states:['default','hover','active','focus','disabled','loading'],
- flags:[['leadingIcon','Leading icon'],['trailingIcon','Trailing icon'],['iconOnly','Icon only'],['full','Full width']],
+ flags:[['leadingIcon','Leading icon'],['trailingIcon','Trailing icon'],['fullWidth','Full width']],
  texts:[['label','Label','Create project']],
  when:['フォーム送信・設定保存・リソース作成など、状態を変更する明確な操作','ダイアログ内の確定・キャンセル・破壊的操作','テーブル行やツールバー内の補助操作'],
  notWhen:['ページ遷移だけが目的の場合 → Link を使う','表示モード切り替え → Segmented Control','ON/OFF 設定 → Switch','複数選択 → Checkbox、排他選択 → Radio','アイコンだけで意味が明確な低優先操作 → Icon Button'],
- usage:['Primary は 1 つの意思決定文脈に原則 1 つ。','Danger は削除・取り消し不能・権限剥奪などの最終確認に限定する。','Ghost はキャンセル、閉じる、ツールバー、行内操作に使う。','Link は軽い参照や補助導線に限定し、データ変更には使わない。','Loading 中は accessible name を維持し、二重送信を防ぐ。'],
+ usage:['Primary は 1 つの意思決定文脈に原則 1 つ。','Danger は削除・取り消し不能・権限剥奪などの最終確認に限定する。','Ghost はキャンセル、閉じる、ツールバー、行内操作に使う。','遷移は Link、アイコンだけの操作は Icon Button を使う。','Loading 中はラベル node、accessible name、Button幅を維持し、二重送信を防ぐ。'],
  anatomy:[['1','Root — native button element'],['2','Label — 操作結果を予測できる文言'],['3','Leading icon (optional) — 意味を補強する'],['4','Trailing icon (optional) — 展開・遷移を補足する'],['5','Loading spinner — aria-hidden で重ね、label は保持する']],
- tokens:['--primary','--primary-hover','--primary-active','--primary-subtle','--primary-muted','--primary-fg','--surface','--surface-muted','--fg','--fg-disabled','--border','--border-muted','--border-strong','--danger','--danger-on-solid','--success','--success-on-solid','--disabled','--focus-ring','--radius-sm','--ctl-md','--sp-2','--dur-fast'],
- a11y:['<button> 要素を使い、role の付与を不要にする','Icon only の場合は aria-label を必須にする','Loading 中は aria-busy="true" を設定し、二重送信を防ぐ','色だけで danger / success の意味を伝えない','Disabled ではなく aria-disabled を使うと、フォーカス到達と理由の説明が可能'],
+ tokens:['--primary','--primary-hover','--primary-active','--primary-subtle','--primary-muted','--primary-fg','--control-bg','--control-bg-hover','--control-bg-active','--control-border','--control-border-hover','--surface-muted','--fg','--fg-disabled','--danger','--danger-hover','--danger-active','--danger-on-solid','--disabled','--focus-ring','--button-icon-size-md','--button-spinner-stroke','--radius-sm','--ctl-md','--sp-2','--dur-fast','--dur-loop','--ease-standard'],
+ a11y:['<button> 要素を使い、role の付与を不要にする','操作結果を予測できる可視ラベルを必須にする','Loading 中は aria-busy="true" と aria-disabled="true" を設定し、handler 側でも二重送信を防ぐ','色だけで danger の意味を伝えない','disabled は native disabled に写像し、理由は aria-describedby で周辺説明へ接続する'],
  keys:[['Enter / Space','アクションを実行'],['Tab','次のコントロールへ']],
  dos:[[()=>btn({label:'プロジェクトを作成'})+' '+btn({label:'キャンセル',variant:'ghost'}),'Primary は 1 つ。補助アクションは Ghost に落とす。']],
  donts:[[()=>btn({label:'作成'})+' '+btn({label:'保存'})+' '+btn({label:'送信'}),'Primary の乱用。どれが主要アクションか判別できない。']],
@@ -50,8 +50,8 @@ def({id:'button',name:'Button',group:'Core',desc:'ユーザーが明確なアク
   ['Form footer',()=>btn({label:'キャンセル',variant:'ghost'})+' '+btn({label:'変更を保存',variant:'primary'}),'Primary action は末尾に置き、Cancel / discard は Ghost または Secondary にする。'],
   ['Dialog footer',()=>btn({label:'キャンセル',variant:'ghost'})+' '+btn({label:'削除する',variant:'danger'}),'破壊的な確定は Danger にし、本文で影響を説明する。'],
   ['Toolbar',()=>btn({label:'フィルタ',variant:'secondary',size:'sm',leadingIcon:true})+' '+btn({label:'コピー',variant:'ghost',size:'sm'}),'主要作業の起点だけを強くし、補助操作は Ghost / Icon Button に落とす。'],
-  ['Table row',()=>btn({label:'詳細',variant:'link',size:'xs'})+' '+btn({label:'その他',variant:'ghost',size:'xs'}),'行内操作は軽くし、破壊的操作は直接置かず確認へ逃がす。'],
-  ['Mobile CTA',()=>`<div style="width:220px">${btn({label:'続行',variant:'primary',size:'xl',full:true})}</div>`,'モバイルの主要 CTA は full width にできるが、複数ボタンを横に詰めない。']
+  ['Table row',()=>btn({label:'詳細',variant:'ghost',size:'xs'})+' '+btn({label:'その他',variant:'ghost',size:'xs'}),'行内操作は軽くし、破壊的操作は直接置かず確認へ逃がす。'],
+  ['Mobile CTA',()=>`<div style="width:220px">${btn({label:'続行',variant:'primary',size:'xl',fullWidth:true})}</div>`,'モバイルの主要 CTA は full width にできるが、複数ボタンを横に詰めない。']
  ],
  responsiveBehavior:[
   ['Desktop','md を標準にし、Form footer / Dialog footer / Toolbar では inline 配置を基本にする。Table row action は xs または sm を使う。'],
@@ -60,7 +60,7 @@ def({id:'button',name:'Button',group:'Core',desc:'ユーザーが明確なアク
  ],
  related:['icon-button','link','segmented-control'],
  render:p=>btn(p),
- code:p=>`<Button\n  variant="${p.variant||'primary'}"\n  size="${p.size||'md'}"${p.disabled||p.state==='disabled'?'\n  disabled':''}${p.loading||p.state==='loading'?'\n  loading aria-busy="true"':''}${p.full?'\n  fullWidth':''}${p.iconOnly?'\n  iconOnly aria-label="追加"':''}\n>\n  ${p.iconOnly?'<PlusIcon aria-hidden="true" />':esc(p.label||'Create project')}\n</Button>`});
+ code:p=>`<Button\n  variant="${p.variant||'primary'}"\n  size="${p.size||'md'}"${p.disabled||p.state==='disabled'?'\n  disabled':''}${p.loading||p.state==='loading'?'\n  loading':''}${p.fullWidth?'\n  fullWidth':''}${p.leadingIcon?'\n  leadingIcon={<PlusIcon />}':''}${p.trailingIcon?'\n  trailingIcon={<ArrowRightIcon />}':''}\n>\n  ${esc(p.label||'Create project')}\n</Button>`});
 
 def({id:'icon-button',name:'Icon Button',group:'Core',desc:'アイコンのみのコンパクトなアクション。ツールバーや行内操作に使う。',
  variants:['ghost','secondary','primary'],sizes:['xs','sm','md','lg'],states:['default','hover','disabled'],

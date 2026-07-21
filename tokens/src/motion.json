@@ -25,6 +25,11 @@
       "$description": "Page-level continuityが必要な限定transition。",
       "$value": { "value": 320, "unit": "ms" },
       "$extensions": { "com.meridian": { "usage": "rare page-level transition only" } }
+    },
+    "loop": {
+      "$description": "Spinnerなど継続状態を示す反復motionの1cycle。Reduced modeでは静止表示へ解決する。",
+      "$value": { "value": 960, "unit": "ms" },
+      "$extensions": { "com.meridian": { "usage": "loading spinner loop" } }
     }
   },
   "easing": {

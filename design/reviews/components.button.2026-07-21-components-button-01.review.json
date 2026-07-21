@@ -1,0 +1,218 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.button",
+  "cycleId": "2026-07-21-components-button-01",
+  "supersedesCycleId": "2026-07-14-components-button-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-21",
+  "completedAt": "2026-07-21",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "components/button.md",
+    "design/contracts/components/button.contract.json",
+    "design/semantic-tokens.json",
+    "src/color-engine.js",
+    "js/components-registry.js",
+    "js/generated/component-contract-meta.js",
+    "js/component-pages.js",
+    "js/ui-builders.js",
+    "index.html",
+    "test/component-specs.test.js",
+    "test/color-engine.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "components.button",
+      "summary": "ButtonをReact実装へ渡せるモデルケースとして、責務境界、native semantics、非同期状態、variant、token、responsive showcaseを再確定する。"
+    },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior", "benchmark-needed"],
+    "questions": [
+      "Buttonが所有するvariantと、Link・Icon Button・selection controlへ委譲する責務は何か。",
+      "native button、form、keyboard、loadingのReact APIをどこまでcomponentが保証するか。",
+      "focus indicator、target size、dark/high contrastで実装前に必要な品質基準は何か。"
+    ],
+    "evidence": [
+      {
+        "id": "wai-apg-button",
+        "title": "WAI-ARIA Authoring Practices Guide: Button Pattern",
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/button/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-21",
+        "summary": "Buttonはactionを実行し、EnterとSpaceでactivateする。toggle buttonはaria-pressedを持つ別の状態モデルとして扱う。",
+        "supportedDecisions": ["command-only-boundary", "native-react-api"]
+      },
+      {
+        "id": "html-button-element",
+        "title": "WHATWG HTML: The button element",
+        "url": "https://html.spec.whatwg.org/multipage/form-elements.html#the-button-element",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-21",
+        "summary": "buttonはform-associated elementで、type、disabled、name、value、form/formActionなどのnative contractを持つ。",
+        "supportedDecisions": ["native-react-api", "loading-contract"]
+      },
+      {
+        "id": "wcag-target-size",
+        "title": "WCAG 2.2 Understanding SC 2.5.8: Target Size (Minimum)",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-21",
+        "summary": "Pointer targetは原則24 CSS px minimumを満たす。Touch中心の主要操作にはMeridianの44px推奨を重ねる。",
+        "supportedDecisions": ["responsive-target"]
+      },
+      {
+        "id": "wcag-focus-appearance",
+        "title": "WCAG 2.2 Understanding SC 2.4.13: Focus Appearance",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance.html",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-21",
+        "summary": "Keyboard focus indicatorは十分な面積と周辺色とのコントラストを持ち、component寸法を変えずに表示する。",
+        "supportedDecisions": ["focus-contract", "complete-token-binding"]
+      },
+      {
+        "id": "carbon-button",
+        "title": "Carbon Design System: Button",
+        "url": "https://carbondesignsystem.com/components/button/usage/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-21",
+        "summary": "成熟した業務UIのbenchmarkとしてprimary、secondary、tertiary、ghost、dangerの優先度モデルを確認した。Meridianでは責務境界と既存tokenへ合わせて同じ5分類へ収束した。",
+        "supportedDecisions": ["five-variant-model"]
+      }
+    ],
+    "synthesis": "Buttonは可視ラベルを持つcommand controlに限定し、遷移、icon-only、toggle、完了statusを分離する。Native button semanticsを保持し、5 variantと5 size、disabled/loadingの差をtokenとruntime属性へ固定する。",
+    "decisionImpact": "Contract 0.2.0をReact実装前のAPI freezeとし、Showcase、semantic token、generated metadata、testsを同じ契約へ同期した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "command-only-boundary",
+      "summary": "Buttonを可視ラベル付きcommandへ限定し、Link、Icon Button、selection control、status componentとの境界を固定する。",
+      "rationale": "見た目ではなくnative semanticsと操作結果でcomponentを選択でき、iconOnly、link、toggle、successの重複責務を排除できるため。"
+    },
+    {
+      "id": "five-variant-model",
+      "summary": "variantをprimary、secondary、tertiary、ghost、dangerの5つに固定する。",
+      "rationale": "outlineはsecondaryへ統合し、successはaction結果、linkはnavigationへ委譲することで優先度モデルが一意になるため。"
+    },
+    {
+      "id": "native-react-api",
+      "summary": "native button attributesを継承し、type=buttonを既定、refをHTMLButtonElementへforwardする非polymorphic APIに固定する。",
+      "rationale": "form semanticsを失わず、意図しないsubmitを防ぎ、初期React実装のDOM contractを予測可能にするため。"
+    },
+    {
+      "id": "loading-contract",
+      "summary": "loadingはラベルnode、accessible name、Button幅とfocusを保持し、aria-busy/aria-disabledとhandler guardをcomponent責務にする。",
+      "rationale": "処理中の文脈を失わず、clickとsubmitの二重実行を見た目だけに依存せず防ぐため。"
+    },
+    {
+      "id": "focus-contract",
+      "summary": "focus-visible ringはradiusを変えず、周辺背景とのコントラストを保つ。",
+      "rationale": "Keyboard focusを視認可能にしながら、state遷移でcomponent寸法と形状を変えないため。"
+    },
+    {
+      "id": "responsive-target",
+      "summary": "24px minimumと主要touch操作44px推奨を維持し、同一Buttonをlayoutとdensityでresponsive化する。",
+      "rationale": "PC/SPのcomponent分岐を作らず、入力方式に応じた操作性を確保するため。"
+    },
+    {
+      "id": "complete-token-binding",
+      "summary": "全visual slotを公開token、derived value、intrinsic geometryのいずれかへ結線しcoverageをcompleteにする。",
+      "rationale": "React実装者がraw color、shadow、filter、任意spacingを補わずに実装できるため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "cross-layer-conflict",
+      "description": "Human spec、contract、showcaseでoutline、success、link、iconOnlyの所有範囲が一致していなかった。",
+      "action": "5 variantへ統合し、代替componentとselection ruleを仕様・Contract・Showcaseへ同期した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-contract",
+      "description": "type/ref/native form attributes、loading handler guard、visible labelのReact実装前contractが確定していなかった。",
+      "action": "Contract 0.2.0にprops、runtime attributes、required scenarios、accessibility requirementsを固定した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-token",
+      "description": "danger hover/activeとspacing、radius、motion、spinnerのbindingが未完了だった。",
+      "action": "danger-hover/danger-activeを追加し、全slotをtokenまたは明示したintrinsic/derived valueへ結線した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "ShowcaseのButtonがraw shadow/filterを含み、loading/native属性とmobile横幅がContractを満たしていなかった。",
+      "action": "CSSとbuilderをtokenized stateへ更新し、mobile gridのmin-width overflowを修正した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    { "path": "components/button.md", "summary": "React実装前の責務、variant、state、accessibility、API freezeを確定。" },
+    { "path": "design/contracts/components/button.contract.json", "summary": "Contract 0.2.0、complete token bindings、native/runtime API、解決済みopen questionsを機械可読化。" },
+    { "path": "design/semantic-tokens.json", "summary": "danger hover/active semantic roleを追加。" },
+    { "path": "src/color-engine.js", "summary": "Light/Dark、Standard/Highでdanger stateとon-solid contrastを生成。" },
+    { "path": "index.html", "summary": "Buttonの5 variant/state CSSをtoken化し、focus radiusとmobile横overflowを修正。" },
+    { "path": "js/ui-builders.js", "summary": "native type、runtime provenance、loading ARIA、visible label、fullWidthをShowcaseへ反映。" },
+    { "path": "js/components-registry.js", "summary": "Playground、usage patterns、生成コードを確定Contractへ同期。" },
+    { "path": "test/component-specs.test.js", "summary": "Button API freeze、native/loading semantics、variant/token driftの回帰テストを追加。" },
+    { "path": "test/color-engine.test.js", "summary": "danger全interactive stateの識別性と4.5:1 foreground contrastを追加検証。" }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/component-specs.test.js test/color-engine.test.js",
+      "status": "passed",
+      "notes": "Button Contract/Showcase同期とdanger state contrastを含む30 testsが成功。"
+    },
+    {
+      "command": "Automated browser viewport QA",
+      "status": "passed",
+      "notes": "1280x720 Light/Standard/Default、Dark/High/Comfortable、390x844 mobileでvariant/size/state、overflow、runtime consoleを確認。mobile横overflow修正後はdocument overflowとclipped Buttonが0、console error/warnも0。"
+    },
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "Schema、102 registry items、122 review cycles、74 component contracts、generated artifacts、JS、unit testsを検証。"
+    },
+    {
+      "command": "Independent code review",
+      "status": "passed",
+      "notes": "Critical 0件。指摘されたsize別gap、variant state binding、primary component token境界、loading文言、native props pass-throughを修正し回帰testを追加。"
+    }
+  ],
+  "openQuestions": [
+    {
+      "question": "Contract 0.2.0に基づくReact実装とvisual regression baselineを完了し、statusをstableへ昇格する。",
+      "owner": "components.button",
+      "exitCriteria": "React component、required scenariosのunit/integration tests、Light/Dark・Standard/High・density・responsiveのvisual regression baselineがCIで通ること。"
+    }
+  ],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-color-01",
+    "2026-07-13-foundations-content-01",
+    "2026-07-13-foundations-iconography-01",
+    "2026-07-13-foundations-motion-01",
+    "2026-07-13-foundations-radius-01",
+    "2026-07-13-foundations-spacing-01",
+    "2026-07-13-foundations-typography-01",
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-overview-for-designers-01",
+    "2026-07-13-overview-for-engineers-01",
+    "2026-07-13-tokens-color-01",
+    "2026-07-13-tokens-component-01",
+    "2026-07-13-tokens-css-variables-01",
+    "2026-07-13-tokens-density-01",
+    "2026-07-13-tokens-overview-01",
+    "2026-07-13-tokens-theme-01",
+    "2026-07-14-foundations-color-01"
+  ],
+  "impactedItems": ["tokens.color", "components.icon-button", "components.link"],
+  "nextRecommendedItems": ["components.icon-button", "components.link", "components.text-field"]
+}

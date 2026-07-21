@@ -117,10 +117,14 @@ test('contracts contain actionable intent, behavior, accessibility, and responsi
       assert.ok(contract.responsiveBehavior[mode].rules.length, `${contract.id} needs ${mode} rules`);
       assert.ok(contract.responsiveBehavior[mode].avoid.length, `${contract.id} needs ${mode} anti-patterns`);
     }
-    if (contract.status === 'draft') {
-      assert.equal(contract.tokenBindings.coverage, 'partial');
-      assert.ok(contract.tokenBindings.unboundSlots.length);
-      assert.ok(contract.openQuestions?.length);
+    if (contract.tokenBindings.coverage === 'partial') {
+      assert.ok(contract.tokenBindings.unboundSlots.length, `${contract.id} partial binding coverage needs unbound slots`);
+      assert.ok(contract.openQuestions?.length, `${contract.id} partial binding coverage needs open questions`);
+    }
+    if (contract.status === 'stable') {
+      assert.equal(contract.tokenBindings.coverage, 'complete', `${contract.id} stable contract needs complete bindings`);
+      assert.deepEqual(contract.tokenBindings.unboundSlots, [], `${contract.id} stable contract cannot have unbound slots`);
+      assert.deepEqual(contract.openQuestions ?? [], [], `${contract.id} stable contract cannot have open questions`);
     }
   }
 });
@@ -174,6 +178,71 @@ test('Secondary Button uses interactive control roles instead of the Card surfac
   assert.equal(button.variants.secondary.states.active.background, '--control-bg-active');
   assert.match(indexSource, /\.btn\[data-variant="secondary"\]\{[^}]*background:var\(--control-bg\)/);
   assert.doesNotMatch(indexSource, /\.btn\[data-variant="secondary"\]\{[^}]*background:var\(--surface\)/);
+});
+
+test('Button is implementation-ready without claiming production stability', () => {
+  const button = contracts.find((contract) => contract.id === 'button');
+  assert.equal(button.status, 'draft');
+  assert.equal(button.contractVersion, '0.2.0');
+  assert.deepEqual(Object.keys(button.variants), ['primary', 'secondary', 'tertiary', 'ghost', 'danger']);
+  assert.equal(button.tokenBindings.coverage, 'complete');
+  assert.deepEqual(button.tokenBindings.unboundSlots, []);
+  assert.deepEqual(button.openQuestions, []);
+
+  const props = Object.fromEntries(button.props.map((prop) => [prop.name, prop]));
+  assert.deepEqual(Object.keys(props), [
+    'children', 'variant', 'size', 'leadingIcon', 'trailingIcon', 'loading', 'disabled', 'fullWidth', 'type', 'ref',
+  ]);
+  assert.equal(props.children.required, true);
+  assert.equal(props.type.default, 'button');
+  assert.match(props.ref.type, /HTMLButtonElement/);
+  assert.ok(button.runtime.attributes.includes('aria-*'));
+  assert.ok(button.runtime.attributes.includes('data-*'));
+  assert.ok(button.runtime.attributes.includes('form'));
+  for (const attribute of ['formAction', 'formEncType', 'formMethod', 'formNoValidate', 'formTarget']) {
+    assert.ok(button.runtime.attributes.includes(attribute));
+  }
+  assert.ok(button.runtime.relations.includes('native-button-props-passthrough'));
+  assert.ok(!button.runtime.attributes.includes('aria-pressed'));
+
+  assert.equal(button.variants.primary.tokenRefs.background, '--button-primary-bg');
+  assert.equal(button.variants.primary.tokenRefs.foreground, '--button-primary-fg');
+
+  const bindingSlots = new Set(button.tokenBindings.bindings.map((binding) => binding.slot));
+  for (const slot of [
+    'variant.tertiary.container.background.hover-active',
+    'variant.tertiary.container.background.disabled',
+    'variant.ghost.container.background.active',
+    'variant.danger.container.background.disabled',
+  ]) assert.ok(bindingSlots.has(slot), `${slot} must be bound`);
+});
+
+test('Button showcase preserves native semantics and async state', () => {
+  const button = renderedComponents.find((component) => component.id === 'button');
+  const normal = button.render({ ...renderProps(button), label: '変更を保存' });
+  const disabled = button.render({ ...renderProps(button), label: '変更を保存', state: 'disabled' });
+  const loading = button.render({ ...renderProps(button), label: '変更を保存', state: 'loading' });
+  const withIcons = button.render({ ...renderProps(button), label: 'プロジェクトを作成', leadingIcon: true, trailingIcon: true });
+
+  assert.match(normal, /^<button type="button"/);
+  assert.match(normal, />\s*<span[^>]*>変更を保存<\/span>/);
+  assert.doesNotMatch(normal, /data-icononly/);
+  assert.match(disabled, /\sdisabled(?:\s|>)/);
+  assert.match(loading, /aria-busy="true"/);
+  assert.match(loading, /aria-disabled="true"/);
+  assert.match(loading, />\s*<span[^>]*>変更を保存<\/span>/);
+  assert.equal((withIcons.match(/aria-hidden="true"/g) ?? []).length, 2);
+
+  assert.doesNotMatch(indexSource, /\.btn\[data-variant="(?:outline|success|link)"\]/);
+  assert.match(indexSource, /\.btn\[data-variant="danger"\]:hover\{background:var\(--danger-hover\)\}/);
+  assert.match(indexSource, /\.btn\[data-variant="danger"\]:active\{background:var\(--danger-active\)\}/);
+  assert.doesNotMatch(indexSource, /\.btn\{[^}]*filter:/);
+  assert.doesNotMatch(indexSource, /\.btn\{[^}]*rgba\(/);
+  const gaps = { xs: '--sp-1', sm: '--sp-15', md: '--sp-2', lg: '--sp-2', xl: '--sp-25' };
+  for (const [size, token] of Object.entries(gaps)) {
+    assert.match(indexSource, new RegExp(`\\.btn\\[data-size="${size}"\\]\\{[^}]*gap:var\\(${token}\\)`));
+  }
+  assert.match(indexSource, /\.btn\[data-loading\]\{[^}]*color:transparent!important/);
 });
 
 test('all component showcases render every declared state and variant as valid tokenized HTML', () => {

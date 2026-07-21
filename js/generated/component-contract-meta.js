@@ -1595,7 +1595,7 @@ const COMPONENT_CONTRACTS={
       {
         "part": "label",
         "required": true,
-        "description": "操作結果を予測できる短い文言。iconOnly の場合は視覚表示ではなく accessible name として必須。"
+        "description": "操作結果を予測できる可視ラベル。Buttonでは必須で、アイコンだけの操作はIcon Buttonへ分離する。"
       },
       {
         "part": "leadingIcon",
@@ -1610,7 +1610,7 @@ const COMPONENT_CONTRACTS={
       {
         "part": "spinner",
         "required": false,
-        "description": "loading 中の進行表示。ラベルを消さず、aria-busy と disabled behavior を併用する。"
+        "description": "loading 中の進行表示。aria-hiddenにし、ラベルnode、accessible name、Button幅を保持する。"
       }
     ],
     "variants": [
@@ -1618,10 +1618,7 @@ const COMPONENT_CONTRACTS={
       "secondary",
       "tertiary",
       "ghost",
-      "outline",
-      "danger",
-      "success",
-      "link"
+      "danger"
     ],
     "sizes": [
       "xs",
@@ -1667,24 +1664,33 @@ const COMPONENT_CONTRACTS={
         "id": "disabled",
         "description": "操作不可の状態。",
         "requiredBehavior": [
-          "native disabled または aria-disabled を目的に応じて選ぶ",
-          "無効理由が必要な場合は aria-disabled と説明を併用"
+          "disabled propはnative disabledへ写像する",
+          "理由が必要な場合は周辺説明とaria-describedbyを併用する"
         ]
       },
       {
         "id": "loading",
         "description": "実行中の状態。",
         "requiredBehavior": [
-          "aria-busy=\"true\" を設定",
-          "二重送信を防ぐ",
-          "ラベルまたは accessible name を維持"
+          "aria-busy=\"true\"とaria-disabled=\"true\"を設定",
+          "clickとsubmitの再実行をguardする",
+          "ラベルnode、accessible name、Button幅を維持",
+          "spinner表示中はラベル文字を視覚的に透明化する",
+          "フォーカスを移動しない"
         ]
       }
     ],
     "props": [
       {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true,
+        "default": null,
+        "description": "操作結果を示す可視ラベル。テキストを含め、アイコンだけにしない。"
+      },
+      {
         "name": "variant",
-        "type": "\"primary\" | \"secondary\" | \"tertiary\" | \"ghost\" | \"outline\" | \"danger\" | \"success\" | \"link\"",
+        "type": "\"primary\" | \"secondary\" | \"tertiary\" | \"ghost\" | \"danger\"",
         "required": false,
         "default": "primary",
         "description": "視覚的な優先度と文脈。"
@@ -1695,6 +1701,20 @@ const COMPONENT_CONTRACTS={
         "required": false,
         "default": "md",
         "description": "密度 token に連動する高さと余白。"
+      },
+      {
+        "name": "leadingIcon",
+        "type": "ReactNode",
+        "required": false,
+        "default": null,
+        "description": "ラベルの意味を補強する先頭アイコン。装飾としてaria-hiddenにする。"
+      },
+      {
+        "name": "trailingIcon",
+        "type": "ReactNode",
+        "required": false,
+        "default": null,
+        "description": "展開や次方向を補足する末尾アイコン。装飾としてaria-hiddenにする。"
       },
       {
         "name": "loading",
@@ -1711,18 +1731,25 @@ const COMPONENT_CONTRACTS={
         "description": "操作不可。フォーム送信対象から外す場合に使う。"
       },
       {
-        "name": "aria-label",
-        "type": "string",
-        "required": false,
-        "default": null,
-        "description": "iconOnly または視覚ラベルがない場合に必須。"
-      },
-      {
         "name": "fullWidth",
         "type": "boolean",
         "required": false,
         "default": "false",
         "description": "親コンテナ幅いっぱいに広げる。モバイルの主要アクションで使う。"
+      },
+      {
+        "name": "type",
+        "type": "\"button\" | \"submit\" | \"reset\"",
+        "required": false,
+        "default": "button",
+        "description": "native button type。フォーム送信時だけsubmitを明示する。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLButtonElement>",
+        "required": false,
+        "default": null,
+        "description": "native button要素へforwardするref。"
       }
     ],
     "tokenRefs": {
@@ -1731,6 +1758,14 @@ const COMPONENT_CONTRACTS={
         "--button-primary-bg-hover",
         "--button-primary-bg-active",
         "--button-primary-fg"
+      ],
+      "componentDimension": [
+        "--button-icon-size-xs",
+        "--button-icon-size-sm",
+        "--button-icon-size-md",
+        "--button-icon-size-lg",
+        "--button-icon-size-xl",
+        "--button-spinner-stroke"
       ],
       "semanticColor": [
         "--primary",
@@ -1748,13 +1783,10 @@ const COMPONENT_CONTRACTS={
         "--surface-muted",
         "--fg",
         "--fg-disabled",
-        "--border",
-        "--border-muted",
-        "--border-strong",
         "--danger",
+        "--danger-hover",
+        "--danger-active",
         "--danger-on-solid",
-        "--success",
-        "--success-on-solid",
         "--disabled",
         "--focus-ring"
       ],
@@ -1783,21 +1815,22 @@ const COMPONENT_CONTRACTS={
       ],
       "motion": [
         "--dur-fast",
-        "--dur-normal"
+        "--dur-loop",
+        "--ease-standard"
       ]
     },
     "accessibility": {
       "requirements": [
         "native button 要素を既定にする",
-        "iconOnly の場合は aria-label を必須にする",
-        "loading 中も accessible name を失わない",
-        "色だけで danger や success の意味を伝えない",
+        "操作結果を予測できる可視ラベルを必須にし、アイコンだけの操作はIcon Buttonを使う",
+        "loading 中もラベルnode、accessible name、Button幅を失わず、handler側でも再実行を防ぐ",
+        "色だけで danger の意味を伝えない",
         "操作targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする"
       ],
       "aria": [
-        "loading 中は aria-busy=\"true\" を設定する",
-        "toggle 的に使う場合は aria-pressed を明示する",
-        "無効理由を説明したい場合は disabled ではなく aria-disabled と aria-describedby を検討する"
+        "loading 中は aria-busy=\"true\" と aria-disabled=\"true\" を設定する",
+        "無効理由を説明したい場合はaria-describedbyで周辺説明へ接続する",
+        "aria-controlsとaria-expandedはButtonが開閉対象を制御する場合だけnative属性として渡す"
       ],
       "focus": [
         ":focus-visible で --focus-ring を使う",
@@ -1865,7 +1898,7 @@ const COMPONENT_CONTRACTS={
         "title": "Table row",
         "description": "一覧の各行に付随する軽い操作。",
         "recommended": [
-          "行内操作は ghost、link、Icon Button を優先する",
+          "可視ラベルが必要な行内操作はghost、アイコンだけならIcon Button、遷移ならLinkを使う",
           "破壊的操作はメニューや確認ダイアログへ逃がす"
         ],
         "avoid": [
@@ -1924,22 +1957,17 @@ const COMPONENT_CONTRACTS={
           "操作targetは24px minimum、touch中心の主要操作は原則44px以上にする",
           "Comfortable density では主要操作の押しやすさを優先する",
           "hover に意味を依存しない",
-          "icon-only action は aria-label と十分な touch target を必須にする",
+          "icon-only action はIcon Buttonへ分離し、十分なtouch targetを確保する",
           "loading 中は二重実行を防ぐ"
         ],
         "avoid": [
           "hover でしか分からない状態表現",
-          "小さすぎる icon-only action",
+          "小さすぎるIcon Button",
           "loading 中に連打できる状態"
         ]
       }
     },
-    "openQuestions": [
-      "danger / success の hover-active 専用 semantic token を追加するか",
-      "Button と Icon Button を同一 contract に含めるか、別 contract に分けるか",
-      "asChild / polymorphic API を React 実装時に許可するか",
-      "未結線の spacing、radius、shadow、filter、spinner をどの token layer が所有するか決め、tokenBindings を complete にできるか"
-    ]
+    "openQuestions": []
   },
   "card": {
     "id": "card",

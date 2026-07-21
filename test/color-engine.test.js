@@ -167,6 +167,25 @@ test('buildSemantics: *-on-solid tokens meet WCAG AA (4.5:1) against their own b
   }
 });
 
+test('danger interactive states preserve order and readable foregrounds', () => {
+  for (const { hex } of SEED_PRESETS) {
+    const P = buildPalettes(hex);
+    for (const [theme, contrastMode] of [['light', 'standard'], ['dark', 'standard'], ['light', 'high'], ['dark', 'high']]) {
+      const T = buildSemantics(P, theme, contrastMode);
+      assert.match(T['danger-hover'], /^#[0-9a-f]{6}$/);
+      assert.match(T['danger-active'], /^#[0-9a-f]{6}$/);
+      assert.notEqual(T.danger, T['danger-hover']);
+      assert.notEqual(T['danger-hover'], T['danger-active']);
+      for (const state of ['danger', 'danger-hover', 'danger-active']) {
+        assert.ok(
+          contrast(T['danger-on-solid'], T[state]) >= 4.5,
+          `${theme}-${contrastMode}: danger-on-solid vs ${state} must stay readable`,
+        );
+      }
+    }
+  }
+});
+
 test('chartForegrounds returns one legible foreground per chart color (WCAG large-text/UI floor, 3:1)', () => {
   // NOTE: chart tokens are fill colors for data-viz swatches/legends, not
   // body text, so WCAG's large-text/graphical-object floor (3:1) is the

@@ -608,7 +608,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.button.2026-07-14-components-button-01.review.json"
+          "reviewRecord": "design/reviews/components.button.2026-07-21-components-button-01.review.json"
         },
         {
           "id": "components.text-field",

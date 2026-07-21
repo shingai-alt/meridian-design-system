@@ -1,15 +1,15 @@
 {
   "schemaVersion": "0.1.0",
-  "translationPackDigest": "sha256-0183e37d772d938042a98063426412505dce847213b3648225dab190d1ecbd8b",
+  "translationPackDigest": "sha256-543b8641662656715407ff1cd9ab3d599e8a14aa54ac0ba32c558148b755fa84",
   "runtimeVersion": "0.1.0",
   "components": [
     {
       "id": "button",
       "name": "Button",
       "status": "draft",
-      "contractVersion": "0.1.0",
+      "contractVersion": "0.2.0",
       "source": "design/contracts/components/button.contract.json",
-      "sourceDigest": "sha256-c788bac60513db39533b701411374df39c3fc5f2164d16228aebf115362d146c",
+      "sourceDigest": "sha256-33a67f96b1c8cf06d1f1753a74a4c4bbd4f182a8acd027952796fa71daa5651a",
       "pilotScope": [
         "team-invitation"
       ],
@@ -47,7 +47,7 @@
         {
           "part": "label",
           "required": true,
-          "description": "操作結果を予測できる短い文言。iconOnly の場合は視覚表示ではなく accessible name として必須。"
+          "description": "操作結果を予測できる可視ラベル。Buttonでは必須で、アイコンだけの操作はIcon Buttonへ分離する。"
         },
         {
           "part": "leadingIcon",
@@ -62,7 +62,7 @@
         {
           "part": "spinner",
           "required": false,
-          "description": "loading 中の進行表示。ラベルを消さず、aria-busy と disabled behavior を併用する。"
+          "description": "loading 中の進行表示。aria-hiddenにし、ラベルnode、accessible name、Button幅を保持する。"
         }
       ],
       "variants": [
@@ -70,10 +70,7 @@
         "secondary",
         "tertiary",
         "ghost",
-        "outline",
-        "danger",
-        "success",
-        "link"
+        "danger"
       ],
       "states": [
         {
@@ -112,17 +109,19 @@
           "id": "disabled",
           "description": "操作不可の状態。",
           "requiredBehavior": [
-            "native disabled または aria-disabled を目的に応じて選ぶ",
-            "無効理由が必要な場合は aria-disabled と説明を併用"
+            "disabled propはnative disabledへ写像する",
+            "理由が必要な場合は周辺説明とaria-describedbyを併用する"
           ]
         },
         {
           "id": "loading",
           "description": "実行中の状態。",
           "requiredBehavior": [
-            "aria-busy=\"true\" を設定",
-            "二重送信を防ぐ",
-            "ラベルまたは accessible name を維持"
+            "aria-busy=\"true\"とaria-disabled=\"true\"を設定",
+            "clickとsubmitの再実行をguardする",
+            "ラベルnode、accessible name、Button幅を維持",
+            "spinner表示中はラベル文字を視覚的に透明化する",
+            "フォーカスを移動しない"
           ]
         }
       ],
@@ -135,8 +134,15 @@
       ],
       "props": [
         {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "操作結果を示す可視ラベル。テキストを含め、アイコンだけにしない。"
+        },
+        {
           "name": "variant",
-          "type": "\"primary\" | \"secondary\" | \"tertiary\" | \"ghost\" | \"outline\" | \"danger\" | \"success\" | \"link\"",
+          "type": "\"primary\" | \"secondary\" | \"tertiary\" | \"ghost\" | \"danger\"",
           "required": false,
           "default": "primary",
           "description": "視覚的な優先度と文脈。"
@@ -147,6 +153,20 @@
           "required": false,
           "default": "md",
           "description": "密度 token に連動する高さと余白。"
+        },
+        {
+          "name": "leadingIcon",
+          "type": "ReactNode",
+          "required": false,
+          "default": null,
+          "description": "ラベルの意味を補強する先頭アイコン。装飾としてaria-hiddenにする。"
+        },
+        {
+          "name": "trailingIcon",
+          "type": "ReactNode",
+          "required": false,
+          "default": null,
+          "description": "展開や次方向を補足する末尾アイコン。装飾としてaria-hiddenにする。"
         },
         {
           "name": "loading",
@@ -163,32 +183,39 @@
           "description": "操作不可。フォーム送信対象から外す場合に使う。"
         },
         {
-          "name": "aria-label",
-          "type": "string",
-          "required": false,
-          "default": null,
-          "description": "iconOnly または視覚ラベルがない場合に必須。"
-        },
-        {
           "name": "fullWidth",
           "type": "boolean",
           "required": false,
           "default": "false",
           "description": "親コンテナ幅いっぱいに広げる。モバイルの主要アクションで使う。"
+        },
+        {
+          "name": "type",
+          "type": "\"button\" | \"submit\" | \"reset\"",
+          "required": false,
+          "default": "button",
+          "description": "native button type。フォーム送信時だけsubmitを明示する。"
+        },
+        {
+          "name": "ref",
+          "type": "ForwardedRef<HTMLButtonElement>",
+          "required": false,
+          "default": null,
+          "description": "native button要素へforwardするref。"
         }
       ],
       "accessibility": {
         "requirements": [
           "native button 要素を既定にする",
-          "iconOnly の場合は aria-label を必須にする",
-          "loading 中も accessible name を失わない",
-          "色だけで danger や success の意味を伝えない",
+          "操作結果を予測できる可視ラベルを必須にし、アイコンだけの操作はIcon Buttonを使う",
+          "loading 中もラベルnode、accessible name、Button幅を失わず、handler側でも再実行を防ぐ",
+          "色だけで danger の意味を伝えない",
           "操作targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする"
         ],
         "aria": [
-          "loading 中は aria-busy=\"true\" を設定する",
-          "toggle 的に使う場合は aria-pressed を明示する",
-          "無効理由を説明したい場合は disabled ではなく aria-disabled と aria-describedby を検討する"
+          "loading 中は aria-busy=\"true\" と aria-disabled=\"true\" を設定する",
+          "無効理由を説明したい場合はaria-describedbyで周辺説明へ接続する",
+          "aria-controlsとaria-expandedはButtonが開閉対象を制御する場合だけnative属性として渡す"
         ],
         "focus": [
           ":focus-visible で --focus-ring を使う",
@@ -222,6 +249,7 @@
       ],
       "allowedTokenCategories": [
         "componentColor",
+        "componentDimension",
         "semanticColor",
         "density",
         "spacing",
@@ -230,14 +258,19 @@
       ],
       "selectionRules": {
         "useWhen": [
-          "状態を変更する明確なactionを実行する。"
+          "状態を変更する明確なactionを実行する。",
+          "フォームを送信、保存、作成、削除、キャンセルする。"
         ],
         "avoidWhen": [
-          "ページ遷移だけならLinkを使う。"
+          "ページ遷移だけならLinkを使う。",
+          "アイコンだけの操作ならIcon Buttonを使う。",
+          "選択状態の切り替えには専用のselection controlを使う。"
         ],
         "alternatives": [
           "link",
-          "icon-button"
+          "icon-button",
+          "switch",
+          "segmented-control"
         ]
       },
       "negativeExamples": [
@@ -246,6 +279,13 @@
           "reason": "action hierarchyとToken bindingを迂回するため。",
           "ruleIds": [
             "NO_RAW_HEX_COLOR"
+          ]
+        },
+        {
+          "pattern": "可視ラベルなしのButtonを作る。",
+          "reason": "Icon-only actionの責務をIcon Buttonから奪い、音声入力と認知上の手掛かりを弱めるため。",
+          "ruleIds": [
+            "FOCUS_VISIBLE_REQUIRED"
           ]
         }
       ],
@@ -256,7 +296,13 @@
         "focus",
         "primary",
         "secondary",
-        "ghost"
+        "tertiary",
+        "ghost",
+        "danger",
+        "with-leading-icon",
+        "with-trailing-icon",
+        "full-width",
+        "form-submit"
       ],
       "examples": [
         {
@@ -270,9 +316,9 @@
           "code": "<Button variant=\"ghost\">キャンセル</Button>\n<Button variant=\"primary\">保存</Button>"
         },
         {
-          "id": "icon-only",
-          "description": "アイコンのみの操作。aria-label が必須。",
-          "code": "<Button variant=\"ghost\" aria-label=\"検索\">\n  <SearchIcon aria-hidden=\"true\" />\n</Button>"
+          "id": "loading-submit",
+          "description": "フォーム送信中もラベルを保ち、二重送信を防ぐ。",
+          "code": "<Button type=\"submit\" loading>変更を保存</Button>"
         }
       ],
       "runtime": {
@@ -289,19 +335,31 @@
         "attributes": [
           "type",
           "disabled",
-          "aria-disabled",
-          "aria-label",
-          "aria-busy"
+          "name",
+          "value",
+          "form",
+          "formAction",
+          "formEncType",
+          "formMethod",
+          "formNoValidate",
+          "formTarget",
+          "aria-*",
+          "data-*"
         ],
         "stateModel": [
           "data-meridian-variant",
           "data-meridian-state"
         ],
         "events": [
-          "click"
+          "click",
+          "keydown",
+          "focus",
+          "blur"
         ],
         "relations": [
-          "accessible-name"
+          "accessible-name",
+          "description",
+          "native-button-props-passthrough"
         ],
         "provenance": [
           "component",

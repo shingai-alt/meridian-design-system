@@ -42,6 +42,8 @@
   { "token": "warning-foreground", "meaning": "警告テキスト(subtle背景の上)", "usage": "Banner text" },
   { "token": "warning-on-solid", "meaning": "warning の solid 背景の上の文字色", "usage": "warning ボタンの label(solid背景時)" },
   { "token": "danger", "meaning": "危険・破壊的", "usage": "削除・エラー" },
+  { "token": "danger-hover", "meaning": "破壊的操作のhover面", "usage": "Danger Button hover" },
+  { "token": "danger-active", "meaning": "破壊的操作のpressed面", "usage": "Danger Button pressed" },
   { "token": "danger-subtle", "meaning": "危険の淡い面", "usage": "Error alert bg" },
   { "token": "danger-foreground", "meaning": "危険テキスト(subtle背景の上)", "usage": "Error text" },
   { "token": "danger-on-solid", "meaning": "danger の solid 背景の上の文字色", "usage": "danger ボタンの label(solid背景時)" },

@@ -51,7 +51,7 @@ const TOKEN_CATALOG={
       "id": "semantic-color",
       "label": "Semantic color",
       "layer": "semantic",
-      "count": 68,
+      "count": 70,
       "source": "design/semantic-tokens.json",
       "css": "用途別の短縮互換名"
     },
@@ -91,7 +91,7 @@ const TOKEN_CATALOG={
       "id": "motion",
       "label": "Motion",
       "layer": "reference",
-      "count": 12,
+      "count": 13,
       "source": "tokens/src/motion.json",
       "css": "--dur-* / --ease-* / --motion-distance-*"
     },
@@ -115,7 +115,7 @@ const TOKEN_CATALOG={
       "id": "component",
       "label": "Component",
       "layer": "component",
-      "count": 12,
+      "count": 18,
       "source": "tokens/src/component.json",
       "css": "--{component}-*"
     }
@@ -143,25 +143,25 @@ const TOKEN_CATALOG={
       "path": "tokens/build/meridian.tokens.json",
       "format": "DTCG .tokens.json",
       "context": "Light / Standard",
-      "tokenCount": 315
+      "tokenCount": 324
     },
     {
       "path": "tokens/build/meridian.dark.tokens.json",
       "format": "DTCG .tokens.json",
       "context": "Dark / Standard",
-      "tokenCount": 315
+      "tokenCount": 324
     },
     {
       "path": "tokens/build/meridian.high-contrast.tokens.json",
       "format": "DTCG .tokens.json",
       "context": "Light / High",
-      "tokenCount": 315
+      "tokenCount": 324
     },
     {
       "path": "tokens/build/meridian.dark.high-contrast.tokens.json",
       "format": "DTCG .tokens.json",
       "context": "Dark / High",
-      "tokenCount": 315
+      "tokenCount": 324
     }
   ],
   "contexts": [
@@ -283,6 +283,186 @@ const TOKEN_CATALOG={
     }
   },
   "componentTokens": [
+    {
+      "path": "component.button.icon.size.xs",
+      "cssVariable": "--button-icon-size-xs",
+      "trigger": "intrinsic-component-value",
+      "reason": "xs Buttonの補助iconをlabel寸法へ合わせる。",
+      "aliases": {
+        "light-standard": {
+          "value": 0.65625,
+          "unit": "rem"
+        },
+        "dark-standard": {
+          "value": 0.65625,
+          "unit": "rem"
+        },
+        "light-high": {
+          "value": 0.65625,
+          "unit": "rem"
+        },
+        "dark-high": {
+          "value": 0.65625,
+          "unit": "rem"
+        }
+      },
+      "values": {
+        "light-standard": "0.65625rem",
+        "dark-standard": "0.65625rem",
+        "light-high": "0.65625rem",
+        "dark-high": "0.65625rem"
+      }
+    },
+    {
+      "path": "component.button.icon.size.sm",
+      "cssVariable": "--button-icon-size-sm",
+      "trigger": "intrinsic-component-value",
+      "reason": "sm Buttonの補助iconをlabel寸法へ合わせる。",
+      "aliases": {
+        "light-standard": {
+          "value": 0.75,
+          "unit": "rem"
+        },
+        "dark-standard": {
+          "value": 0.75,
+          "unit": "rem"
+        },
+        "light-high": {
+          "value": 0.75,
+          "unit": "rem"
+        },
+        "dark-high": {
+          "value": 0.75,
+          "unit": "rem"
+        }
+      },
+      "values": {
+        "light-standard": "0.75rem",
+        "dark-standard": "0.75rem",
+        "light-high": "0.75rem",
+        "dark-high": "0.75rem"
+      }
+    },
+    {
+      "path": "component.button.icon.size.md",
+      "cssVariable": "--button-icon-size-md",
+      "trigger": "intrinsic-component-value",
+      "reason": "md Buttonの補助iconをlabel寸法へ合わせる。",
+      "aliases": {
+        "light-standard": {
+          "value": 0.78125,
+          "unit": "rem"
+        },
+        "dark-standard": {
+          "value": 0.78125,
+          "unit": "rem"
+        },
+        "light-high": {
+          "value": 0.78125,
+          "unit": "rem"
+        },
+        "dark-high": {
+          "value": 0.78125,
+          "unit": "rem"
+        }
+      },
+      "values": {
+        "light-standard": "0.78125rem",
+        "dark-standard": "0.78125rem",
+        "light-high": "0.78125rem",
+        "dark-high": "0.78125rem"
+      }
+    },
+    {
+      "path": "component.button.icon.size.lg",
+      "cssVariable": "--button-icon-size-lg",
+      "trigger": "intrinsic-component-value",
+      "reason": "lg Buttonの補助iconをlabel寸法へ合わせる。",
+      "aliases": {
+        "light-standard": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "dark-standard": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "light-high": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "dark-high": {
+          "value": 0.875,
+          "unit": "rem"
+        }
+      },
+      "values": {
+        "light-standard": "0.875rem",
+        "dark-standard": "0.875rem",
+        "light-high": "0.875rem",
+        "dark-high": "0.875rem"
+      }
+    },
+    {
+      "path": "component.button.icon.size.xl",
+      "cssVariable": "--button-icon-size-xl",
+      "trigger": "intrinsic-component-value",
+      "reason": "xl Buttonの補助iconをlabel寸法へ合わせる。",
+      "aliases": {
+        "light-standard": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "dark-standard": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "light-high": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "dark-high": {
+          "value": 0.875,
+          "unit": "rem"
+        }
+      },
+      "values": {
+        "light-standard": "0.875rem",
+        "dark-standard": "0.875rem",
+        "light-high": "0.875rem",
+        "dark-high": "0.875rem"
+      }
+    },
+    {
+      "path": "component.button.spinner.stroke",
+      "cssVariable": "--button-spinner-stroke",
+      "trigger": "intrinsic-component-value",
+      "reason": "Button内loading indicatorのstroke geometryを全sizeで一貫させる。",
+      "aliases": {
+        "light-standard": {
+          "value": 1.5,
+          "unit": "px"
+        },
+        "dark-standard": {
+          "value": 1.5,
+          "unit": "px"
+        },
+        "light-high": {
+          "value": 1.5,
+          "unit": "px"
+        },
+        "dark-high": {
+          "value": 1.5,
+          "unit": "px"
+        }
+      },
+      "values": {
+        "light-standard": "1.5px",
+        "dark-standard": "1.5px",
+        "light-high": "1.5px",
+        "dark-high": "1.5px"
+      }
+    },
     {
       "path": "component.button.primary.background.default",
       "cssVariable": "--button-primary-bg",
@@ -1051,6 +1231,30 @@ const TOKEN_CATALOG={
         "dark-standard": "#ca4941",
         "light-high": "#8b000a",
         "dark-high": "#dc7167"
+      }
+    },
+    {
+      "token": "danger-hover",
+      "meaning": "破壊的操作のhover面",
+      "usage": "Danger Button hover",
+      "cssVariable": "--danger-hover",
+      "values": {
+        "light-standard": "#8b000a",
+        "dark-standard": "#b01f1f",
+        "light-high": "#610005",
+        "dark-high": "#ea9d94"
+      }
+    },
+    {
+      "token": "danger-active",
+      "meaning": "破壊的操作のpressed面",
+      "usage": "Danger Button pressed",
+      "cssVariable": "--danger-active",
+      "values": {
+        "light-standard": "#610005",
+        "dark-standard": "#8b000a",
+        "light-high": "#3f0002",
+        "dark-high": "#f5c3bd"
       }
     },
     {

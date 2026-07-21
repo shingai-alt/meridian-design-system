@@ -3,7 +3,7 @@
   "conceptId": "phase2_team_invitation",
   "sourcePackageId": "phase1_team_invitation",
   "compositionId": "team-invitation.component-composition",
-  "translationPackDigest": "sha256-0183e37d772d938042a98063426412505dce847213b3648225dab190d1ecbd8b",
+  "translationPackDigest": "sha256-543b8641662656715407ff1cd9ab3d599e8a14aa54ac0ba32c558148b755fa84",
   "runtimeVersion": "0.1.0",
   "patterns": [
     "interactive-row-group"
@@ -175,7 +175,7 @@
       "component": "button",
       "instanceId": "invite-action",
       "repeat": "prototype.actions",
-      "contractVersion": "0.1.0",
+      "contractVersion": "0.2.0",
       "props": {
         "variant": "primary",
         "size": "md",
@@ -332,5 +332,5 @@
       "callCount": 1
     }
   ],
-  "validationDigest": "sha256-5debce52e8d528cd8e8ab0b4d3d6edf7d70b94009c8e7022815c67b914d3135c"
+  "validationDigest": "sha256-4a1e78f02222191b8c9ace4cd402f52de70de5f186e12cb0f2aa92bd85f0da8d"
 }

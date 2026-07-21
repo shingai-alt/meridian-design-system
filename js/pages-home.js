@@ -43,7 +43,7 @@ ${usageMeterEl({value:72})}
 <div class="pal"><span class="nm">primary</span>${STEPS.map(s=>`<button class="cell" style="background:${P.primary[s]}" data-copy="${P.primary[s]}"><span style="color:${L_MAP[s]>60?'rgba(0,0,0,.5)':'rgba(255,255,255,.8)'}">${s}</span></button>`).join('')}</div>
 <div class="pal"><span class="nm">neutral</span>${STEPS.map(s=>`<button class="cell" style="background:${P.neutral[s]}" data-copy="${P.neutral[s]}"><span style="color:${L_MAP[s]>60?'rgba(0,0,0,.5)':'rgba(255,255,255,.8)'}">${s}</span></button>`).join('')}</div>
 </div>
-<div class="rowflex" style="margin-top:var(--sp-3)"><a href="#/foundations/color" class="btn" data-variant="link" data-size="md">カラーシステムの詳細 →</a></div>
+<div class="rowflex" style="margin-top:var(--sp-3)"><a href="#/foundations/color" class="btn" data-variant="ghost" data-size="md">カラーシステムの詳細 →</a></div>
 </section>
 
 <section class="home-sec" style="padding-top:0">

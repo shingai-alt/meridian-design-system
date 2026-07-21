@@ -2,7 +2,7 @@
   "schemaVersion": "0.1.0",
   "id": "team-invitation.component-composition",
   "conceptId": "phase2_team_invitation",
-  "translationPackDigest": "sha256-0183e37d772d938042a98063426412505dce847213b3648225dab190d1ecbd8b",
+  "translationPackDigest": "sha256-543b8641662656715407ff1cd9ab3d599e8a14aa54ac0ba32c558148b755fa84",
   "patterns": ["interactive-row-group"],
   "nodes": [
     {

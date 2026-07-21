@@ -183,6 +183,7 @@ PCとSPで同じsemantic roleを使います。headingのHTML levelは文書構�
 | --dur-normal | 180ms | menu、popover、toast、collapse |
 | --dur-slow | 240ms | dialog、drawer、large expansion |
 | --dur-slower | 320ms | rare page-level transition only |
+| --dur-loop | 960ms | loading spinner loop |
 
 ## Tokens — Shadow
 
@@ -417,6 +418,8 @@ errorやsuccessでも温度を過度に変えません。完全な正本は `des
 | --warning-fg | 警告テキスト(subtle背景の上) | Banner text |
 | --warning-on-solid | warning の solid 背景の上の文字色 | warning ボタンの label(solid背景時) |
 | --danger | 危険・破壊的 | 削除・エラー |
+| --danger-hover | 破壊的操作のhover面 | Danger Button hover |
+| --danger-active | 破壊的操作のpressed面 | Danger Button pressed |
 | --danger-subtle | 危険の淡い面 | Error alert bg |
 | --danger-fg | 危険テキスト(subtle背景の上) | Error text |
 | --danger-on-solid | danger の solid 背景の上の文字色 | danger ボタンの label(solid背景時) |

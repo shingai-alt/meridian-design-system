@@ -2051,6 +2051,46 @@
           }
         }
       },
+      "danger-hover": {
+        "$description": "破壊的操作のhover面。Danger Button hover",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.917647,
+            0.615686,
+            0.580392
+          ],
+          "hex": "#ea9d94"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "danger-hover",
+            "cssVariable": "--danger-hover",
+            "usage": "Danger Button hover"
+          }
+        }
+      },
+      "danger-active": {
+        "$description": "破壊的操作のpressed面。Danger Button pressed",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.960784,
+            0.764706,
+            0.741176
+          ],
+          "hex": "#f5c3bd"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "layer": "semantic",
+            "runtimeKey": "danger-active",
+            "cssVariable": "--danger-active",
+            "usage": "Danger Button pressed"
+          }
+        }
+      },
       "danger-subtle": {
         "$description": "危険の淡い面。Error alert bg",
         "$value": {
@@ -2923,6 +2963,18 @@
         "$extensions": {
           "com.meridian": {
             "usage": "rare page-level transition only"
+          }
+        }
+      },
+      "loop": {
+        "$description": "Spinnerなど継続状態を示す反復motionの1cycle。Reduced modeでは静止表示へ解決する。",
+        "$value": {
+          "value": 960,
+          "unit": "ms"
+        },
+        "$extensions": {
+          "com.meridian": {
+            "usage": "loading spinner loop"
           }
         }
       }
@@ -4417,6 +4469,92 @@
   "component": {
     "$description": "Policy gateを通過した公開Component token。各tokenはSemantic tokenを既定値として参照し、独立変更が必要な箇所だけを公開する。",
     "button": {
+      "icon": {
+        "size": {
+          "$type": "dimension",
+          "xs": {
+            "$value": {
+              "value": 0.65625,
+              "unit": "rem"
+            },
+            "$extensions": {
+              "com.meridian": {
+                "cssVariable": "--button-icon-size-xs",
+                "trigger": "intrinsic-component-value",
+                "reason": "xs Buttonの補助iconをlabel寸法へ合わせる。"
+              }
+            }
+          },
+          "sm": {
+            "$value": {
+              "value": 0.75,
+              "unit": "rem"
+            },
+            "$extensions": {
+              "com.meridian": {
+                "cssVariable": "--button-icon-size-sm",
+                "trigger": "intrinsic-component-value",
+                "reason": "sm Buttonの補助iconをlabel寸法へ合わせる。"
+              }
+            }
+          },
+          "md": {
+            "$value": {
+              "value": 0.78125,
+              "unit": "rem"
+            },
+            "$extensions": {
+              "com.meridian": {
+                "cssVariable": "--button-icon-size-md",
+                "trigger": "intrinsic-component-value",
+                "reason": "md Buttonの補助iconをlabel寸法へ合わせる。"
+              }
+            }
+          },
+          "lg": {
+            "$value": {
+              "value": 0.875,
+              "unit": "rem"
+            },
+            "$extensions": {
+              "com.meridian": {
+                "cssVariable": "--button-icon-size-lg",
+                "trigger": "intrinsic-component-value",
+                "reason": "lg Buttonの補助iconをlabel寸法へ合わせる。"
+              }
+            }
+          },
+          "xl": {
+            "$value": {
+              "value": 0.875,
+              "unit": "rem"
+            },
+            "$extensions": {
+              "com.meridian": {
+                "cssVariable": "--button-icon-size-xl",
+                "trigger": "intrinsic-component-value",
+                "reason": "xl Buttonの補助iconをlabel寸法へ合わせる。"
+              }
+            }
+          }
+        }
+      },
+      "spinner": {
+        "stroke": {
+          "$type": "dimension",
+          "$value": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "$extensions": {
+            "com.meridian": {
+              "cssVariable": "--button-spinner-stroke",
+              "trigger": "intrinsic-component-value",
+              "reason": "Button内loading indicatorのstroke geometryを全sizeで一貫させる。"
+            }
+          }
+        }
+      },
       "primary": {
         "background": {
           "default": {

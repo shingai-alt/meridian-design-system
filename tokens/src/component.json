@@ -1,6 +1,38 @@
 {
   "$description": "Policy gateを通過した公開Component token。各tokenはSemantic tokenを既定値として参照し、独立変更が必要な箇所だけを公開する。",
   "button": {
+    "icon": {
+      "size": {
+        "$type": "dimension",
+        "xs": {
+          "$value": { "value": 0.65625, "unit": "rem" },
+          "$extensions": { "com.meridian": { "cssVariable": "--button-icon-size-xs", "trigger": "intrinsic-component-value", "reason": "xs Buttonの補助iconをlabel寸法へ合わせる。" } }
+        },
+        "sm": {
+          "$value": { "value": 0.75, "unit": "rem" },
+          "$extensions": { "com.meridian": { "cssVariable": "--button-icon-size-sm", "trigger": "intrinsic-component-value", "reason": "sm Buttonの補助iconをlabel寸法へ合わせる。" } }
+        },
+        "md": {
+          "$value": { "value": 0.78125, "unit": "rem" },
+          "$extensions": { "com.meridian": { "cssVariable": "--button-icon-size-md", "trigger": "intrinsic-component-value", "reason": "md Buttonの補助iconをlabel寸法へ合わせる。" } }
+        },
+        "lg": {
+          "$value": { "value": 0.875, "unit": "rem" },
+          "$extensions": { "com.meridian": { "cssVariable": "--button-icon-size-lg", "trigger": "intrinsic-component-value", "reason": "lg Buttonの補助iconをlabel寸法へ合わせる。" } }
+        },
+        "xl": {
+          "$value": { "value": 0.875, "unit": "rem" },
+          "$extensions": { "com.meridian": { "cssVariable": "--button-icon-size-xl", "trigger": "intrinsic-component-value", "reason": "xl Buttonの補助iconをlabel寸法へ合わせる。" } }
+        }
+      }
+    },
+    "spinner": {
+      "stroke": {
+        "$type": "dimension",
+        "$value": { "value": 1.5, "unit": "px" },
+        "$extensions": { "com.meridian": { "cssVariable": "--button-spinner-stroke", "trigger": "intrinsic-component-value", "reason": "Button内loading indicatorのstroke geometryを全sizeで一貫させる。" } }
+      }
+    },
     "primary": {
       "background": {
         "default": {

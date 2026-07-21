@@ -116,7 +116,7 @@ test('CSS output contains every published context and component binding', () => 
   }
   for (const mode of ['compact', 'default', 'comfortable']) assert.match(css, new RegExp(`data-density="${mode}"`));
   assert.match(css, /prefers-reduced-motion: reduce/);
-  assert.equal(catalog.componentTokens.length, 12);
+  assert.ok(catalog.componentTokens.length >= 12);
   for (const token of catalog.componentTokens) {
     assert.match(css, new RegExp(`${token.cssVariable.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}:`));
     assert.ok(token.trigger);

@@ -1,21 +1,21 @@
 # Meridian AI Component Index
 
-- Translation Pack: `sha256-0183e37d772d938042a98063426412505dce847213b3648225dab190d1ecbd8b`
+- Translation Pack: `sha256-543b8641662656715407ff1cd9ab3d599e8a14aa54ac0ba32c558148b755fa84`
 - Runtime: `0.1.0`
 - Generated from Contract, Token policy, and Accessibility policy. Do not edit.
 
 ## Button `button`
 
 - Status: draft
-- Contract: 0.1.0
+- Contract: 0.2.0
 - Source: `design/contracts/components/button.contract.json`
-- Source digest: `sha256-c788bac60513db39533b701411374df39c3fc5f2164d16228aebf115362d146c`
-- Variants: primary, secondary, tertiary, ghost, outline, danger, success, link
+- Source digest: `sha256-33a67f96b1c8cf06d1f1753a74a4c4bbd4f182a8acd027952796fa71daa5651a`
+- Variants: primary, secondary, tertiary, ghost, danger
 - States: default, hover, active, focus, disabled, loading
 - Sizes: xs, sm, md, lg, xl
 - Runtime compatibility: >=0.1.0 <1.0.0
 - Pilot scope: team-invitation
-- Required scenarios: default, disabled, loading, focus, primary, secondary, ghost
+- Required scenarios: default, disabled, loading, focus, primary, secondary, tertiary, ghost, danger, with-leading-icon, with-trailing-icon, full-width, form-submit
 
 Use when:
 - フォームを送信する。
@@ -35,12 +35,13 @@ Avoid when:
 
 Negative examples:
 - 未登録variantや独自classでButtonを強調する。 — action hierarchyとToken bindingを迂回するため。 (NO_RAW_HEX_COLOR)
+- 可視ラベルなしのButtonを作る。 — Icon-only actionの責務をIcon Buttonから奪い、音声入力と認知上の手掛かりを弱めるため。 (FOCUS_VISIBLE_REQUIRED)
 
 Accessibility:
 - native button 要素を既定にする
-- iconOnly の場合は aria-label を必須にする
-- loading 中も accessible name を失わない
-- 色だけで danger や success の意味を伝えない
+- 操作結果を予測できる可視ラベルを必須にし、アイコンだけの操作はIcon Buttonを使う
+- loading 中もラベルnode、accessible name、Button幅を失わず、handler側でも再実行を防ぐ
+- 色だけで danger の意味を伝えない
 - 操作targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする
 
 ## Text Field `text-field`

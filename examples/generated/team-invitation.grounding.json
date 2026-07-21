@@ -1,7 +1,7 @@
 {
   "schemaVersion": "0.1.0",
   "conceptId": "phase2_team_invitation",
-  "registryDigest": "sha256-0183e37d772d938042a98063426412505dce847213b3648225dab190d1ecbd8b",
+  "registryDigest": "sha256-543b8641662656715407ff1cd9ab3d599e8a14aa54ac0ba32c558148b755fa84",
   "strategiesRef": "examples/phase-2/team-invitation.design-strategies.json",
   "strategies": [
     {

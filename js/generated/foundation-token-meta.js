@@ -420,6 +420,14 @@ const MOTION_DURATIONS=[
     "milliseconds": 320,
     "description": "Page-level continuityが必要な限定transition。",
     "usage": "rare page-level transition only"
+  },
+  {
+    "id": "loop",
+    "token": "--dur-loop",
+    "value": "960ms",
+    "milliseconds": 960,
+    "description": "Spinnerなど継続状態を示す反復motionの1cycle。Reduced modeでは静止表示へ解決する。",
+    "usage": "loading spinner loop"
   }
 ];
 const MOTION_EASINGS=[
