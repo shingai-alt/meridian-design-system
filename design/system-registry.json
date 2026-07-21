@@ -1,0 +1,2076 @@
+{
+  "$schema": "../schemas/system-registry.schema.json",
+  "schemaVersion": "0.1.0",
+  "workflowDoc": "docs/system/refinement-workflow.md",
+  "reviewRecordSchema": "schemas/review-record.schema.json",
+  "researchPolicy": "design/research-policy.json",
+  "domains": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "order": 1,
+      "template": "docs/system/templates/overview-review.md",
+      "routePrefix": "overview/",
+      "artifactTemplates": {
+        "htmlDoc": "js/pages-overview.js#{id}",
+        "route": "index.html#/{route}"
+      },
+      "items": [
+        {
+          "id": "overview.introduction",
+          "name": "Introduction",
+          "order": 1,
+          "route": "overview/introduction",
+          "dependsOn": [],
+          "sources": [
+            "VISION.md",
+            "README.md",
+            "js/pages-overview.js"
+          ],
+          "reviewRecord": "design/reviews/overview.introduction.review.json"
+        },
+        {
+          "id": "overview.principles",
+          "name": "Principles",
+          "order": 2,
+          "route": "overview/principles",
+          "dependsOn": [
+            "overview.introduction"
+          ],
+          "sources": [
+            "design/principles.json",
+            "design/rules.json",
+            "js/pages-overview.js"
+          ],
+          "reviewRecord": "design/reviews/overview.principles.review.json"
+        },
+        {
+          "id": "overview.getting-started",
+          "name": "Getting Started",
+          "order": 3,
+          "route": "overview/getting-started",
+          "dependsOn": [
+            "overview.principles"
+          ],
+          "sources": [
+            "README.md",
+            "packages/react/package.json",
+            "packages/react/src/index.ts",
+            "js/pages-overview.js"
+          ],
+          "reviewRecord": "design/reviews/overview.getting-started.review.json"
+        },
+        {
+          "id": "overview.architecture",
+          "name": "System Architecture",
+          "order": 4,
+          "route": "overview/architecture",
+          "dependsOn": [
+            "overview.getting-started"
+          ],
+          "sources": [
+            "design/token-policy.json",
+            "tokens/src",
+            "src/color-engine.js",
+            "js/pages-overview.js"
+          ],
+          "reviewRecord": "design/reviews/overview.architecture.review.json"
+        },
+        {
+          "id": "overview.for-designers",
+          "name": "For Designers",
+          "order": 5,
+          "route": "overview/for-designers",
+          "dependsOn": [
+            "overview.architecture"
+          ],
+          "sources": [
+            "design/rules.json",
+            "design/token-policy.json",
+            "js/pages-overview.js"
+          ],
+          "reviewRecord": "design/reviews/overview.for-designers.2026-07-13-overview-for-designers-01.review.json"
+        },
+        {
+          "id": "overview.for-engineers",
+          "name": "For Engineers",
+          "order": 6,
+          "route": "overview/for-engineers",
+          "dependsOn": [
+            "overview.architecture"
+          ],
+          "sources": [
+            "README.md",
+            "design/rules.json",
+            "design/token-policy.json",
+            "packages/react/package.json",
+            "js/pages-overview.js"
+          ],
+          "reviewRecord": "design/reviews/overview.for-engineers.2026-07-13-overview-for-engineers-01.review.json"
+        }
+      ]
+    },
+    {
+      "id": "foundations",
+      "title": "Foundations",
+      "order": 2,
+      "template": "docs/system/templates/foundation-review.md",
+      "routePrefix": "foundations/",
+      "artifactTemplates": {
+        "htmlDoc": "js/pages-foundations.js#{id}",
+        "route": "index.html#/{route}"
+      },
+      "items": [
+        {
+          "id": "foundations.color",
+          "name": "Color",
+          "order": 1,
+          "route": "foundations/color",
+          "dependsOn": [
+            "overview.for-designers",
+            "overview.for-engineers"
+          ],
+          "sources": [
+            "src/color-engine.js",
+            "design/semantic-tokens.json",
+            "design/token-policy.json",
+            "test/color-engine.test.js",
+            "js/pages-foundations.js"
+          ],
+          "reviewRecord": "design/reviews/foundations.color.2026-07-14-foundations-color-01.review.json"
+        },
+        {
+          "id": "foundations.typography",
+          "name": "Typography",
+          "order": 2,
+          "route": "foundations/typography",
+          "dependsOn": [
+            "foundations.color"
+          ],
+          "sources": [
+            "tokens/src/typography.json",
+            "tokens/src/layout.json",
+            "tokens/src/density.json",
+            "js/pages-foundations.js"
+          ],
+          "reviewRecord": "design/reviews/foundations.typography.2026-07-13-foundations-typography-01.review.json"
+        },
+        {
+          "id": "foundations.spacing",
+          "name": "Spacing",
+          "order": 3,
+          "route": "foundations/spacing",
+          "dependsOn": [
+            "foundations.typography"
+          ],
+          "sources": [
+            "tokens/src/spacing.json",
+            "tokens/src/density.json",
+            "js/pages-foundations.js"
+          ],
+          "reviewRecord": "design/reviews/foundations.spacing.2026-07-13-foundations-spacing-01.review.json"
+        },
+        {
+          "id": "foundations.layout",
+          "name": "Layout",
+          "order": 4,
+          "route": "foundations/layout",
+          "dependsOn": [
+            "foundations.spacing"
+          ],
+          "sources": [
+            "tokens/src/typography.json",
+            "tokens/src/layout.json",
+            "js/pages-foundations.js"
+          ],
+          "reviewRecord": "design/reviews/foundations.layout.2026-07-13-foundations-layout-01.review.json"
+        },
+        {
+          "id": "foundations.radius",
+          "name": "Radius",
+          "order": 5,
+          "route": "foundations/radius",
+          "dependsOn": [
+            "foundations.layout"
+          ],
+          "sources": [
+            "tokens/src/radius.json",
+            "js/pages-foundations.js"
+          ],
+          "reviewRecord": "design/reviews/foundations.radius.2026-07-13-foundations-radius-01.review.json"
+        },
+        {
+          "id": "foundations.elevation",
+          "name": "Elevation",
+          "order": 6,
+          "route": "foundations/elevation",
+          "dependsOn": [
+            "foundations.radius"
+          ],
+          "sources": [
+            "tokens/src/shadow.json",
+            "design/rules.json",
+            "js/utils.js",
+            "test/shadow-tokens.test.js",
+            "js/pages-foundations.js"
+          ],
+          "reviewRecord": "design/reviews/foundations.elevation.2026-07-14-foundations-elevation-01.review.json"
+        },
+        {
+          "id": "foundations.motion",
+          "name": "Motion",
+          "order": 7,
+          "route": "foundations/motion",
+          "dependsOn": [
+            "foundations.elevation"
+          ],
+          "sources": [
+            "tokens/src/motion.json",
+            "design/rules.json",
+            "js/pages-foundations.js"
+          ],
+          "reviewRecord": "design/reviews/foundations.motion.2026-07-13-foundations-motion-01.review.json"
+        },
+        {
+          "id": "foundations.iconography",
+          "name": "Iconography",
+          "order": 8,
+          "route": "foundations/iconography",
+          "dependsOn": [
+            "foundations.motion"
+          ],
+          "sources": [
+            "design/iconography.json",
+            "js/utils.js",
+            "js/pages-foundations.js"
+          ],
+          "reviewRecord": "design/reviews/foundations.iconography.2026-07-13-foundations-iconography-01.review.json"
+        },
+        {
+          "id": "foundations.accessibility",
+          "name": "Accessibility",
+          "order": 9,
+          "route": "foundations/accessibility",
+          "dependsOn": [
+            "foundations.iconography"
+          ],
+          "sources": [
+            "design/accessibility.json",
+            "design/rules.json",
+            "src/color-engine.js",
+            "test/accessibility-policy.test.js",
+            "test/component-specs.test.js",
+            "js/pages-foundations.js"
+          ],
+          "reviewRecord": "design/reviews/foundations.accessibility.2026-07-13-foundations-accessibility-02.review.json"
+        },
+        {
+          "id": "foundations.content",
+          "name": "Content Guidelines",
+          "order": 10,
+          "route": "foundations/content",
+          "dependsOn": [
+            "foundations.accessibility"
+          ],
+          "sources": [
+            "design/content-guidelines.json",
+            "js/pages-foundations.js"
+          ],
+          "reviewRecord": "design/reviews/foundations.content.2026-07-13-foundations-content-01.review.json"
+        }
+      ]
+    },
+    {
+      "id": "tokens",
+      "title": "Tokens",
+      "order": 3,
+      "template": "docs/system/templates/token-review.md",
+      "routePrefix": "tokens/",
+      "artifactTemplates": {
+        "htmlDoc": "js/pages-tokens.js#{id}",
+        "source": "tokens/src/{id}.json",
+        "route": "index.html#/{route}"
+      },
+      "items": [
+        {
+          "id": "tokens.overview",
+          "name": "Token Overview",
+          "order": 1,
+          "route": "tokens/overview",
+          "dependsOn": [
+            "foundations.content"
+          ],
+          "sources": [
+            "design/token-policy.json",
+            "tokens/src",
+            "design/semantic-tokens.json",
+            "scripts/build-tokens.mjs",
+            "scripts/lib/token-artifacts.mjs",
+            "js/generated/token-catalog-meta.js",
+            "test/token-pipeline.test.js",
+            "test/theme-tokens.test.js",
+            "js/pages-tokens.js"
+          ],
+          "reviewRecord": "design/reviews/tokens.overview.2026-07-14-tokens-overview-01.review.json"
+        },
+        {
+          "id": "tokens.color",
+          "name": "Color Tokens",
+          "order": 2,
+          "route": "tokens/color",
+          "dependsOn": [
+            "tokens.overview",
+            "foundations.color"
+          ],
+          "sources": [
+            "src/color-engine.js",
+            "design/semantic-tokens.json",
+            "tokens/build/meridian.tokens.json",
+            "tokens/build/meridian.dark.tokens.json",
+            "tokens/build/meridian.high-contrast.tokens.json",
+            "js/generated/token-catalog-meta.js",
+            "test/color-engine.test.js",
+            "test/token-pipeline.test.js",
+            "js/pages-tokens.js"
+          ],
+          "reviewRecord": "design/reviews/tokens.color.2026-07-14-tokens-color-01.review.json"
+        },
+        {
+          "id": "tokens.typography",
+          "name": "Typography Tokens",
+          "order": 3,
+          "route": "tokens/typography",
+          "dependsOn": [
+            "tokens.color",
+            "foundations.typography"
+          ],
+          "sources": [
+            "tokens/src/typography.json",
+            "tokens/src/density.json",
+            "tokens/build/tokens.css",
+            "tokens/build/meridian.tokens.json",
+            "js/generated/typography-token-meta.js",
+            "test/typography-tokens.test.js",
+            "js/pages-tokens.js"
+          ],
+          "reviewRecord": "design/reviews/tokens.typography.2026-07-13-tokens-typography-01.review.json"
+        },
+        {
+          "id": "tokens.spacing",
+          "name": "Spacing Tokens",
+          "order": 4,
+          "route": "tokens/spacing",
+          "dependsOn": [
+            "tokens.typography",
+            "foundations.spacing"
+          ],
+          "sources": [
+            "tokens/src/spacing.json",
+            "tokens/src/layout.json",
+            "tokens/src/density.json",
+            "tokens/build/tokens.css",
+            "tokens/build/meridian.tokens.json",
+            "js/generated/foundation-token-meta.js",
+            "test/spacing-tokens.test.js",
+            "js/pages-tokens.js"
+          ],
+          "reviewRecord": "design/reviews/tokens.spacing.2026-07-13-tokens-spacing-01.review.json"
+        },
+        {
+          "id": "tokens.radius",
+          "name": "Radius Tokens",
+          "order": 5,
+          "route": "tokens/radius",
+          "dependsOn": [
+            "tokens.spacing",
+            "foundations.radius"
+          ],
+          "sources": [
+            "tokens/src/radius.json",
+            "tokens/build/tokens.css",
+            "tokens/build/meridian.tokens.json",
+            "js/generated/foundation-token-meta.js",
+            "test/radius-tokens.test.js",
+            "index.html",
+            "js/pages-tokens.js"
+          ],
+          "reviewRecord": "design/reviews/tokens.radius.2026-07-13-tokens-radius-01.review.json"
+        },
+        {
+          "id": "tokens.shadow",
+          "name": "Shadow Tokens",
+          "order": 6,
+          "route": "tokens/shadow",
+          "dependsOn": [
+            "tokens.radius",
+            "foundations.elevation"
+          ],
+          "sources": [
+            "tokens/src/shadow.json",
+            "design/rules.json",
+            "tokens/build/tokens.css",
+            "tokens/build/meridian.tokens.json",
+            "js/generated/foundation-token-meta.js",
+            "js/utils.js",
+            "index.html",
+            "js/ui-builders.js",
+            "test/shadow-tokens.test.js",
+            "js/pages-tokens.js"
+          ],
+          "reviewRecord": "design/reviews/tokens.shadow.2026-07-13-tokens-shadow-01.review.json"
+        },
+        {
+          "id": "tokens.motion",
+          "name": "Motion Tokens",
+          "order": 7,
+          "route": "tokens/motion",
+          "dependsOn": [
+            "tokens.shadow",
+            "foundations.motion"
+          ],
+          "sources": [
+            "tokens/src/motion.json",
+            "tokens/build/tokens.css",
+            "tokens/build/meridian.tokens.json",
+            "js/generated/foundation-token-meta.js",
+            "index.html",
+            "test/motion-tokens.test.js",
+            "js/pages-tokens.js"
+          ],
+          "reviewRecord": "design/reviews/tokens.motion.2026-07-13-tokens-motion-01.review.json"
+        },
+        {
+          "id": "tokens.component",
+          "name": "Component Tokens",
+          "order": 8,
+          "route": "tokens/component",
+          "dependsOn": [
+            "tokens.motion"
+          ],
+          "sources": [
+            "design/token-policy.json",
+            "tokens/src/component.json",
+            "tokens/build/tokens.css",
+            "tokens/build/meridian.tokens.json",
+            "js/generated/token-catalog-meta.js",
+            "design/contracts/components",
+            "components/button.md",
+            "DESIGN.md",
+            "index.html",
+            "js/utils.js",
+            "js/ui-builders.js",
+            "js/components-registry.js",
+            "js/pages-foundations.js",
+            "test/component-tokens.test.js",
+            "js/pages-tokens.js"
+          ],
+          "reviewRecord": "design/reviews/tokens.component.2026-07-14-tokens-component-01.review.json"
+        },
+        {
+          "id": "tokens.theme",
+          "name": "Theme Tokens",
+          "order": 9,
+          "route": "tokens/theme",
+          "dependsOn": [
+            "tokens.component"
+          ],
+          "sources": [
+            "design/token-policy.json",
+            "src/color-engine.js",
+            "tokens/src/component.json",
+            "tokens/src/shadow.json",
+            "tokens/build/tokens.css",
+            "tokens/build/meridian.tokens.json",
+            "tokens/build/meridian.dark.tokens.json",
+            "tokens/build/meridian.high-contrast.tokens.json",
+            "tokens/build/meridian.dark.high-contrast.tokens.json",
+            "js/generated/token-catalog-meta.js",
+            "js/utils.js",
+            "js/app-shell.js",
+            "js/component-pages.js",
+            "js/pages-home.js",
+            "js/pages-foundations.js",
+            "js/pages-overview.js",
+            "index.html",
+            "test/theme-tokens.test.js",
+            "test/color-engine.test.js",
+            "test/token-pipeline.test.js",
+            "js/pages-tokens.js"
+          ],
+          "reviewRecord": "design/reviews/tokens.theme.2026-07-14-tokens-theme-01.review.json"
+        },
+        {
+          "id": "tokens.density",
+          "name": "Density Tokens",
+          "order": 10,
+          "route": "tokens/density",
+          "dependsOn": [
+            "tokens.theme"
+          ],
+          "sources": [
+            "design/token-policy.json",
+            "design/accessibility.json",
+            "tokens/src/density.json",
+            "tokens/build/tokens.css",
+            "tokens/build/meridian.tokens.json",
+            "js/generated/token-catalog-meta.js",
+            "js/generated/accessibility-meta.js",
+            "index.html",
+            "js/pages-foundations.js",
+            "test/density-tokens.test.js",
+            "test/accessibility-policy.test.js",
+            "js/pages-tokens.js"
+          ],
+          "reviewRecord": "design/reviews/tokens.density.2026-07-13-tokens-density-01.review.json"
+        },
+        {
+          "id": "tokens.css-variables",
+          "name": "CSS Variables",
+          "order": 11,
+          "route": "tokens/css-variables",
+          "dependsOn": [
+            "tokens.density"
+          ],
+          "sources": [
+            "design/token-policy.json",
+            "tokens/src",
+            "scripts/build-tokens.mjs",
+            "scripts/lib/token-artifacts.mjs",
+            "tokens/build/tokens.css",
+            "js/generated/token-catalog-meta.js",
+            "index.html",
+            "js/pages-tokens.js",
+            "js/pages-resources.js",
+            "js/components-registry.js",
+            "components",
+            "design/contracts/components",
+            "examples",
+            "test/css-variables.test.js"
+          ],
+          "reviewRecord": "design/reviews/tokens.css-variables.2026-07-13-tokens-css-variables-01.review.json"
+        },
+        {
+          "id": "tokens.json-tokens",
+          "name": "JSON Tokens",
+          "order": 12,
+          "route": "tokens/json-tokens",
+          "dependsOn": [
+            "tokens.css-variables"
+          ],
+          "sources": [
+            "design/token-policy.json",
+            "tokens/src",
+            "scripts/build-tokens.mjs",
+            "scripts/lib/dtcg.mjs",
+            "scripts/lib/token-artifacts.mjs",
+            "tokens/build/meridian.tokens.json",
+            "tokens/build/meridian.dark.tokens.json",
+            "tokens/build/meridian.high-contrast.tokens.json",
+            "tokens/build/meridian.dark.high-contrast.tokens.json",
+            "js/generated/token-catalog-meta.js",
+            "js/pages-tokens.js",
+            "js/pages-resources.js",
+            "test/token-pipeline.test.js"
+          ],
+          "reviewRecord": "design/reviews/tokens.json-tokens.2026-07-13-tokens-json-tokens-01.review.json"
+        }
+      ]
+    },
+    {
+      "id": "components",
+      "title": "Components",
+      "order": 4,
+      "template": "docs/system/templates/component-review.md",
+      "routePrefix": "components/",
+      "artifactTemplates": {
+        "humanDoc": "components/{id}.md",
+        "contract": "design/contracts/components/{id}.contract.json",
+        "registry": "js/components-registry.js#{id}",
+        "htmlImplementation": "index.html",
+        "route": "index.html#/{route}"
+      },
+      "items": [
+        {
+          "id": "components.button",
+          "name": "Button",
+          "order": 1,
+          "route": "components/button",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/button.md",
+            "design/contracts/components/button.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.button.2026-07-14-components-button-01.review.json"
+        },
+        {
+          "id": "components.text-field",
+          "name": "Text Field",
+          "order": 2,
+          "route": "components/text-field",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/text-field.md",
+            "design/contracts/components/text-field.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.text-field.2026-07-14-components-text-field-01.review.json"
+        },
+        {
+          "id": "components.form-field",
+          "name": "Form Field",
+          "order": 3,
+          "route": "components/form-field",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/form-field.md",
+            "design/contracts/components/form-field.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.form-field.2026-07-13-components-form-field-01.review.json"
+        },
+        {
+          "id": "components.select",
+          "name": "Select",
+          "order": 4,
+          "route": "components/select",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/select.md",
+            "design/contracts/components/select.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.select.2026-07-13-components-select-01.review.json"
+        },
+        {
+          "id": "components.dialog",
+          "name": "Dialog",
+          "order": 5,
+          "route": "components/dialog",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/dialog.md",
+            "design/contracts/components/dialog.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.dialog.2026-07-13-components-dialog-01.review.json"
+        },
+        {
+          "id": "components.badge",
+          "name": "Badge",
+          "order": 6,
+          "route": "components/badge",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/badge.md",
+            "design/contracts/components/badge.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.badge.2026-07-13-components-badge-01.review.json"
+        },
+        {
+          "id": "components.alert",
+          "name": "Alert",
+          "order": 7,
+          "route": "components/alert",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/alert.md",
+            "design/contracts/components/alert.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.alert.2026-07-13-components-alert-01.review.json"
+        },
+        {
+          "id": "components.tabs",
+          "name": "Tabs",
+          "order": 8,
+          "route": "components/tabs",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/tabs.md",
+            "design/contracts/components/tabs.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.tabs.2026-07-13-components-tabs-01.review.json"
+        },
+        {
+          "id": "components.table",
+          "name": "Table",
+          "order": 9,
+          "route": "components/table",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/table.md",
+            "design/contracts/components/table.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.table.2026-07-13-components-table-01.review.json"
+        },
+        {
+          "id": "components.sidebar",
+          "name": "Sidebar",
+          "order": 10,
+          "route": "components/sidebar",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/sidebar.md",
+            "design/contracts/components/sidebar.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.sidebar.2026-07-13-components-sidebar-01.review.json"
+        },
+        {
+          "id": "components.top-bar",
+          "name": "Top Bar",
+          "order": 11,
+          "route": "components/top-bar",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/top-bar.md",
+            "design/contracts/components/top-bar.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.top-bar.2026-07-13-components-top-bar-01.review.json"
+        },
+        {
+          "id": "components.icon-button",
+          "name": "Icon Button",
+          "order": 12,
+          "route": "components/icon-button",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/icon-button.md",
+            "design/contracts/components/icon-button.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.icon-button.2026-07-13-components-icon-button-01.review.json"
+        },
+        {
+          "id": "components.link",
+          "name": "Link",
+          "order": 13,
+          "route": "components/link",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/link.md",
+            "design/contracts/components/link.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.link.2026-07-13-components-link-01.review.json"
+        },
+        {
+          "id": "components.text",
+          "name": "Text",
+          "order": 14,
+          "route": "components/text",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/text.md",
+            "design/contracts/components/text.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.text.2026-07-13-components-text-01.review.json"
+        },
+        {
+          "id": "components.tag",
+          "name": "Tag",
+          "order": 15,
+          "route": "components/tag",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/tag.md",
+            "design/contracts/components/tag.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.tag.2026-07-13-components-tag-01.review.json"
+        },
+        {
+          "id": "components.avatar",
+          "name": "Avatar",
+          "order": 16,
+          "route": "components/avatar",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/avatar.md",
+            "design/contracts/components/avatar.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.avatar.2026-07-13-components-avatar-01.review.json"
+        },
+        {
+          "id": "components.tooltip",
+          "name": "Tooltip",
+          "order": 17,
+          "route": "components/tooltip",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/tooltip.md",
+            "design/contracts/components/tooltip.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.tooltip.2026-07-13-components-tooltip-01.review.json"
+        },
+        {
+          "id": "components.divider",
+          "name": "Divider",
+          "order": 18,
+          "route": "components/divider",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/divider.md",
+            "design/contracts/components/divider.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.divider.2026-07-13-components-divider-01.review.json"
+        },
+        {
+          "id": "components.spinner",
+          "name": "Spinner",
+          "order": 19,
+          "route": "components/spinner",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/spinner.md",
+            "design/contracts/components/spinner.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.spinner.2026-07-13-components-spinner-01.review.json"
+        },
+        {
+          "id": "components.skeleton",
+          "name": "Skeleton",
+          "order": 20,
+          "route": "components/skeleton",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/skeleton.md",
+            "design/contracts/components/skeleton.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.skeleton.2026-07-13-components-skeleton-01.review.json"
+        },
+        {
+          "id": "components.empty-state",
+          "name": "Empty State",
+          "order": 21,
+          "route": "components/empty-state",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/empty-state.md",
+            "design/contracts/components/empty-state.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.empty-state.2026-07-13-components-empty-state-01.review.json"
+        },
+        {
+          "id": "components.textarea",
+          "name": "Textarea",
+          "order": 22,
+          "route": "components/textarea",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/textarea.md",
+            "design/contracts/components/textarea.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.textarea.2026-07-14-components-textarea-01.review.json"
+        },
+        {
+          "id": "components.combobox",
+          "name": "Combobox",
+          "order": 23,
+          "route": "components/combobox",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/combobox.md",
+            "design/contracts/components/combobox.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.combobox.2026-07-13-components-combobox-01.review.json"
+        },
+        {
+          "id": "components.checkbox",
+          "name": "Checkbox",
+          "order": 24,
+          "route": "components/checkbox",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/checkbox.md",
+            "design/contracts/components/checkbox.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.checkbox.2026-07-13-components-checkbox-01.review.json"
+        },
+        {
+          "id": "components.radio",
+          "name": "Radio",
+          "order": 25,
+          "route": "components/radio",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/radio.md",
+            "design/contracts/components/radio.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.radio.2026-07-13-components-radio-01.review.json"
+        },
+        {
+          "id": "components.switch",
+          "name": "Switch",
+          "order": 26,
+          "route": "components/switch",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/switch.md",
+            "design/contracts/components/switch.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.switch.2026-07-13-components-switch-01.review.json"
+        },
+        {
+          "id": "components.slider",
+          "name": "Slider",
+          "order": 27,
+          "route": "components/slider",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/slider.md",
+            "design/contracts/components/slider.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.slider.2026-07-13-components-slider-01.review.json"
+        },
+        {
+          "id": "components.date-picker",
+          "name": "Date Picker",
+          "order": 28,
+          "route": "components/date-picker",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/date-picker.md",
+            "design/contracts/components/date-picker.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.date-picker.2026-07-13-components-date-picker-01.review.json"
+        },
+        {
+          "id": "components.search-field",
+          "name": "Search Field",
+          "order": 29,
+          "route": "components/search-field",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/search-field.md",
+            "design/contracts/components/search-field.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.search-field.2026-07-14-components-search-field-01.review.json"
+        },
+        {
+          "id": "components.input-group",
+          "name": "Input Group",
+          "order": 30,
+          "route": "components/input-group",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/input-group.md",
+            "design/contracts/components/input-group.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.input-group.2026-07-14-components-input-group-01.review.json"
+        },
+        {
+          "id": "components.validation-message",
+          "name": "Validation Message",
+          "order": 31,
+          "route": "components/validation-message",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/validation-message.md",
+            "design/contracts/components/validation-message.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.validation-message.2026-07-13-components-validation-message-01.review.json"
+        },
+        {
+          "id": "components.breadcrumb",
+          "name": "Breadcrumb",
+          "order": 32,
+          "route": "components/breadcrumb",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/breadcrumb.md",
+            "design/contracts/components/breadcrumb.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.breadcrumb.2026-07-13-components-breadcrumb-01.review.json"
+        },
+        {
+          "id": "components.segmented-control",
+          "name": "Segmented Control",
+          "order": 33,
+          "route": "components/segmented-control",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/segmented-control.md",
+            "design/contracts/components/segmented-control.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.segmented-control.2026-07-13-components-segmented-control-01.review.json"
+        },
+        {
+          "id": "components.pagination",
+          "name": "Pagination",
+          "order": 34,
+          "route": "components/pagination",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/pagination.md",
+            "design/contracts/components/pagination.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.pagination.2026-07-13-components-pagination-01.review.json"
+        },
+        {
+          "id": "components.command-menu",
+          "name": "Command Menu",
+          "order": 35,
+          "route": "components/command-menu",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/command-menu.md",
+            "design/contracts/components/command-menu.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.command-menu.2026-07-13-components-command-menu-01.review.json"
+        },
+        {
+          "id": "components.navigation-item",
+          "name": "Navigation Item",
+          "order": 36,
+          "route": "components/navigation-item",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/navigation-item.md",
+            "design/contracts/components/navigation-item.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.navigation-item.2026-07-13-components-navigation-item-01.review.json"
+        },
+        {
+          "id": "components.product-switcher",
+          "name": "Product Switcher",
+          "order": 37,
+          "route": "components/product-switcher",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/product-switcher.md",
+            "design/contracts/components/product-switcher.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.product-switcher.2026-07-13-components-product-switcher-01.review.json"
+        },
+        {
+          "id": "components.toast",
+          "name": "Toast",
+          "order": 38,
+          "route": "components/toast",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/toast.md",
+            "design/contracts/components/toast.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.toast.2026-07-13-components-toast-01.review.json"
+        },
+        {
+          "id": "components.banner",
+          "name": "Banner",
+          "order": 39,
+          "route": "components/banner",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/banner.md",
+            "design/contracts/components/banner.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.banner.2026-07-13-components-banner-01.review.json"
+        },
+        {
+          "id": "components.drawer",
+          "name": "Drawer",
+          "order": 40,
+          "route": "components/drawer",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/drawer.md",
+            "design/contracts/components/drawer.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.drawer.2026-07-13-components-drawer-01.review.json"
+        },
+        {
+          "id": "components.popover",
+          "name": "Popover",
+          "order": 41,
+          "route": "components/popover",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/popover.md",
+            "design/contracts/components/popover.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.popover.2026-07-13-components-popover-01.review.json"
+        },
+        {
+          "id": "components.progress",
+          "name": "Progress",
+          "order": 42,
+          "route": "components/progress",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/progress.md",
+            "design/contracts/components/progress.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.progress.2026-07-13-components-progress-01.review.json"
+        },
+        {
+          "id": "components.status-indicator",
+          "name": "Status Indicator",
+          "order": 43,
+          "route": "components/status-indicator",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/status-indicator.md",
+            "design/contracts/components/status-indicator.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.status-indicator.2026-07-13-components-status-indicator-01.review.json"
+        },
+        {
+          "id": "components.data-grid",
+          "name": "Data Grid",
+          "order": 44,
+          "route": "components/data-grid",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/data-grid.md",
+            "design/contracts/components/data-grid.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.data-grid.2026-07-13-components-data-grid-01.review.json"
+        },
+        {
+          "id": "components.list",
+          "name": "List",
+          "order": 45,
+          "route": "components/list",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/list.md",
+            "design/contracts/components/list.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.list.2026-07-13-components-list-01.review.json"
+        },
+        {
+          "id": "components.card",
+          "name": "Card",
+          "order": 46,
+          "route": "components/card",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/card.md",
+            "design/contracts/components/card.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.card.2026-07-14-components-card-01.review.json"
+        },
+        {
+          "id": "components.stat-card",
+          "name": "Stat Card",
+          "order": 47,
+          "route": "components/stat-card",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/stat-card.md",
+            "design/contracts/components/stat-card.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.stat-card.2026-07-13-components-stat-card-01.review.json"
+        },
+        {
+          "id": "components.timeline",
+          "name": "Timeline",
+          "order": 48,
+          "route": "components/timeline",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/timeline.md",
+            "design/contracts/components/timeline.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.timeline.2026-07-13-components-timeline-01.review.json"
+        },
+        {
+          "id": "components.activity-feed",
+          "name": "Activity Feed",
+          "order": 49,
+          "route": "components/activity-feed",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/activity-feed.md",
+            "design/contracts/components/activity-feed.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.activity-feed.2026-07-13-components-activity-feed-01.review.json"
+        },
+        {
+          "id": "components.description-list",
+          "name": "Description List",
+          "order": 50,
+          "route": "components/description-list",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/description-list.md",
+            "design/contracts/components/description-list.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.description-list.2026-07-13-components-description-list-01.review.json"
+        },
+        {
+          "id": "components.code-block",
+          "name": "Code Block",
+          "order": 51,
+          "route": "components/code-block",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/code-block.md",
+            "design/contracts/components/code-block.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.code-block.2026-07-13-components-code-block-01.review.json"
+        },
+        {
+          "id": "components.key-value-row",
+          "name": "Key Value Row",
+          "order": 52,
+          "route": "components/key-value-row",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/key-value-row.md",
+            "design/contracts/components/key-value-row.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.key-value-row.2026-07-13-components-key-value-row-01.review.json"
+        },
+        {
+          "id": "components.prompt-input",
+          "name": "Prompt Input",
+          "order": 53,
+          "route": "components/prompt-input",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/prompt-input.md",
+            "design/contracts/components/prompt-input.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.prompt-input.2026-07-14-components-prompt-input-01.review.json"
+        },
+        {
+          "id": "components.chat-message",
+          "name": "Chat Message",
+          "order": 54,
+          "route": "components/chat-message",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/chat-message.md",
+            "design/contracts/components/chat-message.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.chat-message.2026-07-13-components-chat-message-01.review.json"
+        },
+        {
+          "id": "components.ai-response-card",
+          "name": "AI Response Card",
+          "order": 55,
+          "route": "components/ai-response-card",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/ai-response-card.md",
+            "design/contracts/components/ai-response-card.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.ai-response-card.2026-07-13-components-ai-response-card-01.review.json"
+        },
+        {
+          "id": "components.agent-status",
+          "name": "Agent Status",
+          "order": 56,
+          "route": "components/agent-status",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/agent-status.md",
+            "design/contracts/components/agent-status.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.agent-status.2026-07-13-components-agent-status-01.review.json"
+        },
+        {
+          "id": "components.run-log",
+          "name": "Run Log",
+          "order": 57,
+          "route": "components/run-log",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/run-log.md",
+            "design/contracts/components/run-log.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.run-log.2026-07-13-components-run-log-01.review.json"
+        },
+        {
+          "id": "components.code-diff",
+          "name": "Code Diff",
+          "order": 58,
+          "route": "components/code-diff",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/code-diff.md",
+            "design/contracts/components/code-diff.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.code-diff.2026-07-13-components-code-diff-01.review.json"
+        },
+        {
+          "id": "components.file-tree",
+          "name": "File Tree",
+          "order": 59,
+          "route": "components/file-tree",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/file-tree.md",
+            "design/contracts/components/file-tree.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.file-tree.2026-07-13-components-file-tree-01.review.json"
+        },
+        {
+          "id": "components.model-selector",
+          "name": "Model Selector",
+          "order": 60,
+          "route": "components/model-selector",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/model-selector.md",
+            "design/contracts/components/model-selector.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.model-selector.2026-07-13-components-model-selector-01.review.json"
+        },
+        {
+          "id": "components.usage-meter",
+          "name": "Usage Meter",
+          "order": 61,
+          "route": "components/usage-meter",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/usage-meter.md",
+            "design/contracts/components/usage-meter.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.usage-meter.2026-07-13-components-usage-meter-01.review.json"
+        },
+        {
+          "id": "components.workflow-step",
+          "name": "Workflow Step",
+          "order": 62,
+          "route": "components/workflow-step",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/workflow-step.md",
+            "design/contracts/components/workflow-step.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.workflow-step.2026-07-13-components-workflow-step-01.review.json"
+        },
+        {
+          "id": "components.execution-timeline",
+          "name": "Execution Timeline",
+          "order": 63,
+          "route": "components/execution-timeline",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/execution-timeline.md",
+            "design/contracts/components/execution-timeline.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.execution-timeline.2026-07-13-components-execution-timeline-01.review.json"
+        },
+        {
+          "id": "components.kpi-card",
+          "name": "KPI Card",
+          "order": 64,
+          "route": "components/kpi-card",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/kpi-card.md",
+            "design/contracts/components/kpi-card.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.kpi-card.2026-07-13-components-kpi-card-01.review.json"
+        },
+        {
+          "id": "components.analytics-chart-container",
+          "name": "Analytics Chart Container",
+          "order": 65,
+          "route": "components/analytics-chart-container",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/analytics-chart-container.md",
+            "design/contracts/components/analytics-chart-container.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.analytics-chart-container.2026-07-13-components-analytics-chart-container-01.review.json"
+        },
+        {
+          "id": "components.settings-panel",
+          "name": "Settings Panel",
+          "order": 66,
+          "route": "components/settings-panel",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/settings-panel.md",
+            "design/contracts/components/settings-panel.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.settings-panel.2026-07-13-components-settings-panel-01.review.json"
+        },
+        {
+          "id": "components.billing-plan-card",
+          "name": "Billing Plan Card",
+          "order": 67,
+          "route": "components/billing-plan-card",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/billing-plan-card.md",
+            "design/contracts/components/billing-plan-card.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.billing-plan-card.2026-07-13-components-billing-plan-card-01.review.json"
+        },
+        {
+          "id": "components.user-menu",
+          "name": "User Menu",
+          "order": 68,
+          "route": "components/user-menu",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/user-menu.md",
+            "design/contracts/components/user-menu.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.user-menu.2026-07-13-components-user-menu-01.review.json"
+        },
+        {
+          "id": "components.notification-center",
+          "name": "Notification Center",
+          "order": 69,
+          "route": "components/notification-center",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/notification-center.md",
+            "design/contracts/components/notification-center.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.notification-center.2026-07-13-components-notification-center-01.review.json"
+        },
+        {
+          "id": "components.invite-member-dialog",
+          "name": "Invite Member Dialog",
+          "order": 70,
+          "route": "components/invite-member-dialog",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/invite-member-dialog.md",
+            "design/contracts/components/invite-member-dialog.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.invite-member-dialog.2026-07-13-components-invite-member-dialog-01.review.json"
+        },
+        {
+          "id": "components.project-card",
+          "name": "Project Card",
+          "order": 71,
+          "route": "components/project-card",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/project-card.md",
+            "design/contracts/components/project-card.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.project-card.2026-07-13-components-project-card-01.review.json"
+        },
+        {
+          "id": "components.issue-row",
+          "name": "Issue Row",
+          "order": 72,
+          "route": "components/issue-row",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/issue-row.md",
+            "design/contracts/components/issue-row.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.issue-row.2026-07-13-components-issue-row-01.review.json"
+        },
+        {
+          "id": "components.task-board-card",
+          "name": "Task Board Card",
+          "order": 73,
+          "route": "components/task-board-card",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/task-board-card.md",
+            "design/contracts/components/task-board-card.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.task-board-card.2026-07-13-components-task-board-card-01.review.json"
+        },
+        {
+          "id": "components.integration-card",
+          "name": "Integration Card",
+          "order": 74,
+          "route": "components/integration-card",
+          "dependsOn": [
+            "tokens.json-tokens"
+          ],
+          "sources": [
+            "components/integration-card.md",
+            "design/contracts/components/integration-card.contract.json",
+            "js/components-registry.js",
+            "js/generated/component-contract-meta.js",
+            "js/component-pages.js",
+            "js/ui-builders.js",
+            "index.html",
+            "test/component-specs.test.js"
+          ],
+          "reviewRecord": "design/reviews/components.integration-card.2026-07-13-components-integration-card-01.review.json"
+        }
+      ]
+    }
+  ]
+}

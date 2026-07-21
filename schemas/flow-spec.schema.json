@@ -1,0 +1,508 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shingai-alt.github.io/meridian-design-system/schemas/flow-spec.schema.json",
+  "title": "Meridian FlowSpec",
+  "description": "A structured design specification for a multi-screen Meridian-generated product UI flow or prototype.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "meta",
+    "goal",
+    "actors",
+    "screens",
+    "transitions",
+    "prototype",
+    "stateModel",
+    "rationale",
+    "validation"
+  ],
+  "properties": {
+    "meta": {
+      "$ref": "#/$defs/meta"
+    },
+    "goal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "userGoal",
+        "businessGoal",
+        "completionCriteria"
+      ],
+      "properties": {
+        "userGoal": {
+          "type": "string",
+          "description": "The user outcome this flow must enable.",
+          "minLength": 1
+        },
+        "businessGoal": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional business outcome connected to the user goal."
+        },
+        "completionCriteria": {
+          "type": "array",
+          "description": "Observable criteria that indicate the flow is complete.",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "actors": {
+      "type": "array",
+      "description": "User roles or systems that participate in the flow.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/actor"
+      }
+    },
+    "screens": {
+      "type": "array",
+      "description": "Screens included in the flow. Each screen should reference a ScreenSpec.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/screenRef"
+      }
+    },
+    "transitions": {
+      "type": "array",
+      "description": "User-triggered or system-triggered transitions between screens.",
+      "items": {
+        "$ref": "#/$defs/transition"
+      }
+    },
+    "prototype": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "startScreen",
+        "happyPath",
+        "alternatePaths",
+        "edgeCases"
+      ],
+      "properties": {
+        "startScreen": {
+          "$ref": "#/$defs/id"
+        },
+        "happyPath": {
+          "type": "array",
+          "description": "Ordered screen ids for the ideal completion path.",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "alternatePaths": {
+          "type": "array",
+          "description": "Alternative ordered screen paths.",
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/id"
+            }
+          }
+        },
+        "edgeCases": {
+          "type": "array",
+          "description": "Edge cases the prototype should expose.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "stateModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "globalStates",
+        "dataDependencies",
+        "permissions",
+        "failureModes"
+      ],
+      "properties": {
+        "globalStates": {
+          "type": "array",
+          "description": "States that affect more than one screen.",
+          "items": {
+            "$ref": "#/$defs/flowState"
+          }
+        },
+        "dataDependencies": {
+          "type": "array",
+          "description": "Data needed by the flow.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "permissions": {
+          "type": "array",
+          "description": "Permission rules that affect available screens or actions.",
+          "items": {
+            "$ref": "#/$defs/permissionRule"
+          }
+        },
+        "failureModes": {
+          "type": "array",
+          "description": "Cross-flow failure modes.",
+          "items": {
+            "$ref": "#/$defs/failureMode"
+          }
+        }
+      }
+    },
+    "rationale": {
+      "type": "array",
+      "description": "Flow-level design decisions and their evidence.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/rationale"
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tasksToTest",
+        "accessibilityChecks",
+        "usabilityQuestions",
+        "designSystemChecks"
+      ],
+      "properties": {
+        "tasksToTest": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "accessibilityChecks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "usabilityQuestions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "designSystemChecks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "kind",
+        "id",
+        "title",
+        "source",
+        "status"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "0.1.0"
+        },
+        "kind": {
+          "type": "string",
+          "const": "flow"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "conversation",
+            "template",
+            "import",
+            "manual"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "candidate",
+            "approved",
+            "deprecated"
+          ]
+        }
+      }
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*$"
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "permissions",
+        "needs"
+      ],
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "needs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "screenRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "screenId",
+        "screenSpecRef",
+        "entryCondition",
+        "exitCondition",
+        "purpose"
+      ],
+      "properties": {
+        "screenId": {
+          "$ref": "#/$defs/id"
+        },
+        "screenSpecRef": {
+          "type": "string",
+          "description": "Path, URL, or stable id for the referenced ScreenSpec.",
+          "minLength": 1
+        },
+        "entryCondition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "exitCondition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "from",
+        "to",
+        "trigger",
+        "userAction",
+        "systemResponse",
+        "failureModes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "from": {
+          "$ref": "#/$defs/id"
+        },
+        "to": {
+          "$ref": "#/$defs/id"
+        },
+        "trigger": {
+          "type": "string",
+          "enum": [
+            "user-action",
+            "system-event",
+            "time",
+            "permission-change",
+            "data-change"
+          ]
+        },
+        "userAction": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The user action that initiates the transition, or null for purely system-triggered transitions."
+        },
+        "systemResponse": {
+          "type": "string",
+          "minLength": 1
+        },
+        "failureModes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "flowState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "affectedScreens"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "affectedScreens": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      }
+    },
+    "permissionRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "allowedActions",
+        "blockedActions",
+        "fallbackExperience"
+      ],
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "allowedActions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "blockedActions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "fallbackExperience": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "failureMode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "recovery"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recovery": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "rationale": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "reason",
+        "evidenceType",
+        "affectedScreens",
+        "tradeoff",
+        "references"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceType": {
+          "type": "string",
+          "enum": [
+            "user-goal",
+            "design-principle",
+            "accessibility",
+            "pattern",
+            "constraint",
+            "tradeoff"
+          ]
+        },
+        "affectedScreens": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "tradeoff": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

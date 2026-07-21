@@ -1,0 +1,332 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "avatar",
+  "name": "Avatar",
+  "status": "draft",
+  "category": "core",
+  "description": "ユーザー・チームを表す円形の識別子。イニシャルまたは画像。",
+  "source": {
+    "humanDoc": "components/avatar.md",
+    "registry": "js/components-registry.js#avatar"
+  },
+  "intent": {
+    "whenToUse": [
+      "担当者・作成者の表示",
+      "メンバーリスト"
+    ],
+    "whenNotToUse": [
+      "装飾目的のアイコン"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Semantic display root."
+    },
+    {
+      "part": "content",
+      "required": true,
+      "description": "Primary perceivable content."
+    },
+    {
+      "part": "supporting",
+      "required": false,
+      "description": "Optional metadata or visual reinforcement."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {
+    "xs": {
+      "controlHeight": "--ctl-xs",
+      "paddingInline": [
+        "--sp-2",
+        "--sp-2"
+      ],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "12"
+    },
+    "sm": {
+      "controlHeight": "--ctl-sm",
+      "paddingInline": [
+        "--sp-2",
+        "--sp-2"
+      ],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "14"
+    },
+    "md": {
+      "controlHeight": "--ctl-md",
+      "paddingInline": [
+        "--sp-2",
+        "--sp-2"
+      ],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "16"
+    },
+    "lg": {
+      "controlHeight": "--ctl-lg",
+      "paddingInline": [
+        "--sp-2",
+        "--sp-2"
+      ],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "18"
+    }
+  },
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
+      "required": false,
+      "default": "md",
+      "description": "Density内の相対sizeを選ぶ。"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Name"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--surface",
+      "--border",
+      "--fg",
+      "--fg-muted"
+    ],
+    "density": [
+      "--ctl-xs",
+      "--ctl-sm",
+      "--ctl-md",
+      "--ctl-lg",
+      "--text-label"
+    ],
+    "spacing": [
+      "--sp-2"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.ctl-xs.value",
+        "source": "--ctl-xs",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.ctl-sm.value",
+        "source": "--ctl-sm",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.ctl-md.value",
+        "source": "--ctl-md",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.ctl-lg.value",
+        "source": "--ctl-lg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.text-label.value",
+        "source": "--text-label",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-2.value",
+        "source": "--sp-2",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.avatar"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "表示専用rootを不要にtab順へ追加しない。",
+      "状態は色だけで表さずtext、icon、shapeを併用する。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+    ]
+  },
+  "keyboardInteractions": [],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "担当者・作成者の表示",
+      "recommended": [
+        "画像が無い場合はイニシャルにフォールバックする。"
+      ],
+      "avoid": [
+        "装飾目的のアイコン"
+      ]
+    },
+    {
+      "id": "recommended-2",
+      "title": "Secondary context",
+      "description": "メンバーリスト",
+      "recommended": [
+        "重ね表示(AvatarStack)は 3〜4 個で省略し「+N」を付ける。"
+      ],
+      "avoid": [
+        "装飾目的のアイコン"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのAvatar。",
+      "rules": [
+        "Contentと周辺layoutに応じたintrinsic sizeを使う。",
+        "Viewportだけを理由にdensityを変更しない。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのAvatar。",
+      "rules": [
+        "意味とDOM順を変えず、wrapとavailable widthで適応する。",
+        "省略した情報へ別経路から到達できるようにする。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのAvatar。",
+      "rules": [
+        "表示専用rootをtab順へ追加しない。",
+        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Avatarの標準例。",
+      "code": "<Avatar name=\"新谷\" size=\"md\" />\n<AvatarStack max={3} users={members} />"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

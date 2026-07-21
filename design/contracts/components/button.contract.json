@@ -1,0 +1,806 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "contractVersion": "0.1.0",
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["button"],
+    "slots": ["label", "leading-icon", "trailing-icon", "spinner"],
+    "attributes": ["type", "disabled", "aria-disabled", "aria-label", "aria-busy"],
+    "stateModel": ["data-meridian-variant", "data-meridian-state"],
+    "events": ["click"],
+    "relations": ["accessible-name"],
+    "provenance": ["component", "instance", "variant", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": { "useWhen": ["状態を変更する明確なactionを実行する。"], "avoidWhen": ["ページ遷移だけならLinkを使う。"], "alternatives": ["link", "icon-button"] },
+  "negativeExamples": [{ "pattern": "未登録variantや独自classでButtonを強調する。", "reason": "action hierarchyとToken bindingを迂回するため。", "ruleIds": ["NO_RAW_HEX_COLOR"] }],
+  "requiredScenarios": ["default", "disabled", "loading", "focus", "primary", "secondary", "ghost"],
+  "id": "button",
+  "name": "Button",
+  "status": "draft",
+  "category": "core",
+  "description": "アクションを実行するための基本コントロール。優先度、危険度、文脈に応じて variant を選ぶ。",
+  "source": {
+    "humanDoc": "components/button.md",
+    "registry": "js/components-registry.js#button"
+  },
+  "intent": {
+    "whenToUse": [
+      "フォームを送信する。",
+      "設定変更を保存する。",
+      "新しいリソースを作成する。",
+      "ダイアログ内で操作を確定またはキャンセルする。",
+      "テーブル行やツールバーで補助操作を実行する。",
+      "削除、権限変更、取り消し不能な操作を明示する。"
+    ],
+    "whenNotToUse": [
+      "ページ遷移や外部参照だけが目的の場合は Link を使う。",
+      "2 から 4 個の表示モードを切り替える場合は Segmented Control を使う。",
+      "複数の排他選択肢を提示する場合は Radio Group を使う。",
+      "即時反映する設定の ON/OFF は Switch を使う。",
+      "アイコンだけで意味が明確な補助操作は Icon Button を使う。",
+      "ただ目立たせたいだけのテキストやラベルには使わない。"
+    ],
+    "principles": [1, 2, 3, 5, 6]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "button 要素。variant、size、state に応じた token だけで見た目を構成する。"
+    },
+    {
+      "part": "label",
+      "required": true,
+      "description": "操作結果を予測できる短い文言。iconOnly の場合は視覚表示ではなく accessible name として必須。"
+    },
+    {
+      "part": "leadingIcon",
+      "required": false,
+      "description": "操作の意味を補強するアイコン。装飾だけのアイコンは aria-hidden にする。"
+    },
+    {
+      "part": "trailingIcon",
+      "required": false,
+      "description": "遷移、展開、外部リンクなど、操作後の方向を補足するアイコン。"
+    },
+    {
+      "part": "spinner",
+      "required": false,
+      "description": "loading 中の進行表示。ラベルを消さず、aria-busy と disabled behavior を併用する。"
+    }
+  ],
+  "variants": {
+    "primary": {
+      "intent": "画面内の最重要アクション。原則として 1 画面または 1 文脈に 1 つ。",
+      "tokenRefs": {
+        "background": "--primary",
+        "foreground": "--primary-fg",
+        "border": "--primary"
+      },
+      "states": {
+        "hover": { "background": "--primary-hover" },
+        "active": { "background": "--primary-active" },
+        "disabled": { "background": "--disabled", "foreground": "--fg-disabled", "border": "--disabled" }
+      }
+    },
+    "secondary": {
+      "intent": "主要アクションに次ぐ補助アクション。キャンセルより強く、primary より弱い。",
+      "tokenRefs": {
+        "background": "--control-bg",
+        "foreground": "--fg",
+        "border": "--control-border"
+      },
+      "states": {
+        "hover": { "background": "--control-bg-hover", "border": "--control-border-hover" },
+        "active": { "background": "--control-bg-active", "border": "--control-border-hover" },
+        "disabled": { "background": "--control-bg", "foreground": "--fg-disabled", "border": "--control-border" }
+      }
+    },
+    "tertiary": {
+      "intent": "低優先だが見つけやすくしたいアクション。選択済みや軽い強調にも使う。",
+      "tokenRefs": {
+        "background": "--primary-subtle",
+        "foreground": "--primary",
+        "border": "--primary-subtle"
+      },
+      "states": {
+        "hover": { "background": "--primary-muted" },
+        "active": { "background": "--primary-muted" },
+        "disabled": { "background": "--surface-muted", "foreground": "--fg-disabled", "border": "--surface-muted" }
+      }
+    },
+    "ghost": {
+      "intent": "ツールバー、行内、ダイアログのキャンセルなど、面を増やしたくない補助操作。",
+      "tokenRefs": {
+        "background": "transparent",
+        "foreground": "--fg",
+        "border": "transparent"
+      },
+      "states": {
+        "hover": { "background": "--surface-muted" },
+        "active": { "background": "--surface-muted" },
+        "disabled": { "foreground": "--fg-disabled" }
+      }
+    },
+    "outline": {
+      "intent": "並列に近い補助アクション。面ではなく境界線で affordance を示す。",
+      "tokenRefs": {
+        "background": "transparent",
+        "foreground": "--fg",
+        "border": "--border"
+      },
+      "states": {
+        "hover": { "background": "--surface-muted", "border": "--border-strong" },
+        "active": { "background": "--surface-muted", "border": "--border-strong" },
+        "disabled": { "foreground": "--fg-disabled", "border": "--border-muted" }
+      }
+    },
+    "danger": {
+      "intent": "削除、取り消し不能、権限剥奪など破壊的な最終操作。確認 UI と併用する。",
+      "tokenRefs": {
+        "background": "--danger",
+        "foreground": "--danger-on-solid",
+        "border": "--danger"
+      },
+      "states": {
+        "hover": { "background": "--danger" },
+        "active": { "background": "--danger" },
+        "disabled": { "background": "--disabled", "foreground": "--fg-disabled", "border": "--disabled" }
+      }
+    },
+    "success": {
+      "intent": "完了、承認、復旧など肯定的な確定操作。primary の代替ではなく状態文脈に限定する。",
+      "tokenRefs": {
+        "background": "--success",
+        "foreground": "--success-on-solid",
+        "border": "--success"
+      },
+      "states": {
+        "hover": { "background": "--success" },
+        "active": { "background": "--success" },
+        "disabled": { "background": "--disabled", "foreground": "--fg-disabled", "border": "--disabled" }
+      }
+    },
+    "link": {
+      "intent": "軽い参照や補助導線。データ変更を伴う操作には使わない。",
+      "tokenRefs": {
+        "background": "transparent",
+        "foreground": "--primary",
+        "border": "transparent"
+      },
+      "states": {
+        "hover": { "foreground": "--primary-hover" },
+        "active": { "foreground": "--primary-active" },
+        "disabled": { "foreground": "--fg-disabled" }
+      }
+    }
+  },
+  "sizes": {
+    "xs": {
+      "controlHeight": "--ctl-xs",
+      "paddingInline": ["--sp-2", "--sp-2"],
+      "gap": "--sp-1",
+      "textToken": "--text-micro",
+      "iconSize": "12"
+    },
+    "sm": {
+      "controlHeight": "--ctl-sm",
+      "paddingInline": ["--sp-25", "--sp-25"],
+      "gap": "--sp-15",
+      "textToken": "--text-small",
+      "iconSize": "14"
+    },
+    "md": {
+      "controlHeight": "--ctl-md",
+      "paddingInline": ["--sp-3", "--sp-3"],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "16"
+    },
+    "lg": {
+      "controlHeight": "--ctl-lg",
+      "paddingInline": ["--sp-4", "--sp-4"],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "18"
+    },
+    "xl": {
+      "controlHeight": "--ctl-xl",
+      "paddingInline": ["--sp-5", "--sp-5"],
+      "gap": "--sp-25",
+      "textToken": "--text-body",
+      "iconSize": "20"
+    }
+  },
+  "states": [
+    {
+      "id": "default",
+      "description": "操作可能な通常状態。",
+      "requiredBehavior": ["button 要素としてフォーカス可能", "variant と size の既定 token を使う"]
+    },
+    {
+      "id": "hover",
+      "description": "ポインタが乗った状態。",
+      "requiredBehavior": ["色または面の変化は token で表す", "hover だけに意味を依存しない"]
+    },
+    {
+      "id": "active",
+      "description": "押下中の状態。",
+      "requiredBehavior": ["短い motion token で状態変化を伝える", "レイアウト寸法を変えない"]
+    },
+    {
+      "id": "focus",
+      "description": "キーボードフォーカスがある状態。",
+      "requiredBehavior": ["focus-visible で --focus-ring を表示", "outline を消す場合は必ず代替リングを持つ"]
+    },
+    {
+      "id": "disabled",
+      "description": "操作不可の状態。",
+      "requiredBehavior": ["native disabled または aria-disabled を目的に応じて選ぶ", "無効理由が必要な場合は aria-disabled と説明を併用"]
+    },
+    {
+      "id": "loading",
+      "description": "実行中の状態。",
+      "requiredBehavior": ["aria-busy=\"true\" を設定", "二重送信を防ぐ", "ラベルまたは accessible name を維持"]
+    }
+  ],
+  "props": [
+    {
+      "name": "variant",
+      "type": "\"primary\" | \"secondary\" | \"tertiary\" | \"ghost\" | \"outline\" | \"danger\" | \"success\" | \"link\"",
+      "required": false,
+      "default": "primary",
+      "description": "視覚的な優先度と文脈。"
+    },
+    {
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"",
+      "required": false,
+      "default": "md",
+      "description": "密度 token に連動する高さと余白。"
+    },
+    {
+      "name": "loading",
+      "type": "boolean",
+      "required": false,
+      "default": "false",
+      "description": "実行中表示。aria-busy と二重送信防止を伴う。"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "required": false,
+      "default": "false",
+      "description": "操作不可。フォーム送信対象から外す場合に使う。"
+    },
+    {
+      "name": "aria-label",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "iconOnly または視覚ラベルがない場合に必須。"
+    },
+    {
+      "name": "fullWidth",
+      "type": "boolean",
+      "required": false,
+      "default": "false",
+      "description": "親コンテナ幅いっぱいに広げる。モバイルの主要アクションで使う。"
+    }
+  ],
+  "tokenRefs": {
+    "componentColor": [
+      "--button-primary-bg",
+      "--button-primary-bg-hover",
+      "--button-primary-bg-active",
+      "--button-primary-fg"
+    ],
+    "semanticColor": [
+      "--primary",
+      "--primary-hover",
+      "--primary-active",
+      "--primary-subtle",
+      "--primary-muted",
+      "--primary-fg",
+      "--control-bg",
+      "--control-bg-hover",
+      "--control-bg-active",
+      "--control-border",
+      "--control-border-hover",
+      "--surface",
+      "--surface-muted",
+      "--fg",
+      "--fg-disabled",
+      "--border",
+      "--border-muted",
+      "--border-strong",
+      "--danger",
+      "--danger-on-solid",
+      "--success",
+      "--success-on-solid",
+      "--disabled",
+      "--focus-ring"
+    ],
+    "density": ["--ctl-xs", "--ctl-sm", "--ctl-md", "--ctl-lg", "--ctl-xl", "--text-micro", "--text-small", "--text-label", "--text-body"],
+    "spacing": ["--sp-1", "--sp-15", "--sp-2", "--sp-25", "--sp-3", "--sp-4", "--sp-5"],
+    "radius": ["--radius-sm"],
+    "motion": ["--dur-fast", "--dur-normal"]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "variant.primary.container.background.default",
+        "source": "--button-primary-bg",
+        "scope": "component",
+        "componentToken": "--button-primary-bg",
+        "aliases": "--primary",
+        "trigger": "public-component-api",
+        "reason": "Button の主要操作色を、他の primary role を変えずに調整できる公開境界として維持する。"
+      },
+      {
+        "slot": "variant.primary.container.background.hover",
+        "source": "--button-primary-bg-hover",
+        "scope": "component",
+        "componentToken": "--button-primary-bg-hover",
+        "aliases": "--primary-hover",
+        "trigger": "component-anatomy",
+        "reason": "Primary Button 固有の hover 強度を独立して調整できるようにする。"
+      },
+      {
+        "slot": "variant.primary.container.background.active",
+        "source": "--button-primary-bg-active",
+        "scope": "component",
+        "componentToken": "--button-primary-bg-active",
+        "aliases": "--primary-active",
+        "trigger": "component-anatomy",
+        "reason": "Primary Button 固有の pressed 表現を独立して調整できるようにする。"
+      },
+      {
+        "slot": "variant.primary.label.foreground.default",
+        "source": "--button-primary-fg",
+        "scope": "component",
+        "componentToken": "--button-primary-fg",
+        "aliases": "--primary-fg",
+        "trigger": "public-component-api",
+        "reason": "Primary Button の前景色を component 単位の安定したテーマ API として公開する。"
+      },
+      {
+        "slot": "variant.secondary.container.background.default",
+        "source": "--control-bg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Secondary ButtonをCardなどの静的surfaceから区別するNeutral control role。"
+      },
+      {
+        "slot": "variant.secondary.label.foreground.default",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Secondary Button のラベルは共通の foreground role と一致する。"
+      },
+      {
+        "slot": "variant.secondary.container.border.default",
+        "source": "--control-border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Neutral actionのhit areaを通常のsurface boundaryより明確にする。"
+      },
+      {
+        "slot": "variant.secondary.container.background.hover",
+        "source": "--control-bg-hover",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Neutral controlのhover stateを静的surfaceから独立して表す。"
+      },
+      {
+        "slot": "variant.secondary.container.background.active",
+        "source": "--control-bg-active",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Neutral controlのpressed stateをhoverより強い段階で表す。"
+      },
+      {
+        "slot": "variant.secondary.container.border.hover-active",
+        "source": "--control-border-hover",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "HoverとpressedでNeutral controlの境界を強める。"
+      },
+      {
+        "slot": "variant.tertiary.container.background.default",
+        "source": "--primary-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Tertiary の通常面は primary の subtle role と一致する。"
+      },
+      {
+        "slot": "variant.tertiary.label.foreground.default",
+        "source": "--primary",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Tertiary のラベルは共通の primary action role と一致する。"
+      },
+      {
+        "slot": "variant.ghost.label.foreground.default",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Ghost のラベルは通常の foreground role と一致する。"
+      },
+      {
+        "slot": "variant.ghost.container.background.hover",
+        "source": "--surface-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Ghost の hover 面は共通の控えめな surface role と一致する。"
+      },
+      {
+        "slot": "variant.outline.container.border.default",
+        "source": "--border-strong",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Outline の境界は強調された border role と一致する。"
+      },
+      {
+        "slot": "variant.outline.label.foreground.default",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Outline のラベルは通常の foreground role と一致する。"
+      },
+      {
+        "slot": "variant.danger.container.background.default",
+        "source": "--danger",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "破壊的操作の面は共通の danger role と一致する。"
+      },
+      {
+        "slot": "variant.danger.label.foreground.default",
+        "source": "--danger-on-solid",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Danger の前景は solid danger 上の共通 role と一致する。"
+      },
+      {
+        "slot": "variant.success.container.background.default",
+        "source": "--success",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "成功操作の面は共通の success role と一致する。"
+      },
+      {
+        "slot": "variant.success.label.foreground.default",
+        "source": "--success-on-solid",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Success の前景は solid success 上の共通 role と一致する。"
+      },
+      {
+        "slot": "variant.link.label.foreground.default",
+        "source": "--primary",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Link Button のラベルは共通の primary action role と一致する。"
+      },
+      {
+        "slot": "all.root.focus-ring",
+        "source": "--focus-ring",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "すべての Button は共通の focus 可視化 role を使う。"
+      },
+      {
+        "slot": "all.root.background.disabled",
+        "source": "--disabled",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "無効面は system 全体の disabled role と一致する。"
+      },
+      {
+        "slot": "all.label.foreground.disabled",
+        "source": "--fg-disabled",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "無効ラベルは system 全体の disabled foreground role と一致する。"
+      },
+      {
+        "slot": "size.xs.root.height",
+        "source": "--ctl-xs",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "xs Button の高さは density が管理する共通 control size と一致する。"
+      },
+      {
+        "slot": "size.sm.root.height",
+        "source": "--ctl-sm",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "sm Button の高さは density が管理する共通 control size と一致する。"
+      },
+      {
+        "slot": "size.md.root.height",
+        "source": "--ctl-md",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "md Button の高さは density が管理する共通 control size と一致する。"
+      },
+      {
+        "slot": "size.lg.root.height",
+        "source": "--ctl-lg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "lg Button の高さは density が管理する共通 control size と一致する。"
+      },
+      {
+        "slot": "size.xl.root.height",
+        "source": "--ctl-xl",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "xl Button の高さは density が管理する共通 control size と一致する。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "size.*.root.padding-inline",
+        "reason": "現状は Reference spacing を直接参照している。density と component anatomy のどちらが所有するかを決めてから binding する。",
+        "owner": "tokens.component"
+      },
+      {
+        "slot": "size.*.root.gap",
+        "reason": "現状は Reference spacing を直接参照しているため、Button 固有 gap として昇格する必要性を判定する。",
+        "owner": "tokens.component"
+      },
+      {
+        "slot": "size.*.icon.size",
+        "reason": "contract に raw numeric value が残っており、icon size scale または Component token が未定義。",
+        "owner": "tokens.reference"
+      },
+      {
+        "slot": "all.root.radius",
+        "reason": "現状は Reference radius を直接参照している。control 共通の Semantic token を先に検討する。",
+        "owner": "tokens.semantic"
+      },
+      {
+        "slot": "all.root.shadow",
+        "reason": "Button に許可する影の role と elevation policy が未定義。",
+        "owner": "foundations.elevation"
+      },
+      {
+        "slot": "all.root.motion",
+        "reason": "duration はあるが interaction transition の Semantic binding が未定義。",
+        "owner": "tokens.semantic"
+      },
+      {
+        "slot": "all.root.opacity.disabled",
+        "reason": "CSS に raw opacity 0.5 が残っており、disabled token との責務が未整理。",
+        "owner": "tokens.semantic"
+      },
+      {
+        "slot": "variant.primary.container.inset-shadow",
+        "reason": "CSS に raw rgba の inset shadow が残っているため、削除または許可された shadow token への移行が必要。",
+        "owner": "components.button"
+      },
+      {
+        "slot": "variant.danger.container.filter.hover",
+        "reason": "CSS の brightness filter は token binding を持たない。専用 state token の追加または filter の除去を判断する。",
+        "owner": "components.button"
+      },
+      {
+        "slot": "variant.success.container.filter.hover",
+        "reason": "CSS の brightness filter は token binding を持たない。専用 state token の追加または filter の除去を判断する。",
+        "owner": "components.button"
+      },
+      {
+        "slot": "state.loading.spinner.border",
+        "reason": "spinner の border width が raw value のままで、stroke scale が未定義。",
+        "owner": "tokens.reference"
+      },
+      {
+        "slot": "state.loading.spinner.motion",
+        "reason": "spinner の duration が raw value のままで、loading motion role が未定義。",
+        "owner": "tokens.semantic"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "native button 要素を既定にする",
+      "iconOnly の場合は aria-label を必須にする",
+      "loading 中も accessible name を失わない",
+      "色だけで danger や success の意味を伝えない",
+      "操作targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする"
+    ],
+    "aria": [
+      "loading 中は aria-busy=\"true\" を設定する",
+      "toggle 的に使う場合は aria-pressed を明示する",
+      "無効理由を説明したい場合は disabled ではなく aria-disabled と aria-describedby を検討する"
+    ],
+    "focus": [
+      ":focus-visible で --focus-ring を使う",
+      "focus ring は周辺背景とのコントラストを保つ",
+      "focus 時にボタン寸法を変えない"
+    ]
+  },
+  "keyboardInteractions": [
+    { "key": "Enter", "action": "ボタンのアクションを実行する" },
+    { "key": "Space", "action": "ボタンのアクションを実行する" },
+    { "key": "Tab", "action": "次のフォーカス可能要素へ移動する" }
+  ],
+  "usagePatterns": [
+    {
+      "id": "form-footer",
+      "title": "Form footer",
+      "description": "保存、作成、送信などフォーム全体を確定する領域。",
+      "recommended": ["primary action は末尾に置く", "cancel / discard は ghost または secondary にする"],
+      "avoid": ["primary を複数並べる", "未保存状態を Button だけで表現する"]
+    },
+    {
+      "id": "dialog-footer",
+      "title": "Dialog footer",
+      "description": "ダイアログ内の確定、キャンセル、破壊的操作を並べる領域。",
+      "recommended": ["非破壊の確定は primary にする", "破壊的な確定は danger にする", "キャンセルは ghost にする"],
+      "avoid": ["danger の影響を本文で説明しない", "キャンセルを primary にする"]
+    },
+    {
+      "id": "toolbar",
+      "title": "Toolbar",
+      "description": "フィルタ、コピー、作成など作業中の補助操作を並べる領域。",
+      "recommended": ["主要作業の起点だけ primary または secondary にする", "低優先操作は ghost または Icon Button にする"],
+      "avoid": ["toolbar 内に primary を複数置く", "すべての操作を solid button にする"]
+    },
+    {
+      "id": "table-row",
+      "title": "Table row",
+      "description": "一覧の各行に付随する軽い操作。",
+      "recommended": ["行内操作は ghost、link、Icon Button を優先する", "破壊的操作はメニューや確認ダイアログへ逃がす"],
+      "avoid": ["行内に danger を直接置く", "Button に合わせて行高を広げすぎる"]
+    },
+    {
+      "id": "mobile-cta",
+      "title": "Mobile CTA",
+      "description": "モバイル幅で主要操作を明確に示す領域。",
+      "recommended": ["主要 CTA は fullWidth を使ってよい", "ラベルを短く具体的にする"],
+      "avoid": ["複数 Button を横並びで詰め込む", "bottom fixed action とページ内 CTA を重複させる"]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "PC では inline 配置と md サイズを標準にし、文脈ごとの優先度を variant で表す。",
+      "rules": [
+        "標準サイズは md",
+        "Form footer / Dialog footer / Toolbar では inline 配置を基本にする",
+        "Table row action は xs または sm を使う",
+        "hover / active の視覚変化を持ってよいが hover だけに意味を依存しない",
+        "primary は 1 つの意思決定文脈に原則 1 つ"
+      ],
+      "avoid": [
+        "primary を複数並べる",
+        "Button に合わせて table row の高さを広げる",
+        "desktop 専用 Button component を作る"
+      ]
+    },
+    "mobile": {
+      "summary": "SP では同じ Button を使い、fullWidth、lg/xl、縦積みなどの layout pattern で最適化する。",
+      "rules": [
+        "主要 CTA は fullWidth を許可する",
+        "主要 CTA は lg または xl を使える",
+        "複数 Button は横並びを避け、縦積みまたは primary + text link に分ける",
+        "danger action は確認 UI の中で使う",
+        "bottom fixed action とページ内 CTA を重複させない"
+      ],
+      "avoid": [
+        "mobile 専用 Button component を作る",
+        "複数 Button を横並びにしてラベルを詰め込む",
+        "danger を画面下部の大きな常時 CTA として露出する"
+      ]
+    },
+    "touch": {
+      "summary": "Touch 環境では押しやすさ、hover 非依存、二重実行防止を優先する。",
+      "rules": [
+        "操作targetは24px minimum、touch中心の主要操作は原則44px以上にする",
+        "Comfortable density では主要操作の押しやすさを優先する",
+        "hover に意味を依存しない",
+        "icon-only action は aria-label と十分な touch target を必須にする",
+        "loading 中は二重実行を防ぐ"
+      ],
+      "avoid": [
+        "hover でしか分からない状態表現",
+        "小さすぎる icon-only action",
+        "loading 中に連打できる状態"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "TEXT_ON_SOLID_MUST_USE_TOKEN",
+    "ACCENT_BRAND_MARK_ONLY",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "MOTION_DURATION_FROM_TOKENS_ONLY",
+    "FOCUS_VISIBLE_REQUIRED",
+    "CONTRAST_AA_MINIMUM"
+  ],
+  "qualityChecks": [
+    "primary は 1 画面または 1 意思決定文脈に原則 1 つか",
+    "danger は破壊的操作の最終確認にだけ使われているか",
+    "iconOnly に accessible name があるか",
+    "loading 中に二重送信できないか",
+    "すべての色、余白、角丸、motion が Meridian token から参照されているか"
+  ],
+  "examples": [
+    {
+      "id": "primary-action",
+      "description": "ページ内の主要アクション。",
+      "code": "<Button variant=\"primary\">プロジェクトを作成</Button>"
+    },
+    {
+      "id": "dialog-actions",
+      "description": "ダイアログの補助操作と確定操作。",
+      "code": "<Button variant=\"ghost\">キャンセル</Button>\n<Button variant=\"primary\">保存</Button>"
+    },
+    {
+      "id": "icon-only",
+      "description": "アイコンのみの操作。aria-label が必須。",
+      "code": "<Button variant=\"ghost\" aria-label=\"検索\">\n  <SearchIcon aria-hidden=\"true\" />\n</Button>"
+    }
+  ],
+  "openQuestions": [
+    "danger / success の hover-active 専用 semantic token を追加するか",
+    "Button と Icon Button を同一 contract に含めるか、別 contract に分けるか",
+    "asChild / polymorphic API を React 実装時に許可するか",
+    "未結線の spacing、radius、shadow、filter、spinner をどの token layer が所有するか決め、tokenBindings を complete にできるか"
+  ]
+}

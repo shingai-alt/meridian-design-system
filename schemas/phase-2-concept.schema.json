@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shingai-alt.github.io/meridian-design-system/schemas/phase-2-concept.schema.json",
+  "title": "Meridian Phase 2 Concept Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "source", "generation", "prototype", "feedback", "acceptance"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/meta" },
+    "source": { "$ref": "#/$defs/source" },
+    "generation": { "$ref": "#/$defs/generation" },
+    "prototype": { "$ref": "#/$defs/prototype" },
+    "feedback": { "$ref": "#/$defs/feedback" },
+    "acceptance": { "$ref": "#/$defs/acceptance" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "stringList": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "meta": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "title", "status", "locale", "createdAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" }, "kind": { "const": "phase-2-concept" }, "id": { "$ref": "#/$defs/id" },
+        "title": { "$ref": "#/$defs/nonEmpty" }, "status": { "enum": ["draft", "ready-for-review", "approved", "superseded"] },
+        "locale": { "$ref": "#/$defs/nonEmpty" }, "createdAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+      }
+    },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["phaseOnePackage", "sourcePackageId", "requiredStatus"],
+      "properties": {
+        "phaseOnePackage": { "$ref": "#/$defs/nonEmpty" }, "sourcePackageId": { "$ref": "#/$defs/id" }, "requiredStatus": { "const": "approved" }
+      }
+    },
+    "generation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["renderer", "output", "componentComposition", "usageOutput", "referenceManifest", "designPrinciples", "designStrategies", "groundingOutput", "visualRubric", "visualCandidates", "visualCritique", "visualReviewOutput", "standalone", "editableOutput"],
+      "properties": {
+        "renderer": { "enum": ["team-invitation"] }, "output": { "type": "string", "pattern": "^examples/generated/[a-z0-9._-]+\\.html$" },
+        "componentComposition": { "type": "string", "pattern": "^examples/phase-2/[a-z0-9._-]+\\.composition\\.json$" },
+        "usageOutput": { "type": "string", "pattern": "^examples/generated/[a-z0-9._-]+\\.usage\\.json$" },
+        "referenceManifest": { "type": "string", "pattern": "^research/references/[a-z0-9._/-]+\\.json$" },
+        "designPrinciples": { "type": "string", "pattern": "^research/principles/[a-z0-9._/-]+\\.json$" },
+        "designStrategies": { "type": "string", "pattern": "^examples/phase-2/[a-z0-9._-]+\\.design-strategies\\.json$" },
+        "groundingOutput": { "type": "string", "pattern": "^examples/generated/[a-z0-9._-]+\\.grounding\\.json$" },
+        "visualRubric": { "type": "string", "pattern": "^design/[a-z0-9._/-]+\\.json$" },
+        "visualCandidates": { "type": "string", "pattern": "^examples/phase-2/[a-z0-9._-]+\\.visual-candidates\\.json$" },
+        "visualCritique": { "type": "string", "pattern": "^examples/phase-2/[a-z0-9._-]+\\.visual-critique\\.json$" },
+        "visualReviewOutput": { "type": "string", "pattern": "^examples/generated/[a-z0-9._-]+\\.visual-review\\.json$" },
+        "standalone": { "const": true }, "editableOutput": { "const": false }
+      }
+    },
+    "prototype": {
+      "type": "object", "additionalProperties": false,
+      "required": ["startScenario", "viewportModes", "reviewLenses", "scenarios"],
+      "properties": {
+        "startScenario": { "$ref": "#/$defs/id" }, "viewportModes": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "enum": ["desktop", "mobile"] } },
+        "reviewLenses": { "type": "array", "minItems": 3, "uniqueItems": true, "items": { "enum": ["product", "design", "engineering", "accessibility", "content"] } },
+        "scenarios": { "type": "array", "minItems": 6, "items": { "$ref": "#/$defs/scenario" } }
+      }
+    },
+    "scenario": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "label", "purpose", "covers", "contractedSeats", "acceptedMembers", "pendingInvitations", "rows", "sendFailureEmails"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" }, "label": { "$ref": "#/$defs/nonEmpty" }, "purpose": { "$ref": "#/$defs/nonEmpty" },
+        "covers": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["primary", "validation", "existing-pending", "seat-exceeded", "owner-confirmation", "partial-success", "max-batch"] } },
+        "contractedSeats": { "type": "integer", "minimum": 1 }, "acceptedMembers": { "type": "integer", "minimum": 0 }, "pendingInvitations": { "type": "integer", "minimum": 0 },
+        "rows": { "type": "array", "minItems": 1, "maxItems": 10, "items": { "$ref": "#/$defs/inviteRow" } },
+        "sendFailureEmails": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 3 } }
+      }
+    },
+    "inviteRow": {
+      "type": "object", "additionalProperties": false,
+      "required": ["email", "role", "existingState"],
+      "properties": {
+        "email": { "type": "string" }, "role": { "enum": ["Owner", "Admin", "Member", "Viewer"] },
+        "existingState": { "enum": ["new", "member", "pending"] }
+      }
+    },
+    "feedback": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schemaRef", "categories", "severities"],
+      "properties": {
+        "schemaRef": { "const": "schemas/phase-2-feedback.schema.json" },
+        "categories": { "type": "array", "minItems": 3, "uniqueItems": true, "items": { "enum": ["product", "interaction", "visual", "content", "accessibility", "engineering", "research"] } },
+        "severities": { "type": "array", "minItems": 3, "uniqueItems": true, "items": { "enum": ["blocker", "major", "minor", "note"] } }
+      }
+    },
+    "acceptance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["tasks", "automatedChecks", "manualChecks", "knownLimitations"],
+      "properties": {
+        "tasks": { "$ref": "#/$defs/stringList" }, "automatedChecks": { "$ref": "#/$defs/stringList" },
+        "manualChecks": { "$ref": "#/$defs/stringList" }, "knownLimitations": { "$ref": "#/$defs/stringList" }
+      }
+    }
+  }
+}

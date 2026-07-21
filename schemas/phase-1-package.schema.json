@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shingai-alt.github.io/meridian-design-system/schemas/phase-1-package.schema.json",
+  "title": "Meridian Phase 1 Design Package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "designBrief", "researchPack", "directionSet", "patternContracts", "screenSpecRefs", "flowSpecRef", "designProposal", "review", "feedbackCandidates"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/meta" },
+    "designBrief": { "$ref": "#/$defs/designBrief" },
+    "researchPack": { "$ref": "#/$defs/researchPack" },
+    "directionSet": { "$ref": "#/$defs/directionSet" },
+    "patternContracts": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/patternContract" } },
+    "screenSpecRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "flowSpecRef": { "type": ["string", "null"] },
+    "designProposal": { "$ref": "#/$defs/designProposal" },
+    "review": { "$ref": "#/$defs/review" },
+    "feedbackCandidates": { "type": "array", "items": { "$ref": "#/$defs/feedback" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "stringList": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "meta": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "title", "status", "locale", "createdAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" }, "kind": { "const": "phase-1-package" }, "id": { "$ref": "#/$defs/id" },
+        "title": { "$ref": "#/$defs/nonEmpty" }, "status": { "enum": ["draft", "ready-for-review", "approved", "revision-requested", "superseded"] },
+        "locale": { "$ref": "#/$defs/nonEmpty" }, "createdAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+      }
+    },
+    "designBrief": {
+      "type": "object", "additionalProperties": false,
+      "required": ["request", "problem", "users", "primaryTask", "outcomes", "constraints", "scopeIn", "scopeOut", "channels", "data", "permissions", "risks", "knownEvidence", "assumptions", "openQuestions", "acceptance"],
+      "properties": {
+        "request": { "$ref": "#/$defs/nonEmpty" }, "problem": { "$ref": "#/$defs/nonEmpty" }, "users": { "$ref": "#/$defs/stringList" },
+        "primaryTask": { "$ref": "#/$defs/nonEmpty" }, "outcomes": { "$ref": "#/$defs/stringList" }, "constraints": { "$ref": "#/$defs/stringList" },
+        "scopeIn": { "$ref": "#/$defs/stringList" }, "scopeOut": { "$ref": "#/$defs/stringList" }, "channels": { "$ref": "#/$defs/stringList" },
+        "data": { "$ref": "#/$defs/stringList" }, "permissions": { "$ref": "#/$defs/stringList" }, "risks": { "$ref": "#/$defs/stringList" },
+        "knownEvidence": { "$ref": "#/$defs/stringList" }, "assumptions": { "$ref": "#/$defs/stringList" }, "openQuestions": { "$ref": "#/$defs/stringList" },
+        "acceptance": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "researchPack": {
+      "type": "object", "additionalProperties": false, "required": ["level", "scope", "evidence", "synthesis", "conflicts", "limitations"],
+      "properties": {
+        "level": { "enum": ["baseline", "extended", "specialist"] }, "scope": { "$ref": "#/$defs/stringList" },
+        "evidence": { "type": "array", "minItems": 4, "items": { "$ref": "#/$defs/evidence" } },
+        "synthesis": { "$ref": "#/$defs/stringList" }, "conflicts": { "$ref": "#/$defs/stringList" }, "limitations": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evidenceId", "sourceType", "title", "organization", "url", "accessedAt", "locale", "deviceContext", "observation", "interpretation", "relevance", "supportedDecisions", "limitations", "captureRef"],
+      "properties": {
+        "evidenceId": { "$ref": "#/$defs/id" }, "sourceType": { "enum": ["standard", "product", "design-system", "research", "secondary", "community", "internal"] },
+        "title": { "$ref": "#/$defs/nonEmpty" }, "organization": { "$ref": "#/$defs/nonEmpty" }, "url": { "type": ["string", "null"] },
+        "accessedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }, "locale": { "$ref": "#/$defs/nonEmpty" },
+        "deviceContext": { "enum": ["desktop", "mobile", "native", "responsive", "unknown"] }, "observation": { "$ref": "#/$defs/nonEmpty" },
+        "interpretation": { "$ref": "#/$defs/nonEmpty" }, "relevance": { "$ref": "#/$defs/nonEmpty" }, "supportedDecisions": { "$ref": "#/$defs/stringList" },
+        "limitations": { "$ref": "#/$defs/stringList" }, "captureRef": { "type": ["string", "null"] }
+      }
+    },
+    "directionSet": {
+      "type": "object", "additionalProperties": false, "required": ["comparisonCriteria", "directions", "recommendation", "confidence", "humanDecision"],
+      "properties": {
+        "comparisonCriteria": { "$ref": "#/$defs/stringList" }, "directions": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/direction" } },
+        "recommendation": { "$ref": "#/$defs/id" }, "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "humanDecision": { "enum": ["pending", "selected", "revision-requested", "no-go"] }
+      }
+    },
+    "direction": {
+      "type": "object", "additionalProperties": false, "required": ["id", "title", "hypothesis", "informationArchitecture", "interactionModel", "benefits", "risks", "accessibility", "engineeringImplications", "evidenceRefs", "invalidWhen"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" }, "title": { "$ref": "#/$defs/nonEmpty" }, "hypothesis": { "$ref": "#/$defs/nonEmpty" },
+        "informationArchitecture": { "$ref": "#/$defs/stringList" }, "interactionModel": { "$ref": "#/$defs/stringList" }, "benefits": { "$ref": "#/$defs/stringList" },
+        "risks": { "$ref": "#/$defs/stringList" }, "accessibility": { "$ref": "#/$defs/stringList" }, "engineeringImplications": { "$ref": "#/$defs/stringList" },
+        "evidenceRefs": { "$ref": "#/$defs/stringList" }, "invalidWhen": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "patternContract": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name", "maturity", "userProblem", "applicability", "nonApplicability", "components", "states", "accessibility", "evidenceRefs", "alternatives", "failureModes", "evaluation"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" }, "name": { "$ref": "#/$defs/nonEmpty" }, "maturity": { "enum": ["experimental", "candidate", "supported", "deprecated"] },
+        "userProblem": { "$ref": "#/$defs/nonEmpty" }, "applicability": { "$ref": "#/$defs/stringList" }, "nonApplicability": { "$ref": "#/$defs/stringList" },
+        "components": { "$ref": "#/$defs/stringList" }, "states": { "$ref": "#/$defs/stringList" }, "accessibility": { "$ref": "#/$defs/stringList" },
+        "evidenceRefs": { "$ref": "#/$defs/stringList" }, "alternatives": { "$ref": "#/$defs/stringList" }, "failureModes": { "$ref": "#/$defs/stringList" }, "evaluation": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "designProposal": {
+      "type": "object", "additionalProperties": false, "required": ["recommendedDirection", "rationale", "htmlSections", "prototypeRequirements", "qualityGates", "unresolvedItems"],
+      "properties": {
+        "recommendedDirection": { "$ref": "#/$defs/id" }, "rationale": { "$ref": "#/$defs/stringList" }, "htmlSections": { "$ref": "#/$defs/stringList" },
+        "prototypeRequirements": { "$ref": "#/$defs/stringList" }, "qualityGates": { "$ref": "#/$defs/stringList" }, "unresolvedItems": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "review": {
+      "type": "object", "additionalProperties": false, "required": ["status", "requiredRoles", "approvals", "revisionRequests"],
+      "properties": {
+        "status": { "enum": ["pending", "approved", "revision-requested"] }, "requiredRoles": { "$ref": "#/$defs/stringList" },
+        "approvals": { "$ref": "#/$defs/stringList" }, "revisionRequests": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "feedback": {
+      "type": "object", "additionalProperties": false, "required": ["id", "scope", "finding", "proposedChange", "status", "humanApprovalRequired"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" }, "scope": { "enum": ["proposal-local", "product-local", "pattern", "component", "foundation"] },
+        "finding": { "$ref": "#/$defs/nonEmpty" }, "proposedChange": { "$ref": "#/$defs/nonEmpty" }, "status": { "enum": ["candidate", "accepted", "rejected", "superseded"] },
+        "humanApprovalRequired": { "const": true }
+      }
+    }
+  }
+}

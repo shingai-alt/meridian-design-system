@@ -1,0 +1,176 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.breadcrumb",
+  "cycleId": "2026-07-13-components-breadcrumb-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "components/breadcrumb.md",
+    "design/contracts/components/breadcrumb.contract.json",
+    "js/components-registry.js",
+    "js/generated/component-contract-meta.js",
+    "js/component-pages.js",
+    "js/ui-builders.js",
+    "index.html",
+    "test/component-specs.test.js",
+    "docs/components/spec-workflow.md"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "components.breadcrumb",
+      "summary": "Breadcrumbのselection boundary、semantic、keyboard、focus、responsive behaviorを確認する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "accessibility-or-safety",
+      "cross-platform-behavior"
+    ],
+    "questions": [
+      "Breadcrumbで優先すべきnative elementまたはARIA patternとkeyboard modelは何か。",
+      "Desktop、Mobile、Touchで意味とAPIを維持しながらtargetとfocusをどう担保するか。"
+    ],
+    "evidence": [
+      {
+        "id": "pattern-breadcrumb",
+        "title": "WAI-ARIA APG Breadcrumb Pattern",
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Breadcrumb landmarkと現在地の関係を示す。",
+        "supportedDecisions": [
+          "semantic-contract"
+        ]
+      },
+      {
+        "id": "wcag-target-size",
+        "title": "WCAG 2.2 Understanding Target Size Minimum",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Pointer targetの24 CSS px最低条件、spacing例外、touch利用者への意図を示す。",
+        "supportedDecisions": [
+          "responsive-target"
+        ]
+      },
+      {
+        "id": "wcag-focus-not-obscured",
+        "title": "WCAG 2.2 Understanding Focus Not Obscured Minimum",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Sticky layerやpersistent overlayでkeyboard focusを完全に隠さない基準を示す。",
+        "supportedDecisions": [
+          "responsive-target"
+        ]
+      }
+    ],
+    "synthesis": "WAI-ARIA APG Breadcrumb PatternをBreadcrumb固有のsemantic/keyboard基準、WCAG 2.2を全viewport共通のtarget/focus基準として適用した。",
+    "decisionImpact": "Native semanticsを優先し、必要なARIA関係だけを補い、PC/SPでAPIを複製しないresponsive contractへ反映した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "selection-boundary",
+      "summary": "Breadcrumbの利用条件と代替componentの境界をcontractへ固定する。",
+      "rationale": "Use: 3 階層以上の構造を持つ画面 Avoid: フラットな構造 — 現在地はページタイトルで十分"
+    },
+    {
+      "id": "semantic-contract",
+      "summary": "Breadcrumbのnative/ARIA semantics、state、keyboard責務をmd、contract、HTMLで共有する。",
+      "rationale": "AIが見た目だけから誤ったinteractionを生成せず、表示専用rootと操作部品の責務を分離するため。"
+    },
+    {
+      "id": "responsive-target",
+      "summary": "PC用とSP用にcomponentを分けず、同じ意味とAPIをlayout、viewport、input methodへ適応する。",
+      "rationale": "24px minimumと主要touch操作44px推奨を守りながら、densityをviewportだけで切り替えないため。"
+    },
+    {
+      "id": "token-contract",
+      "summary": "Breadcrumbのshowcaseが使う公開tokenをtokenRefsとtokenBindingsへ列挙する。",
+      "rationale": "実装と機械可読仕様の依存差分を自動検出し、Component tokenを必要条件なしに増やさないため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "missing-contract",
+      "description": "Breadcrumbに完全な人間向けmdと機械可読contractが存在しなかった。",
+      "action": "共通templateへ利用境界、anatomy、state、API、accessibility、responsive、AI selection ruleを記述した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "BreadcrumbのHTML showcaseが確定したnative/ARIA semanticsまたはkeyboard到達性を十分に表現していなかった。",
+      "action": "Showcase markupをcontractのsemantic relationshipとaccessible nameへ合わせた。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "components/breadcrumb.md",
+      "summary": "Breadcrumbの人間・AI向け設計仕様を完全templateで同期。"
+    },
+    {
+      "path": "design/contracts/components/breadcrumb.contract.json",
+      "summary": "Intent、behavior、responsive、accessibility、token bindingを機械可読化。"
+    },
+    {
+      "path": "js/generated/component-contract-meta.js",
+      "summary": "ContractからHTML docsへ表示するmetadataを生成。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "仕様、実装、検査sourceと最新review cycleを台帳へ接続。"
+    },
+    {
+      "path": "test/component-specs.test.js",
+      "summary": "全74件の契約同期、全state/variant描画、semantic、token依存を検査。"
+    },
+    {
+      "path": "js/ui-builders.js",
+      "summary": "Breadcrumb showcaseのnative/ARIA markupをcontractへ同期。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "Schema、registry、generated artifacts、JS syntaxと105 unit testsが成功。"
+    },
+    {
+      "command": "node --test test/component-specs.test.js",
+      "status": "passed",
+      "notes": "Breadcrumbを含む74件の全state/variant render、tag balance、semantic relationship、token declarationが成功。"
+    },
+    {
+      "command": "Automated browser viewport QA",
+      "status": "not-run",
+      "notes": "In-app browserがlocal file URLの自動操作をsecurity policyで拒否したため、このcycleでは自動screenshotを取得していない。"
+    }
+  ],
+  "openQuestions": [
+    {
+      "question": "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。",
+      "owner": "components.breadcrumb",
+      "exitCriteria": "React packageのDOM/ref/event APIを実装し、全visual slot bindingをcompleteにしてcontractをstableへ移行すること。"
+    },
+    {
+      "question": "BreadcrumbのDesktop/Mobile、Light/Dark、Standard/High contrast、3 densityのvisual regression baselineを取得する。",
+      "owner": "components.breadcrumb",
+      "exitCriteria": "Local pageを許可されたbrowser runnerで全matrix撮影し、overflow、重なり、focus表示、text fitに差分がないこと。"
+    }
+  ],
+  "acknowledgedImpacts": [],
+  "impactedItems": [],
+  "nextRecommendedItems": [
+    "components.segmented-control"
+  ]
+}

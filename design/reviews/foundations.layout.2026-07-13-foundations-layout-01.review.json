@@ -1,0 +1,195 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.layout",
+  "cycleId": "2026-07-13-foundations-layout-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "tokens/src/typography.json",
+    "tokens/src/layout.json",
+    "tokens/build/tokens.css",
+    "js/generated/foundation-token-meta.js",
+    "index.html",
+    "js/pages-foundations.js",
+    "scripts/build-tokens.mjs",
+    "scripts/build-design-md.mjs",
+    "test/layout-tokens.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "foundations.layout",
+      "summary": "App shell、content width、breakpoint命名、PC/SP reflow、component container response、zoom時のscrollと機能保持を確認する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "accessibility-or-safety",
+      "new-pattern-or-api",
+      "cross-platform-behavior",
+      "conflicting-guidance",
+      "benchmark-needed"
+    ],
+    "questions": [
+      "Breakpointをmobile/tablet/desktopというdevice分類で定義すべきか。",
+      "Viewport media queryとcomponent container queryの責務をどう分けるか。",
+      "狭い幅と高zoomでどの機能・contentを保持すべきか。"
+    ],
+    "evidence": [
+      {
+        "id": "wcag-reflow",
+        "title": "WCAG 2.2 Understanding Reflow",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/reflow",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "320 CSS px相当でcontentと機能を失わず、意味上2次元layoutが必要な例外以外は2方向scrollを要求しない基準を示している。",
+        "supportedDecisions": [
+          "reflow-without-functional-loss",
+          "local-two-dimensional-overflow"
+        ]
+      },
+      {
+        "id": "css-containment-three",
+        "title": "CSS Containment Module Level 3",
+        "url": "https://www.w3.org/TR/css-contain-3/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Viewportを調べるmedia queryに対し、ancestor containerのinline-sizeなどを調べるcontainer queryを定義している。",
+        "supportedDecisions": [
+          "shell-media-component-container"
+        ]
+      },
+      {
+        "id": "uswds-layout-grid",
+        "title": "U.S. Web Design System Layout Grid",
+        "url": "https://designsystem.digital.gov/utilities/layout-grid/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "mobile-firstのflexible grid、container/row/column、設定可能なresponsive breakpointの運用例を示している。",
+        "supportedDecisions": [
+          "content-driven-boundaries"
+        ]
+      }
+    ],
+    "synthesis": "WCAGのreflowを最低受け入れ条件、CSS Containmentを再利用componentの応答手段、USWDSをpage grid運用の比較対象とした。Breakpointはdevice identityではなくcontentが成立する境界として扱う。",
+    "decisionImpact": "Shellはviewport media query、componentはcontainer queryを優先する規則へ変更した。600/900/1080pxをcontent-driven boundaryとして正本化し、320 CSS px、200% text resize、400% zoom、boundary前後の検証条件を追加した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "content-driven-boundaries",
+      "summary": "Breakpointはmobile/tablet/desktopではなく、column stack、navigation overlay、TOC hideというcontent変化で命名する。",
+      "rationale": "device種類を推測せず、contentが崩れる条件とlayout変更の理由を直接表すため。"
+    },
+    {
+      "id": "shell-media-component-container",
+      "summary": "App shellはviewport media query、再利用componentは利用可能なcontainer inline-sizeへ応答する。",
+      "rationale": "広いviewport内の狭いsidebarなど、componentの実際の配置幅へ正しく対応するため。"
+    },
+    {
+      "id": "reflow-without-functional-loss",
+      "summary": "狭い幅ではstack、wrap、relocate、disclosureで再配置し、contentや操作を削除しない。",
+      "rationale": "SPと高zoomで同じ契約、accessible name、focus order、機能へ到達できるようにするため。"
+    },
+    {
+      "id": "local-two-dimensional-overflow",
+      "summary": "2方向scrollはtable、diagram、mapなど意味上必要な局所領域だけに限定する。",
+      "rationale": "page全体を横移動せずに本文と操作を利用できる一方、2次元関係を壊さないため。"
+    },
+    {
+      "id": "single-layout-contract",
+      "summary": "PC/SP差分をcomponent contractのresponsiveBehaviorに記録し、viewport別componentを作らない。",
+      "rationale": "意味、state、accessibility、保守境界を一つに保つため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "docs-stale",
+      "description": "Layout表は--sidebar-width、--content-max-width、--page-paddingなど存在しないtoken名と、実装と異なるcollapsed幅を表示していた。",
+      "action": "tokens/src/layout.jsonから実在名、source alias、resolved valueを生成表示するようにした。",
+      "status": "resolved"
+    },
+    {
+      "classification": "source-wrong",
+      "description": "layout.jsonのfont familyとdimensionがDTCG composite/value objectになっておらず、reading、wide content、dialog/drawer幅、breakpointの正本がなかった。",
+      "action": "font array、dimension object、usage metadata、3 content-driven breakpointを追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "reading width、wide content、dialog、command menuの幅がindex.htmlへhardcodeされていた。",
+      "action": "generated layout CSS variableへ接続し、spacing aliasもbuild時に解決した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "cross-layer-conflict",
+      "description": "Viewport breakpointをdevice categoryと同一視し、component内部layoutとの責務が分かれていなかった。",
+      "action": "shell media queryとcomponent container queryの適用境界、responsive contractを明文化した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "tokens/src/layout.json",
+      "summary": "Shell、content、overlay width、spacing alias、content-driven breakpointの正本へ拡張した。"
+    },
+    {
+      "path": "scripts/build-tokens.mjs",
+      "summary": "Layout dimension CSS、alias、browser metadata、breakpoint metadataを生成するようにした。"
+    },
+    {
+      "path": "index.html",
+      "summary": "reading、wide content、page padding、dialog、command menuをlayout tokenへ接続した。"
+    },
+    {
+      "path": "js/pages-foundations.js",
+      "summary": "Layout原則、生成token表、content-driven boundary、responsive contract、reflow検証を追加した。"
+    },
+    {
+      "path": "test/layout-tokens.test.js",
+      "summary": "Source/CSS/metadata、spacing alias、media query、legacy名の消滅を検証した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/layout-tokens.test.js",
+      "status": "passed",
+      "notes": "3 tests passed。Layout dimensions、600/900/1080 media queries、legacy docs namesを確認した。"
+    },
+    {
+      "command": "npm run build:tokens && npm run design:build",
+      "status": "passed",
+      "notes": "Layout CSS/metadataとDESIGN.mdを正本から再生成した。"
+    },
+    {
+      "command": "npm run check:js",
+      "status": "passed",
+      "notes": "29 JavaScript filesの構文を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-spacing-01"
+  ],
+  "impactedItems": [
+    "foundations.accessibility",
+    "tokens.overview",
+    "tokens.css-variables",
+    "tokens.json-tokens",
+    "components.dialog",
+    "components.drawer",
+    "components.table",
+    "components.sidebar",
+    "components.navigation-item"
+  ],
+  "nextRecommendedItems": [
+    "foundations.radius"
+  ]
+}

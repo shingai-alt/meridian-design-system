@@ -1,0 +1,109 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.overview",
+  "cycleId": "2026-07-13-tokens-overview-02",
+  "supersedesCycleId": "2026-07-13-tokens-overview-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/token-policy.json",
+    "tokens/src",
+    "design/semantic-tokens.json",
+    "scripts/build-tokens.mjs",
+    "scripts/lib/token-artifacts.mjs",
+    "js/generated/token-catalog-meta.js",
+    "test/token-pipeline.test.js",
+    "test/theme-tokens.test.js",
+    "js/pages-tokens.js",
+    "design/reviews/foundations.accessibility.2026-07-13-foundations-accessibility-01.review.json",
+    "design/reviews/foundations.color.2026-07-13-foundations-color-01.review.json",
+    "design/reviews/foundations.content.2026-07-13-foundations-content-01.review.json",
+    "design/reviews/foundations.elevation.2026-07-13-foundations-elevation-01.review.json",
+    "design/reviews/foundations.layout.2026-07-13-foundations-layout-01.review.json",
+    "design/reviews/foundations.motion.2026-07-13-foundations-motion-01.review.json",
+    "design/reviews/foundations.radius.2026-07-13-foundations-radius-01.review.json",
+    "design/reviews/foundations.spacing.2026-07-13-foundations-spacing-01.review.json",
+    "design/reviews/foundations.typography.2026-07-13-foundations-typography-01.review.json",
+    "design/reviews/overview.architecture.review.json",
+    "design/reviews/overview.for-engineers.2026-07-13-overview-for-engineers-01.review.json",
+    "design/reviews/tokens.json-tokens.2026-07-13-tokens-json-tokens-01.review.json"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "tokens.overview",
+      "summary": "Token Overviewの現行判断を後続cycleのmodifier、bundle、component実装へ照合するfollow-up確認。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "影響元cycleで該当standardの一次資料調査が完了しており、このfollow-upでは新しい外部standard解釈や設計patternを導入せず、確定済み判断との整合だけを実データとtestで確認するため。"
+  },
+  "decisions": [
+    {
+      "id": "resolved-context-alias-preservation",
+      "summary": "4 JSON bundleはmodifier contextを解決済みとしつつ、bundle内aliasで意味関係を保持する。",
+      "rationale": "完全alias展開済みと誤記せず、tool側が必要に応じて参照を解決できるため。"
+    },
+    {
+      "id": "stable-bundle-shape",
+      "summary": "4 bundleで同じ309 token pathと有効型を公開し、未解決・循環・型不整合を拒否する。",
+      "rationale": "Context選択でAPI shapeが変わらない交換形式を維持するため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "no-change",
+      "description": "JSON Tokens cycleのalias保持と型導出は、Token OverviewのDTCG 2025.10、4 bundle、single-source build方針を具体化しており矛盾しない。",
+      "action": "既存仕様本文を維持し、影響cycleをacknowledgedImpactsへ記録する。",
+      "status": "not-applicable"
+    }
+  ],
+  "changes": [
+    {
+      "path": "design/reviews/tokens.overview.2026-07-13-tokens-overview-02.review.json",
+      "summary": "後続cycleの影響確認、判断、検証、acknowledgementを記録。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "実際に確認した生成処理とtestをsource evidenceへ追加し、最新reviewを接続。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/token-pipeline.test.js test/theme-tokens.test.js",
+      "status": "passed",
+      "notes": "4 bundleの309 path、型、alias解決、modifier metadata、生成差分が成功。"
+    },
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "Schema、registry、generated artifacts、JS syntax、105 testsが成功した状態でfollow-upを作成。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-color-01",
+    "2026-07-13-foundations-content-01",
+    "2026-07-13-foundations-elevation-01",
+    "2026-07-13-foundations-layout-01",
+    "2026-07-13-foundations-motion-01",
+    "2026-07-13-foundations-radius-01",
+    "2026-07-13-foundations-spacing-01",
+    "2026-07-13-foundations-typography-01",
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-overview-for-engineers-01",
+    "2026-07-13-tokens-json-tokens-01"
+  ],
+  "impactedItems": [],
+  "nextRecommendedItems": [
+    "tokens.theme"
+  ]
+}

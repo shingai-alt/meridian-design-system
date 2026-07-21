@@ -1,0 +1,293 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "task-board-card",
+  "name": "Task Board Card",
+  "status": "draft",
+  "category": "saas",
+  "description": "カンバンボードのタスクカード。ドラッグ対応を想定した密度。",
+  "source": {
+    "humanDoc": "components/task-board-card.md",
+    "registry": "js/components-registry.js#task-board-card"
+  },
+  "intent": {
+    "whenToUse": [
+      "kanban列内でtaskを要約し、dragまたはkeyboardで移動するとき。"
+    ],
+    "whenNotToUse": [
+      "列比較や大量走査にはTableを使う。"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Bounded information or task container."
+    },
+    {
+      "part": "header",
+      "required": false,
+      "description": "Title, summary, and context controls."
+    },
+    {
+      "part": "content",
+      "required": true,
+      "description": "Primary values or composed components."
+    },
+    {
+      "part": "footer",
+      "required": false,
+      "description": "Secondary metadata or actions."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "children",
+      "type": "ReactNode",
+      "required": true,
+      "default": null,
+      "description": "Componentの主要content。"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--border",
+      "--fg",
+      "--fg-muted",
+      "--fg-subtle",
+      "--surface"
+    ],
+    "density": [
+      "--card-pad"
+    ],
+    "spacing": [
+      "--sp-4"
+    ],
+    "radius": [
+      "--radius-md"
+    ],
+    "typography": [
+      "--font-mono",
+      "--text-label"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.card-pad.value",
+        "source": "--card-pad",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-4.value",
+        "source": "--sp-4",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-md.value",
+        "source": "--radius-md",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-subtle.value",
+        "source": "--fg-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Task Board CardのHTML showcaseで実際に参照する公開token。"
+      },
+      {
+        "slot": "token.font-mono.value",
+        "source": "--font-mono",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Task Board CardのHTML showcaseで実際に参照する公開token。"
+      },
+      {
+        "slot": "token.text-label.value",
+        "source": "--text-label",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Task Board CardのHTML showcaseで実際に参照する公開token。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.task-board-card"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "Keyboardとpointerで同じ機能を実行できる。",
+      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
+      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "focus-visibleで--focus-ringを使う。",
+      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+    ]
+  },
+  "keyboardInteractions": [
+    {
+      "key": "Tab",
+      "action": "順序どおりにfocusを移動する。"
+    }
+  ],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "kanban列内でtaskを要約し、dragまたはkeyboardで移動するとき。",
+      "recommended": [
+        "ラベルは 2 個まで表示し、残りは +N にまとめる。"
+      ],
+      "avoid": [
+        "列比較や大量走査にはTableを使う。"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのTask Board Card。",
+      "rules": [
+        "CompactまたはDefault densityで走査性を優先し、metadataとactionの列を安定させる。",
+        "Hover actionはfocusでも表示する。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのTask Board Card。",
+      "rules": [
+        "主情報を先にしてmetadataを折り返し、非表示情報にはdetail viewから到達できるようにする。",
+        "行全体clickだけに依存せず明示的なtargetを残す。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのTask Board Card。",
+      "rules": [
+        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
+        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM",
+    "FOCUS_VISIBLE_REQUIRED",
+    "NO_POSITIVE_TABINDEX",
+    "TARGET_SIZE_MINIMUM",
+    "INTERACTIVE_NAME_REQUIRED",
+    "DRAG_ALTERNATIVE_REQUIRED"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Task Board Cardの標準例。",
+      "code": "<TaskCard task={task} draggable onOpen={open} />"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

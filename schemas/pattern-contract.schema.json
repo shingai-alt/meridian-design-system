@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/pattern-contract.schema.json",
+  "title": "Meridian Pattern Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "contractVersion", "id", "name", "status", "description", "components", "layoutRecipes", "rules", "accessibility"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "type": "string" },
+    "contractVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["draft", "stable", "deprecated"] },
+    "description": { "type": "string", "minLength": 1 },
+    "components": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+    "layoutRecipes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["stack", "cluster", "grid", "section", "responsive-switch"] } },
+    "rules": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "accessibility": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+  }
+}

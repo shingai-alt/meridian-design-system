@@ -1,0 +1,56 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "overview.introduction",
+  "cycleId": "2026-07-13-overview-introduction-bootstrap",
+  "supersedesCycleId": null,
+  "reviewType": "bootstrap",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": ["design/research-policy.json", "VISION.md", "DESIGN.md", "docs/components/spec-workflow.md", "js/pages-overview.js"],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "overview.introduction",
+      "summary": "Introductionの対象product範囲、vision、成果物の現在地と将来計画の説明を確認する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "このcycleはユーザーが確定した対象範囲と、既存の内部文書間の役割整理だけを扱い、外部標準や新しいinteraction判断を変更していない。"
+  },
+  "decisions": [
+    {
+      "id": "product-scope",
+      "summary": "MeridianはSaaSなどの業務ツールから消費者向けアプリまでを対象にする。",
+      "rationale": "対象範囲を狭めず、判断の速さを優先するproduct interfaceへ共通基盤を提供するため。"
+    },
+    {
+      "id": "three-document-roles",
+      "summary": "Human spec、Machine contract、HTML docsの3つで設計判断を管理する。",
+      "rationale": "人間の判断、AIの構造化入力、視覚確認をそれぞれ最適な形式へ分けるため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "docs-stale",
+      "description": "AI-readyの理由と3つのdocument roleがIntroductionに記載されていなかった。",
+      "action": "Introductionへ設計判断の3層構造とAI-readyの要件を追加した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    { "path": "js/pages-overview.js", "summary": "Introductionの対象範囲、AI-ready、document roleを更新。" }
+  ],
+  "validations": [
+    { "command": "node --check js/pages-overview.js", "status": "passed", "notes": "JavaScript syntax verified." },
+    { "command": "npm test", "status": "passed", "notes": "Existing unit tests passed." }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [],
+  "impactedItems": ["overview.principles", "overview.getting-started", "overview.architecture"],
+  "nextRecommendedItems": ["overview.principles"]
+}

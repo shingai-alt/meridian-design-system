@@ -1,0 +1,115 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.motion",
+  "cycleId": "2026-07-13-tokens-motion-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "tokens/src/motion.json",
+    "tokens/build/tokens.css",
+    "tokens/build/meridian.tokens.json",
+    "js/generated/foundation-token-meta.js",
+    "js/pages-tokens.js",
+    "index.html",
+    "test/motion-tokens.test.js",
+    "test/token-pipeline.test.js"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "tokens.motion",
+      "summary": "Motion Foundationで確定済みのduration、easing、distance、reduced-motion policyを、DTCG source、生成CSS、app fallbackへ同期する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "新しいmotion patternを導入せず、foundations.motionで外部調査済みの判断をToken outputと既存app fallbackの責務分離へ反映するcycleのため。"
+  },
+  "decisions": [
+    {
+      "id": "typed-motion-primitives",
+      "summary": "Motionは5 duration、4 cubic-bezier easing、3 distanceを型付きDTCG tokenとして公開する。",
+      "rationale": "時間、補間、移動量を独立して組み合わせ、用途ごとのmagic numberを防ぐため。"
+    },
+    {
+      "id": "generated-reduced-motion-overrides",
+      "summary": "prefers-reduced-motion時のduration/distance token overrideは生成CSSが単独で所有する。",
+      "rationale": "Sourceから生成される全tokenを漏れなく抑制し、index.htmlとの二重管理を避けるため。"
+    },
+    {
+      "id": "application-safety-fallback",
+      "summary": "index.htmlにはsmooth scroll停止と未token化animation/transitionを抑える汎用fallbackだけを残す。",
+      "rationale": "Token consumer以外のanimationにも利用者設定を適用しつつ、token値の所有権を混在させないため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "cross-layer-conflict",
+      "description": "reduced-motion時のduration/distance token overrideが生成CSSとindex.htmlの双方に重複していた。",
+      "action": "Token overrideを生成CSSへ一本化し、index.htmlから重複宣言を削除した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "Motion DTCG sourceがtheme bundleへ完全に収録されることを直接検証していなかった。",
+      "action": "SourceとLight bundleのmotion groupをdeep equalityで検証するtestを追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Registryがsourceとdocsのみを列挙し、generated artifacts、runtime fallback、testを追跡していなかった。",
+      "action": "Motion itemのsourcesへCSS、bundle、metadata、index、testを追加した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "index.html",
+      "summary": "reduced-motionのtoken値重複を削除し、scrollと汎用animation fallbackだけを残した。"
+    },
+    {
+      "path": "test/motion-tokens.test.js",
+      "summary": "DTCG bundle同期、生成CSSでの全token抑制、index.htmlの非重複を検証した。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "Motionの原本、生成物、実装、docs、testを一つのreview scopeへ登録した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/motion-tokens.test.js test/token-pipeline.test.js",
+      "status": "passed",
+      "notes": "9 tests passed。Source/bundle同期、型、順序、easing、reduced motion、docs/runtime namingを確認した。"
+    },
+    {
+      "command": "npm run check:js && npm run check:tokens && npm run validate:system",
+      "status": "passed",
+      "notes": "38 JavaScript files、全generated token artifact、102 registry items、24 review cyclesの整合性を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-motion-01",
+    "2026-07-13-tokens-overview-01",
+    "2026-07-13-tokens-shadow-01"
+  ],
+  "impactedItems": [
+    "tokens.component",
+    "tokens.theme",
+    "components.progress",
+    "components.skeleton",
+    "components.toast"
+  ],
+  "nextRecommendedItems": [
+    "tokens.component"
+  ]
+}

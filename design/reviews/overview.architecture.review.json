@@ -1,0 +1,119 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "overview.architecture",
+  "cycleId": "2026-07-13-overview-architecture-bootstrap",
+  "supersedesCycleId": null,
+  "reviewType": "bootstrap",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": ["design/research-policy.json", "README.md", "DESIGN.md", "tokens/src", "design/semantic-tokens.json", "src/color-engine.js", "js/utils.js", "js/pages-overview.js"],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "overview.architecture",
+      "summary": "System Architectureのtoken layer、modifier、Component tokenの判断境界を確認する。"
+    },
+    "triggers": ["standard-or-regulation", "benchmark-needed", "uncertainty"],
+    "questions": [
+      "Seed、Reference、Semantic、Componentをどの境界でlayerとして扱うべきか。",
+      "Semantic tokenとComponent tokenを併用する場合の責務と昇格条件をどう定義するか。"
+    ],
+    "evidence": [
+      {
+        "id": "dtcg-format-2025-10",
+        "title": "Design Tokens Format Module 2025.10",
+        "url": "https://www.designtokens.org/TR/2025.10/format/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Tokenの型、group、alias、resolution、循環参照禁止を定義し、generator inputとは異なる交換形式の境界を示している。",
+        "supportedDecisions": ["input-plus-three-layers"]
+      },
+      {
+        "id": "spectrum-design-tokens",
+        "title": "Spectrum Design Tokens",
+        "url": "https://spectrum.adobe.com/page/design-tokens/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Global、alias、component-specific tokenを区別し、alias優先とcomponent固有tokenの限定利用を説明している。",
+        "supportedDecisions": ["binding-before-component-token", "orthogonal-modifiers"]
+      },
+      {
+        "id": "carbon-color-tokens",
+        "title": "Carbon Design System Color",
+        "url": "https://carbondesignsystem.com/elements/color/overview/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Role-based core tokenと特定component専用tokenを区別し、theme間ではroleを維持して値を変更する構造を示している。",
+        "supportedDecisions": ["binding-before-component-token", "orthogonal-modifiers"]
+      }
+    ],
+    "synthesis": "交換仕様としてのDTCGと、実運用上のSpectrum/Carbonを分けて読み、Seedを入力、token dependencyをReference、Semantic、Componentの3層、Theme等をmodifierとする構造が妥当と判断した。",
+    "decisionImpact": "4層説明を廃止し、全visual slotをまずbindingした上で、明示triggerがある場合だけComponent tokenへ昇格するArchitectureへ変更した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "input-plus-three-layers",
+      "summary": "Seedをinputとし、Reference、Semantic、Componentを3 token layersとする。",
+      "rationale": "生成入力、処理、token dependencyを同じlayerとして数えず、DTCGのBase / Alias / Componentの考え方と整合させるため。"
+    },
+    {
+      "id": "orthogonal-modifiers",
+      "summary": "Theme、Contrast、Density、Platform、Motionを直交modifierとして扱う。",
+      "rationale": "contextの組み合わせ爆発と責務重複を避けるため。"
+    },
+    {
+      "id": "binding-before-component-token",
+      "summary": "全visual slotにbindingを持ち、必要なbindingだけComponent tokenへ昇格する。",
+      "rationale": "Component tokenの無秩序な増加を避けながら、AIと人間が同じ基準で判断できるようにするため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "source-wrong",
+      "description": "Seedを含む4層モデルが、token layerとgenerator inputを混同していた。",
+      "action": "Architectureをinput、generator/resolver、3 token layers、modifiers、outputsへ再構成した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "cross-layer-conflict",
+      "description": "現在のcolor、component token、shadow生成責務が複数ファイルへ分散している。",
+      "action": "目標source flowを定義し、Tokens reviewで段階的に移行する。",
+      "status": "deferred"
+    }
+  ],
+  "changes": [
+    { "path": "js/pages-overview.js", "summary": "System Architectureを新しい全体モデルとtoken判断基準へ更新。" },
+    { "path": "design/token-policy.json", "summary": "layer、modifier、Component token昇格、binding ruleを機械可読化。" },
+    { "path": "docs/system/refinement-workflow.md", "summary": "全領域を反復改善する共通workflowを追加。" }
+  ],
+  "validations": [
+    { "command": "node --check js/pages-overview.js", "status": "passed", "notes": "JavaScript syntax verified." },
+    { "command": "npm test", "status": "passed", "notes": "Existing unit tests passed." },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、registry、binding、generated drift、unit testsを一括検証済み。" }
+  ],
+  "openQuestions": [
+    {
+      "question": "現在のhc themeをtheme=light + contrast=highへいつ分離するか。",
+      "owner": "tokens.theme",
+      "exitCriteria": "Theme / Contrast resolverと既存CSS移行計画が決まること。"
+    },
+    {
+      "question": "既存token JSONをDTCG 2025.10の値形式へいつ移行するか。",
+      "owner": "tokens.json-tokens",
+      "exitCriteria": "builderが新形式を読み、CSS出力driftなしで移行できること。"
+    }
+  ],
+  "acknowledgedImpacts": [
+    "2026-07-13-overview-introduction-bootstrap",
+    "2026-07-13-overview-principles-bootstrap",
+    "2026-07-13-overview-getting-started-bootstrap"
+  ],
+  "impactedItems": ["overview.for-designers", "overview.for-engineers", "foundations.color", "tokens.overview", "tokens.component", "tokens.theme", "tokens.density", "components.button"],
+  "nextRecommendedItems": ["overview.for-designers", "overview.for-engineers"]
+}

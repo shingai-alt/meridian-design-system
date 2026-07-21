@@ -1,0 +1,312 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "top-bar",
+  "name": "Top Bar",
+  "status": "draft",
+  "category": "navigation",
+  "description": "現在地(パンくず)とグローバル操作(検索・通知・ユーザー)を置く上部バー。",
+  "source": {
+    "humanDoc": "components/top-bar.md",
+    "registry": "js/components-registry.js#top-bar"
+  },
+  "intent": {
+    "whenToUse": [
+      "ページ横断の操作と現在地表示"
+    ],
+    "whenNotToUse": [
+      "ページ固有actionだけを置く領域にはPage headerを使う。"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Navigation landmark or grouped navigation container."
+    },
+    {
+      "part": "item",
+      "required": true,
+      "description": "Destination or view selector."
+    },
+    {
+      "part": "current-indicator",
+      "required": false,
+      "description": "Non-color cue for the current location or selection."
+    },
+    {
+      "part": "metadata",
+      "required": false,
+      "description": "Count, icon, or supporting context."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "children",
+      "type": "ReactNode",
+      "required": true,
+      "default": null,
+      "description": "Componentの主要content。"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--border",
+      "--fg",
+      "--fg-muted",
+      "--focus-ring",
+      "--primary",
+      "--primary-subtle",
+      "--surface",
+      "--surface-muted"
+    ],
+    "density": [
+      "--ctl-md"
+    ],
+    "spacing": [
+      "--sp-2"
+    ],
+    "motion": [
+      "--dur-fast"
+    ],
+    "radius": [
+      "--radius-2xs"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.surface-muted.value",
+        "source": "--surface-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.primary.value",
+        "source": "--primary",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.primary-subtle.value",
+        "source": "--primary-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.focus-ring.value",
+        "source": "--focus-ring",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.ctl-md.value",
+        "source": "--ctl-md",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-2.value",
+        "source": "--sp-2",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.dur-fast.value",
+        "source": "--dur-fast",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-2xs.value",
+        "source": "--radius-2xs",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Top BarのHTML showcaseで実際に参照する公開token。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.top-bar"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "Keyboardとpointerで同じ機能を実行できる。",
+      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
+      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "focus-visibleで--focus-ringを使う。",
+      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+    ]
+  },
+  "keyboardInteractions": [
+    {
+      "key": "Tab",
+      "action": "順序どおりにfocusを移動する。"
+    }
+  ],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "ページ横断の操作と現在地表示",
+      "recommended": [
+        "高さは topbar-height トークンで固定し、スクロールで固定表示する。"
+      ],
+      "avoid": [
+        "ページ固有actionだけを置く領域にはPage headerを使う。"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのTop Bar。",
+      "rules": [
+        "恒常navigationとして固定領域を使い、main contentを覆わない。",
+        "Collapsed stateでもlabelへ到達できる。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのTop Bar。",
+      "rules": [
+        "同じnavigation contractをDrawerまたはcompact barで提示し、別component APIへ分岐しない。",
+        "開閉controlと現在地を常に認識できるようにする。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのTop Bar。",
+      "rules": [
+        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
+        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM",
+    "FOCUS_VISIBLE_REQUIRED",
+    "NO_POSITIVE_TABINDEX",
+    "TARGET_SIZE_MINIMUM",
+    "INTERACTIVE_NAME_REQUIRED"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Top Barの標準例。",
+      "code": "<TopBar>\n  <Breadcrumb items={crumbs} />\n  <TopBar.Spacer />\n  <SearchField shortcut=\"⌘K\" />\n  <NotificationButton />\n  <UserMenu />\n</TopBar>"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

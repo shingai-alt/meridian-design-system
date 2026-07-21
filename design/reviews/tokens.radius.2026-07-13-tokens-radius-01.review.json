@@ -1,0 +1,104 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.radius",
+  "cycleId": "2026-07-13-tokens-radius-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "tokens/src/radius.json",
+    "tokens/build/tokens.css",
+    "tokens/build/meridian.tokens.json",
+    "js/generated/foundation-token-meta.js",
+    "js/pages-tokens.js",
+    "index.html",
+    "test/radius-tokens.test.js",
+    "test/token-pipeline.test.js"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "tokens.radius",
+      "summary": "Foundationで確定済みのshape policyを、Radius source、CSS、DTCG bundle、Token docs、静的surface実装へ同期する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "新しいshape step、component用途、accessibility基準を導入せず、foundations.radiusで調査・決定済みの9step policyを生成物と実装へ同期するcycleのため。"
+  },
+  "decisions": [
+    {
+      "id": "nine-step-radius-scale",
+      "summary": "0、2、4、6、8、10、12、16、fullの9stepをtyped Reference scaleとして維持する。",
+      "rationale": "Control、static surface、floating surface、modal、circle/pillの用途を既存stepで明確に分けられるため。"
+    },
+    {
+      "id": "static-surface-eight-max",
+      "summary": "Card、Panel、Tileなど静的surfaceはradius-md 8pxを上限にする。",
+      "rationale": "業務UIの密度と情報構造を保ち、装飾目的の過大なroundingを防ぐため。"
+    },
+    {
+      "id": "role-not-viewport",
+      "summary": "Radiusはcomponent role/anatomyで選び、theme、density、PC/SPでは切り替えない。",
+      "rationale": "Shapeの意味をcontext間で安定させるため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "docs-stale",
+      "description": "Radius Token pageがFoundation pageを再利用し、DTCG pathとgenerated CSSの責務を区別していなかった。",
+      "action": "9stepのpath、CSS名、value、usage、previewに限定したToken pageへ更新した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-contract",
+      "description": "Bundle一致、scale単調性、md/lg/fullのusage metadataを自動検証していなかった。",
+      "action": "DTCG bundleとsourceの一致、用途境界をtestへ追加した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "js/pages-tokens.js",
+      "summary": "Radius Token固有のpath、CSS、用途、preview pageへ更新した。"
+    },
+    {
+      "path": "test/radius-tokens.test.js",
+      "summary": "Bundle一致、単調性、8px上限とlg/full用途metadataの検証を追加した。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "Radius itemへCSS、bundle、metadata、implementation、testをsource登録した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/radius-tokens.test.js test/token-pipeline.test.js",
+      "status": "passed",
+      "notes": "8 tests passed。9step、CSS、bundle、usage metadata、4種類の静的surfaceの8px上限を確認した。"
+    },
+    {
+      "command": "npm run check:tokens && npm run validate:system",
+      "status": "passed",
+      "notes": "Generated artifactsと102 registry items、22 review cyclesの整合性を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-radius-01",
+    "2026-07-13-tokens-overview-01",
+    "2026-07-13-tokens-spacing-01"
+  ],
+  "impactedItems": [
+    "tokens.shadow"
+  ],
+  "nextRecommendedItems": [
+    "tokens.shadow"
+  ]
+}

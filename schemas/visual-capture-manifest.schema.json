@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/visual-capture-manifest.schema.json",
+  "title": "Meridian Visual Capture Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "conceptId", "sourceDigests", "captures"],
+  "properties": {
+    "schemaVersion": { "const": "0.1.0" },
+    "conceptId": { "type": "string" },
+    "sourceDigests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["html", "candidates", "rubric"],
+      "properties": {
+        "html": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+        "candidates": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+        "rubric": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" }
+      }
+    },
+    "captures": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["candidateId", "candidateLayout", "scenarioId", "viewport", "path", "width", "height", "digest"],
+        "properties": {
+          "candidateId": { "type": "string" },
+          "candidateLayout": { "type": "string" },
+          "scenarioId": { "type": "string", "minLength": 1 },
+          "viewport": { "enum": ["desktop", "mobile"] },
+          "path": { "type": "string", "pattern": "^examples/generated/visual-review/[a-z0-9._-]+\\.png$" },
+          "width": { "type": "integer", "minimum": 390 },
+          "height": { "type": "integer", "minimum": 600 },
+          "digest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" }
+        }
+      }
+    }
+  }
+}

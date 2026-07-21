@@ -1,0 +1,98 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.accessibility",
+  "cycleId": "2026-07-13-foundations-accessibility-02",
+  "supersedesCycleId": "2026-07-13-foundations-accessibility-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/accessibility.json",
+    "design/rules.json",
+    "src/color-engine.js",
+    "test/accessibility-policy.test.js",
+    "test/component-specs.test.js",
+    "js/pages-foundations.js",
+    "design/reviews/foundations.color.2026-07-13-foundations-color-01.review.json",
+    "design/reviews/foundations.iconography.2026-07-13-foundations-iconography-01.review.json",
+    "design/reviews/foundations.layout.2026-07-13-foundations-layout-01.review.json",
+    "design/reviews/foundations.motion.2026-07-13-foundations-motion-01.review.json",
+    "design/reviews/foundations.spacing.2026-07-13-foundations-spacing-01.review.json",
+    "design/reviews/foundations.typography.2026-07-13-foundations-typography-01.review.json",
+    "design/reviews/overview.principles.review.json",
+    "design/reviews/tokens.theme.2026-07-13-tokens-theme-01.review.json"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "foundations.accessibility",
+      "summary": "Accessibilityの現行判断を後続cycleのmodifier、bundle、component実装へ照合するfollow-up確認。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "影響元cycleで該当standardの一次資料調査が完了しており、このfollow-upでは新しい外部standard解釈や設計patternを導入せず、確定済み判断との整合だけを実データとtestで確認するため。"
+  },
+  "decisions": [
+    {
+      "id": "all-context-accessibility",
+      "summary": "Contrast、focus、name/role/value、targetを4 theme contextと3 densityのすべてで維持する。",
+      "rationale": "ThemeやDensityをアクセシビリティ要件の例外にしないため。"
+    },
+    {
+      "id": "component-contract-enforcement",
+      "summary": "複合componentのARIA関係とkeyboard modelをcontractとshowcase testで検査する。",
+      "rationale": "Foundationの横断要件をcomponent実装へ具体化するため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "no-change",
+      "description": "Theme cycleと74 component cycleは、WCAG 2.2 baseline、24px minimum、visible/unobscured focusの既存方針を具体化しており矛盾しない。",
+      "action": "既存仕様本文を維持し、影響cycleをacknowledgedImpactsへ記録する。",
+      "status": "not-applicable"
+    }
+  ],
+  "changes": [
+    {
+      "path": "design/reviews/foundations.accessibility.2026-07-13-foundations-accessibility-02.review.json",
+      "summary": "後続cycleの影響確認、判断、検証、acknowledgementを記録。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "実際に確認した生成処理とtestをsource evidenceへ追加し、最新reviewを接続。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/accessibility-policy.test.js test/component-specs.test.js test/theme-tokens.test.js",
+      "status": "passed",
+      "notes": "Accessibility policy同期、複合ARIA pattern、target/focus、theme contextが成功。"
+    },
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "Schema、registry、generated artifacts、JS syntax、105 testsが成功した状態でfollow-upを作成。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-color-01",
+    "2026-07-13-foundations-iconography-01",
+    "2026-07-13-foundations-layout-01",
+    "2026-07-13-foundations-motion-01",
+    "2026-07-13-foundations-spacing-01",
+    "2026-07-13-foundations-typography-01",
+    "2026-07-13-overview-principles-bootstrap",
+    "2026-07-13-tokens-theme-01"
+  ],
+  "impactedItems": [],
+  "nextRecommendedItems": [
+    "tokens.overview"
+  ]
+}

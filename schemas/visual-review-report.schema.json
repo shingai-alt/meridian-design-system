@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/visual-review-report.schema.json",
+  "title": "Meridian Visual Review Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "conceptId", "rubricId", "status", "critic", "screenshotManifest", "candidates", "comparisons", "humanDecisionRequired", "provisionalPreference"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "conceptId": { "type": "string" },
+    "rubricId": { "type": "string" },
+    "status": { "enum": ["awaiting-human-comparison", "approved", "revision-requested"] },
+    "critic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "input", "maximumRepairRounds"],
+      "properties": {
+        "kind": { "const": "rubric-grounded-visual-agent" },
+        "input": { "type": "array", "items": { "type": "string" } },
+        "maximumRepairRounds": { "const": 2 }
+      }
+    },
+    "screenshotManifest": { "type": "string" },
+    "candidates": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "weightedScore", "majorFindingsAfterRepair", "passesProvisionalGate", "screenshots", "repairRounds"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "enum": ["baseline", "candidate"] },
+          "weightedScore": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "majorFindingsAfterRepair": { "type": "integer", "minimum": 0 },
+          "passesProvisionalGate": { "type": "boolean" },
+          "screenshots": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+          "repairRounds": { "type": "integer", "minimum": 0, "maximum": 2 }
+        }
+      }
+    },
+    "comparisons": { "type": "array", "minItems": 3, "items": { "type": "object", "additionalProperties": true } },
+    "humanDecisionRequired": { "const": true },
+    "provisionalPreference": { "type": "string" }
+  }
+}

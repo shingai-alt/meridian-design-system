@@ -1,0 +1,89 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "overview.for-designers",
+  "cycleId": "2026-07-13-overview-for-designers-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/rules.json",
+    "design/token-policy.json",
+    "js/pages-overview.js",
+    "docs/components/spec-workflow.md",
+    "components/_template.md",
+    "design/contracts/components/_template.contract.json"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "overview.for-designers",
+      "summary": "For Designersの現在利用可能な成果物、component選択、token指定、responsive設計、handoff手順を確認する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "既存のMeridian内部policyと現在提供中の成果物を実務手順へ同期するcycleであり、新しい外部標準やplatform conventionを決定していない。"
+  },
+  "decisions": [
+    {
+      "id": "current-artifacts-first",
+      "summary": "Figma提供前はHTML docs、token names、component mdとcontract、Templatesを設計の共通語彙とする。",
+      "rationale": "未提供のlibraryを現在利用可能に見せず、設計判断と視覚確認を既存成果物へ結び付けるため。"
+    },
+    {
+      "id": "decision-led-design-workflow",
+      "summary": "Principlesからcomponent選択、token、state、responsive、handoffまでを順序化する。",
+      "rationale": "見た目の模倣ではなく、選択理由と制約を実装へ渡せる再現可能な設計手順にするため。"
+    },
+    {
+      "id": "same-contract-responsive-design",
+      "summary": "PC用とSP用のcomponentを分けず、同じcontractのlayout、visibility、density、placementを適応させる。",
+      "rationale": "意味の重複を避け、viewportと入力方式の違いをresponsive behaviorとして管理するArchitectureに整合させるため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "docs-stale",
+      "description": "Figma libraryが未提供である一方、ページ冒頭がFigma上で使うガイドとして現在利用可能に読めた。",
+      "action": "現在の成果物と将来提供予定を分離し、実行可能なdesigner workflowへ更新した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-contract",
+      "description": "designerがmd、contract、HTML docsをどの順で参照し、何をhandoffするかが不足していた。",
+      "action": "component選択、token、state、responsive、accessibility、handoffのdone criteriaを追加した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "js/pages-overview.js",
+      "summary": "For Designersを現在の提供状況に合わせ、設計開始からhandoffまでの実務ガイドへ更新した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --check js/pages-overview.js",
+      "status": "passed",
+      "notes": "更新後のOverviewページ定義に構文エラーがないことを確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-overview-getting-started-bootstrap"
+  ],
+  "impactedItems": [
+    "foundations.color",
+    "components.button"
+  ],
+  "nextRecommendedItems": [
+    "overview.for-engineers"
+  ]
+}

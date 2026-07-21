@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/grounding-report.schema.json",
+  "title": "Meridian Strategy Grounding Report",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "conceptId", "registryDigest", "strategiesRef", "strategies"],
+  "properties": {
+    "schemaVersion": { "const": "0.1.0" },
+    "conceptId": { "type": "string" },
+    "registryDigest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+    "strategiesRef": { "type": "string" },
+    "strategies": { "type": "array", "minItems": 3, "maxItems": 3, "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["strategyId", "status", "resolvedComponents", "missingComponents"],
+      "properties": {
+        "strategyId": { "type": "string" },
+        "status": { "enum": ["grounded", "proposal-required"] },
+        "resolvedComponents": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "missingComponents": { "type": "array", "uniqueItems": true, "items": { "type": "string" } }
+      }
+    } }
+  }
+}

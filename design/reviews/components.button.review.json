@@ -1,0 +1,117 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.button",
+  "cycleId": "2026-07-13-components-button-bootstrap",
+  "supersedesCycleId": null,
+  "reviewType": "bootstrap",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": ["design/research-policy.json", "components/button.md", "design/contracts/components/button.contract.json", "js/components-registry.js", "js/component-pages.js", "js/ui-builders.js", "index.html"],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "components.button",
+      "summary": "Buttonのmd、contract、HTML docs、responsive behavior、accessibility、token bindingを確認する。"
+    },
+    "triggers": ["accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior", "benchmark-needed"],
+    "questions": [
+      "Buttonのnative semanticsとkeyboard interactionは何を必須にするか。",
+      "PCとSPでcomponentを分けずに、target sizeとlayoutをどう適応させるか。",
+      "AIが利用できるcomponent specificationにはどの情報構造が必要か。"
+    ],
+    "evidence": [
+      {
+        "id": "wai-apg-button",
+        "title": "WAI-ARIA Authoring Practices Button Pattern",
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/button/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Buttonのrole、accessible name、Enter/Space操作、toggle時のaria-pressedなどの基準を示している。",
+        "supportedDecisions": ["native-button-semantics"]
+      },
+      {
+        "id": "wcag-target-size-minimum",
+        "title": "WCAG 2.2 Understanding SC 2.5.8 Target Size Minimum",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Pointer targetの最低寸法とspacing例外を説明し、touch環境で密度とhit areaを検討する根拠を示している。",
+        "supportedDecisions": ["same-component-across-viewports"]
+      },
+      {
+        "id": "melta-ai-ready-spec",
+        "title": "melta UI AI-Ready Design System",
+        "url": "https://github.com/tsubotax/melta-ui",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "人間向けdocumentationとAIが読める構造化仕様を併用するcomponent catalogの実例を提供している。",
+        "supportedDecisions": ["component-spec-shape"]
+      }
+    ],
+    "synthesis": "WAI/WCAGをbehaviorとaccessibilityの基準、meltaをAI-readableな仕様構成の比較対象として分離して参照した。",
+    "decisionImpact": "native button、Enter/Space、accessible name、touch target、同一componentのresponsive adaptationを仕様へ固定し、mdとcontractの二層仕様をButtonのpilotとした。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "component-spec-shape",
+      "summary": "Buttonをcomponent md / contract / HTML docsの参照実例とする。",
+      "rationale": "core componentでvariant、state、accessibility、responsive behaviorを一通り検証できるため。"
+    },
+    {
+      "id": "same-component-across-viewports",
+      "summary": "PC / SPでButton componentを分けず、responsiveBehaviorとlayout patternで適応する。",
+      "rationale": "意味とAPIを重複させず、fullWidth、size、配置で調整できるため。"
+    },
+    {
+      "id": "native-button-semantics",
+      "summary": "native buttonを既定とし、Enter、Space、accessible nameを必須のbehaviorとする。",
+      "rationale": "WAI-ARIA APGのButton Patternとnative HTMLの意味を維持するため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "docs-stale",
+      "description": "mdに比べHTML docsのUsage patternsとResponsive behaviorが不足していた。",
+      "action": "registryとcomponent page rendererへ表示セクションを追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-contract",
+      "description": "tokenRefsはあったが、Semantic / Component tokenの昇格理由を表すbinding policyがなかった。",
+      "action": "component contract schemaへtokenBindingsを追加し、Buttonをpilotとして記録する。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    { "path": "components/button.md", "summary": "Buttonの人間・AI向け設計仕様を完成形に近い構成へ拡張。" },
+    { "path": "design/contracts/components/button.contract.json", "summary": "Buttonの機械可読contract、responsive behavior、token bindingと未結線slotを同期。" },
+    { "path": "js/components-registry.js", "summary": "Usage patternsとResponsive behaviorをHTML docsへ追加。" },
+    { "path": "index.html", "summary": "Button states、loading、token利用を更新。" }
+  ],
+  "validations": [
+    { "command": "npm test", "status": "passed", "notes": "Existing unit tests passed." },
+    { "command": "Playwright screenshot", "status": "manual", "notes": "Button pageのPlayground、Usage patterns、Responsive behaviorを視覚確認済み。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Contract schema、binding policy、generated drift、unit testsを一括検証済み。" }
+  ],
+  "openQuestions": [
+    {
+      "question": "ButtonとIcon Buttonを同一contractに含めるか。",
+      "owner": "components.icon-button",
+      "exitCriteria": "Icon Button reviewでselection boundaryと共有bindingを確定すること。"
+    },
+    {
+      "question": "Buttonの未結線spacing、radius、shadow、filter、spinnerをどのtoken layerが所有するか。",
+      "owner": "tokens.component",
+      "exitCriteria": "各visual slotのbinding先を確定し、tokenBindingsをcompleteへ移行できること。"
+    }
+  ],
+  "acknowledgedImpacts": ["2026-07-13-overview-architecture-bootstrap"],
+  "impactedItems": ["tokens.component", "components.icon-button", "components.text-field"],
+  "nextRecommendedItems": ["components.text-field"]
+}

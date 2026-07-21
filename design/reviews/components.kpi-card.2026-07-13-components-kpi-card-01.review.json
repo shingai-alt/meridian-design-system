@@ -1,0 +1,128 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.kpi-card",
+  "cycleId": "2026-07-13-components-kpi-card-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "components/kpi-card.md",
+    "design/contracts/components/kpi-card.contract.json",
+    "js/components-registry.js",
+    "js/generated/component-contract-meta.js",
+    "js/component-pages.js",
+    "js/ui-builders.js",
+    "index.html",
+    "test/component-specs.test.js",
+    "docs/components/spec-workflow.md"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "components.kpi-card",
+      "summary": "KPI Cardの表示責務、composition boundary、token、responsive behaviorを内部仕様と実装で確認する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "KPI Card自体には新しいcustom keyboard interactionや外部standard解釈を導入せず、nested controlは各component contract、表示規則は確定済みFoundation/Token policyへ委譲するため。"
+  },
+  "decisions": [
+    {
+      "id": "selection-boundary",
+      "summary": "KPI Cardの利用条件と代替componentの境界をcontractへ固定する。",
+      "rationale": "Use: 期間、trend、比較を伴う主要business指標をdashboardで読むとき。 Avoid: 単一の補助数値だけならStat Cardを使う。"
+    },
+    {
+      "id": "semantic-contract",
+      "summary": "KPI Cardのnative/ARIA semantics、state、keyboard責務をmd、contract、HTMLで共有する。",
+      "rationale": "AIが見た目だけから誤ったinteractionを生成せず、表示専用rootと操作部品の責務を分離するため。"
+    },
+    {
+      "id": "responsive-target",
+      "summary": "PC用とSP用にcomponentを分けず、同じ意味とAPIをlayout、viewport、input methodへ適応する。",
+      "rationale": "24px minimumと主要touch操作44px推奨を守りながら、densityをviewportだけで切り替えないため。"
+    },
+    {
+      "id": "token-contract",
+      "summary": "KPI Cardのshowcaseが使う公開tokenをtokenRefsとtokenBindingsへ列挙する。",
+      "rationale": "実装と機械可読仕様の依存差分を自動検出し、Component tokenを必要条件なしに増やさないため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "missing-contract",
+      "description": "KPI Cardに完全な人間向けmdと機械可読contractが存在しなかった。",
+      "action": "共通templateへ利用境界、anatomy、state、API、accessibility、responsive、AI selection ruleを記述した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "cross-layer-conflict",
+      "description": "1個のshowcase token依存がcontractに未宣言だった。",
+      "action": "全variant/stateのrender結果からtokenRefsとtokenBindingsへ同期した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "components/kpi-card.md",
+      "summary": "KPI Cardの人間・AI向け設計仕様を完全templateで同期。"
+    },
+    {
+      "path": "design/contracts/components/kpi-card.contract.json",
+      "summary": "Intent、behavior、responsive、accessibility、token bindingを機械可読化。"
+    },
+    {
+      "path": "js/generated/component-contract-meta.js",
+      "summary": "ContractからHTML docsへ表示するmetadataを生成。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "仕様、実装、検査sourceと最新review cycleを台帳へ接続。"
+    },
+    {
+      "path": "test/component-specs.test.js",
+      "summary": "全74件の契約同期、全state/variant描画、semantic、token依存を検査。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "Schema、registry、generated artifacts、JS syntaxと105 unit testsが成功。"
+    },
+    {
+      "command": "node --test test/component-specs.test.js",
+      "status": "passed",
+      "notes": "KPI Cardを含む74件の全state/variant render、tag balance、semantic relationship、token declarationが成功。"
+    },
+    {
+      "command": "Automated browser viewport QA",
+      "status": "not-run",
+      "notes": "In-app browserがlocal file URLの自動操作をsecurity policyで拒否したため、このcycleでは自動screenshotを取得していない。"
+    }
+  ],
+  "openQuestions": [
+    {
+      "question": "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。",
+      "owner": "components.kpi-card",
+      "exitCriteria": "React packageのDOM/ref/event APIを実装し、全visual slot bindingをcompleteにしてcontractをstableへ移行すること。"
+    },
+    {
+      "question": "KPI CardのDesktop/Mobile、Light/Dark、Standard/High contrast、3 densityのvisual regression baselineを取得する。",
+      "owner": "components.kpi-card",
+      "exitCriteria": "Local pageを許可されたbrowser runnerで全matrix撮影し、overflow、重なり、focus表示、text fitに差分がないこと。"
+    }
+  ],
+  "acknowledgedImpacts": [],
+  "impactedItems": [],
+  "nextRecommendedItems": [
+    "components.analytics-chart-container"
+  ]
+}

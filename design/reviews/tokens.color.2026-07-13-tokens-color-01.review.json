@@ -1,0 +1,162 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.color",
+  "cycleId": "2026-07-13-tokens-color-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "src/color-engine.js",
+    "design/semantic-tokens.json",
+    "tokens/build/meridian.tokens.json",
+    "tokens/build/meridian.dark.tokens.json",
+    "tokens/build/meridian.high-contrast.tokens.json",
+    "js/generated/token-catalog-meta.js",
+    "js/pages-tokens.js",
+    "test/color-engine.test.js",
+    "test/semantic-token-meta.test.js",
+    "test/token-pipeline.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "tokens.color",
+      "summary": "Generated Reference palette、Semantic color、DTCG Color value、theme間のpath invariance、contrast validationを確認する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "accessibility-or-safety",
+      "conflicting-guidance"
+    ],
+    "questions": [
+      "Generated sRGB colorをDTCGでどう表現するか。",
+      "ReferenceとSemanticの実件数とpathは全contextで一致するか。",
+      "Seed変更時のcontrast保証範囲をどこまでtoken docsで主張できるか。"
+    ],
+    "evidence": [
+      {
+        "id": "dtcg-color-value",
+        "title": "Design Tokens Color Module 2025.10",
+        "url": "https://www.w3.org/community/reports/design-tokens/CG-FINAL-color-20251028/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "sRGB colorを0から1の3 componentsと任意のalpha/hexで交換する形式を定義する。",
+        "supportedDecisions": [
+          "dtcg-resolved-colors"
+        ]
+      },
+      {
+        "id": "css-color-oklch",
+        "title": "CSS Color Module Level 4",
+        "url": "https://www.w3.org/TR/css-color-4/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "OKLCHとgamut mappingの基準を提供し、perceptual palette generationの根拠になる。",
+        "supportedDecisions": [
+          "generator-input-boundary"
+        ]
+      },
+      {
+        "id": "wcag-color-pairs",
+        "title": "WCAG 2.2 Understanding Contrast Minimum",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "実際に重なるforeground/background pairのcontrastを評価し、通常textは4.5:1を必要とする。",
+        "supportedDecisions": [
+          "tested-semantic-pairs"
+        ]
+      }
+    ],
+    "synthesis": "SeedとOKLCHはgenerator input/process、paletteはReference、用途別色はSemanticとして分ける。DTCG出力では生成後のsRGB値をtyped colorとして交換し、path集合と主要contrast pairをcontextごとにtestする。",
+    "decisionImpact": "Color pageを103 Reference / 62 Semanticの実カタログへ変更し、3 bundleのpath一致と既定Seedをtestへ固定した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "generator-input-boundary",
+      "summary": "Seedはtokenではなくgenerator input、生成paletteをReference tokenとして扱う。",
+      "rationale": "任意入力とUIが参照するdesign decision layerを混同しないため。"
+    },
+    {
+      "id": "dtcg-resolved-colors",
+      "summary": "生成後のReference / Semantic colorをDTCG sRGB objectとして各context bundleへ出力する。",
+      "rationale": "runtime algorithmに依存せず、toolがtyped resolved valueを交換できるため。"
+    },
+    {
+      "id": "tested-semantic-pairs",
+      "summary": "62 Semantic pathを全contextで不変にし、主要pairとsolid foregroundをSeed preset横断でtestする。",
+      "rationale": "生成済みであることを全組み合わせのaccessibility保証と誤認しないため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "docs-stale",
+      "description": "Color Tokensが9 family × 11段と説明し、0 / 25を持つNeutral 2 familyを件数から落としていた。",
+      "action": "Live paletteから全103 Reference valueを列挙し、実件数を表示した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-token",
+      "description": "Reference / Semantic colorのtyped DTCG配布物がなかった。",
+      "action": "3 contextのbundleへ103 Referenceと62 Semanticを生成した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "cross-layer-conflict",
+      "description": "Live Seedとrepositoryの配布値の境界がなく、閲覧時の値が再現可能なrelease artifactのように説明されていた。",
+      "action": "Live Seed overrideと既定Seed #5B5BD6のgenerated artifactを明確に分離した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "js/pages-tokens.js",
+      "summary": "全Reference、全Semantic、generator/output境界、runtime validationを実カタログから表示した。"
+    },
+    {
+      "path": "scripts/lib/token-artifacts.mjs",
+      "summary": "Generated colorをDTCG sRGB objectへ変換し3 context bundleへ出力した。"
+    },
+    {
+      "path": "test/token-pipeline.test.js",
+      "summary": "103 Reference / 62 Semanticと全contextのpath一致を追加検証した。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "Color itemへgenerated bundles、catalog、testsをsourceとして登録した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/color-engine.test.js test/semantic-token-meta.test.js test/token-pipeline.test.js",
+      "status": "passed",
+      "notes": "18 tests passed。Palette決定性、contrast、chart foreground、metadata、103/62 coverage、DTCG bundleを確認した。"
+    },
+    {
+      "command": "npm run check:tokens && npm run validate:system",
+      "status": "passed",
+      "notes": "Generated artifactsが最新で、102 registry itemsと19 review cyclesの整合性を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-color-01",
+    "2026-07-13-tokens-overview-01"
+  ],
+  "impactedItems": [
+    "tokens.typography",
+    "components.button"
+  ],
+  "nextRecommendedItems": [
+    "tokens.typography"
+  ]
+}

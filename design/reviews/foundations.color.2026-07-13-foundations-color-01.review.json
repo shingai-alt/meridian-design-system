@@ -1,0 +1,191 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.color",
+  "cycleId": "2026-07-13-foundations-color-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "src/color-engine.js",
+    "design/semantic-tokens.json",
+    "design/token-policy.json",
+    "js/pages-foundations.js",
+    "js/pages-tokens.js",
+    "js/generated/semantic-token-meta.js",
+    "scripts/build-semantic-meta.mjs",
+    "test/color-engine.test.js",
+    "test/semantic-token-meta.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "foundations.color",
+      "summary": "Color FoundationのOKLCH生成、Semantic role、contrast判定、accent境界、chart識別、metadata同期を確認する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "accessibility-or-safety",
+      "conflicting-guidance",
+      "benchmark-needed"
+    ],
+    "questions": [
+      "OKLCHとsRGB gamut mappingの説明は現行CSS仕様と整合するか。",
+      "text、non-text、high contrastのcontrast基準をどのroleへ適用するか。",
+      "色とchart tokenを人間とAIが誤用しない判断順序は何か。"
+    ],
+    "evidence": [
+      {
+        "id": "css-color-4-oklch",
+        "title": "CSS Color Module Level 4",
+        "url": "https://www.w3.org/TR/css-color-4/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "OKLCHの知覚特性と、lightnessとhueを保ちながらchromaを減らすgamut mappingの標準的な考え方を定義している。",
+        "supportedDecisions": [
+          "oklch-generation-model"
+        ]
+      },
+      {
+        "id": "wcag-color-contrast",
+        "title": "WCAG 2.2 Understanding Contrast Minimum and Non-text Contrast",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "通常textの4.5:1、大きなtextの3:1と、実際に重なるforeground/backgroundを評価する必要性を示している。",
+        "supportedDecisions": [
+          "pair-specific-contrast"
+        ]
+      },
+      {
+        "id": "wcag-use-of-color",
+        "title": "WCAG 2.2 Understanding Use of Color",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/use-of-color",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "色を唯一の情報伝達手段にせず、shape、text、labelなどの追加手掛かりを要求している。",
+        "supportedDecisions": [
+          "non-color-chart-cues",
+          "semantic-color-decision-ladder"
+        ]
+      },
+      {
+        "id": "uswds-role-based-color",
+        "title": "U.S. Web Design System Using Color",
+        "url": "https://designsystem.digital.gov/design-tokens/color/overview/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "system paletteとrole-based theme tokenを分け、custom colorではなくtokenを利用し、色を補助的手掛かりとして使う運用例を示している。",
+        "supportedDecisions": [
+          "semantic-color-decision-ladder"
+        ]
+      }
+    ],
+    "synthesis": "CSS Color 4を生成model、WCAGを利用時のcontrastと非色手掛かり、USWDSをrole-based運用の比較対象として採用した。生成できることと、実際の組み合わせがaccessibleであることを分離して扱う。",
+    "decisionImpact": "Color docsへdecision ladderとpair別検証を追加し、誤ったAA Large判定を修正した。Semantic metadataを62件へ揃え、chart fillとforeground、secondary/accent stateを正本JSONから生成する構造に変更した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "oklch-generation-model",
+      "summary": "Seedからのpalette生成はOKLCHでlightnessとhueの関係を保ち、sRGB外ではchromaを低減する。",
+      "rationale": "異なるhueでも段階の知覚的一貫性を高め、表示可能なgamutへ決定的に収めるため。"
+    },
+    {
+      "id": "pair-specific-contrast",
+      "summary": "自動探索は主要roleの初期値であり、実際に重なる各foreground/background pairを用途別thresholdで検証する。",
+      "rationale": "Seedやstateが変わっても、生成済みという理由だけで全pairの適合を仮定しないため。"
+    },
+    {
+      "id": "semantic-color-decision-ladder",
+      "summary": "非色の情報構造、Semantic role、対応foreground、Component token gate、contrast検証の順で色を決める。",
+      "rationale": "Primitiveや近似色の選択、色だけの状態表現、不要なComponent tokenを防ぐため。"
+    },
+    {
+      "id": "non-color-chart-cues",
+      "summary": "chart tokenはfillと対応foregroundを対にし、legend、label、shape、pattern、strokeのいずれかを併用する。",
+      "rationale": "カテゴリや正負の意味をhue差だけに依存させず、small markや色覚差でも識別可能にするため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "missing-token",
+      "description": "runtimeのsecondary/accent hover-activeとchart fillがSemantic metadataに無く、chart foregroundだけがruntime外のmetadataに存在していた。",
+      "action": "design/semantic-tokens.jsonを62 tokenへ揃え、docs metadataを正本JSONから生成するbuildを追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "ColorとToken OverviewがSemantic tokenを42件と表示していた。",
+      "action": "実metadata件数を動的に表示し、core 50とchart 12の責務を説明した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "source-wrong",
+      "description": "12px text previewで3:1をAA Largeと判定し、accent metadataをchart用途としていた。",
+      "action": "3:1 onlyへ修正し、accentをbrand identity専用、chartを独立token群として定義した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "design/semantic-tokens.json",
+      "summary": "Semantic color metadataをruntime stateとchart fill/foregroundを含む62件へ同期した。"
+    },
+    {
+      "path": "scripts/build-semantic-meta.mjs",
+      "summary": "Semantic metadataからbrowser用SEM_METAを生成・drift checkする処理を追加した。"
+    },
+    {
+      "path": "js/pages-foundations.js",
+      "summary": "Colorの判断順序、contrast判定、chart accessibility、standards evidenceを更新した。"
+    },
+    {
+      "path": "js/pages-tokens.js",
+      "summary": "chart tokenを含む全Semantic colorのLight/Dark/HC解決値を表示できるようにした。"
+    },
+    {
+      "path": "test/semantic-token-meta.test.js",
+      "summary": "runtime colorとchart tokenがmetadataに一意に存在することを検証した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/color-engine.test.js test/semantic-token-meta.test.js",
+      "status": "passed",
+      "notes": "13 tests passed。Seed palette、contrast、chart foreground、metadata coverageを確認した。"
+    },
+    {
+      "command": "npm run check:semantic-meta",
+      "status": "passed",
+      "notes": "generated semantic metadataが正本JSONと一致した。"
+    },
+    {
+      "command": "node --check js/pages-foundations.js && node --check js/pages-tokens.js",
+      "status": "passed",
+      "notes": "更新したdocs定義に構文エラーがないことを確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-overview-for-designers-01",
+    "2026-07-13-overview-for-engineers-01"
+  ],
+  "impactedItems": [
+    "foundations.accessibility",
+    "tokens.overview",
+    "tokens.color",
+    "components.button"
+  ],
+  "nextRecommendedItems": [
+    "foundations.typography"
+  ]
+}

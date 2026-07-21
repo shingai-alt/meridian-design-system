@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/design-strategies.schema.json",
+  "title": "Meridian Design Strategies",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "conceptId", "principlesRef", "strategies", "recommendation"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "0.1.0" },
+    "conceptId": { "type": "string", "minLength": 1 },
+    "principlesRef": { "type": "string", "pattern": "^research/principles/[a-z0-9._/-]+\\.json$" },
+    "strategies": {
+      "type": "array", "minItems": 3, "maxItems": 3,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "label", "taskModel", "hypothesis", "interactionModel", "informationArchitecture", "principleRefs", "requiredComponents", "tradeoffs", "invalidWhen"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$" },
+          "label": { "type": "string", "minLength": 1 },
+          "taskModel": { "enum": ["direct-batch-edit", "context-supported-edit", "staged-risk-review"] },
+          "hypothesis": { "type": "string", "minLength": 1 },
+          "interactionModel": { "type": "array", "minItems": 3, "items": { "type": "string", "minLength": 1 } },
+          "informationArchitecture": { "type": "array", "minItems": 3, "items": { "type": "string", "minLength": 1 } },
+          "principleRefs": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "type": "string" } },
+          "requiredComponents": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "type": "string" } },
+          "tradeoffs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "invalidWhen": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "recommendation": { "type": "string", "minLength": 1 }
+  }
+}

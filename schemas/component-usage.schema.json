@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/component-usage.schema.json",
+  "title": "Meridian Component Usage Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "conceptId", "sourcePackageId", "compositionId", "translationPackDigest", "runtimeVersion", "patterns", "instances", "decisions", "exceptions", "renderSites", "validationDigest"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "conceptId": { "type": "string" },
+    "sourcePackageId": { "type": "string" },
+    "compositionId": { "type": "string" },
+    "translationPackDigest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+    "runtimeVersion": { "type": "string" },
+    "patterns": { "type": "array", "items": { "type": "string" } },
+    "instances": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["component", "instanceId", "contractVersion", "props", "allowedVariants", "allowedStates", "decisionRef"],
+        "properties": {
+          "component": { "type": "string" },
+          "instanceId": { "type": "string" },
+          "repeat": { "type": "string" },
+          "contractVersion": { "type": "string" },
+          "props": { "type": "object", "additionalProperties": true },
+          "allowedVariants": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+          "allowedStates": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+          "decisionRef": { "type": "string" }
+        }
+      }
+    },
+    "decisions": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+    "exceptions": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+    "renderSites": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["usageId", "component", "callCount"],
+        "properties": {
+          "usageId": { "type": "string" },
+          "component": { "type": "string" },
+          "callCount": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "validationDigest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" }
+  }
+}

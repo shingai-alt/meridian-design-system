@@ -1,0 +1,220 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "divider",
+  "name": "Divider",
+  "status": "draft",
+  "category": "core",
+  "description": "コンテンツのグループを分ける水平・垂直の境界線。",
+  "source": {
+    "humanDoc": "components/divider.md",
+    "registry": "js/components-registry.js#divider"
+  },
+  "intent": {
+    "whenToUse": [
+      "意味の切れ目を明示する場合"
+    ],
+    "whenNotToUse": [
+      "余白で十分に区切れる場合 — 線を足す前に spacing を検討する"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Semantic display root."
+    },
+    {
+      "part": "content",
+      "required": true,
+      "description": "Primary perceivable content."
+    },
+    {
+      "part": "supporting",
+      "required": false,
+      "description": "Optional metadata or visual reinforcement."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "children",
+      "type": "ReactNode",
+      "required": true,
+      "default": null,
+      "description": "Componentの主要content。"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--border",
+      "--fg",
+      "--fg-muted",
+      "--surface"
+    ],
+    "typography": [
+      "--text-label"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Dividerの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Dividerの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Dividerの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Dividerの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.text-label.value",
+        "source": "--text-label",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "DividerのHTML showcaseで実際に参照する公開token。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.divider"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "表示専用rootを不要にtab順へ追加しない。",
+      "状態は色だけで表さずtext、icon、shapeを併用する。"
+    ],
+    "aria": [
+      "意味のある区切りは<hr>またはrole=\"separator\"を使い、装飾線はaria-hiddenにする。"
+    ],
+    "focus": [
+      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+    ]
+  },
+  "keyboardInteractions": [],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "意味の切れ目を明示する場合",
+      "recommended": [
+        "border-muted を基本にし、強調が必要な場合のみ border を使う。"
+      ],
+      "avoid": [
+        "余白で十分に区切れる場合 — 線を足す前に spacing を検討する"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのDivider。",
+      "rules": [
+        "Contentと周辺layoutに応じたintrinsic sizeを使う。",
+        "Viewportだけを理由にdensityを変更しない。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのDivider。",
+      "rules": [
+        "意味とDOM順を変えず、wrapとavailable widthで適応する。",
+        "省略した情報へ別経路から到達できるようにする。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのDivider。",
+      "rules": [
+        "表示専用rootをtab順へ追加しない。",
+        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Dividerの標準例。",
+      "code": "<Divider />\n<Divider orientation=\"vertical\" />"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

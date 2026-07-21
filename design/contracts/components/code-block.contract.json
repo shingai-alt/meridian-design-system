@@ -1,0 +1,269 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "code-block",
+  "name": "Code Block",
+  "status": "draft",
+  "category": "data display",
+  "description": "シンタックスハイライト付きのコード表示。コピー操作を標準装備する。",
+  "source": {
+    "humanDoc": "components/code-block.md",
+    "registry": "js/components-registry.js#code-block"
+  },
+  "intent": {
+    "whenToUse": [
+      "複数行codeを読み、選択またはcopyするとき。"
+    ],
+    "whenNotToUse": [
+      "短いcommandやtoken名にはinline codeを使う。"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Bounded information or task container."
+    },
+    {
+      "part": "header",
+      "required": false,
+      "description": "Title, summary, and context controls."
+    },
+    {
+      "part": "content",
+      "required": true,
+      "description": "Primary values or composed components."
+    },
+    {
+      "part": "footer",
+      "required": false,
+      "description": "Secondary metadata or actions."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "children",
+      "type": "ReactNode",
+      "required": true,
+      "default": null,
+      "description": "Componentの主要content。"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--code-bg",
+      "--font-mono",
+      "--border",
+      "--surface",
+      "--fg",
+      "--fg-muted"
+    ],
+    "density": [
+      "--card-pad"
+    ],
+    "spacing": [
+      "--sp-4"
+    ],
+    "radius": [
+      "--radius-md"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.code-bg.value",
+        "source": "--code-bg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Code Blockの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.font-mono.value",
+        "source": "--font-mono",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Code Blockの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Code Blockの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Code Blockの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Code Blockの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Code Blockの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.card-pad.value",
+        "source": "--card-pad",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Code Blockの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-4.value",
+        "source": "--sp-4",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Code Blockの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-md.value",
+        "source": "--radius-md",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Code Blockの公開visual contractで用途tokenとして共有する。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.code-block"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "表示専用rootを不要にtab順へ追加しない。",
+      "状態は色だけで表さずtext、icon、shapeを併用する。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+    ]
+  },
+  "keyboardInteractions": [],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "複数行codeを読み、選択またはcopyするとき。",
+      "recommended": [
+        "ファイル名・言語をヘッダーに表示する。"
+      ],
+      "avoid": [
+        "短いcommandやtoken名にはinline codeを使う。"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのCode Block。",
+      "rules": [
+        "列・項目の比較可能性を保ち、必要な幅を確保する。",
+        "Keyboard focusと選択状態をscroll位置から失わない。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのCode Block。",
+      "rules": [
+        "意味のある列や項目を潰さず、横scroll、優先列、detail viewのいずれかを明示的に選ぶ。",
+        "Scroll領域の外にも現在位置や操作の手掛かりを残す。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのCode Block。",
+      "rules": [
+        "表示専用rootをtab順へ追加しない。",
+        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Code Blockの標準例。",
+      "code": "<CodeBlock language=\"tsx\" filename=\"create-action.tsx\" copyable>\n  {source}\n</CodeBlock>"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

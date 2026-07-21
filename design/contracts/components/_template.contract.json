@@ -1,0 +1,152 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "component-id",
+  "name": "Component Name",
+  "status": "draft",
+  "category": "category",
+  "description": "One-sentence component responsibility.",
+  "source": {
+    "humanDoc": "components/component-id.md",
+    "registry": "js/components-registry.js#component-id"
+  },
+  "intent": {
+    "whenToUse": ["Use case"],
+    "whenNotToUse": ["Alternative component boundary"],
+    "principles": [1, 2, 3, 5, 6]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Root element."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "Default presentation.",
+      "tokenRefs": {
+        "background": "--surface",
+        "foreground": "--fg",
+        "border": "--border"
+      },
+      "states": {
+        "hover": {
+          "background": "--surface-muted"
+        }
+      }
+    }
+  },
+  "sizes": {
+    "md": {
+      "controlHeight": "--ctl-md",
+      "paddingInline": ["--sp-3", "--sp-3"],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "16"
+    }
+  },
+  "states": [
+    {
+      "id": "default",
+      "description": "Default state.",
+      "requiredBehavior": ["Uses Meridian tokens"]
+    }
+  ],
+  "props": [
+    {
+      "name": "variant",
+      "type": "string",
+      "required": false,
+      "default": "default",
+      "description": "Visual and semantic variant."
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": ["--surface", "--fg", "--border"],
+    "density": ["--ctl-md", "--text-label"],
+    "spacing": ["--sp-2", "--sp-3"],
+    "radius": ["--radius-sm"],
+    "motion": ["--dur-fast"]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "variant.default.container.background.default",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "The default surface role should change with every component that uses the same semantic surface."
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "variant.default.container.border.hover",
+        "reason": "Replace this placeholder with a token binding before stable status.",
+        "owner": "tokens.component"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": ["Use the appropriate native element when possible"],
+    "aria": ["Add ARIA only when native semantics are not enough"],
+    "focus": ["Use --focus-ring for focus-visible indicators"]
+  },
+  "keyboardInteractions": [
+    {
+      "key": "Tab",
+      "action": "Move focus"
+    }
+  ],
+  "usagePatterns": [
+    {
+      "id": "default-pattern",
+      "title": "Default pattern",
+      "description": "Primary usage pattern.",
+      "recommended": ["Recommended composition"],
+      "avoid": ["Known misuse"]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "Desktop behavior summary.",
+      "rules": ["Desktop rule"],
+      "avoid": ["Desktop misuse"]
+    },
+    "mobile": {
+      "summary": "Mobile behavior summary.",
+      "rules": ["Mobile rule"],
+      "avoid": ["Mobile misuse"]
+    },
+    "touch": {
+      "summary": "Touch behavior summary.",
+      "rules": ["Touch rule"],
+      "avoid": ["Touch misuse"]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "FOCUS_VISIBLE_REQUIRED",
+    "CONTRAST_AA_MINIMUM"
+  ],
+  "qualityChecks": [
+    "Uses only Meridian tokens",
+    "Documents responsive behavior",
+    "Documents accessibility requirements"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Default example.",
+      "code": "<ComponentName />"
+    }
+  ],
+  "openQuestions": [
+    "Question to resolve before stable status"
+  ]
+}

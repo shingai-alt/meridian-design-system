@@ -1,0 +1,377 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "agent-status",
+  "name": "Agent Status",
+  "status": "draft",
+  "category": "ai & developer",
+  "description": "エージェントの実行状態(Idle〜Cancelled の 7 状態)を一目で伝える。",
+  "source": {
+    "humanDoc": "components/agent-status.md",
+    "registry": "js/components-registry.js#agent-status"
+  },
+  "intent": {
+    "whenToUse": [
+      "agent全体の現在状態と停止・再試行actionを示すとき。"
+    ],
+    "whenNotToUse": [
+      "個別stepの履歴にはExecution Timelineを使う。"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Progress or execution status boundary."
+    },
+    {
+      "part": "indicator",
+      "required": true,
+      "description": "Current state, track, or active step."
+    },
+    {
+      "part": "label",
+      "required": true,
+      "description": "Accessible status text."
+    },
+    {
+      "part": "value",
+      "required": false,
+      "description": "Numeric progress, duration, or quota."
+    },
+    {
+      "part": "action",
+      "required": false,
+      "description": "Stop, retry, or inspect action."
+    }
+  ],
+  "variants": {
+    "idle": {
+      "intent": "idleという明示的な意味を持つ文脈。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "thinking": {
+      "intent": "thinkingという明示的な意味を持つ文脈。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "running": {
+      "intent": "runningという明示的な意味を持つ文脈。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "waiting": {
+      "intent": "waitingという明示的な意味を持つ文脈。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "succeeded": {
+      "intent": "succeededという明示的な意味を持つ文脈。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "failed": {
+      "intent": "failedという明示的な意味を持つ文脈。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "cancelled": {
+      "intent": "cancelledという明示的な意味を持つ文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "variant",
+      "type": "\"idle\" | \"thinking\" | \"running\" | \"waiting\" | \"succeeded\" | \"failed\" | \"cancelled\"",
+      "required": false,
+      "default": "idle",
+      "description": "意味と優先度を選ぶ。"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--border",
+      "--danger",
+      "--fg",
+      "--fg-muted",
+      "--primary",
+      "--success",
+      "--surface",
+      "--surface-muted",
+      "--warning"
+    ],
+    "spacing": [
+      "--sp-2",
+      "--sp-25",
+      "--sp-3"
+    ],
+    "radius": [
+      "--radius-full"
+    ],
+    "motion": [
+      "--dur-normal"
+    ],
+    "typography": [
+      "--text-label",
+      "--text-small"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent Statusの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent Statusの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent Statusの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.surface-muted.value",
+        "source": "--surface-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent Statusの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent Statusの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.primary.value",
+        "source": "--primary",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent Statusの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.success.value",
+        "source": "--success",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent Statusの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.warning.value",
+        "source": "--warning",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent Statusの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger.value",
+        "source": "--danger",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent Statusの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-2.value",
+        "source": "--sp-2",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent Statusの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-full.value",
+        "source": "--radius-full",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent Statusの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.dur-normal.value",
+        "source": "--dur-normal",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent Statusの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-25.value",
+        "source": "--sp-25",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent StatusのHTML showcaseで実際に参照する公開token。"
+      },
+      {
+        "slot": "token.sp-3.value",
+        "source": "--sp-3",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent StatusのHTML showcaseで実際に参照する公開token。"
+      },
+      {
+        "slot": "token.text-label.value",
+        "source": "--text-label",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent StatusのHTML showcaseで実際に参照する公開token。"
+      },
+      {
+        "slot": "token.text-small.value",
+        "source": "--text-small",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Agent StatusのHTML showcaseで実際に参照する公開token。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.agent-status"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "表示専用rootを不要にtab順へ追加しない。",
+      "状態は色だけで表さずtext、icon、shapeを併用する。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+    ]
+  },
+  "keyboardInteractions": [],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "agent全体の現在状態と停止・再試行actionを示すとき。",
+      "recommended": [
+        "Running / Thinking では停止操作を常に提供する。"
+      ],
+      "avoid": [
+        "個別stepの履歴にはExecution Timelineを使う。"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのAgent Status。",
+      "rules": [
+        "Contentと周辺layoutに応じたintrinsic sizeを使う。",
+        "Viewportだけを理由にdensityを変更しない。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのAgent Status。",
+      "rules": [
+        "意味とDOM順を変えず、wrapとavailable widthで適応する。",
+        "省略した情報へ別経路から到達できるようにする。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのAgent Status。",
+      "rules": [
+        "表示専用rootをtab順へ追加しない。",
+        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM",
+    "STATE_NOT_COLOR_ONLY"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Agent Statusの標準例。",
+      "code": "<AgentStatus status=\"idle\" step={2} totalSteps={5} onCancel={cancel} />"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.prompt-input",
+  "cycleId": "2026-07-14-components-prompt-input-01",
+  "supersedesCycleId": "2026-07-13-components-prompt-input-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-14",
+  "completedAt": "2026-07-14",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "components/prompt-input.md",
+    "design/contracts/components/prompt-input.contract.json",
+    "js/components-registry.js",
+    "js/generated/component-contract-meta.js",
+    "js/component-pages.js",
+    "js/ui-builders.js",
+    "index.html",
+    "test/component-specs.test.js",
+    "tokens/src/component.json",
+    "design/reviews/foundations.accessibility.2026-07-13-foundations-accessibility-01.review.json",
+    "design/reviews/foundations.content.2026-07-13-foundations-content-01.review.json",
+    "design/reviews/foundations.color.2026-07-14-foundations-color-01.review.json"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "components.prompt-input",
+      "summary": "Dark input backgroundのsurface-sunken移行をPrompt Input仕様へ照合する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "影響元cycleで一次資料調査と設計判断が完了しており、このfollow-upでは新しい外部解釈を導入せず、確定した方針と実装の整合を確認するため。"
+  },
+  "decisions": [
+    {
+      "id": "prompt-input-uses-sunken-surface",
+      "summary": "Prompt Inputの入力面はsurface-sunken系Component tokenを利用する。",
+      "rationale": "複合actionを含む入力でもCardと入力面を区別するため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "no-change",
+      "description": "Prompt Inputの現行sourceは影響元cycleの採用方針と整合している。",
+      "action": "関連source、生成物、contract、testを照合し、影響cycleをacknowledgedImpactsへ記録した。",
+      "status": "not-applicable"
+    }
+  ],
+  "changes": [
+    {
+      "path": "components/prompt-input.md",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "design/contracts/components/prompt-input.contract.json",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "tokens/src/component.json",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "design/reviews/components.prompt-input.2026-07-14-components-prompt-input-01.review.json",
+      "summary": "影響判断、source照合、検証、acknowledgementを記録。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "最新follow-up reviewを台帳へ接続。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/color-engine.test.js test/component-specs.test.js test/token-pipeline.test.js test/css-variables.test.js test/theme-tokens.test.js",
+      "status": "passed",
+      "notes": "Color、74 component contract、4 token bundle、CSS変数、theme modifierの関連testが成功。"
+    },
+    {
+      "command": "npm run validate:system",
+      "status": "passed",
+      "notes": "Schema、registry、review dependency、contractの整合が成功。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-content-01",
+    "2026-07-14-foundations-color-01"
+  ],
+  "impactedItems": [],
+  "nextRecommendedItems": []
+}

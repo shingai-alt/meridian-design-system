@@ -1,0 +1,266 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "kpi-card",
+  "name": "KPI Card",
+  "status": "draft",
+  "category": "saas",
+  "description": "ダッシュボードの主要指標。値・変化量・スパークラインをまとめる。",
+  "source": {
+    "humanDoc": "components/kpi-card.md",
+    "registry": "js/components-registry.js#kpi-card"
+  },
+  "intent": {
+    "whenToUse": [
+      "期間、trend、比較を伴う主要business指標をdashboardで読むとき。"
+    ],
+    "whenNotToUse": [
+      "単一の補助数値だけならStat Cardを使う。"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Bounded information or task container."
+    },
+    {
+      "part": "header",
+      "required": false,
+      "description": "Title, summary, and context controls."
+    },
+    {
+      "part": "content",
+      "required": true,
+      "description": "Primary values or composed components."
+    },
+    {
+      "part": "footer",
+      "required": false,
+      "description": "Secondary metadata or actions."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Label"
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Value"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--border",
+      "--chart-1",
+      "--fg",
+      "--fg-muted",
+      "--surface"
+    ],
+    "density": [
+      "--card-pad"
+    ],
+    "spacing": [
+      "--sp-4"
+    ],
+    "radius": [
+      "--radius-md"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "KPI Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "KPI Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "KPI Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "KPI Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.card-pad.value",
+        "source": "--card-pad",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "KPI Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-4.value",
+        "source": "--sp-4",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "KPI Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-md.value",
+        "source": "--radius-md",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "KPI Cardの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.chart-1.value",
+        "source": "--chart-1",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "KPI CardのHTML showcaseで実際に参照する公開token。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.kpi-card"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "表示専用rootを不要にtab順へ追加しない。",
+      "状態は色だけで表さずtext、icon、shapeを併用する。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+    ]
+  },
+  "keyboardInteractions": [],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "期間、trend、比較を伴う主要business指標をdashboardで読むとき。",
+      "recommended": [
+        "1 行目ラベル、2 行目に大きな値、3 行目に変化量の 3 段構成を守る。"
+      ],
+      "avoid": [
+        "単一の補助数値だけならStat Cardを使う。"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのKPI Card。",
+      "rules": [
+        "Gridまたはsectionのreading orderに沿って配置し、同種itemの寸法を揃える。",
+        "面の入れ子を増やさない。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのKPI Card。",
+      "rules": [
+        "1列へreflowし、heading、content、actionの順序を保つ。",
+        "Actionが複数ある場合は縦積みまたはmenuへ整理する。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのKPI Card。",
+      "rules": [
+        "表示専用rootをtab順へ追加しない。",
+        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "KPI Cardの標準例。",
+      "code": "<KPICard\n  label=\"MRR\"\n  value={2_840_000}\n  format=\"currency\"\n  delta={+12.4}\n  sparkline={history}\n/>"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

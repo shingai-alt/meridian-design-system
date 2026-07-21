@@ -1,0 +1,109 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.theme",
+  "cycleId": "2026-07-13-tokens-theme-02",
+  "supersedesCycleId": "2026-07-13-tokens-theme-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/token-policy.json",
+    "src/color-engine.js",
+    "tokens/src/component.json",
+    "tokens/src/shadow.json",
+    "tokens/build/tokens.css",
+    "tokens/build/meridian.tokens.json",
+    "tokens/build/meridian.dark.tokens.json",
+    "tokens/build/meridian.high-contrast.tokens.json",
+    "tokens/build/meridian.dark.high-contrast.tokens.json",
+    "js/generated/token-catalog-meta.js",
+    "js/utils.js",
+    "js/app-shell.js",
+    "js/component-pages.js",
+    "js/pages-home.js",
+    "js/pages-foundations.js",
+    "js/pages-overview.js",
+    "index.html",
+    "test/theme-tokens.test.js",
+    "test/color-engine.test.js",
+    "test/token-pipeline.test.js",
+    "js/pages-tokens.js",
+    "design/reviews/foundations.accessibility.2026-07-13-foundations-accessibility-01.review.json",
+    "design/reviews/foundations.elevation.2026-07-13-foundations-elevation-01.review.json",
+    "design/reviews/overview.architecture.review.json",
+    "design/reviews/tokens.component.2026-07-13-tokens-component-01.review.json",
+    "design/reviews/tokens.json-tokens.2026-07-13-tokens-json-tokens-01.review.json",
+    "design/reviews/tokens.motion.2026-07-13-tokens-motion-01.review.json",
+    "design/reviews/tokens.overview.2026-07-13-tokens-overview-01.review.json"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "tokens.theme",
+      "summary": "Theme Tokensの現行判断を後続cycleのmodifier、bundle、component実装へ照合するfollow-up確認。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "影響元cycleで該当standardの一次資料調査が完了しており、このfollow-upでは新しい外部standard解釈や設計patternを導入せず、確定済み判断との整合だけを実データとtestで確認するため。"
+  },
+  "decisions": [
+    {
+      "id": "bundle-metadata-matches-modifiers",
+      "summary": "4 JSON bundleのmodifier metadataとresolutionOrderをTheme → Contrast policyへ一致させる。",
+      "rationale": "配布物からcontext選択と解決順を機械的に判断できるため。"
+    },
+    {
+      "id": "aliases-do-not-change-theme-ownership",
+      "summary": "Bundle内aliasを保持してもTheme/Contrastのownerと4 contextの値だけが変わる原則を維持する。",
+      "rationale": "Alias構造とmodifier ownershipを混同しないため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "no-change",
+      "description": "JSON Tokens cycleの4 bundleとalias検証は、Theme/Contrast直交、Theme → Contrast解決順、forced-colors分離と矛盾しない。",
+      "action": "既存仕様本文を維持し、影響cycleをacknowledgedImpactsへ記録する。",
+      "status": "not-applicable"
+    }
+  ],
+  "changes": [
+    {
+      "path": "design/reviews/tokens.theme.2026-07-13-tokens-theme-02.review.json",
+      "summary": "後続cycleの影響確認、判断、検証、acknowledgementを記録。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "最新follow-up reviewを台帳へ接続。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/theme-tokens.test.js test/token-pipeline.test.js test/color-engine.test.js",
+      "status": "passed",
+      "notes": "4 context、modifier順、CSS selector、bundle metadata、contrast targetが成功。"
+    },
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "Schema、registry、generated artifacts、JS syntax、105 testsが成功した状態でfollow-upを作成。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-elevation-01",
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-tokens-component-01",
+    "2026-07-13-tokens-json-tokens-01",
+    "2026-07-13-tokens-motion-01",
+    "2026-07-13-tokens-overview-01"
+  ],
+  "impactedItems": [],
+  "nextRecommendedItems": []
+}

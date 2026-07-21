@@ -1,0 +1,344 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "product-switcher",
+  "name": "Product Switcher",
+  "status": "draft",
+  "category": "navigation",
+  "description": "組織内の複数プロダクト・ワークスペースを切り替えるメニュー。",
+  "source": {
+    "humanDoc": "components/product-switcher.md",
+    "registry": "js/components-registry.js#product-switcher"
+  },
+  "intent": {
+    "whenToUse": [
+      "複数productまたはworkspaceを同じaccount文脈で切り替えるとき。"
+    ],
+    "whenNotToUse": [
+      "選択肢が1つ、または権限変更を伴う場合には表示しない。"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "surface",
+      "required": true,
+      "description": "Floating or modal surface."
+    },
+    {
+      "part": "header",
+      "required": false,
+      "description": "Title and context."
+    },
+    {
+      "part": "content",
+      "required": true,
+      "description": "Information or controls owned by the surface."
+    },
+    {
+      "part": "actions",
+      "required": false,
+      "description": "Confirmation, navigation, or dismiss controls."
+    },
+    {
+      "part": "trigger",
+      "required": false,
+      "description": "Element that opens the surface and receives restored focus."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "required": false,
+      "default": null,
+      "description": "Controlled open state。"
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void",
+      "required": false,
+      "default": null,
+      "description": "Open state変更を通知する。"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--border",
+      "--fg",
+      "--fg-muted",
+      "--fg-subtle",
+      "--focus-ring",
+      "--overlay",
+      "--surface",
+      "--surface-overlay"
+    ],
+    "spacing": [
+      "--sp-4"
+    ],
+    "radius": [
+      "--radius-md"
+    ],
+    "motion": [
+      "--dur-normal"
+    ],
+    "shadow": [
+      "--shadow-overlay"
+    ],
+    "typography": [
+      "--text-micro"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Product Switcherの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Product Switcherの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Product Switcherの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.surface-overlay.value",
+        "source": "--surface-overlay",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Product Switcherの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Product Switcherの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.overlay.value",
+        "source": "--overlay",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Product Switcherの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.shadow-overlay.value",
+        "source": "--shadow-overlay",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Product Switcherの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.focus-ring.value",
+        "source": "--focus-ring",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Product Switcherの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-4.value",
+        "source": "--sp-4",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Product Switcherの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-md.value",
+        "source": "--radius-md",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Product Switcherの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.dur-normal.value",
+        "source": "--dur-normal",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Product Switcherの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-subtle.value",
+        "source": "--fg-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Product SwitcherのHTML showcaseで実際に参照する公開token。"
+      },
+      {
+        "slot": "token.text-micro.value",
+        "source": "--text-micro",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Product SwitcherのHTML showcaseで実際に参照する公開token。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.product-switcher"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "Keyboardとpointerで同じ機能を実行できる。",
+      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
+      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "focus-visibleで--focus-ringを使う。",
+      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+    ]
+  },
+  "keyboardInteractions": [
+    {
+      "key": "Arrow Up / Down",
+      "action": "Product optionを移動する。"
+    },
+    {
+      "key": "Enter",
+      "action": "Productを切り替える。"
+    },
+    {
+      "key": "Escape",
+      "action": "Menuを閉じる。"
+    }
+  ],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "複数productまたはworkspaceを同じaccount文脈で切り替えるとき。",
+      "recommended": [
+        "現在のプロダクトにチェックを付ける。"
+      ],
+      "avoid": [
+        "選択肢が1つ、または権限変更を伴う場合には表示しない。"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのProduct Switcher。",
+      "rules": [
+        "Triggerへ位置付け、viewport端ではplacementを反転またはshiftする。",
+        "Pointerとkeyboardの両方で同じ内容へ到達できる。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのProduct Switcher。",
+      "rules": [
+        "Hover起点を使わずtapまたはfocusで開き、狭い幅ではsheet presentationを選べる。",
+        "Triggerとsurfaceを同時に画面外へ追い出さない。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのProduct Switcher。",
+      "rules": [
+        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
+        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM",
+    "FOCUS_VISIBLE_REQUIRED",
+    "NO_POSITIVE_TABINDEX",
+    "TARGET_SIZE_MINIMUM",
+    "INTERACTIVE_NAME_REQUIRED"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Product Switcherの標準例。",
+      "code": "<ProductSwitcher\n  current=\"meridian-docs\"\n  products={workspaces}\n  onSwitch={...}\n/>"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

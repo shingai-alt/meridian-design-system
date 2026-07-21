@@ -1,0 +1,290 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.accessibility",
+  "cycleId": "2026-07-13-foundations-accessibility-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/accessibility.json",
+    "schemas/accessibility.schema.json",
+    "design/rules.json",
+    "src/color-engine.js",
+    "js/generated/accessibility-meta.js",
+    "js/pages-foundations.js",
+    "js/app-shell.js",
+    "js/utils.js",
+    "index.html",
+    "scripts/build-accessibility-meta.mjs",
+    "scripts/build-design-md.mjs",
+    "scripts/validate-system.mjs",
+    "test/accessibility-policy.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "foundations.accessibility",
+      "summary": "WCAG 2.2 AA baseline、2.2追加criteria、keyboard/focus、target size、form error、live region、disabled discoverabilityをMeridian全体の検証可能な受け入れ条件へ整理する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "accessibility-or-safety",
+      "cross-platform-behavior",
+      "conflicting-guidance"
+    ],
+    "questions": [
+      "Meridianが適合baselineと強化推奨をどう区別するか。",
+      "24pxと44pxのtarget sizeをPC/SPとdensityへどう適用するか。",
+      "Form error、status message、dialog/route changeでlive regionとfocusをどう使い分けるか。",
+      "Native disabledとaria-disabledをどの条件で選ぶか。"
+    ],
+    "evidence": [
+      {
+        "id": "wcag-22-recommendation",
+        "title": "Web Content Accessibility Guidelines (WCAG) 2.2",
+        "url": "https://www.w3.org/TR/WCAG22/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "WCAG 2.2はA/AA/AAAのconformance modelと、Focus Not Obscured、Dragging Movements、Target Size Minimum、Redundant Entry、Accessible Authentication等の追加criteriaを定義する。",
+        "supportedDecisions": [
+          "wcag-aa-baseline",
+          "registry-not-conformance-substitute"
+        ]
+      },
+      {
+        "id": "wcag-target-size-minimum",
+        "title": "WCAG 2.2 Understanding Target Size (Minimum)",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "AA baselineは24×24 CSS pxまたは規定clearanceで、inline、user-agent controlled、essential等の例外がある。",
+        "supportedDecisions": [
+          "target-baseline-and-enhancement"
+        ]
+      },
+      {
+        "id": "apg-keyboard-interface",
+        "title": "WAI-ARIA APG Developing a Keyboard Interface",
+        "url": "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "DOMに沿うTab順、composite固有のkeyboard convention、visible/predictable focus、discoverabilityが必要なdisabled controlだけaria-disabledでfocus可能にする判断を示す。",
+        "supportedDecisions": [
+          "focus-and-keyboard-contract",
+          "disabled-discoverability-rule"
+        ]
+      },
+      {
+        "id": "wai-form-notifications",
+        "title": "WAI Forms Tutorial User Notifications",
+        "url": "https://www.w3.org/WAI/tutorials/forms/notifications/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Error summary、field label参照、修正方法、fieldとのaria-describedby関連付けを組み合わせ、submit後は最初のinvalid fieldへのfocusも便利な選択肢として示す。",
+        "supportedDecisions": [
+          "contextual-error-focus"
+        ]
+      },
+      {
+        "id": "wcag-status-messages",
+        "title": "WCAG 2.2 Understanding Status Messages",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Focusを移動せず提示するstatus messageをroleまたはpropertyで支援技術が判別できることを求める。",
+        "supportedDecisions": [
+          "status-focus-separation"
+        ]
+      }
+    ],
+    "synthesis": "WCAG conformanceは個別checklistの部分合格ではなく、適用されるA/AA全体がbaselineになる。Meridian registryは高頻度の横断要件を実装単位へまとめ、component contractとmanual/automated gatesへ具体化する。",
+    "decisionImpact": "26 requirements、6 quality gates、24/44px target policy、live-region/focus matrix、disabled ruleをmachine-readable化し、docs shell自身へskip、focus、name、modal combobox、status基盤を実装した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "wcag-aa-baseline",
+      "summary": "適用されるWCAG 2.2 Level AとAAをすべてMeridianのbaselineとする。",
+      "rationale": "一部criteriaだけを満たしてAAを名乗る誤解を防ぎ、component外のflow/content要件も対象にするため。"
+    },
+    {
+      "id": "registry-not-conformance-substitute",
+      "summary": "26 requirementsは高頻度の横断基準を実装単位へまとめたregistryであり、WCAG全criteriaの代替一覧ではない。",
+      "rationale": "Machine readabilityを保ちつつ、mediaやproduct固有contentを含む適用criteriaの見落としを防ぐため。"
+    },
+    {
+      "id": "target-baseline-and-enhancement",
+      "summary": "全densityで24pxまたは規定clearanceをbaselineとし、touch主要actionは44px程度を強化推奨にする。",
+      "rationale": "WCAG AAとergonomicなtouch推奨を混同せず、PC/SPで同じsemantic controlを共有するため。"
+    },
+    {
+      "id": "focus-and-keyboard-contract",
+      "summary": "全component contractにkeyboard map、focus entry/exit/return、visible/unobscured focusを記録する。",
+      "rationale": "ARIA roleだけでは実装されないkeyboard behaviorを検証可能にするため。"
+    },
+    {
+      "id": "contextual-error-focus",
+      "summary": "Submit errorはshort formなら最初のinvalid、long formならfocus可能なsummaryとfield linkを選びcontractへ記録する。",
+      "rationale": "常に同じfocus移動を強制せず、error数とform構造に応じて全体把握と修正効率を両立するため。"
+    },
+    {
+      "id": "status-focus-separation",
+      "summary": "通常statusはpolite、緊急errorは限定的にalert、context changeはfocus managementで扱う。",
+      "rationale": "Focusを不要に奪わず、連続するassertive announcementと二重通知を避けるため。"
+    },
+    {
+      "id": "disabled-discoverability-rule",
+      "summary": "通常controlはnative disabled、compositeでdiscoverabilityが必要な場合だけaria-disabledを使う。",
+      "rationale": "不要なTab停止を減らしつつ、menu/toolbar/tabsの機能存在を支援技術から発見可能にするため。"
+    },
+    {
+      "id": "docs-site-self-compliance",
+      "summary": "Documentation shellにも同じskip、target、focus、name、status要件を適用する。",
+      "rationale": "仕様と実例の矛盾を減らし、componentsの検証surface自体をkeyboard/ATで利用可能にするため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "missing-contract",
+      "description": "WCAG baseline、requirements、quality gateをAIとCIが読める正本がなかった。",
+      "action": "design/accessibility.json、schema、generated metadataを追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "40px target、0.01ms一括対応、1秒未満loading非表示、常に最初のerrorへfocus、disabled理由はTooltipという記述が標準要件と製品判断を混同していた。",
+      "action": "Baseline/推奨、context別focus/live region、disabled discoverability、loading product decisionへ分離した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "Docs shellにskip linkがなく、route focus、sidebar expanded state、toast role、command menu focus return/listbox semanticsが不足していた。",
+      "action": "index.html、app-shell.js、utils.jsへ共通accessibility基盤を実装した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "cross-layer-conflict",
+      "description": "Accessibilityに関する禁止事項がfocus/contrastの一部だけで、positive tabindex、name、target、color-only、drag alternativeをruleとして参照できなかった。",
+      "action": "design/rules.jsonへ5 rulesを追加しDESIGN.mdへ生成した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "design/accessibility.json",
+      "summary": "WCAG 2.2 AA policy、26 requirements、6 quality gatesを追加した。"
+    },
+    {
+      "path": "schemas/accessibility.schema.json",
+      "summary": "Accessibility policyの構造、level、criteria、target valueを検証可能にした。"
+    },
+    {
+      "path": "scripts/build-accessibility-meta.mjs",
+      "summary": "Human docs向けmetadataの生成・差分検査を追加した。"
+    },
+    {
+      "path": "js/pages-foundations.js",
+      "summary": "Baseline、registry、contrast、keyboard/focus、target、form、status、disabled、motion、quality gate、evidenceへ全面更新した。"
+    },
+    {
+      "path": "index.html",
+      "summary": "Skip link、24px minimum target、focus reset、scroll margin、generated metadata読込を追加した。"
+    },
+    {
+      "path": "js/app-shell.js",
+      "summary": "Route focus、expanded state、icon name、command modal combobox/listbox、focus trap/returnを追加した。"
+    },
+    {
+      "path": "js/utils.js",
+      "summary": "Toastをstatus/alertとして通知するようにした。"
+    },
+    {
+      "path": "design/rules.json",
+      "summary": "Positive tabindex、accessible name、target、color-only state、drag alternativeのrulesを追加した。"
+    },
+    {
+      "path": "scripts/build-design-md.mjs",
+      "summary": "AI向けDESIGN.mdへaccessibility baseline、requirements、quality gatesを生成した。"
+    },
+    {
+      "path": "test/accessibility-policy.test.js",
+      "summary": "Source/generated同期、2.2 criteria、shell、command menu、stale docs、rulesを検証した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/accessibility-policy.test.js",
+      "status": "passed",
+      "notes": "5 tests passed。Policy/generated、WCAG 2.2 additions、skip/focus/target/status、command semantics、docs/rulesを確認した。"
+    },
+    {
+      "command": "npm run validate:system",
+      "status": "passed",
+      "notes": "102 registry items、16 review cycles、schemaと参照整合を確認した。"
+    },
+    {
+      "command": "npm run check:a11y-meta && npm run design:check && npm run check:js",
+      "status": "passed",
+      "notes": "Generated metadataとDESIGN.mdの同期、33 JavaScript filesの構文を確認した。"
+    },
+    {
+      "command": "in-app browser desktop/mobile visual inspection",
+      "status": "not-run",
+      "notes": "Local file URLへのbrowser automationが許可されなかったため、最終visual QA stageへ引き継ぐ。DOMとinteraction contractは自動検証済み。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-color-01",
+    "2026-07-13-foundations-iconography-01",
+    "2026-07-13-foundations-layout-01",
+    "2026-07-13-foundations-motion-01",
+    "2026-07-13-foundations-spacing-01",
+    "2026-07-13-foundations-typography-01",
+    "2026-07-13-overview-principles-bootstrap"
+  ],
+  "impactedItems": [
+    "foundations.content",
+    "tokens.overview",
+    "tokens.color",
+    "tokens.motion",
+    "tokens.theme",
+    "tokens.density",
+    "components.button",
+    "components.text-field",
+    "components.form-field",
+    "components.select",
+    "components.dialog",
+    "components.icon-button",
+    "components.tooltip",
+    "components.spinner",
+    "components.combobox",
+    "components.checkbox",
+    "components.radio",
+    "components.switch",
+    "components.slider",
+    "components.date-picker",
+    "components.validation-message",
+    "components.command-menu",
+    "components.toast",
+    "components.drawer",
+    "components.popover",
+    "components.data-grid",
+    "components.prompt-input",
+    "components.user-menu",
+    "components.notification-center",
+    "components.invite-member-dialog"
+  ],
+  "nextRecommendedItems": [
+    "foundations.content"
+  ]
+}

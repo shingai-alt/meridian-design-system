@@ -1,0 +1,94 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "overview.for-engineers",
+  "cycleId": "2026-07-13-overview-for-engineers-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "README.md",
+    "design/rules.json",
+    "design/token-policy.json",
+    "packages/react/package.json",
+    "packages/react/src/index.ts",
+    "tokens/src",
+    "tokens/build/tokens.css",
+    "src/color-engine.js",
+    "docs/components/spec-workflow.md",
+    "js/pages-overview.js"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "overview.for-engineers",
+      "summary": "For Engineersの導入手順、公開済み成果物、token利用、component実装、React roadmapの説明を確認する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "repository内の実装状況と文書の不一致を解消するcycleであり、新規library選定や外部APIの採用判断は行っていない。"
+  },
+  "decisions": [
+    {
+      "id": "truthful-current-capabilities",
+      "summary": "現在利用可能なtoken source、generated CSS、color engine、md、contract、HTML docsだけを実行可能な成果物として案内する。",
+      "rationale": "未公開packageや未実装APIを利用可能に見せず、engineerが実際に再現できる手順だけを提供するため。"
+    },
+    {
+      "id": "planned-api-clearly-labeled",
+      "summary": "React providerとcomponent APIはplanned contractとして明示し、installation例から分離する。",
+      "rationale": "将来方向は残しつつ、placeholder packageとの事実差分をなくすため。"
+    },
+    {
+      "id": "contract-first-implementation-order",
+      "summary": "DESIGN、md、contract、HTML review、実装、system validationの順序をengineer workflowとして固定する。",
+      "rationale": "見た目だけを実装して仕様とtoken bindingが後追いになることを防ぐため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "docs-stale",
+      "description": "未公開の@meridian/reactと@meridian/tokens、未実装のThemeProvider、useTheme、exportTokensを利用可能として掲載していた。",
+      "action": "架空のinstallationとAPI例を削除し、現在利用可能なrepository成果物とplanned APIを分離した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "prefers-reduced-motionがtoken側で対応済みと断定していたが、component実装ごとの検証が必要だった。",
+      "action": "tokenだけに依存せずcomponent実装でもmotion reductionを確認する要件へ修正した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "js/pages-overview.js",
+      "summary": "For Engineersを現在の実装状況に合わせ、contract-firstなrepository利用・改善ガイドへ更新した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --check js/pages-overview.js",
+      "status": "passed",
+      "notes": "更新後のOverviewページ定義に構文エラーがないことを確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-overview-getting-started-bootstrap"
+  ],
+  "impactedItems": [
+    "foundations.color",
+    "tokens.overview",
+    "components.button"
+  ],
+  "nextRecommendedItems": [
+    "foundations.color"
+  ]
+}

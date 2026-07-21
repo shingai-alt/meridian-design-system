@@ -1,0 +1,96 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.elevation",
+  "cycleId": "2026-07-14-foundations-elevation-01",
+  "supersedesCycleId": "2026-07-13-foundations-elevation-02",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-14",
+  "completedAt": "2026-07-14",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "tokens/src/shadow.json",
+    "design/rules.json",
+    "js/utils.js",
+    "test/shadow-tokens.test.js",
+    "js/pages-foundations.js",
+    "src/color-engine.js",
+    "test/color-engine.test.js",
+    "design/reviews/tokens.theme.2026-07-13-tokens-theme-01.review.json",
+    "design/reviews/foundations.color.2026-07-14-foundations-color-01.review.json"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "foundations.elevation",
+      "summary": "Dark surface lightnessとshadow geometryを合わせてlayer hierarchyを確認する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "影響元cycleで一次資料調査と設計判断が完了しており、このfollow-upでは新しい外部解釈を導入せず、確定した方針と実装の整合を確認するため。"
+  },
+  "decisions": [
+    {
+      "id": "dark-surface-supports-elevation",
+      "summary": "Darkではsurface color差をelevationの第一手掛かりとし、shadowとborderを補助にする。",
+      "rationale": "暗いcanvasでshadowだけに依存せず、Cardからoverlayまでの階層を保つため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "no-change",
+      "description": "Elevationの現行sourceは影響元cycleの採用方針と整合している。",
+      "action": "関連source、生成物、contract、testを照合し、影響cycleをacknowledgedImpactsへ記録した。",
+      "status": "not-applicable"
+    }
+  ],
+  "changes": [
+    {
+      "path": "src/color-engine.js",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "tokens/src/shadow.json",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "test/color-engine.test.js",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "test/shadow-tokens.test.js",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "design/reviews/foundations.elevation.2026-07-14-foundations-elevation-01.review.json",
+      "summary": "影響判断、source照合、検証、acknowledgementを記録。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "最新follow-up reviewを台帳へ接続。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/color-engine.test.js test/component-specs.test.js test/token-pipeline.test.js test/css-variables.test.js test/theme-tokens.test.js",
+      "status": "passed",
+      "notes": "Color、74 component contract、4 token bundle、CSS変数、theme modifierの関連testが成功。"
+    },
+    {
+      "command": "npm run validate:system",
+      "status": "passed",
+      "notes": "Schema、registry、review dependency、contractの整合が成功。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-tokens-theme-01",
+    "2026-07-14-foundations-color-01"
+  ],
+  "impactedItems": [],
+  "nextRecommendedItems": []
+}
