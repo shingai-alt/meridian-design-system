@@ -1,0 +1,90 @@
+{
+  "$schema": "../schemas/research-policy.schema.json",
+  "schemaVersion": "0.1.0",
+  "appliesTo": ["overview", "foundations", "tokens", "components"],
+  "gate": {
+    "assessmentRequiredEveryCycle": true,
+    "researchRequiredWhen": [
+      {
+        "id": "standard-or-regulation",
+        "description": "Web標準、DTCG、WCAG、法規、業界標準の解釈または版に関係する。"
+      },
+      {
+        "id": "accessibility-or-safety",
+        "description": "アクセシビリティ、認知負荷、誤操作、破壊的操作、安全性に影響する。"
+      },
+      {
+        "id": "new-pattern-or-api",
+        "description": "Meridianに存在しないFoundation、Token、Component、API、interaction patternを導入する。"
+      },
+      {
+        "id": "cross-platform-behavior",
+        "description": "Web、iOS、Android、desktop、mobile、touch間で振る舞いを決める。"
+      },
+      {
+        "id": "conflicting-guidance",
+        "description": "内部仕様、実装、複数の外部資料が異なる判断を示している。"
+      },
+      {
+        "id": "uncertainty",
+        "description": "担当者またはAIが判断根拠に十分な確信を持てない。"
+      },
+      {
+        "id": "ecosystem-change",
+        "description": "ライブラリ、platform、browser、toolingなど変更頻度の高い外部環境に依存する。"
+      },
+      {
+        "id": "benchmark-needed",
+        "description": "他の成熟したdesign systemとの比較が判断品質を上げる。"
+      }
+    ],
+    "completionStatuses": ["complete", "not-required"]
+  },
+  "sourcePolicy": {
+    "priority": [
+      "Normative standard or regulation",
+      "Official platform or accessibility guidance",
+      "Official design-system documentation and source code",
+      "Peer-reviewed research",
+      "Secondary analysis"
+    ],
+    "allowedTypes": ["standard", "official-guideline", "official-design-system", "platform-documentation", "research-paper", "secondary-analysis"],
+    "minimumEvidence": {
+      "total": 1,
+      "primary": 1
+    },
+    "secondarySourceRule": "Secondary analysis may broaden discovery but cannot be the sole basis of a Meridian decision."
+  },
+  "domainGuidance": {
+    "overview": {
+      "typicalQuestions": ["対象範囲や原則は現在のproduct landscapeに適合するか", "Architectureは標準と実装可能性に整合するか"],
+      "preferredSources": ["Standards", "Official design-system governance and architecture", "Current platform documentation"]
+    },
+    "foundations": {
+      "typicalQuestions": ["人間工学、知覚、アクセシビリティの基準は何か", "Theme、Density、Viewportの責務をどう分けるか"],
+      "preferredSources": ["W3C/WAI and platform guidelines", "Official design-system foundations", "Peer-reviewed HCI research"]
+    },
+    "tokens": {
+      "typicalQuestions": ["型、alias、解決順、命名は最新仕様と互換か", "各token layerのownerと公開範囲は妥当か"],
+      "preferredSources": ["DTCG technical reports", "Official design-system token documentation", "Tool vendor documentation"]
+    },
+    "components": {
+      "typicalQuestions": ["Semantic、keyboard、focus、stateは標準patternに適合するか", "類似componentとの選択境界とresponsive behaviorは妥当か"],
+      "preferredSources": ["WAI-ARIA APG and WCAG", "Native platform guidelines", "Official mature design-system component guidance"]
+    }
+  },
+  "freshness": {
+    "defaultReviewWindowDays": 365,
+    "unstableTopicWindowDays": 90,
+    "alwaysCheckLatestStandard": true
+  },
+  "invariants": [
+    "Every review cycle must assess the Research Gate.",
+    "A complete review cannot leave research status pending.",
+    "Required research must cite at least one primary source.",
+    "Evidence must record the claim used and the Meridian decision it supports.",
+    "Not-required requires a concrete reason tied to the cycle scope.",
+    "Research informs a decision but does not replace visual review, implementation evidence, or product context.",
+    "URLs and access dates are recorded so evidence can be rechecked later."
+  ]
+}

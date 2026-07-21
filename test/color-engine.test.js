@@ -35,6 +35,54 @@ test('buildPalettes produces all 11 tone steps for every role', () => {
   }
 });
 
+test('default neutral canvas stays stable when the brand seed changes', () => {
+  const baseline = buildPalettes(SEED_PRESETS[0].hex).neutral;
+  const lightBackgrounds = new Set();
+  for (const { hex } of SEED_PRESETS) {
+    const palettes = buildPalettes(hex);
+    assert.deepEqual(palettes.neutral, baseline, `${hex}: neutral palette changed with the brand seed`);
+    const theme = buildSemantics(palettes, 'light', 'standard');
+    lightBackgrounds.add(theme.background);
+    assert.ok(hexToOklch(theme.background).c <= 0.005, `${hex}: canvas is too chromatic`);
+  }
+  assert.equal(lightBackgrounds.size, 1, 'Light canvas must not change with the brand seed');
+});
+
+test('dark surfaces form a visible, monotonic elevation hierarchy', () => {
+  for (const { hex } of SEED_PRESETS) {
+    const theme = buildSemantics(buildPalettes(hex), 'dark', 'standard');
+    const levels = [
+      theme.background,
+      theme['surface-sunken'],
+      theme['background-subtle'],
+      theme.surface,
+      theme['surface-muted'],
+      theme['surface-raised'],
+      theme['surface-overlay'],
+    ].map((color) => hexToOklch(color).l);
+    for (let index = 1; index < levels.length; index++) {
+      assert.ok(levels[index] > levels[index - 1], `${hex}: dark surface hierarchy is not monotonic`);
+    }
+    assert.ok(contrast(theme.background, theme.surface) >= 1.12, `${hex}: page and card surfaces are too similar`);
+  }
+});
+
+test('neutral controls remain distinct from static surfaces in every standard theme', () => {
+  for (const { hex } of SEED_PRESETS) {
+    const palettes = buildPalettes(hex);
+    for (const themeName of ['light', 'dark']) {
+      const theme = buildSemantics(palettes, themeName, 'standard');
+      assert.notEqual(theme['control-background'], theme.surface, `${hex}/${themeName}: control matches static surface`);
+      assert.ok(
+        contrast(theme['control-border'], theme['control-background']) >= 3,
+        `${hex}/${themeName}: control boundary is below 3:1`,
+      );
+      assert.notEqual(theme['control-background-hover'], theme['control-background']);
+      assert.notEqual(theme['control-background-active'], theme['control-background-hover']);
+    }
+  }
+});
+
 test('onColor picks the higher-contrast of black/white', () => {
   assert.equal(onColor('#0a0a0f'), '#ffffff');
   assert.equal(onColor('#ffffff'), '#0a0a14');
@@ -55,7 +103,7 @@ test('buildSemantics: light and dark themes meet WCAG AA (4.5:1) for primary-on-
   for (const { hex } of SEED_PRESETS) {
     const P = buildPalettes(hex);
     for (const theme of ['light', 'dark']) {
-      const T = buildSemantics(P, theme);
+      const T = buildSemantics(P, theme, 'standard');
       assert.ok(
         contrast(T.primary, T.background) >= 4.5,
         `${hex}/${theme}: primary vs background contrast ${contrast(T.primary, T.background).toFixed(2)} < 4.5`
@@ -68,12 +116,21 @@ test('buildSemantics: light and dark themes meet WCAG AA (4.5:1) for primary-on-
   }
 });
 
-test('buildSemantics: high-contrast theme meets AAA (7:1) for primary-on-background', () => {
+test('buildSemantics: both themes meet the High contrast 7:1 target', () => {
   for (const { hex } of SEED_PRESETS) {
     const P = buildPalettes(hex);
-    const T = buildSemantics(P, 'hc');
-    assert.ok(contrast(T.primary, T.background) >= 7, `${hex}/hc: primary contrast below AAA`);
+    for (const theme of ['light', 'dark']) {
+      const T = buildSemantics(P, theme, 'high');
+      assert.ok(contrast(T.primary, T.background) >= 7, `${hex}/${theme}-high: primary contrast below 7:1`);
+      assert.ok(contrast(T.foreground, T.background) >= 7, `${hex}/${theme}-high: foreground contrast below 7:1`);
+    }
   }
+});
+
+test('buildSemantics rejects unknown modifier contexts', () => {
+  const P = buildPalettes('#5B5BD6');
+  assert.throws(() => buildSemantics(P, 'hc'), /Unknown theme/);
+  assert.throws(() => buildSemantics(P, 'light', 'enhanced'), /Unknown contrast mode/);
 });
 
 test('buildCharts returns 6 distinct, valid hex colors', () => {
@@ -88,22 +145,22 @@ test('buildSemantics: *-on-solid tokens meet WCAG AA (4.5:1) against their own b
   // accessibleStepIndex for a step meeting the theme's target contrast),
   // success/warning/danger/info use fixed steps per theme. onColor() only
   // picks the better of two fixed anchors (white / near-black), so it is not
-  // guaranteed to reach the stricter 7:1 AAA bar in the hc theme for every
+  // guaranteed to reach the stricter 7:1 target in High mode for every
   // hue (e.g. warning/amber tops out around 6.4:1 there). We hold all
   // -on-solid tokens to the universal AA floor (4.5:1) instead of assuming
-  // AAA in hc, since that guarantee was never part of their design.
+  // 7:1 in High, since that guarantee was never part of their design.
   const roles = ['secondary', 'accent', 'success', 'warning', 'danger', 'info'];
   for (const { hex } of SEED_PRESETS) {
     const P = buildPalettes(hex);
-    for (const theme of ['light', 'dark', 'hc']) {
-      const T = buildSemantics(P, theme);
+    for (const [theme, contrastMode] of [['light', 'standard'], ['dark', 'standard'], ['light', 'high'], ['dark', 'high']]) {
+      const T = buildSemantics(P, theme, contrastMode);
       for (const role of roles) {
         const base = T[role];
         const onSolid = T[role + '-on-solid'];
-        assert.match(onSolid, /^#[0-9a-f]{6}$/, `${hex}/${theme}: ${role}-on-solid missing`);
+        assert.match(onSolid, /^#[0-9a-f]{6}$/, `${hex}/${theme}-${contrastMode}: ${role}-on-solid missing`);
         assert.ok(
           contrast(onSolid, base) >= 4.5,
-          `${hex}/${theme}: ${role}-on-solid vs ${role} contrast ${contrast(onSolid, base).toFixed(2)} < 4.5`
+          `${hex}/${theme}-${contrastMode}: ${role}-on-solid vs ${role} contrast ${contrast(onSolid, base).toFixed(2)} < 4.5`
         );
       }
     }

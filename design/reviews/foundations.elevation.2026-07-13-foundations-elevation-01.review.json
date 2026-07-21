@@ -1,0 +1,189 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.elevation",
+  "cycleId": "2026-07-13-foundations-elevation-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "tokens/src/shadow.json",
+    "tokens/build/tokens.css",
+    "design/rules.json",
+    "js/generated/foundation-token-meta.js",
+    "js/utils.js",
+    "index.html",
+    "js/pages-foundations.js",
+    "scripts/build-tokens.mjs",
+    "scripts/build-design-md.mjs",
+    "test/shadow-tokens.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "foundations.elevation",
+      "summary": "Static surface、transient overlay、modal layerの区別、shadow level、theme mode、border/surface/scrimとの責務分離を確認する。"
+    },
+    "triggers": [
+      "new-pattern-or-api",
+      "cross-platform-behavior",
+      "conflicting-guidance",
+      "benchmark-needed"
+    ],
+    "questions": [
+      "ShadowをCardなど静的surfaceへ使うべきか。",
+      "Light/Dark/High Contrastでshadowのgeometryとcolorのどちらを変えるか。",
+      "Shadow levelがz-index、modality、focus managementを所有するか。"
+    ],
+    "evidence": [
+      {
+        "id": "spectrum-object-styles-shadow",
+        "title": "Spectrum Object Styles",
+        "url": "https://spectrum.adobe.com/page/object-styles/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "多くのcomponentはcolor changeやoverlayで分離し、shadowをelevatedでdismissibleなtransient componentへ予約している。Dark themeでは主にopacityを調整する。",
+        "supportedDecisions": [
+          "transient-only-elevation",
+          "theme-color-only-shadow"
+        ]
+      },
+      {
+        "id": "carbon-dropdown-elevation",
+        "title": "Carbon Design System Dropdown Usage",
+        "url": "https://carbondesignsystem.com/components/dropdown/usage/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Open dropdown menuが背後のcontentより高いことを示すためbox-shadowを使い、overlaid menuに同じ扱いを適用している。",
+        "supportedDecisions": [
+          "transient-only-elevation",
+          "level-by-overlap-context"
+        ]
+      },
+      {
+        "id": "carbon-color-layering",
+        "title": "Carbon Design System Color Layering",
+        "url": "https://carbondesignsystem.com/elements/color/usage/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Static hierarchyをtheme-relativeなbackground、layer、field、border tokenの組合せで表すlayering modelを示している。",
+        "supportedDecisions": [
+          "static-surface-with-tone-and-border"
+        ]
+      }
+    ],
+    "synthesis": "SpectrumとCarbonはいずれもtransient overlapにshadowを使い、static hierarchyはsurface colorとborderで表している。Meridianでは5段geometryを固定し、themeはcolor/alphaだけを変更する。",
+    "decisionImpact": "Shadow正本を追加し、Card/Panel/Tileをshadowなしに固定した。Selectionをoverlap、一時性、scrim、stackingの順にし、z-index、modality、focus managementをshadow tokenの責務から外した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "transient-only-elevation",
+      "summary": "--shadow-sm以上は他contentに重なるdismissibleなtransient surfaceだけへ使う。",
+      "rationale": "Static Card/Panelを不必要に浮かせず、shadowがoverlap関係を一貫して伝えるため。"
+    },
+    {
+      "id": "static-surface-with-tone-and-border",
+      "summary": "Static hierarchyは--bg/--surface系colorと--border系tokenで表す。",
+      "rationale": "Dark/HCを含むtheme間でshadow visibilityだけに依存せず境界を保持するため。"
+    },
+    {
+      "id": "theme-color-only-shadow",
+      "summary": "Shadowのoffset、blur、spreadは全themeで不変とし、color/alpha modeだけを切り替える。",
+      "rationale": "Theme変更でspatial relationshipやcomponent geometryを変えず、視覚的な強さだけを補正するため。"
+    },
+    {
+      "id": "level-by-overlap-context",
+      "summary": "Dropdown/Menuはsm、Popover/Tooltipはmd、Toastはlg、Dialog/Drawerはoverlayを基準にする。",
+      "rationale": "任意の強さではなくsurfaceの重なりと一時性からlevelを選べるようにするため。"
+    },
+    {
+      "id": "separate-shadow-from-overlay-behavior",
+      "summary": "Scrim、z-index、dismiss、focus trap/returnはoverlay systemが所有し、shadow levelから推論しない。",
+      "rationale": "視覚表現とinteraction/accessibility責務を混同しないため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "missing-token",
+      "description": "Shadow sourceが存在せず、5 levelの値がutils.jsのtheme分岐へ直接記述されていた。",
+      "action": "tokens/src/shadow.jsonへDTCG shadow composite、color mode、usage metadataを追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "Themeごとにshadow geometryまで別の文字列として管理され、source/docsとの同期を検証できなかった。",
+      "action": "Geometryをgenerated CSSへ移し、utils.jsはgenerated theme color modeだけを設定するようにした。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Raised surfaceの定義がstatic/transientを混在させ、border token表示名も実在CSS名と異なっていた。",
+      "action": "Static/transient/modal layer、selection order、実在border token、scrim/stacking境界へ更新した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "tokens/src/shadow.json",
+      "summary": "4 color mode tokenと5 shadow levelのmachine-readable正本を追加した。"
+    },
+    {
+      "path": "scripts/build-tokens.mjs",
+      "summary": "DTCG shadow compositeをCSS、docs metadata、theme color mapへ生成する処理を追加した。"
+    },
+    {
+      "path": "js/utils.js",
+      "summary": "Hardcoded shadow geometryを削除し、theme color modeだけを適用するようにした。"
+    },
+    {
+      "path": "js/pages-foundations.js",
+      "summary": "Layer model、generated previews、selection rules、border名、evidenceを更新した。"
+    },
+    {
+      "path": "test/shadow-tokens.test.js",
+      "summary": "Geometry、alias、3 theme mode、static surfaceのno-shadow invariantを検証した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/shadow-tokens.test.js",
+      "status": "passed",
+      "notes": "3 tests passed。5 levels、4 colors×3 modes、alias、static surface invariantを確認した。"
+    },
+    {
+      "command": "npm run build:tokens && npm run design:build",
+      "status": "passed",
+      "notes": "Shadow CSS/metadata/theme mapとDESIGN.mdを正本から再生成した。"
+    },
+    {
+      "command": "npm run check:js",
+      "status": "passed",
+      "notes": "29 JavaScript filesの構文を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [],
+  "impactedItems": [
+    "tokens.overview",
+    "tokens.shadow",
+    "tokens.theme",
+    "components.tooltip",
+    "components.command-menu",
+    "components.user-menu",
+    "components.popover",
+    "components.dialog",
+    "components.drawer",
+    "components.toast",
+    "components.card"
+  ],
+  "nextRecommendedItems": [
+    "foundations.motion"
+  ]
+}

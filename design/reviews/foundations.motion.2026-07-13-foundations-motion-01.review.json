@@ -1,0 +1,223 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.motion",
+  "cycleId": "2026-07-13-foundations-motion-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "tokens/src/motion.json",
+    "tokens/build/tokens.css",
+    "design/rules.json",
+    "js/generated/foundation-token-meta.js",
+    "index.html",
+    "js/utils.js",
+    "js/pages-foundations.js",
+    "scripts/build-tokens.mjs",
+    "scripts/build-design-md.mjs",
+    "test/motion-tokens.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "foundations.motion",
+      "summary": "Duration/easing/distance、interaction feedback、reduced motion、continuous animation、CSSとscripted animationの適用範囲を確認する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "accessibility-or-safety",
+      "cross-platform-behavior",
+      "conflicting-guidance",
+      "benchmark-needed"
+    ],
+    "questions": [
+      "prefers-reduced-motionで何をremoveし、何を最終stateとして残すか。",
+      "CSS以外のWeb Animations API、canvas、videoも同じcontractに含めるか。",
+      "反復業務UIのduration、easing、distance上限をどう定義するか。"
+    ],
+    "evidence": [
+      {
+        "id": "media-queries-reduced-motion",
+        "title": "Media Queries Level 5 prefers-reduced-motion",
+        "url": "https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Userが非本質的motionを最小化したい設定を検出し、不快または注意を妨げるmotionをremoveまたはreplaceするmedia featureを定義している。",
+        "supportedDecisions": [
+          "reduced-motion-as-replacement",
+          "scripted-motion-preference-check"
+        ]
+      },
+      {
+        "id": "wcag-animation-from-interactions",
+        "title": "WCAG 2.2 Understanding Animation from Interactions",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Level AAAとして、interaction起点の非本質的motion animationを無効化できることと、静的代替またはuser preference利用を説明している。",
+        "supportedDecisions": [
+          "reduced-motion-as-replacement",
+          "static-state-always-available"
+        ]
+      },
+      {
+        "id": "wcag-pause-stop-hide",
+        "title": "WCAG 2.2 Understanding Pause Stop Hide",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Level Aとして、自動で開始し5秒を超えて続くmoving、blinking、scrolling contentにpause、stop、hideを求めている。",
+        "supportedDecisions": [
+          "continuous-motion-controls"
+        ]
+      },
+      {
+        "id": "carbon-motion",
+        "title": "Carbon Design System Motion",
+        "url": "https://carbondesignsystem.com/elements/motion/overview/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Productive motion、standard/entrance/exit easing、70–700msの非線形duration scale、90–120ms micro-interaction、静的代替の運用例を示している。",
+        "supportedDecisions": [
+          "productive-duration-scale",
+          "directional-easing",
+          "bounded-spatial-distance"
+        ]
+      }
+    ],
+    "synthesis": "Media Queriesを検出mechanism、WCAGをmotion safetyとcontinuous contentの受け入れ条件、Carbonをproductive motionの比較対象にした。Reduced modeはcomponentを無効化せず、非本質的motionだけを0ms/0pxへ置換する。",
+    "decisionImpact": "5 duration、4 easing、3 distanceをDTCG正本化した。全CSS tokenを実在名へ揃え、reduced media block、scripted animation check、static loading/status代替、animationend非依存を追加した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "productive-duration-scale",
+      "summary": "50/120/180/240/320msの5段を維持し、反復UIは180ms以下、大きなoverlayは240ms、320msは限定page transitionにする。",
+      "rationale": "即応性を保ちつつ、change sizeとdistanceに応じた少数の予測可能なstepを提供するため。"
+    },
+    {
+      "id": "directional-easing",
+      "summary": "Standard、enter、exit、emphasizedの4 easingを使い、bounceやovershootを標準から除く。",
+      "rationale": "Enterは減速、exitは短い加速という方向性を保ち、反復作業を邪魔しないため。"
+    },
+    {
+      "id": "bounded-spatial-distance",
+      "summary": "Spatial movementを0/4/8pxの3段に制限する。",
+      "rationale": "状態の連続性を補助しながら、画面内を大きく移動する不必要なmotionを避けるため。"
+    },
+    {
+      "id": "reduced-motion-as-replacement",
+      "summary": "Reduced modeでは非本質的durationとdistanceを0にし、最終state、text、icon、focus、feedbackを保持する。",
+      "rationale": "Motion sensitivityへ対応しながらcomponent機能と状態理解を失わないため。"
+    },
+    {
+      "id": "scripted-motion-preference-check",
+      "summary": "WAAPI、canvas、video、chartはmatchMediaでpreferenceを個別に確認する。",
+      "rationale": "CSS media ruleだけではscripted animationのdurationやloopを停止できないため。"
+    },
+    {
+      "id": "static-state-always-available",
+      "summary": "Motionは状態の唯一の手掛かりにせず、animationendなしでも最終stateへ到達する。",
+      "rationale": "0ms、処理遅延、assistive technology環境でも意味と操作結果を保つため。"
+    },
+    {
+      "id": "continuous-motion-controls",
+      "summary": "5秒を超えて自動で続くmoving contentにはpause、stop、hideを提供する。",
+      "rationale": "WCAG 2.2 Level Aを満たし、attentionとreadingを利用者が制御できるようにするため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "source-wrong",
+      "description": "motion.jsonはdurationを文字列、cubicBezierをCSS文字列で持ち、DTCG typed valueとdistance tokenがなかった。",
+      "action": "Duration object、cubicBezier array、dimension distance、description/usageを追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Docsは存在しない--duration-*とeasing-*を表示し、reduced motionをtokenだけで対応済みと断定していた。",
+      "action": "Generated --dur-* / --ease-* / --motion-distance-*表とCSS/script両方の要件へ更新した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "Spinner、Skeleton、running pulse、Toast fadeが生の秒数を直接指定していた。",
+      "action": "Duration tokenの倍数またはtoken transitionへ接続し、Toast cleanupをtransitionendへ変更した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "cross-layer-conflict",
+      "description": "Reduced motionでanimationを短縮してもWAAPI/canvasとstate更新のanimationend依存を検証する規則がなかった。",
+      "action": "Scripted preference check、0ms最終state、静的feedbackをcomponent acceptanceへ追加した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "tokens/src/motion.json",
+      "summary": "5 duration、4 easing、3 distanceをDTCG typed valueとusage metadataへ更新した。"
+    },
+    {
+      "path": "scripts/build-tokens.mjs",
+      "summary": "Motion CSSとbrowser metadataをtyped sourceから生成するようにした。"
+    },
+    {
+      "path": "index.html",
+      "summary": "Reduced modeの0ms/0px mappingと、continuous animationのtoken参照を追加した。"
+    },
+    {
+      "path": "js/utils.js",
+      "summary": "Toast fadeをmotion tokenとtransitionendへ接続した。"
+    },
+    {
+      "path": "js/pages-foundations.js",
+      "summary": "Generated tables、standard/reduced matrix、scripted animation要件、standards evidenceを追加した。"
+    },
+    {
+      "path": "test/motion-tokens.test.js",
+      "summary": "Source/CSS/metadata、duration順、easing範囲、reduced mapping、legacy名を検証した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/motion-tokens.test.js",
+      "status": "passed",
+      "notes": "4 tests passed。5/4/3 token、monotonic duration、no overshoot、reduced mapping、legacy名を確認した。"
+    },
+    {
+      "command": "npm run build:tokens && npm run design:build",
+      "status": "passed",
+      "notes": "Motion CSS/metadataとDESIGN.mdを正本から再生成した。"
+    },
+    {
+      "command": "npm run check:js",
+      "status": "passed",
+      "notes": "29 JavaScript filesの構文を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [],
+  "impactedItems": [
+    "foundations.accessibility",
+    "tokens.overview",
+    "tokens.motion",
+    "components.button",
+    "components.spinner",
+    "components.skeleton",
+    "components.progress",
+    "components.dialog",
+    "components.drawer",
+    "components.toast"
+  ],
+  "nextRecommendedItems": [
+    "foundations.iconography"
+  ]
+}

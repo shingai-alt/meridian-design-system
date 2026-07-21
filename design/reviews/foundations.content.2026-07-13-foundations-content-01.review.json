@@ -1,0 +1,245 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.content",
+  "cycleId": "2026-07-13-foundations-content-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/content-guidelines.json",
+    "schemas/content-guidelines.schema.json",
+    "js/generated/content-guidelines-meta.js",
+    "js/pages-foundations.js",
+    "scripts/build-content-meta.mjs",
+    "scripts/build-design-md.mjs",
+    "scripts/validate-system.mjs",
+    "test/content-guidelines.test.js",
+    "VISION.md"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "foundations.content",
+      "summary": "Voice/tone、action label、error/success/empty/loading/confirmation、localization、canonical terminology、accessible label、AI-generated contentのwriting decisionsを確認する。"
+    },
+    "triggers": [
+      "accessibility-or-safety",
+      "new-pattern-or-api",
+      "cross-platform-behavior",
+      "benchmark-needed"
+    ],
+    "questions": [
+      "Action labelをどの単位で具体化するか。",
+      "Error、empty、success、confirmationに必須のinformationは何か。",
+      "ja-JPとenで同じ意味を保ちながら自然な語順とtermをどう管理するか。",
+      "AI outputの生成元、limitation、data use、human controlをどう伝えるか。"
+    ],
+    "evidence": [
+      {
+        "id": "govuk-error-content",
+        "title": "GOV.UK Design System Error message",
+        "url": "https://design-system.service.gov.uk/components/error-message/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Errorは何が起きたかと修正方法を具体的に示し、field labelとlanguageを合わせ、入力を保持し、summaryとinlineで一貫させる。",
+        "supportedDecisions": [
+          "structured-state-messages"
+        ]
+      },
+      {
+        "id": "govuk-button-content",
+        "title": "GOV.UK Design System Button",
+        "url": "https://design-system.service.gov.uk/components/button/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Main call to actionを1つに絞り、Save and continueやDelete accountのように結果が分かるlabelを使い、warning buttonを限定する。",
+        "supportedDecisions": [
+          "outcome-based-action-labels"
+        ]
+      },
+      {
+        "id": "microsoft-global-writing",
+        "title": "Microsoft Style Guide Writing tips for global content",
+        "url": "https://learn.microsoft.com/ja-jp/style-guide/global-communications/writing-tips",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "短く単純で文法的に完全なsentenceは読みやすく、localizationとmachine translationの精度も上げる。",
+        "supportedDecisions": [
+          "clear-calm-precise-voice",
+          "complete-localized-messages"
+        ]
+      },
+      {
+        "id": "microsoft-hax-guidelines",
+        "title": "Microsoft HAX Guidelines for Human-AI Interaction",
+        "url": "https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "AIのcapabilityとlimitationを最初に明確にし、interaction中、systemが誤った時、時間経過を含めてrecoveryとexplanationを設計する。",
+        "supportedDecisions": [
+          "ai-transparency-and-control"
+        ]
+      },
+      {
+        "id": "apple-generative-ai",
+        "title": "Apple Human Interface Guidelines Generative AI",
+        "url": "https://developer.apple.com/design/human-interface-guidelines/generative-ai/",
+        "sourceType": "platform-documentation",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "AI利用を明示し、誤りの可能性を伝え、dismiss/retry/revertとnon-AI fallbackを用意し、personal dataの送信・保存・training利用を具体的に開示する。",
+        "supportedDecisions": [
+          "ai-transparency-and-control"
+        ]
+      }
+    ],
+    "synthesis": "Mature guidanceは、短さだけではなくtask outcome、具体的なrecovery、consistent terminology、global readabilityを重視する。AI contentでは通常のstate copyに加え、生成元、capability/limitation、data use、human review/undoが必要になる。",
+    "decisionImpact": "4 voice attributes、23 writing rules、7 message patterns、12 canonical terms、5 quality gatesをmachine-readable化し、ja-JP/en、accessibility、AI transparencyを同じcontent contractへ統合した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "machine-readable-content-contract",
+      "summary": "Content guidelineをvoice、rules、message patterns、terms、quality gatesのstructured sourceとして管理する。",
+      "rationale": "人間とAIが同じ判断を再利用し、docsとgenerated UIの差分を検証できるため。"
+    },
+    {
+      "id": "clear-calm-precise-voice",
+      "summary": "Voiceは明快、落ち着き、尊重、正確を固定し、toneだけをrisk/contextへ合わせる。",
+      "rationale": "Successで過剰に称賛せず、errorで責めず、どのproduct domainでも信頼できる一貫性を保つため。"
+    },
+    {
+      "id": "outcome-based-action-labels",
+      "summary": "Buttonは機械的に必ず動詞開始とはせず、動詞と必要な対象で結果を予測できることを条件にする。",
+      "rationale": "Contextで対象が明白な「再試行」等を許しつつ、OK/Submit/実行のような曖昧labelを防ぐため。"
+    },
+    {
+      "id": "structured-state-messages",
+      "summary": "Error、success、empty、confirmation、loading、permission、AI outputごとにrequired partsを定義する。",
+      "rationale": "短いが必要情報のないgeneric messageをAIが生成しないようにするため。"
+    },
+    {
+      "id": "canonical-terms-by-locale",
+      "summary": "1 concept 1 canonical termをja-JP/enごとに持ち、aliasは表示ではなく検索・移行に使う。",
+      "rationale": "同じflow内の言い換えと翻訳揺れを減らし、component/docs/contractを同じconcept IDで結ぶため。"
+    },
+    {
+      "id": "complete-localized-messages",
+      "summary": "String fragmentを連結せず、locale-aware formatterと完全なmessage単位でlocalizeする。",
+      "rationale": "語順、助詞、plural、date/number formatが異なるlocaleでも意味と自然さを保つため。"
+    },
+    {
+      "id": "ai-transparency-and-control",
+      "summary": "AI利用、capability/limitation、data useを明示し、review/edit/retry/undoと可能ならnon-AI fallbackを提供する。",
+      "rationale": "人間作成との誤認、automation bias、不可逆な誤操作、意図しないdata sharingを減らすため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "missing-contract",
+      "description": "Content guidanceがHTMLの4原則だけで、AIがstate別の必須情報やtermを選べる正本がなかった。",
+      "action": "design/content-guidelines.json、schema、generated metadataを追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Actionは常に動詞開始という単純化、4 stateのDo/Don't、曖昧語の禁止だけでlocalization、accessibility、AI contentを扱っていなかった。",
+      "action": "23 rules、7 patterns、12 terms、AI/localization/quality gates、evidenceへ全面更新した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "cross-layer-conflict",
+      "description": "VISION.mdがglobal readinessとAI共同生成を目標にする一方、Content Foundationにglobal/AI判断がなかった。",
+      "action": "ja-JP/en terminology、translation readiness、AI disclosure/control/data transparencyをFoundationへ追加した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "design/content-guidelines.json",
+      "summary": "Voice、23 rules、7 patterns、12 terms、5 quality gatesの正本を追加した。"
+    },
+    {
+      "path": "schemas/content-guidelines.schema.json",
+      "summary": "Content sourceのstructure、category、locale、IDを検証可能にした。"
+    },
+    {
+      "path": "scripts/build-content-meta.mjs",
+      "summary": "Browser metadataの生成とstale checkを追加した。"
+    },
+    {
+      "path": "js/pages-foundations.js",
+      "summary": "Voice、全rules、patterns、terms、localization、AI、quality gates、evidenceを表示するdocsへ更新した。"
+    },
+    {
+      "path": "scripts/build-design-md.mjs",
+      "summary": "AI向けDESIGN.mdへContent rules、patterns、termsを生成した。"
+    },
+    {
+      "path": "test/content-guidelines.test.js",
+      "summary": "Source/generated、category coverage、state/AI patterns、localization、human/AI docs同期を検証した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/content-guidelines.test.js",
+      "status": "passed",
+      "notes": "5 tests passed。Counts、generated同期、全8 categories、state/AI patterns、localization、docsを確認した。"
+    },
+    {
+      "command": "npm run check:content-meta && npm run design:check && npm run check:js",
+      "status": "passed",
+      "notes": "Generated content metadataとDESIGN.mdが最新で、35 JavaScript filesの構文が有効。"
+    },
+    {
+      "command": "npm run validate:system",
+      "status": "passed",
+      "notes": "102 registry items、17 review cycles、Content schemaと参照整合を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01"
+  ],
+  "impactedItems": [
+    "tokens.overview",
+    "components.button",
+    "components.text-field",
+    "components.form-field",
+    "components.select",
+    "components.dialog",
+    "components.alert",
+    "components.icon-button",
+    "components.link",
+    "components.tooltip",
+    "components.spinner",
+    "components.empty-state",
+    "components.validation-message",
+    "components.command-menu",
+    "components.toast",
+    "components.banner",
+    "components.drawer",
+    "components.progress",
+    "components.status-indicator",
+    "components.prompt-input",
+    "components.chat-message",
+    "components.ai-response-card",
+    "components.agent-status",
+    "components.run-log",
+    "components.workflow-step",
+    "components.user-menu",
+    "components.notification-center",
+    "components.invite-member-dialog"
+  ],
+  "nextRecommendedItems": [
+    "tokens.overview"
+  ]
+}

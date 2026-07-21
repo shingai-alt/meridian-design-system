@@ -1,0 +1,173 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.json-tokens",
+  "cycleId": "2026-07-13-tokens-json-tokens-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/token-policy.json",
+    "tokens/src",
+    "scripts/build-tokens.mjs",
+    "scripts/lib/dtcg.mjs",
+    "scripts/lib/token-artifacts.mjs",
+    "tokens/build/meridian.tokens.json",
+    "tokens/build/meridian.dark.tokens.json",
+    "tokens/build/meridian.high-contrast.tokens.json",
+    "tokens/build/meridian.dark.high-contrast.tokens.json",
+    "js/generated/token-catalog-meta.js",
+    "js/pages-tokens.js",
+    "js/pages-resources.js",
+    "test/token-pipeline.test.js",
+    "design/system-registry.json"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "tokens.json-tokens",
+      "summary": "DTCG 2025.10の交換形式、alias type、modifier resolutionとMeridianの4 context bundleの境界を確認する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "ecosystem-change"
+    ],
+    "questions": [
+      "DTCG 2025.10でtoken typeとalias参照はどのように決定されるか。",
+      "Meridianの4 JSONをどの範囲で解決済みと表現できるか。",
+      "4 context bundle間でどのAPI同一性を保証すべきか。"
+    ],
+    "evidence": [
+      {
+        "id": "dtcg-format-2025-10-json",
+        "title": "Design Tokens Format Module 2025.10",
+        "url": "https://www.w3.org/community/reports/design-tokens/CG-FINAL-format-20251028/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Stable Community Group Final ReportとしてJSON交換形式、.tokens.json、media type、token/group、型、alias、vendor extensionを定義し、alias tokenの型を参照先から決定できるとしている。",
+        "supportedDecisions": [
+          "stable-format-baseline",
+          "alias-preserving-interchange",
+          "path-type-parity"
+        ]
+      },
+      {
+        "id": "dtcg-resolver-2025-10-json",
+        "title": "Design Tokens Resolver Module 2025.10",
+        "url": "https://www.w3.org/community/reports/design-tokens/CG-FINAL-resolver-20251028/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Modifier input、permutation、resolution orderと、最終resolutionでaliasを解決する段階を定義している。",
+        "supportedDecisions": [
+          "modifier-context-bundles",
+          "alias-preserving-interchange"
+        ]
+      }
+    ],
+    "synthesis": "DTCG 2025.10は現行のstableな交換形式基準として利用できる。Meridianの4 fileはResolver documentそのものやalias展開後の最終出力ではなく、ThemeとContrastのmodifier contextを事前選択したFormat準拠bundleである。関係性を保つaliasはbundle内で解決可能な状態で保持し、全contextでpathと有効型を同一にする。",
+    "decisionImpact": "解決済みという曖昧な説明をmodifier context解決済み・alias保持へ修正し、alias型互換、全309 path/type parity、全参照解決をvalidatorとtestで保証した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "stable-format-baseline",
+      "summary": "Design Tokens Format Module 2025.10をJSON交換形式の基準として維持する。",
+      "rationale": "現行stable reportが型、alias、extension、file extension、media typeの共通契約を提供するため。"
+    },
+    {
+      "id": "modifier-context-bundles",
+      "summary": "Light / Dark × Standard / Highをmodifier context解決済みの4 .tokens.jsonとして配布する。",
+      "rationale": "Resolver document未提供の現段階でもconsumerが入力contextを誤解せず、決定的なbundleを選べるため。"
+    },
+    {
+      "id": "alias-preserving-interchange",
+      "summary": "Bundle内aliasは意味関係を保つため保持し、未解決・循環・型不整合を拒否する。",
+      "rationale": "Alias展開済み最終Resolver出力と誤認させず、変換toolが安全に解決できる交換物にするため。"
+    },
+    {
+      "id": "path-type-parity",
+      "summary": "4 bundleで同じ309 token pathと有効型を公開する。",
+      "rationale": "Context切替でtoken APIの存在や型が変化せず、値だけを切り替えられるようにするため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "docs-stale",
+      "description": "JSON pageとToken Overviewが4 fileを単に解決済みbundleと表現し、modifier選択とalias展開の境界が曖昧だった。",
+      "action": "modifier context解決済み、bundle内alias保持、必要なconsumerは変換前にalias解決と明記した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-contract",
+      "description": "Local DTCG validatorはaliasの存在と循環を検査したが、明示・継承型と参照先型の不整合を拒否していなかった。",
+      "action": "Alias由来型の決定と明示型の互換性検証を追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "各bundleを309件と数えていたが、全path・型の同一性と全aliasの実解決を横断検証していなかった。",
+      "action": "4 bundleのmodifier metadata、resolution order、309 path/type signature、全token resolveをtestへ追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Actual format previewがtoken断片だけで、bundleを選ぶためのmodifier metadataを表示していなかった。",
+      "action": "生成previewへroot description、modifier、resolutionOrderを含むextensionを追加した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "scripts/lib/dtcg.mjs",
+      "summary": "Alias由来型を解決し、明示・継承型と参照先型の不一致を拒否するようvalidatorを強化した。"
+    },
+    {
+      "path": "scripts/lib/token-artifacts.mjs",
+      "summary": "Output説明とlimitationsをmodifier/alias境界へ修正し、JSON previewへcontext metadataを追加した。"
+    },
+    {
+      "path": "js/pages-tokens.js",
+      "summary": "JSON Tokensと関連Overview/Theme説明へmodifier context、alias保持、path/type parity、consumer解決手順を追加した。"
+    },
+    {
+      "path": "test/token-pipeline.test.js",
+      "summary": "4 bundleのmetadata、path/type parity、全alias解決とalias型不整合拒否を検証した。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "CSS VariablesとJSON Tokensの実generator、output、consumer、docs、testを継続review scopeへ登録した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/token-pipeline.test.js",
+      "status": "passed",
+      "notes": "7 tests passed。DTCG structure、4 × 309 path/type parity、全alias解決、型不整合拒否を確認した。"
+    },
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "全generator、schema、38 JavaScript files、95 tests、102 registry items、29 review cyclesを確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-layout-01",
+    "2026-07-13-tokens-css-variables-01",
+    "2026-07-13-tokens-density-01",
+    "2026-07-13-tokens-overview-01",
+    "2026-07-13-tokens-theme-01"
+  ],
+  "impactedItems": [
+    "tokens.overview",
+    "tokens.theme"
+  ],
+  "nextRecommendedItems": [
+    "components.button"
+  ]
+}

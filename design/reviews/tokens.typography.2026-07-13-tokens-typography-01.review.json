@@ -1,0 +1,142 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.typography",
+  "cycleId": "2026-07-13-tokens-typography-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "tokens/src/typography.json",
+    "tokens/src/density.json",
+    "tokens/build/tokens.css",
+    "tokens/build/meridian.tokens.json",
+    "js/generated/typography-token-meta.js",
+    "js/pages-tokens.js",
+    "test/typography-tokens.test.js",
+    "test/token-pipeline.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "tokens.typography",
+      "summary": "Typography compositeの型、role単位の出力、Densityとの所有境界、source/generated/bundleの同期を確認する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "conflicting-guidance"
+    ],
+    "questions": [
+      "Typography roleをDTCGで一体のdesign decisionとして交換できるか。",
+      "Role tokenとDensity modifierが同じpropertyを競合していないか。",
+      "Registryが実際の正本を指しているか。"
+    ],
+    "evidence": [
+      {
+        "id": "dtcg-typography-composite",
+        "title": "Design Tokens Format Module 2025.10 - Typography",
+        "url": "https://www.w3.org/community/reports/design-tokens/CG-FINAL-format-20251028/#typography",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Typography compositeをfontFamily、fontSize、fontWeight、letterSpacing、lineHeightなどの関連sub-valueを持つ単一tokenとして定義する。",
+        "supportedDecisions": [
+          "typography-composite-source"
+        ]
+      },
+      {
+        "id": "wcag-text-spacing",
+        "title": "WCAG 2.2 Understanding Text Spacing",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/text-spacing",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "利用者がline heightやletter/word spacingを上書きしてもcontentや機能を失わないことを求める。",
+        "supportedDecisions": [
+          "role-density-ownership"
+        ]
+      }
+    ],
+    "synthesis": "Typography roleは関連propertyを一体で交換するDTCG compositeが適し、Densityは短いUI text/control metricsだけを上書きする。Reading roleと文書構造はDensityから独立させる。",
+    "decisionImpact": "17 roleをsource、DTCG bundle、generated metadata、CSS shorthandで同一にし、Registryの誤ったlayout source参照を修正した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "typography-composite-source",
+      "summary": "17 Typography roleをDTCG typography compositeとしてtokens/src/typography.jsonで管理する。",
+      "rationale": "関連propertyを別tokenの寄せ集めにせず、一つの意味あるtext roleとして交換するため。"
+    },
+    {
+      "id": "role-density-ownership",
+      "summary": "Typography roleはmeaningとbase metrics、Densityは短いUI text/control metricsを所有し、Reading roleはDensityで変更しない。",
+      "rationale": "高密度化で長文可読性を損なわず、modifier間の責務を明確にするため。"
+    },
+    {
+      "id": "generated-property-api",
+      "summary": "各roleからfont shorthandとproperty別CSS Custom Propertyを同時生成する。",
+      "rationale": "通常はrole単位で使い、必要なlayoutではline-heightなどを同じ正本から参照できるため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "source-wrong",
+      "description": "System RegistryがTypography Tokensの正本としてtokens/src/layout.jsonを登録し、typography.jsonを含めていなかった。",
+      "action": "typography.json、generated metadata、CSS、bundle、testをsourceへ登録した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Token pageがFoundation pageをそのまま再利用し、DTCG path、生成CSS、Densityとの所有境界を説明していなかった。",
+      "action": "Token固有のsource/path/output/ownership pageへ置き換えた。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-contract",
+      "description": "DTCG bundle内のTypography compositeがsourceと同一であることを個別に検証していなかった。",
+      "action": "17 role全件のbundle一致とrequired sub-valueをtestへ追加した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "js/pages-tokens.js",
+      "summary": "17 roleのDTCG path、CSS API、Density境界を示すTypography token pageへ更新した。"
+    },
+    {
+      "path": "test/typography-tokens.test.js",
+      "summary": "SourceとDTCG bundleのcomposite完全一致とrequired propertyを検証した。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "Typography itemの正本・生成物・test sourceを正しいpathへ更新した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/typography-tokens.test.js test/token-pipeline.test.js",
+      "status": "passed",
+      "notes": "8 tests passed。17 roles、CSS、Reading/Density独立、DTCG bundle一致を確認した。"
+    },
+    {
+      "command": "npm run check:tokens && npm run validate:system",
+      "status": "passed",
+      "notes": "Generated artifactsと102 registry items、20 review cyclesの整合性を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-typography-01",
+    "2026-07-13-tokens-color-01",
+    "2026-07-13-tokens-overview-01"
+  ],
+  "impactedItems": [
+    "tokens.spacing"
+  ],
+  "nextRecommendedItems": [
+    "tokens.spacing"
+  ]
+}

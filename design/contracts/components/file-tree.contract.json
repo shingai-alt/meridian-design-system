@@ -1,0 +1,299 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "file-tree",
+  "name": "File Tree",
+  "status": "draft",
+  "category": "ai & developer",
+  "description": "階層構造のファイル表示。アクティブ・変更インジケータ・検索を持つ。",
+  "source": {
+    "humanDoc": "components/file-tree.md",
+    "registry": "js/components-registry.js#file-tree"
+  },
+  "intent": {
+    "whenToUse": [
+      "階層fileを展開し、選択や変更状態を確認するとき。"
+    ],
+    "whenNotToUse": [
+      "flatな少数fileにはListを使う。"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Collection container with an explicit reading order."
+    },
+    {
+      "part": "item",
+      "required": true,
+      "description": "Repeated row, event, node, message, or entry."
+    },
+    {
+      "part": "primary-content",
+      "required": true,
+      "description": "Main scannable value."
+    },
+    {
+      "part": "metadata",
+      "required": false,
+      "description": "Secondary state, time, owner, or count."
+    },
+    {
+      "part": "actions",
+      "required": false,
+      "description": "Item-level operations with independent names."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "children",
+      "type": "ReactNode",
+      "required": true,
+      "default": null,
+      "description": "Componentの主要content。"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--surface",
+      "--border",
+      "--fg",
+      "--surface-muted",
+      "--fg-muted",
+      "--border-muted",
+      "--table-row-hover",
+      "--focus-ring"
+    ],
+    "density": [
+      "--row-h",
+      "--cell-y"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "File Treeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "File Treeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "File Treeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.surface-muted.value",
+        "source": "--surface-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "File Treeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "File Treeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border-muted.value",
+        "source": "--border-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "File Treeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.table-row-hover.value",
+        "source": "--table-row-hover",
+        "scope": "component",
+        "componentToken": "--table-row-hover",
+        "aliases": null,
+        "trigger": "intrinsic-component-value",
+        "reason": "大量行で反復するTable hoverはsurface tokenより弱い固有濃度を必要とする。"
+      },
+      {
+        "slot": "token.row-h.value",
+        "source": "--row-h",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "File Treeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.cell-y.value",
+        "source": "--cell-y",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "File Treeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.focus-ring.value",
+        "source": "--focus-ring",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "File Treeの公開visual contractで用途tokenとして共有する。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.file-tree"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "Keyboardとpointerで同じ機能を実行できる。",
+      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
+      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+    ],
+    "aria": [
+      "Interactive hierarchyはtree / treeitem semanticsとexpanded stateを同期する。"
+    ],
+    "focus": [
+      "focus-visibleで--focus-ringを使う。",
+      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+    ]
+  },
+  "keyboardInteractions": [
+    {
+      "key": "Arrow Up / Down",
+      "action": "Visible nodeを移動する。"
+    },
+    {
+      "key": "Arrow Right / Left",
+      "action": "Nodeを展開 / 折りたたむ。"
+    },
+    {
+      "key": "Enter",
+      "action": "Focused fileを開く。"
+    }
+  ],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "階層fileを展開し、選択や変更状態を確認するとき。",
+      "recommended": [
+        "変更のあるファイルにはドットを付ける。"
+      ],
+      "avoid": [
+        "flatな少数fileにはListを使う。"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのFile Tree。",
+      "rules": [
+        "CompactまたはDefault densityで走査性を優先し、metadataとactionの列を安定させる。",
+        "Hover actionはfocusでも表示する。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのFile Tree。",
+      "rules": [
+        "主情報を先にしてmetadataを折り返し、非表示情報にはdetail viewから到達できるようにする。",
+        "行全体clickだけに依存せず明示的なtargetを残す。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのFile Tree。",
+      "rules": [
+        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
+        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM",
+    "FOCUS_VISIBLE_REQUIRED",
+    "NO_POSITIVE_TABINDEX",
+    "TARGET_SIZE_MINIMUM",
+    "INTERACTIVE_NAME_REQUIRED"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "File Treeの標準例。",
+      "code": "<FileTree\n  data={tree}\n  activePath=\"src/components/data-table.tsx\"\n  modified={changedFiles}\n  searchable\n/>"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

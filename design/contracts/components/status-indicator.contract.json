@@ -1,0 +1,352 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "contractVersion": "0.1.0",
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["span"],
+    "slots": ["indicator", "label"],
+    "attributes": ["aria-label"],
+    "stateModel": ["data-meridian-variant"],
+    "events": [],
+    "relations": ["accessible-name"],
+    "provenance": ["component", "instance", "variant", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": { "useWhen": ["反復するresource状態を短く表示する。"], "avoidWhen": ["説明や回復actionが必要な状態には使わない。"], "alternatives": ["alert"] },
+  "negativeExamples": [{ "pattern": "色ドットだけでstatusを示す。", "reason": "状態が色だけに依存するため。", "ruleIds": ["STATE_NOT_COLOR_ONLY"] }],
+  "requiredScenarios": ["success", "running", "warning", "error", "idle"],
+  "id": "status-indicator",
+  "name": "Status Indicator",
+  "status": "draft",
+  "category": "feedback",
+  "description": "リソースの状態を色ドット+ラベルで示す。色のみに依存しない。",
+  "source": {
+    "humanDoc": "components/status-indicator.md",
+    "registry": "js/components-registry.js#status-indicator"
+  },
+  "intent": {
+    "whenToUse": [
+      "稼働、接続、実行など短いresource状態を反復表示するとき。"
+    ],
+    "whenNotToUse": [
+      "説明や回復actionが必要な状態にはAlertを使う。"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Status message boundary."
+    },
+    {
+      "part": "indicator",
+      "required": false,
+      "description": "Icon or shape that reinforces tone."
+    },
+    {
+      "part": "message",
+      "required": true,
+      "description": "Concise status and recovery guidance."
+    },
+    {
+      "part": "action",
+      "required": false,
+      "description": "Recovery, undo, or dismiss control."
+    }
+  ],
+  "variants": {
+    "success": {
+      "intent": "完了または肯定的状態。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "running": {
+      "intent": "runningという明示的な意味を持つ文脈。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "warning": {
+      "intent": "注意と判断が必要な状態。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "error": {
+      "intent": "errorという明示的な意味を持つ文脈。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "idle": {
+      "intent": "idleという明示的な意味を持つ文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "variant",
+      "type": "\"success\" | \"running\" | \"warning\" | \"error\" | \"idle\"",
+      "required": false,
+      "default": "success",
+      "description": "意味と優先度を選ぶ。"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--surface",
+      "--border",
+      "--fg",
+      "--fg-muted",
+      "--info-subtle",
+      "--info-fg",
+      "--success-subtle",
+      "--success-fg",
+      "--warning-subtle",
+      "--warning-fg",
+      "--danger-subtle",
+      "--danger-fg"
+    ],
+    "spacing": [
+      "--sp-3"
+    ],
+    "radius": [
+      "--radius-md"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.info-subtle.value",
+        "source": "--info-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.info-fg.value",
+        "source": "--info-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.success-subtle.value",
+        "source": "--success-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.success-fg.value",
+        "source": "--success-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.warning-subtle.value",
+        "source": "--warning-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.warning-fg.value",
+        "source": "--warning-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger-subtle.value",
+        "source": "--danger-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger-fg.value",
+        "source": "--danger-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-3.value",
+        "source": "--sp-3",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-md.value",
+        "source": "--radius-md",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Status Indicatorの公開visual contractで用途tokenとして共有する。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.status-indicator"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "表示専用rootを不要にtab順へ追加しない。",
+      "状態は色だけで表さずtext、icon、shapeを併用する。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+    ]
+  },
+  "keyboardInteractions": [],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "稼働、接続、実行など短いresource状態を反復表示するとき。",
+      "recommended": [
+        "ラベルを必ず併記する。ドット単体は凡例がある表内のみ許容。"
+      ],
+      "avoid": [
+        "説明や回復actionが必要な状態にはAlertを使う。"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのStatus Indicator。",
+      "rules": [
+        "Contentと周辺layoutに応じたintrinsic sizeを使う。",
+        "Viewportだけを理由にdensityを変更しない。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのStatus Indicator。",
+      "rules": [
+        "意味とDOM順を変えず、wrapとavailable widthで適応する。",
+        "省略した情報へ別経路から到達できるようにする。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのStatus Indicator。",
+      "rules": [
+        "表示専用rootをtab順へ追加しない。",
+        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM",
+    "STATE_NOT_COLOR_ONLY"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Status Indicatorの標準例。",
+      "code": "<StatusIndicator status=\"success\" label=\"Running\" />"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

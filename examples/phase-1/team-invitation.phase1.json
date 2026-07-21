@@ -1,0 +1,61 @@
+{
+  "meta": { "schemaVersion": "0.1.0", "kind": "phase-1-package", "id": "phase1_team_invitation", "title": "Team invitation design package", "status": "approved", "locale": "ja-JP", "createdAt": "2026-07-14" },
+  "designBrief": {
+    "request": "管理者が複数のメンバーを適切な権限で招待できるフローを設計する",
+    "problem": "招待先、付与権限、送信後の状態が分散すると、誤招待と権限設定ミスが起きやすい",
+    "users": ["workspace-owner", "workspace-admin", "workspace-member", "workspace-viewer", "invited-member"],
+    "primaryTask": "複数メールアドレスへ適切なroleを設定して安全に招待を送信する",
+    "outcomes": ["送信前に対象と権限を理解できる", "送信後のpending状態を管理できる"],
+    "constraints": ["1回最大10人", "複数メール入力", "宛先ごとにRoleを設定", "CSV importは対象外", "招待は7日間有効", "招待は非同期", "review-only HTML"],
+    "scopeIn": ["入力", "role選択", "確認", "送信", "pending管理", "再送", "取消"],
+    "scopeOut": ["SSO provisioning", "CSV import", "production backend", "billing seat purchase"],
+    "channels": ["desktop", "mobile review", "keyboard", "screen reader", "ja-JP", "long-text stress"],
+    "data": ["email address", "role", "inviter", "workspace", "invite status", "expiry"],
+    "permissions": ["招待できるのはOwnerのみ", "OwnerはOwner・Admin・Member・Viewerを付与可能", "Adminはメンバー一覧を閲覧できるが招待・Role変更・無効化・削除は不可", "Memberは通常コンテンツを作成・編集可能", "Viewerは閲覧のみ"],
+    "risks": ["誤った宛先", "過剰権限", "重複招待", "期限切れを有効と誤認", "Pendingを考慮せずSeatを過剰予約する", "一部エラー時に成功宛先を再送する"],
+    "knownEvidence": ["examples/specs/team-invite.flow.json", "invite-member-dialog component contract"],
+    "assumptions": ["Pendingは課金上の使用Seatに含めない", "有効なPendingは送信可能数の計算では予約Seatとして扱う", "一部エラー時は正常な宛先だけ送信する", "既存Pendingは新規招待から除外して再送を案内する", "Ownerを含む場合は権限説明と明示的確認チェックを必須にする"],
+    "openQuestions": [],
+    "acceptance": ["role boundaryが確定", "機密情報を外部調査へ送らない", "2案以上を比較"]
+  },
+  "researchPack": {
+    "level": "extended",
+    "scope": ["bulk invitation", "role assignment", "pending invitation", "accessibility"],
+    "evidence": [
+      { "evidenceId": "wcag22", "sourceType": "standard", "title": "WCAG 2.2", "organization": "W3C", "url": "https://www.w3.org/TR/WCAG22/", "accessedAt": "2026-07-14", "locale": "global", "deviceContext": "responsive", "observation": "Focus、target size、error identification、status messageに検証可能な要件がある", "interpretation": "招待入力、error、送信結果を初期仕様から扱う必要がある", "relevance": "Formと非同期結果の品質基準", "supportedDecisions": ["accessible-form", "status-feedback"], "limitations": ["Usability全体を保証しない"], "captureRef": null },
+      { "evidenceId": "govuk_patterns", "sourceType": "design-system", "title": "GOV.UK Design System Patterns", "organization": "Government Digital Service", "url": "https://design-system.service.gov.uk/patterns/", "accessedAt": "2026-07-14", "locale": "en-GB", "deviceContext": "responsive", "observation": "Patternを特定user taskへのbest-practice solutionとして説明する", "interpretation": "Meridianでも招待をvisual templateでなくtask-level patternとして扱う", "relevance": "PatternContractの粒度", "supportedDecisions": ["task-level-pattern"], "limitations": ["Enterprise team management固有ではない"], "captureRef": null },
+      { "evidenceId": "meridian_flow", "sourceType": "internal", "title": "Existing team invite FlowSpec", "organization": "Meridian", "url": null, "accessedAt": "2026-07-14", "locale": "ja-JP", "deviceContext": "responsive", "observation": "Members、invite dialog、review、successの4画面と失敗経路が定義済み", "interpretation": "既存FlowSpecをPhase 1 packageへ接続できる", "relevance": "内部SSOTとの整合", "supportedDecisions": ["reuse-flow-spec"], "limitations": ["外部user test未実施"], "captureRef": "examples/specs/team-invite.flow.json" },
+      { "evidenceId": "meridian_contract", "sourceType": "internal", "title": "Invite Member Dialog contract", "organization": "Meridian", "url": null, "accessedAt": "2026-07-14", "locale": "ja-JP", "deviceContext": "responsive", "observation": "Dialog、form field、role、validationのcomponent知識が存在する", "interpretation": "新規component発明前に既存contractを再利用する", "relevance": "Component selection", "supportedDecisions": ["reuse-components"], "limitations": ["Contract statusはdraft"], "captureRef": "design/contracts/components/invite-member-dialog.contract.json" }
+      ,{ "evidenceId": "github_invites", "sourceType": "product", "title": "Inviting users to join your organization", "organization": "GitHub", "url": "https://docs.github.com/en/organizations/managing-membership-in-your-organization/inviting-users-to-join-your-organization", "accessedAt": "2026-07-14", "locale": "global", "deviceContext": "desktop", "observation": "Organization Ownerが招待し、Roleを選択する。招待は7日で失効し、retryとcancelが可能。Paid seatには未使用licenseが必要", "interpretation": "Owner限定、7日失効、Seat予約、再送・取消は一貫したモデルになる", "relevance": "Permission、expiry、seat、pending管理", "supportedDecisions": ["owner-only", "seven-day-expiry", "seat-reservation", "resend-cancel"], "limitations": ["GitHub固有のlicense modelを含む"], "captureRef": null }
+      ,{ "evidenceId": "slack_pending", "sourceType": "product", "title": "Invited members in Slack", "organization": "Slack", "url": "https://slack.com/help/articles/360024686174-Invited-members-in-Slack", "accessedAt": "2026-07-14", "locale": "global", "deviceContext": "responsive", "observation": "Invited memberは参加するまでactive accountやbilling対象にならず、pending invitationを管理・取消できる", "interpretation": "Pendingを使用Seatに含めず、別状態として管理する判断を支持する", "relevance": "Pendingとbillingの分離", "supportedDecisions": ["pending-not-active-seat", "pending-management"], "limitations": ["Slackでは招待中に一部communicationが可能"], "captureRef": null }
+      ,{ "evidenceId": "notion_roles", "sourceType": "product", "title": "Manage members and guests", "organization": "Notion", "url": "https://www.notion.com/help/add-members-admins-guests-and-groups", "accessedAt": "2026-07-14", "locale": "global", "deviceContext": "responsive", "observation": "Email入力時にWorkspace owner、Membership admin、Memberを選択し、Pending inviteをMembers設定で管理する", "interpretation": "宛先とRoleを同じ招待文脈で確認し、送信後はmember managementへ統合する構造を支持する", "relevance": "Role assignmentとpending管理", "supportedDecisions": ["per-recipient-role", "pending-management"], "limitations": ["複数宛先の個別Role UI詳細は文書から確認できない"], "captureRef": null }
+    ],
+    "synthesis": ["招待は入力だけでなく権限理解と送信後管理を含むtask pattern", "Owner限定、Role選択、Pending管理、失効・再送は成熟productで繰り返される", "Pendingを使用Seatと分離しても参加可能性を保証する予約計算が必要", "確認とstatus feedbackを主要体験に含める"],
+    "conflicts": ["速度を優先するinline送信と、誤権限を防ぐreview stepのtrade-off", "Pendingを課金Seatに含めない一方で送信可能数には含める二重モデルの説明負荷"],
+    "limitations": ["競合の実画面とkeyboard behaviorは未観察", "実ユーザー調査は未実施"]
+  },
+  "directionSet": {
+    "comparisonCriteria": ["誤招待防止", "複数入力効率", "権限理解", "keyboard操作", "pending管理"],
+    "directions": [
+      { "id": "dialog_review", "title": "Multi-step Dialog", "hypothesis": "入力と確認をDialog内で分けると少人数の招待を簡潔に完了できる", "informationArchitecture": ["members", "dialog input", "dialog review", "result"], "interactionModel": ["入力", "確認", "送信", "pending表示"], "benefits": ["Membersの文脈を維持", "少人数では短い"], "risks": ["個別Roleと行エラーでDialogが長大化", "Partial success後の修正が複雑"], "accessibility": ["Dialog focus containment", "Step heading", "error summary", "focus return"], "engineeringImplications": ["Dialog内draftとstep stateが必要"], "evidenceRefs": ["wcag22", "meridian_flow"], "invalidWhen": ["複数宛先へ個別Roleを設定する場合"] },
+      { "id": "batch_page", "title": "Dedicated Batch Invitation Page", "hypothesis": "専用ページなら複数宛先、個別Role、Seat、行エラー、Owner確認を同時に理解できる", "informationArchitecture": ["members", "seat summary", "batch editor", "owner confirmation", "review", "partial result", "pending management"], "interactionModel": ["宛先行を追加", "各行でRole選択", "行検証", "Seat予約確認", "Owner確認", "送信", "成功行を確定", "失敗行を保持"], "benefits": ["複数行を比較しやすい", "Partial successが自然", "Seatと高権限の説明領域を確保"], "risks": ["1人招待には大きい", "Mobileではcard reflowが必要"], "accessibility": ["Semantic tableまたは行group", "Error summaryと行errorの接続", "Dynamic status announcement", "Owner checkbox label", "Logical focus order"], "engineeringImplications": ["Batch draft model", "Per-row validation", "Seat reservation calculation", "Partial result state"], "evidenceRefs": ["wcag22", "github_invites", "slack_pending", "notion_roles", "meridian_contract"], "invalidWhen": ["招待が常に1人でRole選択が不要な場合"] },
+      { "id": "inline_invite", "title": "Members Page Inline Rows", "hypothesis": "一覧内で完結すると少人数の反復招待が速い", "informationArchitecture": ["members", "inline draft rows", "pending rows"], "interactionModel": ["行追加", "Role選択", "送信"], "benefits": ["Contextを失わない", "画面遷移がない"], "risks": ["Member・draft・Pendingが混在", "Owner確認とSeat説明が難しい"], "accessibility": ["Dynamic row announcement", "focus order", "row state labels"], "engineeringImplications": ["Member listとdraft rowのstate統合"], "evidenceRefs": ["meridian_contract", "notion_roles"], "invalidWhen": ["誤権限リスクやPartial successが重要な場合"] }
+    ],
+    "recommendation": "batch_page", "confidence": 0.9, "humanDecision": "selected"
+  },
+  "patternContracts": [
+    { "id": "team_invitation", "name": "Team Invitation", "maturity": "candidate", "userProblem": "複数人を適切な権限で招待し送信後の状態を管理する", "applicability": ["招待が非同期", "宛先ごとのRole assignmentがある", "Seat予約がある"], "nonApplicability": ["自動provisioningのみ", "常に単一宛先でRole選択が不要"], "components": ["form-field", "text-field", "select", "validation-message", "table", "status-indicator", "checkbox", "alert", "button"], "states": ["default", "validation-error", "seat-exceeded", "owner-confirmation-required", "submitting", "success", "partial-failure", "pending", "expired", "cancelled"], "accessibility": ["Error summary", "Row error association", "Focus management", "Status announcement", "Label in name", "Keyboard row operations"], "evidenceRefs": ["wcag22", "govuk_patterns", "github_invites", "slack_pending", "notion_roles", "meridian_flow"], "alternatives": ["dialog_review", "inline_invite", "bulk_provisioning"], "failureModes": ["送信後状態が見えない", "Roleの影響を説明しない", "重複招待を無言で拒否", "PendingをSeat予約に含めない", "成功行を再送する"], "evaluation": ["Ownerが送信前に宛先とRoleを説明できる", "Keyboardだけで完了できる", "Partial success後に失敗行だけ修正できる"] }
+  ],
+  "screenSpecRefs": ["examples/specs/team-members.screen.json", "examples/specs/invite-member-dialog.screen.json", "examples/specs/invite-review.screen.json", "examples/specs/invite-success.screen.json"],
+  "flowSpecRef": "examples/specs/team-invite.flow.json",
+  "designProposal": {
+    "recommendedDirection": "batch_page",
+    "rationale": ["個別Roleを持つ複数行を比較できる", "Seat予約とOwner確認を常時理解できる", "Partial success後に成功行と失敗行を安全に分離できる"],
+    "htmlSections": ["summary", "brief", "research", "directions", "recommendation", "prototype", "states", "accessibility", "quality", "review"],
+    "prototypeRequirements": ["Primary path", "validation error", "partial failure", "pending state", "keyboard review", "long-text stress"],
+    "qualityGates": ["brief", "research", "exploration", "specification", "prototype", "explanation", "human-review"],
+    "unresolvedItems": ["競合実画面のvisual・keyboard behavior観察"]
+  },
+  "review": { "status": "approved", "requiredRoles": ["product-manager", "designer", "engineer"], "approvals": ["project-owner: approved as Phase 1 reference example on 2026-07-14"], "revisionRequests": [] },
+  "feedbackCandidates": []
+}

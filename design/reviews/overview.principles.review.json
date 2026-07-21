@@ -1,0 +1,56 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "overview.principles",
+  "cycleId": "2026-07-13-overview-principles-bootstrap",
+  "supersedesCycleId": null,
+  "reviewType": "bootstrap",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": ["design/research-policy.json", "VISION.md", "DESIGN.md", "design/principles.json", "design/rules.json", "js/pages-overview.js"],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "overview.principles",
+      "summary": "既存の7 Principlesと判断基準、Red flags、Related rules、AI適用の整合を確認する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "既存の7原則を維持し、内部のrules、AI contract、docsへの適用を明文化するcycleであり、原則そのものの追加や外部基準の再定義を行っていない。"
+  },
+  "decisions": [
+    {
+      "id": "retain-seven-principles",
+      "summary": "既存の7 Principlesを維持する。",
+      "rationale": "原則間に本質的な矛盾はなく、Meridianの態度を十分に説明していたため。"
+    },
+    {
+      "id": "make-principles-operational",
+      "summary": "各PrincipleにUse it when、Good signals、Red flags、Applies to、Related rulesを持たせる。",
+      "rationale": "理念文を人間とAIがレビューに使える判断基準へ変えるため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "missing-contract",
+      "description": "原則は文章だけで、レビュー時の兆候とruleへの接続がなかった。",
+      "action": "HTML docsへ判断セクションを追加し、design/rules.jsonのIDを関連付けた。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    { "path": "js/pages-overview.js", "summary": "7 Principlesを運用可能なレビュー基準へ拡張。" }
+  ],
+  "validations": [
+    { "command": "node --check js/pages-overview.js", "status": "passed", "notes": "JavaScript syntax verified." },
+    { "command": "npm test", "status": "passed", "notes": "Existing unit tests passed." }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": ["2026-07-13-overview-introduction-bootstrap"],
+  "impactedItems": ["overview.getting-started", "overview.architecture", "foundations.accessibility"],
+  "nextRecommendedItems": ["overview.getting-started"]
+}

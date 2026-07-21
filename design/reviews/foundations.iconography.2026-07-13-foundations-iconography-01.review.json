@@ -1,0 +1,204 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.iconography",
+  "cycleId": "2026-07-13-foundations-iconography-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/iconography.json",
+    "schemas/iconography.schema.json",
+    "js/generated/iconography-meta.js",
+    "js/utils.js",
+    "index.html",
+    "js/pages-foundations.js",
+    "scripts/build-icon-meta.mjs",
+    "scripts/build-design-md.mjs",
+    "scripts/lib/schema-validator.mjs",
+    "test/iconography.test.js",
+    "test/schema-validator.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "foundations.iconography",
+      "summary": "33 glyphの意味、canonical name、size、PC/SP共通利用、RTL、accessible name、non-text contrastを確認する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "accessibility-or-safety",
+      "cross-platform-behavior",
+      "conflicting-guidance"
+    ],
+    "questions": [
+      "Reusable SVGと所有controlのどちらがaccessible nameを持つか。",
+      "意味を伝えるiconへ必要なcontrastとtext alternativeは何か。",
+      "PC/SPとLTR/RTLでglyphをどう共有するか。"
+    ],
+    "evidence": [
+      {
+        "id": "wcag-non-text-content",
+        "title": "WCAG 2.2 Understanding Non-text Content",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "意味を持つnon-text contentには同じ目的を果たすtext alternativeを提供し、純粋な装飾は支援技術から無視できるようにする。",
+        "supportedDecisions": [
+          "accessible-name-ownership"
+        ]
+      },
+      {
+        "id": "wcag-non-text-contrast",
+        "title": "WCAG 2.2 Understanding Non-text Contrast",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "理解に必要なgraphical objectとUI componentのvisual informationは隣接色と3:1以上を必要とする。",
+        "supportedDecisions": [
+          "required-icon-contrast"
+        ]
+      },
+      {
+        "id": "wcag-consistent-identification",
+        "title": "WCAG 2.2 Understanding Consistent Identification",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/consistent-identification.html",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "同じ機能を持つcomponentは一貫して識別され、同じ代替textやlabelを使う必要がある。",
+        "supportedDecisions": [
+          "canonical-meaning-registry"
+        ]
+      }
+    ],
+    "synthesis": "Icon SVGを単独semantic objectとして扱うのではなく、所有するButton/Linkが名前と操作を持つ。Icon registryは同じ機能の識別を固定し、必要なshapeは3:1、意味はtextでも提供する。",
+    "decisionImpact": "33 glyphをmachine-readable registryへ登録し、SVG実装をgenerated metadataのsize、directionality、aria-hiddenへ同期した。PC/SPは同じglyphを使い、hit areaはcontrol側で確保する。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "canonical-meaning-registry",
+      "summary": "各iconのcanonical name、label、aliases、meaningを一意なregistryで管理する。",
+      "rationale": "人間とAIが同じ機能へ同じglyphと名前を選び、同義語から正規名へ解決できるため。"
+    },
+    {
+      "id": "accessible-name-ownership",
+      "summary": "Reusable SVGはaria-hidden/focusable=falseとし、accessible nameは所有するButton/Linkへ付ける。",
+      "rationale": "Visible labelとの重複読み上げを避け、icon-only controlにも安定した名前を提供するため。"
+    },
+    {
+      "id": "required-icon-contrast",
+      "summary": "理解またはcontrol stateに必要なiconは隣接色と3:1以上を満たす。",
+      "rationale": "Iconの輪郭や状態を低視力ユーザーも識別できるようにするため。"
+    },
+    {
+      "id": "fixed-size-scale",
+      "summary": "Glyphは12/14/16/20/24pxの5段階へ限定し、PC/SP差はcontrol hit areaで吸収する。",
+      "rationale": "13pxや15pxの局所値をなくし、viewportで意味やlayoutを変えず再利用するため。"
+    },
+    {
+      "id": "selective-rtl-mirroring",
+      "summary": "進行方向を持つiconだけmirror-in-rtlとし、中立形状とbrand markは反転しない。",
+      "rationale": "RTLでnavigation directionを正しく示しつつ、calendarやbrandなど方向非依存のshapeを保持するため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "missing-contract",
+      "description": "Icon一覧がSVG objectだけで、名前、意味、alias、方向性をAIが読める正本がなかった。",
+      "action": "design/iconography.jsonとschema、generated metadataを追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "SVGサイズに12/13/14/15/16pxが混在し、decorative glyphがaccessibility treeへ露出していた。",
+      "action": "Runtimeでregistry sizeへ正規化し、aria-hidden、focusable、directionalityを付与した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Docsは一部glyphと4つの曖昧なcontextしか示さず、Tooltipをaccessible nameの要件と混同していた。",
+      "action": "全33件のregistry、5 size、name ownership、contrast、RTL、PC/SP ruleへ更新した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "design/iconography.json",
+      "summary": "33 glyphのmachine-readable正本を追加した。"
+    },
+    {
+      "path": "schemas/iconography.schema.json",
+      "summary": "Icon registryの構造、値域、列挙値を検証可能にした。"
+    },
+    {
+      "path": "scripts/build-icon-meta.mjs",
+      "summary": "正本からbrowser用metadataを生成・差分検査する処理を追加した。"
+    },
+    {
+      "path": "js/utils.js",
+      "summary": "SVGへgenerated size、accessible defaults、directionalityを適用した。"
+    },
+    {
+      "path": "index.html",
+      "summary": "Generated metadataを読み込み、directional glyphだけRTLで反転するCSSを追加した。"
+    },
+    {
+      "path": "js/pages-foundations.js",
+      "summary": "全registry、size、accessibility、responsive、RTL、evidenceを掲載した。"
+    },
+    {
+      "path": "scripts/build-design-md.mjs",
+      "summary": "AI向けDESIGN.mdへIconography registryと使用制約を生成した。"
+    },
+    {
+      "path": "scripts/lib/schema-validator.mjs",
+      "summary": "JSON Schemaのminimum/maximumを検証できるようにした。"
+    },
+    {
+      "path": "test/iconography.test.js",
+      "summary": "33 IDs、size、color、a11y属性、directionality、docs同期を検証した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/iconography.test.js test/schema-validator.test.js",
+      "status": "passed",
+      "notes": "8 tests passed。33 IDs、runtime SVG、size、a11y、RTL、docs、numeric schema boundsを確認した。"
+    },
+    {
+      "command": "npm run build:icon-meta && npm run design:build",
+      "status": "passed",
+      "notes": "Browser metadataとDESIGN.mdをmachine-readable正本から再生成した。"
+    },
+    {
+      "command": "npm run check:js",
+      "status": "passed",
+      "notes": "31 JavaScript filesの構文を確認した。"
+    },
+    {
+      "command": "npm run validate:system",
+      "status": "passed",
+      "notes": "102 registry items、review、contract、AI specのschemaと参照整合を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [],
+  "impactedItems": [
+    "foundations.accessibility",
+    "components.button",
+    "components.icon-button",
+    "components.link",
+    "components.tooltip",
+    "components.navigation-item"
+  ],
+  "nextRecommendedItems": [
+    "foundations.accessibility"
+  ]
+}

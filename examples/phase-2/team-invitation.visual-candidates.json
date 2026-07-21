@@ -1,0 +1,98 @@
+{
+  "$schema": "../../schemas/visual-candidates.schema.json",
+  "schemaVersion": "0.1.0",
+  "conceptId": "phase2_team_invitation",
+  "rubricRef": "design/visual-quality-rubric.json",
+  "baselineId": "baseline",
+  "candidates": [
+    {
+      "id": "baseline",
+      "label": "Baseline · Equal cards",
+      "kind": "baseline",
+      "strategyRef": "baseline",
+      "principleRefs": [],
+      "hypothesis": "既存案を変更せず比較基準として保存する。",
+      "taskModel": "情報と入力を同じ強度で一覧表示する。",
+      "hierarchy": ["page heading", "four seat cards", "invitation editor", "actions"],
+      "layout": "baseline-cards",
+      "primaryAction": "table下部の確認Button",
+      "tradeoffs": ["状態を一覧できるが、Seat情報が入力タスクと競合する。"],
+      "critiqueStatus": "not-required",
+      "repairRounds": [],
+      "provisionalScores": [
+        { "criterion": "task-clarity", "score": 3, "rationale": "目的は分かるがSeatカードが作業開始を遅らせる。" }, { "criterion": "information-hierarchy", "score": 2, "rationale": "4枚のカードとeditorが競合する。" }, { "criterion": "visual-grouping", "score": 3, "rationale": "groupは明確だがsurfaceが多い。" }, { "criterion": "density-rhythm", "score": 3, "rationale": "一貫するが上部が間延びする。" }, { "criterion": "layout-balance", "score": 3, "rationale": "成立するが横幅の用途が均一。" }, { "criterion": "action-prominence", "score": 3, "rationale": "Primaryは識別できるが遠い。" }, { "criterion": "content-clarity", "score": 4, "rationale": "説明とラベルは具体的。" }, { "criterion": "responsive-quality", "score": 3, "rationale": "利用可能だがカードの密度が高い。" }, { "criterion": "meridian-identity", "score": 2, "rationale": "Token準拠だが汎用的なカードUIに見える。" }
+      ]
+    },
+    {
+      "id": "task-focus",
+      "label": "A · Task focus",
+      "kind": "candidate",
+      "strategyRef": "direct-batch-editor",
+      "principleRefs": ["decision-point-constraints", "concrete-action-outcome", "row-level-recovery"],
+      "hypothesis": "ナビゲーションとカード装飾を後退させ、招待入力を画面の主役にすると完了までが速くなる。",
+      "taskModel": "宛先を追加し、Roleを選び、確認へ進む単一作業。",
+      "hierarchy": ["task heading", "available capacity", "invitation editor", "primary action", "secondary seat detail"],
+      "layout": "task-focus",
+      "primaryAction": "編集領域の末尾に強く固定した確認Button",
+      "tradeoffs": ["設定全体の位置感覚は弱くなるが、作業開始は速い。"],
+      "critiqueStatus": "repaired",
+      "repairRounds": [
+        { "round": 1, "findings": [{ "id": "task-focus.hierarchy", "criterion": "information-hierarchy", "severity": "major", "region": "seat-summary", "finding": "4つの数値が入力領域と同じ視覚的強度を持つ。" }, { "id": "task-focus.action-distance", "criterion": "action-prominence", "severity": "minor", "region": "page-actions", "finding": "追加と確認の操作距離が長い。" }], "repairs": [{ "findingIds": ["task-focus.hierarchy"], "change": "Seat情報を一行のcapacity stripへ統合し、送信可能数だけを強調する。" }], "unresolvedFindings": [{ "id": "task-focus.action-distance", "criterion": "action-prominence", "severity": "minor", "region": "page-actions", "finding": "追加と確認の操作距離が長い。" }] },
+        { "round": 2, "findings": [{ "id": "task-focus.action-distance", "criterion": "action-prominence", "severity": "minor", "region": "page-actions", "finding": "追加と確認の操作距離が長い。" }], "repairs": [{ "findingIds": ["task-focus.action-distance"], "change": "確認Actionを編集panelの視覚的な終端へ揃える。" }], "unresolvedFindings": [] }
+      ],
+      "provisionalScores": [
+        { "criterion": "task-clarity", "score": 5, "rationale": "入力領域が最初の焦点になる。" }, { "criterion": "information-hierarchy", "score": 5, "rationale": "容量は文脈、editorは主役として分離される。" }, { "criterion": "visual-grouping", "score": 4, "rationale": "surfaceを抑えながら関係を維持する。" }, { "criterion": "density-rhythm", "score": 4, "rationale": "走査しやすいが長いbatchでは密度が上がる。" }, { "criterion": "layout-balance", "score": 4, "rationale": "主作業へ幅を使える。" }, { "criterion": "action-prominence", "score": 5, "rationale": "確認Actionが作業の終端として明確。" }, { "criterion": "content-clarity", "score": 4, "rationale": "容量情報を短く保つ。" }, { "criterion": "responsive-quality", "score": 4, "rationale": "単一columnへ自然に移行する。" }, { "criterion": "meridian-identity", "score": 4, "rationale": "抑制されたsurfaceと精密な整列がある。" }
+      ]
+    },
+    {
+      "id": "context-aside",
+      "label": "B · Context aside",
+      "kind": "candidate",
+      "strategyRef": "context-supported-editor",
+      "principleRefs": ["decision-point-constraints", "separate-context-from-task", "progressive-risk"],
+      "hypothesis": "Seatと権限の文脈を独立したasideに置くと、入力を妨げず判断材料を維持できる。",
+      "taskModel": "入力しながら容量と権限影響を参照する。",
+      "hierarchy": ["task heading", "invitation editor", "primary action", "capacity aside", "workspace navigation"],
+      "layout": "context-aside",
+      "primaryAction": "main column末尾の確認Button",
+      "tradeoffs": ["広い画面では理解しやすいが、中間幅ではmain columnが狭くなる。"],
+      "critiqueStatus": "repaired",
+      "repairRounds": [
+        { "round": 1, "findings": [{ "id": "context-aside.balance", "criterion": "layout-balance", "severity": "major", "region": "context-aside", "finding": "4枚のカードを縦積みするとasideが長く、主作業より重く見える。" }, { "id": "context-aside.medium-width", "criterion": "responsive-quality", "severity": "minor", "region": "page", "finding": "中間幅でtable列が圧迫される。" }], "repairs": [{ "findingIds": ["context-aside.balance"], "change": "asideを一つのsummary surfaceへ統合し、内側はborderなしのdefinition listにする。" }], "unresolvedFindings": [{ "id": "context-aside.medium-width", "criterion": "responsive-quality", "severity": "minor", "region": "page", "finding": "中間幅でtable列が圧迫される。" }] },
+        { "round": 2, "findings": [{ "id": "context-aside.medium-width", "criterion": "responsive-quality", "severity": "minor", "region": "page", "finding": "中間幅でtable列が圧迫される。" }], "repairs": [{ "findingIds": ["context-aside.medium-width"], "change": "900px未満ではasideをmain上部のhorizontal summaryへ戻す。" }], "unresolvedFindings": [] }
+      ],
+      "provisionalScores": [
+        { "criterion": "task-clarity", "score": 4, "rationale": "主作業は明確だがasideにも注意が向く。" }, { "criterion": "information-hierarchy", "score": 4, "rationale": "mainとcontextを空間で分離する。" }, { "criterion": "visual-grouping", "score": 5, "rationale": "容量情報を一つの意味groupへ統合する。" }, { "criterion": "density-rhythm", "score": 4, "rationale": "mainの反復とasideの短い一覧が均衡する。" }, { "criterion": "layout-balance", "score": 4, "rationale": "広い画面では良好だが中間幅に注意が必要。" }, { "criterion": "action-prominence", "score": 4, "rationale": "main column内でPrimaryが明確。" }, { "criterion": "content-clarity", "score": 4, "rationale": "Seatの関係を参照しやすい。" }, { "criterion": "responsive-quality", "score": 3, "rationale": "aside解除のbreakpoint品質に依存する。" }, { "criterion": "meridian-identity", "score": 4, "rationale": "静かな情報surfaceと整列が一貫する。" }
+      ]
+    },
+    {
+      "id": "guided-flow",
+      "label": "C · Guided flow",
+      "kind": "candidate",
+      "strategyRef": "staged-risk-review",
+      "principleRefs": ["progressive-risk", "concrete-action-outcome", "preserve-successful-work"],
+      "hypothesis": "Edit、Review、Sendの現在地を明示すると、権限を伴う招待でも安心して進められる。",
+      "taskModel": "入力、確認、送信結果の3段階を意識して進む。",
+      "hierarchy": ["flow status", "task heading", "invitation editor", "primary action", "capacity context"],
+      "layout": "guided-flow",
+      "primaryAction": "現在stepの完了Actionとして配置",
+      "tradeoffs": ["単純な招待にはstep表示が過剰に感じられる可能性がある。"],
+      "critiqueStatus": "repaired",
+      "repairRounds": [
+        { "round": 1, "findings": [{ "id": "guided-flow.step-emphasis", "criterion": "task-clarity", "severity": "major", "region": "flow-steps", "finding": "すべてのstepを同じ強度で表示すると現在の作業が弱くなる。" }, { "id": "guided-flow.heading-density", "criterion": "density-rhythm", "severity": "minor", "region": "page-heading", "finding": "step、heading、capacityが連続して入力開始位置が下がる。" }], "repairs": [{ "findingIds": ["guided-flow.step-emphasis"], "change": "現在stepだけをaccentとし、完了前のstepはtextのみへ後退させる。" }], "unresolvedFindings": [{ "id": "guided-flow.heading-density", "criterion": "density-rhythm", "severity": "minor", "region": "page-heading", "finding": "step、heading、capacityが連続して入力開始位置が下がる。" }] },
+        { "round": 2, "findings": [{ "id": "guided-flow.heading-density", "criterion": "density-rhythm", "severity": "minor", "region": "page-heading", "finding": "step、heading、capacityが連続して入力開始位置が下がる。" }], "repairs": [{ "findingIds": ["guided-flow.heading-density"], "change": "capacityをheading右側の短い文脈表示へ統合する。" }], "unresolvedFindings": [] }
+      ],
+      "provisionalScores": [
+        { "criterion": "task-clarity", "score": 4, "rationale": "現在stepと目的が明確。" }, { "criterion": "information-hierarchy", "score": 4, "rationale": "flowとeditorを順序付ける。" }, { "criterion": "visual-grouping", "score": 4, "rationale": "stepと作業内容が対応する。" }, { "criterion": "density-rhythm", "score": 3, "rationale": "単純なtaskには上部情報が多い。" }, { "criterion": "layout-balance", "score": 4, "rationale": "中央columnで安定する。" }, { "criterion": "action-prominence", "score": 4, "rationale": "現在stepのActionとして理解できる。" }, { "criterion": "content-clarity", "score": 4, "rationale": "進行と結果の期待を示す。" }, { "criterion": "responsive-quality", "score": 4, "rationale": "narrow layoutでも順序を保つ。" }, { "criterion": "meridian-identity", "score": 4, "rationale": "段階表現を抑制している。" }
+      ]
+    }
+  ],
+  "comparisons": [
+    { "id": "comparison.a-b", "left": "task-focus", "right": "context-aside" },
+    { "id": "comparison.a-c", "left": "task-focus", "right": "guided-flow" },
+    { "id": "comparison.b-c", "left": "context-aside", "right": "guided-flow" },
+    { "id": "comparison.a-baseline", "left": "task-focus", "right": "baseline" },
+    { "id": "comparison.b-baseline", "left": "context-aside", "right": "baseline" },
+    { "id": "comparison.c-baseline", "left": "guided-flow", "right": "baseline" }
+  ]
+}

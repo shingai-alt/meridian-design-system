@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "0.1.0",
+  "conceptId": "phase2_team_invitation",
+  "sourceDigests": {
+    "html": "sha256-1bdaabf9b92a7f863247a3d02af664a28efb8a5abae2d915ea388191de1f04bd",
+    "candidates": "sha256-dd0f7ba585a2ff3aca5f645d9d049ef959ed7a6e588014fe753d40ec83e4fd74",
+    "rubric": "sha256-324086cf04135fe15d0b5391ddf4c02dfffa2e4c7bdce44b012863d1649a787a"
+  },
+  "captures": [
+    {
+      "candidateId": "baseline",
+      "candidateLayout": "baseline-cards",
+      "scenarioId": "primary_path",
+      "viewport": "desktop",
+      "path": "examples/generated/visual-review/baseline.desktop.png",
+      "width": 1004,
+      "height": 716,
+      "digest": "sha256-fdbf1bb2a8227ac42009ec3d2f65d40f12887174c36c8abe357e78b95c9ed529"
+    },
+    {
+      "candidateId": "baseline",
+      "candidateLayout": "baseline-cards",
+      "scenarioId": "primary_path",
+      "viewport": "mobile",
+      "path": "examples/generated/visual-review/baseline.mobile.png",
+      "width": 391,
+      "height": 1038,
+      "digest": "sha256-b9dd50cf169b99068e7e5bb2f39d1b9c705d17320ff647d65acbecaf434c86d1"
+    },
+    {
+      "candidateId": "task-focus",
+      "candidateLayout": "task-focus",
+      "scenarioId": "primary_path",
+      "viewport": "desktop",
+      "path": "examples/generated/visual-review/task-focus.desktop.png",
+      "width": 1004,
+      "height": 687,
+      "digest": "sha256-88bdd2df9858ed6cb80a7c16975a7656d887ea56d9bc86b6d02d9c12aacfc050"
+    },
+    {
+      "candidateId": "task-focus",
+      "candidateLayout": "task-focus",
+      "scenarioId": "primary_path",
+      "viewport": "mobile",
+      "path": "examples/generated/visual-review/task-focus.mobile.png",
+      "width": 391,
+      "height": 962,
+      "digest": "sha256-316b87f2ff6e860987e40b1d40721c1473a32ba9e811484fe8fc1118d2bbe65c"
+    },
+    {
+      "candidateId": "context-aside",
+      "candidateLayout": "context-aside",
+      "scenarioId": "primary_path",
+      "viewport": "desktop",
+      "path": "examples/generated/visual-review/context-aside.desktop.png",
+      "width": 1004,
+      "height": 683,
+      "digest": "sha256-26574657dddcf88b6025c0c8d2618c613141635113237e7047a7386302185848"
+    },
+    {
+      "candidateId": "context-aside",
+      "candidateLayout": "context-aside",
+      "scenarioId": "primary_path",
+      "viewport": "mobile",
+      "path": "examples/generated/visual-review/context-aside.mobile.png",
+      "width": 391,
+      "height": 1029,
+      "digest": "sha256-2156418f817196a845cf24d674bd7d1d89138523bb6a31f54bc95d73cd7bb712"
+    },
+    {
+      "candidateId": "guided-flow",
+      "candidateLayout": "guided-flow",
+      "scenarioId": "primary_path",
+      "viewport": "desktop",
+      "path": "examples/generated/visual-review/guided-flow.desktop.png",
+      "width": 1004,
+      "height": 746,
+      "digest": "sha256-37d29e24682c59cbde32347630fdcc4eb3a32d2b6e5a2db42f149548a60eca88"
+    },
+    {
+      "candidateId": "guided-flow",
+      "candidateLayout": "guided-flow",
+      "scenarioId": "primary_path",
+      "viewport": "mobile",
+      "path": "examples/generated/visual-review/guided-flow.mobile.png",
+      "width": 391,
+      "height": 1040,
+      "digest": "sha256-b131f3a30573ae0d217dcc55cf444023842acc8887547803a2b3a4f6d431deeb"
+    }
+  ]
+}

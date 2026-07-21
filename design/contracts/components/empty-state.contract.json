@@ -1,0 +1,337 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "empty-state",
+  "name": "Empty State",
+  "status": "draft",
+  "category": "core",
+  "description": "データが無い状態を、次のアクションへの導線として設計する。",
+  "source": {
+    "humanDoc": "components/empty-state.md",
+    "registry": "js/components-registry.js#empty-state"
+  },
+  "intent": {
+    "whenToUse": [
+      "初回利用・データ 0 件",
+      "検索結果 0 件(文言を変える)"
+    ],
+    "whenNotToUse": [
+      "エラーによる非表示 → Error 表示で原因と回復手段を示す"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Status message boundary."
+    },
+    {
+      "part": "indicator",
+      "required": false,
+      "description": "Icon or shape that reinforces tone."
+    },
+    {
+      "part": "message",
+      "required": true,
+      "description": "Concise status and recovery guidance."
+    },
+    {
+      "part": "action",
+      "required": false,
+      "description": "Recovery, undo, or dismiss control."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Title"
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Body"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--surface",
+      "--border",
+      "--fg",
+      "--fg-muted",
+      "--info-subtle",
+      "--info-fg",
+      "--success-subtle",
+      "--success-fg",
+      "--warning-subtle",
+      "--warning-fg",
+      "--danger-subtle",
+      "--danger-fg"
+    ],
+    "spacing": [
+      "--sp-3"
+    ],
+    "radius": [
+      "--radius-md"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.info-subtle.value",
+        "source": "--info-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.info-fg.value",
+        "source": "--info-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.success-subtle.value",
+        "source": "--success-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.success-fg.value",
+        "source": "--success-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.warning-subtle.value",
+        "source": "--warning-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.warning-fg.value",
+        "source": "--warning-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger-subtle.value",
+        "source": "--danger-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger-fg.value",
+        "source": "--danger-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-3.value",
+        "source": "--sp-3",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-md.value",
+        "source": "--radius-md",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Empty Stateの公開visual contractで用途tokenとして共有する。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.empty-state"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "表示専用rootを不要にtab順へ追加しない。",
+      "状態は色だけで表さずtext、icon、shapeを併用する。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+    ]
+  },
+  "keyboardInteractions": [],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "初回利用・データ 0 件",
+      "recommended": [
+        "「何が無いのか」「作るとどうなるか」「最初の一歩」の 3 点を必ず含める。"
+      ],
+      "avoid": [
+        "エラーによる非表示 → Error 表示で原因と回復手段を示す"
+      ]
+    },
+    {
+      "id": "recommended-2",
+      "title": "Secondary context",
+      "description": "検索結果 0 件(文言を変える)",
+      "recommended": [
+        "検索 0 件では「条件を変える・クリアする」導線を出す。"
+      ],
+      "avoid": [
+        "エラーによる非表示 → Error 表示で原因と回復手段を示す"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのEmpty State。",
+      "rules": [
+        "Gridまたはsectionのreading orderに沿って配置し、同種itemの寸法を揃える。",
+        "面の入れ子を増やさない。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのEmpty State。",
+      "rules": [
+        "1列へreflowし、heading、content、actionの順序を保つ。",
+        "Actionが複数ある場合は縦積みまたはmenuへ整理する。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのEmpty State。",
+      "rules": [
+        "表示専用rootをtab順へ追加しない。",
+        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM",
+    "STATE_NOT_COLOR_ONLY"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Empty Stateの標準例。",
+      "code": "<EmptyState\n  icon={<FolderIcon />}\n  title=\"プロジェクトがありません\"\n  description=\"最初のプロジェクトを作成すると、ここにダッシュボードが表示されます。\"\n  action={<Button size=\"sm\">プロジェクトを作成</Button>}\n/>"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

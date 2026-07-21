@@ -17,7 +17,7 @@
   {
     "id": 4,
     "title": "Adaptive by default",
-    "body": "Light / Dark / High contrast、Compact / Default / Comfortable、Primary color seed の変更に自然に対応します。「ダークモード対応」は後付けの作業ではなく、Semantic token を使っていれば自動的に成立する性質です。"
+    "body": "Light / Dark、Standard / High contrast、Compact / Default / Comfortable、Primary color seed の変更に自然に対応します。Theme、Contrast、Densityは独立した軸として扱い、Semantic tokenを使うことで各contextへ一貫して解決します。"
   },
   {
     "id": 5,

@@ -1,0 +1,136 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.radius",
+  "cycleId": "2026-07-13-foundations-radius-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "tokens/src/radius.json",
+    "tokens/build/tokens.css",
+    "js/generated/foundation-token-meta.js",
+    "index.html",
+    "js/pages-foundations.js",
+    "scripts/build-tokens.mjs",
+    "scripts/build-design-md.mjs",
+    "test/radius-tokens.test.js"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "foundations.radius",
+      "summary": "既存9段radius scale、component role別の適用、nested shape、PC/SPの不変条件、source/CSS/docs同期を確認する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "対象は既存9段scaleのDTCG正規化と、Meridian内部のCard上限8px・overlay/hero用途境界の明文化である。規格値や新interactionを導入せず、既存principles、実CSS、component anatomyの確認だけで判断できるため外部調査は不要。"
+  },
+  "decisions": [
+    {
+      "id": "nine-step-radius-scale",
+      "summary": "noneからfullまでの既存9段scaleを維持し、DTCG dimension正本から生成する。",
+      "rationale": "既存実装を壊さず、表示・copy・CSSのdriftをなくすため。"
+    },
+    {
+      "id": "static-surface-eight-pixel-cap",
+      "summary": "Card、Panel、Tile、framed toolのradiusは--radius-md 8pxを上限にする。",
+      "rationale": "高密度UIの反復surfaceでshapeが情報より強くならず、静的面を一貫してscanできるようにするため。"
+    },
+    {
+      "id": "large-radius-by-role",
+      "summary": "10–12pxはfloating surface/Dialog、16pxはhero media、fullはcircle/pillに限定する。",
+      "rationale": "大きなradiusを個人の好みではなくsurface roleとshape semanticsへ結び付けるため。"
+    },
+    {
+      "id": "responsive-shape-invariant",
+      "summary": "Radiusはviewportではなくcomponent roleとsizeで決め、PC/SPで同一contractを保つ。",
+      "rationale": "同じcomponentが配置先によって別のvisual identityにならないため。"
+    },
+    {
+      "id": "nested-radius-order",
+      "summary": "Nested surfaceのinner radiusはouter radius以下とし、focus ringとcontent clippingを検証する。",
+      "rationale": "角同士の衝突やfocus indicatorの欠損を防ぐため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "source-wrong",
+      "description": "radius.jsonはdimensionを文字列で持ち、説明・用途metadataとDTCG schemaがなかった。",
+      "action": "全9 tokenをvalue/unit objectへ移行し、role別descriptionとusageを追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Card標準を10pxまで許可し、未検証の外部product比較でvisual directionを説明していた。",
+      "action": "Card上限8pxとsurface role別の判断規則へ置き換えた。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "Panel、Card、component tile、template frameが--radius-lg/xlを使い、Foundationの精密な静的surface方針とずれていた。",
+      "action": "静的な反復surfaceを--radius-mdへ統一した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "tokens/src/radius.json",
+      "summary": "9段scaleをDTCG dimension、description、usage付きの正本へ更新した。"
+    },
+    {
+      "path": "scripts/build-tokens.mjs",
+      "summary": "Radius browser metadataをCSSと同じ正本から生成するようにした。"
+    },
+    {
+      "path": "index.html",
+      "summary": "静的Card/Panel/Tile/Frameを8px上限へ統一した。"
+    },
+    {
+      "path": "js/pages-foundations.js",
+      "summary": "生成scale、surface role別usage、nested/responsive checksへ更新した。"
+    },
+    {
+      "path": "test/radius-tokens.test.js",
+      "summary": "Source/CSS/metadata同期と静的surfaceの8px上限を検証した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/radius-tokens.test.js",
+      "status": "passed",
+      "notes": "2 tests passed。9 token同期とPanel/Card/Tile/Frameの8px上限を確認した。"
+    },
+    {
+      "command": "npm run build:tokens && npm run design:build",
+      "status": "passed",
+      "notes": "Radius CSS/metadataとDESIGN.mdを正本から再生成した。"
+    },
+    {
+      "command": "npm run check:js",
+      "status": "passed",
+      "notes": "29 JavaScript filesの構文を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [],
+  "impactedItems": [
+    "tokens.overview",
+    "tokens.radius",
+    "components.button",
+    "components.card",
+    "components.popover",
+    "components.dialog",
+    "components.badge",
+    "components.avatar"
+  ],
+  "nextRecommendedItems": [
+    "foundations.elevation"
+  ]
+}

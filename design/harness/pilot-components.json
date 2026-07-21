@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "0.1.0",
+  "runtimeVersion": "0.1.0",
+  "sourcePackageIds": ["phase1_team_invitation"],
+  "exceptionApprovals": [],
+  "components": [
+    "button",
+    "text-field",
+    "select",
+    "form-field",
+    "validation-message",
+    "checkbox",
+    "alert",
+    "status-indicator",
+    "table"
+  ],
+  "patterns": ["interactive-row-group"],
+  "draftPatternAllowlist": ["interactive-row-group"],
+  "draftAllowlist": [
+    "button",
+    "text-field",
+    "select",
+    "form-field",
+    "validation-message",
+    "checkbox",
+    "alert",
+    "status-indicator",
+    "table"
+  ]
+}

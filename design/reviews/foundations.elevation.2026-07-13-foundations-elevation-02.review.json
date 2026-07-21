@@ -1,0 +1,83 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.elevation",
+  "cycleId": "2026-07-13-foundations-elevation-02",
+  "supersedesCycleId": "2026-07-13-foundations-elevation-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "tokens/src/shadow.json",
+    "design/rules.json",
+    "js/utils.js",
+    "test/shadow-tokens.test.js",
+    "js/pages-foundations.js",
+    "design/reviews/tokens.theme.2026-07-13-tokens-theme-01.review.json"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "foundations.elevation",
+      "summary": "Elevationの現行判断を後続cycleのmodifier、bundle、component実装へ照合するfollow-up確認。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "影響元cycleで該当standardの一次資料調査が完了しており、このfollow-upでは新しい外部standard解釈や設計patternを導入せず、確定済み判断との整合だけを実データとtestで確認するため。"
+  },
+  "decisions": [
+    {
+      "id": "geometry-stays-theme-invariant",
+      "summary": "Shadow geometryは全theme/contrastで不変とし、Themeだけがcolor/alpha modeを解決する。",
+      "rationale": "Elevation levelの意味をthemeで変えず、同じoverlay hierarchyを保つため。"
+    },
+    {
+      "id": "high-contrast-keeps-border",
+      "summary": "High contrastでもshadowを境界として数えず、surface差と明確なborderを維持する。",
+      "rationale": "Shadowが見えにくい環境でもlayer boundaryを失わないため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "no-change",
+      "description": "Theme cycleのmodifier分離は、Elevationのgeometry/theme color ownershipと一致している。",
+      "action": "既存仕様本文を維持し、影響cycleをacknowledgedImpactsへ記録する。",
+      "status": "not-applicable"
+    }
+  ],
+  "changes": [
+    {
+      "path": "design/reviews/foundations.elevation.2026-07-13-foundations-elevation-02.review.json",
+      "summary": "後続cycleの影響確認、判断、検証、acknowledgementを記録。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "実際に確認した生成処理とtestをsource evidenceへ追加し、最新reviewを接続。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/shadow-tokens.test.js test/theme-tokens.test.js",
+      "status": "passed",
+      "notes": "Geometry同一性、theme color ownership、contrast非依存、transient usageが成功。"
+    },
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "Schema、registry、generated artifacts、JS syntax、105 testsが成功した状態でfollow-upを作成。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-tokens-theme-01"
+  ],
+  "impactedItems": [],
+  "nextRecommendedItems": [
+    "foundations.accessibility"
+  ]
+}

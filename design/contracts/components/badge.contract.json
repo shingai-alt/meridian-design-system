@@ -1,0 +1,319 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "badge",
+  "name": "Badge",
+  "status": "draft",
+  "category": "core",
+  "description": "状態やカテゴリを示す小さなラベル。読み取り専用で、操作は持たない。",
+  "source": {
+    "humanDoc": "components/badge.md",
+    "registry": "js/components-registry.js#badge"
+  },
+  "intent": {
+    "whenToUse": [
+      "ステータス表示(Active / Failed など)",
+      "件数・カテゴリの補足"
+    ],
+    "whenNotToUse": [
+      "削除可能な属性 → Tag",
+      "クリックで絞り込む操作 → Filter chip(Tag の亜種)"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Semantic display root."
+    },
+    {
+      "part": "content",
+      "required": true,
+      "description": "Primary perceivable content."
+    },
+    {
+      "part": "supporting",
+      "required": false,
+      "description": "Optional metadata or visual reinforcement."
+    }
+  ],
+  "variants": {
+    "neutral": {
+      "intent": "neutralという明示的な意味を持つ文脈。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "primary": {
+      "intent": "主要actionまたは最優先の選択。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "success": {
+      "intent": "完了または肯定的状態。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "warning": {
+      "intent": "注意と判断が必要な状態。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "danger": {
+      "intent": "破壊的または回復困難な操作・状態。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "info": {
+      "intent": "中立的な補足情報。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "variant",
+      "type": "\"neutral\" | \"primary\" | \"success\" | \"warning\" | \"danger\" | \"info\"",
+      "required": false,
+      "default": "neutral",
+      "description": "意味と優先度を選ぶ。"
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Label"
+    },
+    {
+      "name": "dot",
+      "type": "boolean",
+      "required": false,
+      "default": "false",
+      "description": "Status dot"
+    },
+    {
+      "name": "outline",
+      "type": "boolean",
+      "required": false,
+      "default": "false",
+      "description": "Outline"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--success-subtle",
+      "--success-fg",
+      "--danger-subtle",
+      "--danger-fg",
+      "--fg",
+      "--fg-muted",
+      "--surface",
+      "--border"
+    ],
+    "radius": [
+      "--radius-full"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.success-subtle.value",
+        "source": "--success-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Badgeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.success-fg.value",
+        "source": "--success-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Badgeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger-subtle.value",
+        "source": "--danger-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Badgeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger-fg.value",
+        "source": "--danger-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Badgeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-full.value",
+        "source": "--radius-full",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Badgeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Badgeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Badgeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Badgeの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Badgeの公開visual contractで用途tokenとして共有する。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.badge"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "表示専用rootを不要にtab順へ追加しない。",
+      "状態は色だけで表さずtext、icon、shapeを併用する。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+    ]
+  },
+  "keyboardInteractions": [],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "ステータス表示(Active / Failed など)",
+      "recommended": [
+        "色だけに意味を持たせず、必ずテキストを併記する。"
+      ],
+      "avoid": [
+        "削除可能な属性 → Tag"
+      ]
+    },
+    {
+      "id": "recommended-2",
+      "title": "Secondary context",
+      "description": "件数・カテゴリの補足",
+      "recommended": [
+        "1 行に 3 つ以上並べると走査性が落ちる。優先度の高いものに絞る。"
+      ],
+      "avoid": [
+        "クリックで絞り込む操作 → Filter chip(Tag の亜種)"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのBadge。",
+      "rules": [
+        "Contentと周辺layoutに応じたintrinsic sizeを使う。",
+        "Viewportだけを理由にdensityを変更しない。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのBadge。",
+      "rules": [
+        "意味とDOM順を変えず、wrapとavailable widthで適応する。",
+        "省略した情報へ別経路から到達できるようにする。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのBadge。",
+      "rules": [
+        "表示専用rootをtab順へ追加しない。",
+        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Badgeの標準例。",
+      "code": "<Badge tone=\"neutral\">Active</Badge>"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

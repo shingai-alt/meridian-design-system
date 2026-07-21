@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/reference-retrieval.schema.json",
+  "title": "Meridian Reference Retrieval Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "conceptId", "sourcePackageId", "taskQueries", "references"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "0.1.0" },
+    "id": { "type": "string", "minLength": 1 },
+    "conceptId": { "type": "string", "minLength": 1 },
+    "sourcePackageId": { "type": "string", "minLength": 1 },
+    "taskQueries": { "type": "array", "minItems": 4, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "references": {
+      "type": "array", "minItems": 6,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "analogyType", "product", "task", "state", "sourceType", "url", "accessedAt", "capture", "observations", "usage"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$" },
+          "analogyType": { "enum": ["direct", "adjacent", "distant"] },
+          "product": { "type": "string", "minLength": 1 },
+          "task": { "type": "string", "minLength": 1 },
+          "state": { "type": "string", "minLength": 1 },
+          "sourceType": { "enum": ["official-product", "official-documentation", "official-design-system", "official-standard", "research-paper"] },
+          "url": { "type": "string", "pattern": "^https://" },
+          "accessedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+          "capture": {
+            "type": ["object", "null"],
+            "additionalProperties": false,
+            "required": ["path", "digest", "width", "height", "viewport", "locale", "containsPersonalData"],
+            "properties": {
+              "path": { "type": "string", "pattern": "^research/references/[a-z0-9._/-]+\\.png$" },
+              "digest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+              "width": { "type": "integer", "minimum": 320 },
+              "height": { "type": "integer", "minimum": 240 },
+              "viewport": { "enum": ["desktop", "mobile"] },
+              "locale": { "type": "string", "minLength": 2 },
+              "containsPersonalData": { "const": false }
+            }
+          },
+          "observations": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "usage": { "enum": ["behavior-evidence", "visual-inspiration", "both"] }
+        }
+      }
+    }
+  }
+}

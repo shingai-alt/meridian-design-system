@@ -1,0 +1,375 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "toast",
+  "name": "Toast",
+  "status": "draft",
+  "category": "feedback",
+  "description": "操作結果の一時的な通知。自動で消え、作業を妨げない。",
+  "source": {
+    "humanDoc": "components/toast.md",
+    "registry": "js/components-registry.js#toast"
+  },
+  "intent": {
+    "whenToUse": [
+      "保存・作成・削除など操作の完了通知"
+    ],
+    "whenNotToUse": [
+      "ユーザーの判断が必要な情報 → Dialog",
+      "恒常的な警告 → Banner / Alert"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Status message boundary."
+    },
+    {
+      "part": "indicator",
+      "required": false,
+      "description": "Icon or shape that reinforces tone."
+    },
+    {
+      "part": "message",
+      "required": true,
+      "description": "Concise status and recovery guidance."
+    },
+    {
+      "part": "action",
+      "required": false,
+      "description": "Recovery, undo, or dismiss control."
+    }
+  ],
+  "variants": {
+    "success": {
+      "intent": "完了または肯定的状態。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "info": {
+      "intent": "中立的な補足情報。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "danger": {
+      "intent": "破壊的または回復困難な操作・状態。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "variant",
+      "type": "\"success\" | \"info\" | \"danger\"",
+      "required": false,
+      "default": "success",
+      "description": "意味と優先度を選ぶ。"
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Title"
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Body"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--border",
+      "--danger",
+      "--danger-fg",
+      "--danger-subtle",
+      "--fg",
+      "--fg-muted",
+      "--info",
+      "--info-fg",
+      "--info-subtle",
+      "--success",
+      "--success-fg",
+      "--success-subtle",
+      "--surface",
+      "--warning-fg",
+      "--warning-subtle"
+    ],
+    "spacing": [
+      "--sp-3"
+    ],
+    "radius": [
+      "--radius-md"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.info-subtle.value",
+        "source": "--info-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.info-fg.value",
+        "source": "--info-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.success-subtle.value",
+        "source": "--success-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.success-fg.value",
+        "source": "--success-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.warning-subtle.value",
+        "source": "--warning-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.warning-fg.value",
+        "source": "--warning-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger-subtle.value",
+        "source": "--danger-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger-fg.value",
+        "source": "--danger-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-3.value",
+        "source": "--sp-3",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-md.value",
+        "source": "--radius-md",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Toastの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger.value",
+        "source": "--danger",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "ToastのHTML showcaseで実際に参照する公開token。"
+      },
+      {
+        "slot": "token.info.value",
+        "source": "--info",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "ToastのHTML showcaseで実際に参照する公開token。"
+      },
+      {
+        "slot": "token.success.value",
+        "source": "--success",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "ToastのHTML showcaseで実際に参照する公開token。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.toast"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "role=\"status\"(エラーは role=\"alert\")で読み上げる",
+      "ホバー中は自動消滅タイマーを停止する",
+      "表示専用rootを不要にtab順へ追加しない。",
+      "状態は色だけで表さずtext、icon、shapeを併用する。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+    ]
+  },
+  "keyboardInteractions": [],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "保存・作成・削除など操作の完了通知",
+      "recommended": [
+        "4〜6 秒で自動消滅し、閉じるボタンも必ず付ける。"
+      ],
+      "avoid": [
+        "ユーザーの判断が必要な情報 → Dialog"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのToast。",
+      "rules": [
+        "Contentと周辺layoutに応じたintrinsic sizeを使う。",
+        "Viewportだけを理由にdensityを変更しない。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのToast。",
+      "rules": [
+        "意味とDOM順を変えず、wrapとavailable widthで適応する。",
+        "省略した情報へ別経路から到達できるようにする。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのToast。",
+      "rules": [
+        "表示専用rootをtab順へ追加しない。",
+        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM",
+    "STATE_NOT_COLOR_ONLY"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Toastの標準例。",
+      "code": "toast.success({\n  title: \"プロジェクトを作成しました\",\n  action: { label: \"元に戻す\", onClick: undo },\n});"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

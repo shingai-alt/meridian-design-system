@@ -1,0 +1,225 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.overview",
+  "cycleId": "2026-07-13-tokens-overview-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/token-policy.json",
+    "design/semantic-tokens.json",
+    "tokens/src",
+    "tokens/build/tokens.css",
+    "tokens/build/meridian.tokens.json",
+    "tokens/build/meridian.dark.tokens.json",
+    "tokens/build/meridian.high-contrast.tokens.json",
+    "scripts/build-tokens.mjs",
+    "scripts/lib/dtcg.mjs",
+    "scripts/lib/token-artifacts.mjs",
+    "js/generated/token-catalog-meta.js",
+    "js/pages-tokens.js",
+    "js/utils.js",
+    "test/token-pipeline.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "tokens.overview",
+      "summary": "DTCGの現行安定版、token/group/type/alias、color表現、theme context、推奨file extensionとMeridianのsource/build/runtime/docs境界を確認する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "new-pattern-or-api",
+      "conflicting-guidance",
+      "ecosystem-change"
+    ],
+    "questions": [
+      "Meridianが準拠対象として明示すべきDTCG版とstatusは何か。",
+      "Source、CSS、JSON、live Seedのどれを正本・生成物・runtime overrideとして扱うか。",
+      "ThemeとDensityをtool間で安全に交換する出力境界は何か。",
+      "公式JSON Schemaや未公開packageを利用可能と誤認させていないか。"
+    ],
+    "evidence": [
+      {
+        "id": "dtcg-format-2025-10",
+        "title": "Design Tokens Format Module 2025.10",
+        "url": "https://www.w3.org/community/reports/design-tokens/CG-FINAL-format-20251028/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "安定版Community Group Final Reportとしてtoken/group/type/alias、.tokens/.tokens.json、application/design-tokens+jsonを定義し、公式JSON Schemaは今後の検討事項としている。",
+        "supportedDecisions": [
+          "dtcg-stable-baseline",
+          "local-conformance-validation"
+        ]
+      },
+      {
+        "id": "dtcg-color-2025-10",
+        "title": "Design Tokens Color Module 2025.10",
+        "url": "https://www.w3.org/community/reports/design-tokens/CG-FINAL-color-20251028/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Color tokenをcolorSpace、components、任意alpha/hexで表現し、sRGBを含む対応color spaceと値域を定義している。",
+        "supportedDecisions": [
+          "resolved-theme-bundles"
+        ]
+      },
+      {
+        "id": "dtcg-resolver-2025-10",
+        "title": "Design Tokens Resolver Module 2025.10",
+        "url": "https://www.w3.org/community/reports/design-tokens/CG-FINAL-resolver-20251028/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "複数contextをsets、modifiers、resolutionOrderで解決し、modifierの直交性が認知負荷と上書き競合を減らすことを示す。",
+        "supportedDecisions": [
+          "resolved-theme-bundles",
+          "single-generated-catalog"
+        ]
+      }
+    ],
+    "synthesis": "DTCG 2025.10は交換形式として安定しているがW3C Recommendationではなく、公式JSON Schemaも定義していない。Meridianはtyped sourceとlocal validatorで準拠を保証し、consumer toolのmode実装差を避けるため現段階ではthemeごとの解決済みbundleを配布する。",
+    "decisionImpact": "非標準$schemaと架空のexport説明を除去し、DTCG source、309-token theme bundles、standalone CSS、generated catalog、runtime component binding、docsを一つのbuildへ統合した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "dtcg-stable-baseline",
+      "summary": "交換形式の基準をDTCG Format / Color / Resolver Module 2025.10と明記する。",
+      "rationale": "draftや独自形式ではなく、現在の安定版仕様へ型、alias、file formatの判断を揃えるため。"
+    },
+    {
+      "id": "local-conformance-validation",
+      "summary": "公式に存在しない$schema URLを削除し、local validatorでreserved property、type/value、alias、cycleを検査する。",
+      "rationale": "見かけ上の準拠ではなく、buildで実際の交換物を拒否できる保証にするため。"
+    },
+    {
+      "id": "resolved-theme-bundles",
+      "summary": "既定Seedを固定し、Light、Dark、High contrast presetを解決済み.tokens.jsonとして個別生成する。",
+      "rationale": "live Seedの柔軟性を残しながら、repository配布物を再現可能にし、consumer toolのmode対応差を避けるため。"
+    },
+    {
+      "id": "single-generated-catalog",
+      "summary": "CSS、JSON、docs metadata、runtime Component bindingを同じsourceとbuildから生成する。",
+      "rationale": "手書きの値・名前・件数が各surfaceでずれる構造を解消するため。"
+    },
+    {
+      "id": "published-surface-honesty",
+      "summary": "npm/React packageとFigma direct importは、実物と検証が揃うまで利用可能なAPIとして記載しない。",
+      "rationale": "documentationが将来構想を現在の配布機能として誤認させないため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "source-wrong",
+      "description": "tokens/srcにDTCG 2025.10が定義せず公式にも存在しない$schema URLがあり、Density dimension/numberが文字列だった。",
+      "action": "$schemaを削除し、Dimensionを{value,unit}、Numberを数値へ修正した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-token",
+      "description": "Color Semantic/Referenceと承認済みComponent tokenを含む交換可能なJSON成果物がなかった。",
+      "action": "既定Seedから3つの309-token DTCG bundleと12個のgoverned Component tokenを生成した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "生成CSSにSemantic colorとtheme mappingがなく、browser runtimeだけが手書きComponent tokenを設定していた。",
+      "action": "CSSへ3 contextを追加し、runtimeとcomponent previewをgenerated catalogから解決するよう変更した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "CSSページに実在しない--color-* / --space-*名と未公開package、JSONページに旧schema URLと無条件のFigma import保証があった。",
+      "action": "全12 Token pageを実カタログ・実生成物・現在の制約から描画する内容へ更新した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "tokens/src/*.json",
+      "summary": "非標準$schemaを除去し、Density valueをDTCG型へ正規化した。"
+    },
+    {
+      "path": "tokens/src/component.json",
+      "summary": "12個の公開Component tokenへpath、CSS名、trigger、reason、mode overrideを定義した。"
+    },
+    {
+      "path": "scripts/lib/dtcg.mjs",
+      "summary": "DTCG構造、型、alias、cycle、値解決のzero-dependency validatorを追加した。"
+    },
+    {
+      "path": "scripts/lib/token-artifacts.mjs",
+      "summary": "3 theme bundle、theme CSS、token catalog metadataを既定Seedから生成するpipelineを追加した。"
+    },
+    {
+      "path": "scripts/build-tokens.mjs",
+      "summary": "全token成果物を一括生成・drift checkするbuildへ拡張した。"
+    },
+    {
+      "path": "js/pages-tokens.js",
+      "summary": "Token 12ページを実source、実値、実output、制約から描画するdocumentationへ全面更新した。"
+    },
+    {
+      "path": "js/utils.js",
+      "summary": "Live runtimeのComponent tokenをgenerated catalogのalias/mode定義から解決するよう変更した。"
+    },
+    {
+      "path": "test/token-pipeline.test.js",
+      "summary": "DTCG source、309-token bundles、CSS contexts、12 component bindings、docs/runtime同期を検証した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "npm run build:tokens && npm run check:tokens",
+      "status": "passed",
+      "notes": "CSS、3 DTCG bundle、catalog metadata、foundation metadataを生成し、全成果物が最新であることを確認した。"
+    },
+    {
+      "command": "node --test test/token-pipeline.test.js",
+      "status": "passed",
+      "notes": "4 tests passed。Source type、3 bundle各309 token、3 theme/3 density/reduced motion、12 component bindings、docs/runtime同期を確認した。"
+    },
+    {
+      "command": "npm run check:js",
+      "status": "passed",
+      "notes": "38 JavaScript filesの構文が有効。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-color-01",
+    "2026-07-13-foundations-content-01",
+    "2026-07-13-foundations-elevation-01",
+    "2026-07-13-foundations-layout-01",
+    "2026-07-13-foundations-motion-01",
+    "2026-07-13-foundations-radius-01",
+    "2026-07-13-foundations-spacing-01",
+    "2026-07-13-foundations-typography-01",
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-overview-for-engineers-01"
+  ],
+  "impactedItems": [
+    "tokens.color",
+    "tokens.typography",
+    "tokens.spacing",
+    "tokens.radius",
+    "tokens.shadow",
+    "tokens.motion",
+    "tokens.component",
+    "tokens.theme",
+    "tokens.density",
+    "tokens.css-variables",
+    "tokens.json-tokens",
+    "components.button"
+  ],
+  "nextRecommendedItems": [
+    "tokens.color"
+  ]
+}

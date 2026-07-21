@@ -1,0 +1,265 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "screen",
+    "id": "screen_workspace_settings",
+    "title": "Workspace Settings",
+    "source": "template",
+    "status": "draft"
+  },
+  "context": {
+    "productType": "settings",
+    "targetUsers": ["workspace-admin", "owner"],
+    "primaryUseCase": "ワークスペースの基本情報、通知、危険操作を安全に管理する",
+    "userIntent": "設定変更の影響を理解しながら、必要な項目だけを確実に保存したい",
+    "constraints": ["desktop-and-tablet", "explicit-save-required", "danger-zone-required", "role-sensitive"],
+    "locale": "ja-JP"
+  },
+  "ux": {
+    "primaryTask": "ワークスペース基本情報を編集して保存する",
+    "secondaryTasks": ["通知設定を切り替える", "APIや連携設定へ移動する", "削除などの危険操作を確認する"],
+    "successCriteria": ["保存対象と未保存状態が明確である", "即時反映設定と保存が必要な設定が混同されない", "破壊的操作が通常操作から分離されている"],
+    "userRisks": ["保存前に画面を離れて変更を失う", "Switchの即時反映とフォーム保存を混同する", "危険操作を誤って実行する"],
+    "assumptions": ["管理者は複数設定カテゴリを横断する", "基本情報フォームは保存ボタンで明示確定する", "削除操作は別の確認Dialogを起動する"]
+  },
+  "informationArchitecture": {
+    "hierarchy": ["settings-navigation", "page-heading", "editable-form", "notification-panel", "danger-zone", "sticky-save-bar"],
+    "navigationRole": "settings",
+    "contentGroups": [
+      {
+        "id": "group_settings_nav",
+        "title": "設定ナビゲーション",
+        "purpose": "設定カテゴリを切り替える",
+        "priority": "high"
+      },
+      {
+        "id": "group_general_form",
+        "title": "一般設定",
+        "purpose": "ワークスペース名、URL、説明を編集する",
+        "priority": "critical"
+      },
+      {
+        "id": "group_notification_settings",
+        "title": "通知設定",
+        "purpose": "即時反映される通知オプションを管理する",
+        "priority": "medium"
+      },
+      {
+        "id": "group_danger_zone",
+        "title": "Danger zone",
+        "purpose": "破壊的操作を他の設定から明確に分離する",
+        "priority": "high"
+      }
+    ]
+  },
+  "layout": {
+    "templateId": "settings",
+    "density": "default",
+    "regions": [
+      {
+        "id": "region_settings_sidebar",
+        "role": "sidebar",
+        "purpose": "設定カテゴリのローカルナビゲーションを提供する",
+        "componentRefs": ["component_settings_nav"]
+      },
+      {
+        "id": "region_header",
+        "role": "header",
+        "purpose": "ページタイトルと説明を表示する",
+        "componentRefs": ["component_page_title"]
+      },
+      {
+        "id": "region_main",
+        "role": "main",
+        "purpose": "編集フォーム、通知設定、危険操作を縦に配置する",
+        "componentRefs": ["component_workspace_name", "component_workspace_url", "component_workspace_description", "component_notification_switch", "component_delete_section"]
+      },
+      {
+        "id": "region_footer",
+        "role": "footer",
+        "purpose": "未保存変更の保存または破棄を常時提示する",
+        "componentRefs": ["component_save_bar"]
+      }
+    ],
+    "responsiveBehavior": [
+      {
+        "viewport": "desktop",
+        "behavior": "左に設定ナビ、右に最大幅560pxのフォームを配置し、保存バーを下部にsticky表示する"
+      },
+      {
+        "viewport": "tablet",
+        "behavior": "設定ナビを上部タブ化し、フォームは1カラムで表示する"
+      },
+      {
+        "viewport": "mobile",
+        "behavior": "設定ナビをSelect化し、保存バーは画面下部に固定する"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "component_settings_nav",
+      "componentId": "navigation-item",
+      "purpose": "一般、通知、メンバー、APIキー、連携を切り替える",
+      "props": {
+        "activeItem": "general"
+      },
+      "meridianTokens": ["--surface", "--border", "--primary-subtle"],
+      "states": ["default", "active", "hover", "focus"],
+      "accessibilityNotes": ["現在の設定カテゴリは aria-current で表す"]
+    },
+    {
+      "id": "component_page_title",
+      "componentId": "text",
+      "purpose": "画面の目的と編集対象を説明する",
+      "props": {
+        "role": "heading-1",
+        "text": "一般"
+      },
+      "meridianTokens": ["--fg", "--fg-muted"],
+      "states": ["default"],
+      "accessibilityNotes": ["見出し階層をページ内で一貫させる"]
+    },
+    {
+      "id": "component_workspace_name",
+      "componentId": "text-field",
+      "purpose": "ワークスペース名を編集する",
+      "props": {
+        "label": "ワークスペース名",
+        "required": true
+      },
+      "meridianTokens": ["--input-bg", "--input-border", "--focus-ring"],
+      "states": ["default", "focus", "error", "disabled"],
+      "accessibilityNotes": ["エラーは aria-describedby と aria-invalid で関連付ける"]
+    },
+    {
+      "id": "component_workspace_url",
+      "componentId": "input-group",
+      "purpose": "ワークスペースURLを編集する",
+      "props": {
+        "prefix": "https://",
+        "label": "URL"
+      },
+      "meridianTokens": ["--input-bg", "--input-border", "--border-muted"],
+      "states": ["default", "focus", "error"],
+      "accessibilityNotes": ["prefixは装飾ではなく入力値の意味として伝わるようにする"]
+    },
+    {
+      "id": "component_workspace_description",
+      "componentId": "textarea",
+      "purpose": "ワークスペースの説明を編集する",
+      "props": {
+        "label": "説明",
+        "rows": 4
+      },
+      "meridianTokens": ["--input-bg", "--input-border", "--focus-ring"],
+      "states": ["default", "focus", "error"],
+      "accessibilityNotes": ["文字数制限がある場合はカウンターを読み上げ可能にする"]
+    },
+    {
+      "id": "component_notification_switch",
+      "componentId": "switch",
+      "purpose": "自動通知の即時反映設定を切り替える",
+      "props": {
+        "label": "重要な変更を通知"
+      },
+      "meridianTokens": ["--primary", "--surface", "--border"],
+      "states": ["default", "checked", "disabled"],
+      "accessibilityNotes": ["状態ではなく対象をラベルにし、変更後は軽い通知で結果を伝える"]
+    },
+    {
+      "id": "component_delete_section",
+      "componentId": "alert",
+      "purpose": "ワークスペース削除の危険性と導線を分離して表示する",
+      "props": {
+        "tone": "danger",
+        "title": "ワークスペースを削除"
+      },
+      "meridianTokens": ["--danger", "--danger-subtle", "--danger-fg"],
+      "states": ["default"],
+      "accessibilityNotes": ["削除ボタンはdanger variantを使い、確認Dialogを必須にする"]
+    },
+    {
+      "id": "component_save_bar",
+      "componentId": "save-bar",
+      "purpose": "未保存変更を通知し、保存または破棄を選べるようにする",
+      "props": {
+        "visibleWhenDirty": true
+      },
+      "meridianTokens": ["--surface", "--border", "--shadow-md"],
+      "states": ["hidden", "visible", "saving", "error"],
+      "accessibilityNotes": ["保存成功と失敗は aria-live で通知する", "Tab順は破棄、保存の順にする"]
+    }
+  ],
+  "states": {
+    "default": {
+      "applicable": true,
+      "description": "保存済み設定がフォームに表示され、保存バーは非表示",
+      "componentRefs": ["component_workspace_name", "component_workspace_url", "component_workspace_description"],
+      "userRecovery": null
+    },
+    "loading": {
+      "applicable": true,
+      "description": "フォーム領域にSkeletonを表示し、誤操作を避ける",
+      "componentRefs": ["component_workspace_name", "component_workspace_url", "component_workspace_description"],
+      "userRecovery": "読み込み失敗時は再試行する"
+    },
+    "empty": {
+      "applicable": false,
+      "description": "設定画面は既定値が存在するため空状態は基本的に発生しない",
+      "componentRefs": [],
+      "userRecovery": null
+    },
+    "error": {
+      "applicable": true,
+      "description": "保存失敗時は保存バーにエラーを表示し、該当フィールドに具体的な修正方法を出す",
+      "componentRefs": ["component_save_bar", "component_workspace_name"],
+      "userRecovery": "入力内容を維持したまま再保存する"
+    },
+    "permissionDenied": {
+      "applicable": true,
+      "description": "編集権限が無い場合は読み取り専用表示にし、保存バーと危険操作を非表示にする",
+      "componentRefs": ["component_workspace_name", "component_delete_section"],
+      "userRecovery": "OwnerまたはAdminへ権限付与を依頼する"
+    }
+  },
+  "accessibility": {
+    "wcagTarget": "WCAG-2.2-AA",
+    "keyboardInteractions": ["Tabで設定ナビ、フォーム、保存バーへ移動できる", "SwitchはSpaceで切り替えられる", "削除DialogはEscで閉じられる"],
+    "focusManagement": ["保存エラー時は最初のエラーフィールドへ移動できる", "削除Dialogを閉じたら削除ボタンへフォーカスを戻す"],
+    "screenReaderNotes": ["未保存変更の有無を保存バーで読み上げる", "必須フィールドとエラー理由をフィールド単位で伝える"],
+    "nonColorCues": ["Danger zoneは見出し、説明文、区切りで危険性を表す", "エラーはアイコンと具体文で表す"]
+  },
+  "rationale": [
+    {
+      "decision": "即時反映のSwitchと明示保存のフォームを分離する",
+      "reason": "ユーザーが保存操作の必要性を誤解しないようにするため",
+      "evidenceType": "design-principle",
+      "tradeoff": "画面内の操作種別は増えるが、設定変更の予測可能性が上がる",
+      "references": ["DESIGN.md:Clarity over decoration", "WCAG-2.2:Predictable"]
+    },
+    {
+      "decision": "Danger zoneを最下部に隔離する",
+      "reason": "破壊的操作を通常の編集フローから視覚的にも意味的にも分離するため",
+      "evidenceType": "constraint",
+      "tradeoff": "削除操作への到達は遅くなるが、誤操作のリスクを下げる",
+      "references": ["component:alert", "component:dialog"]
+    },
+    {
+      "decision": "未保存変更はsticky save barで表示する",
+      "reason": "長いフォームでも保存と破棄の導線を見失わないようにするため",
+      "evidenceType": "pattern",
+      "tradeoff": "画面下部のスペースを使うが、変更の喪失を防ぎやすい",
+      "references": ["template:settings"]
+    }
+  ],
+  "qualityChecks": {
+    "tokenComplianceRequired": true,
+    "componentRegistryComplianceRequired": true,
+    "keyboardRequired": true,
+    "responsiveRequired": true,
+    "stateCoverageRequired": true,
+    "rationaleRequired": true,
+    "unresolvedItems": ["save-bar と alert の正式なcomponentId登録状況を確認する"]
+  }
+}

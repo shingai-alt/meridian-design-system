@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shingai-alt.github.io/meridian-design-system/schemas/phase-2-feedback.schema.json",
+  "title": "Meridian Phase 2 Review Feedback",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "summary", "entries"],
+  "properties": {
+    "meta": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "conceptId", "sourcePackageId", "createdAt", "reviewer"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" }, "kind": { "const": "phase-2-feedback" },
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" }, "conceptId": { "type": "string", "minLength": 1 },
+        "sourcePackageId": { "type": "string", "minLength": 1 }, "createdAt": { "type": "string", "minLength": 1 }, "reviewer": { "type": "string" }
+      }
+    },
+    "summary": {
+      "type": "object", "additionalProperties": false, "required": ["outcome", "note"],
+      "properties": { "outcome": { "enum": ["no-decision", "approved", "revision-requested"] }, "note": { "type": "string" } }
+    },
+    "entries": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "category", "severity", "scenarioId", "finding", "recommendation", "status"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+          "category": { "enum": ["product", "interaction", "visual", "content", "accessibility", "engineering", "research"] },
+          "severity": { "enum": ["blocker", "major", "minor", "note"] }, "scenarioId": { "type": "string", "minLength": 1 },
+          "finding": { "type": "string", "minLength": 1 }, "recommendation": { "type": "string" }, "status": { "const": "candidate" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.shadow",
+  "cycleId": "2026-07-13-tokens-shadow-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "tokens/src/shadow.json",
+    "design/rules.json",
+    "tokens/build/tokens.css",
+    "tokens/build/meridian.tokens.json",
+    "tokens/build/meridian.dark.tokens.json",
+    "js/generated/foundation-token-meta.js",
+    "js/pages-tokens.js",
+    "js/utils.js",
+    "js/ui-builders.js",
+    "index.html",
+    "test/shadow-tokens.test.js",
+    "test/token-pipeline.test.js"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "tokens.shadow",
+      "summary": "Elevation Foundationで確定済みのtransient-only layering modelを、Shadow source、theme colors、CSS、DTCG alias、実surfaceへ同期する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "新しいelevation levelやlayering modelを導入せず、foundations.elevationで外部調査済みの判断をToken outputと既存surfaceの適用レベルへ反映するcycleのため。"
+  },
+  "decisions": [
+    {
+      "id": "stable-shadow-geometry",
+      "summary": "5 levelのoffset/blur/spreadはcontext間で不変にし、4 color roleのalphaだけをthemeで切り替える。",
+      "rationale": "Elevationの空間関係を保ちながら、Light/Dark/HCで必要な視認性だけを調整するため。"
+    },
+    {
+      "id": "transient-level-map",
+      "summary": "Menu=sm、Popover/Tooltip=md、Toast=lg、Dialog/Drawer=overlayへ対応させる。",
+      "rationale": "Surfaceの一時性と重なりの高さをtoken levelと一貫させるため。"
+    },
+    {
+      "id": "static-surfaces-without-shadow",
+      "summary": "Card、Panel、Tile、decorative Empty iconはsurface colorとborderで構造を作り、shadowを付けない。",
+      "rationale": "持続的なsurfaceを過剰に浮かせず、transient layerの意味を保つため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "implementation-stale",
+      "description": "Topbar Menuがoverlay、Popover/Comboboxがlgを使い、source usageより高いelevationになっていた。",
+      "action": "Menuをsm、Popover/Comboboxをmdへ修正した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "cross-layer-conflict",
+      "description": "Empty Stateの静的decorative iconへshadow-xsが付き、transient-only ruleと矛盾していた。",
+      "action": "Empty iconのshadowを削除しborder/surfaceだけにした。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Shadow Token pageは現在themeのCSS列挙だけで、level usage、4 color role、DTCG sourceを示していなかった。",
+      "action": "全level、preview、usage、3 contextのcolor roleをgenerated metadataから表示した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "index.html",
+      "summary": "Topbar Menuをshadow-smへ変更し、Empty State iconの静的shadowを除去した。"
+    },
+    {
+      "path": "js/ui-builders.js",
+      "summary": "PopoverとComboboxのfloating surfaceをshadow-mdへ修正した。"
+    },
+    {
+      "path": "js/pages-tokens.js",
+      "summary": "5 levelと4 theme color roleを実metadataから表示するShadow Token pageへ更新した。"
+    },
+    {
+      "path": "test/shadow-tokens.test.js",
+      "summary": "Surface-level mapping、静的surface、bundle geometry、qualified aliasの検証を追加した。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "Shadow itemへgenerated output、implementation、metadata、testを登録した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/shadow-tokens.test.js test/token-pipeline.test.js",
+      "status": "passed",
+      "notes": "10 tests passed。Geometry、theme colors、static/transient mapping、DTCG aliasを確認した。"
+    },
+    {
+      "command": "npm run check:js && npm run check:tokens && npm run validate:system",
+      "status": "passed",
+      "notes": "38 JavaScript files、generated artifacts、102 registry items、23 review cyclesの整合性を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-elevation-01",
+    "2026-07-13-tokens-overview-01",
+    "2026-07-13-tokens-radius-01"
+  ],
+  "impactedItems": [
+    "tokens.motion",
+    "components.popover",
+    "components.combobox",
+    "components.empty-state"
+  ],
+  "nextRecommendedItems": [
+    "tokens.motion"
+  ]
+}

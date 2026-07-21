@@ -88,10 +88,60 @@
     "id": "CONTRAST_AA_MINIMUM",
     "severity": "error",
     "detector": "css-contrast-pair",
-    "pattern": "同一 CSS ルール内で background(-color) と color が両方 semantic token のとき、seed 全プリセット × light/dark/hc の全組み合わせで src/color-engine.js の contrast() が 4.5(hc は 7)を下回る",
+    "pattern": "同一 CSS ルール内で background(-color) と color が両方 semantic token のとき、seed 全プリセット × light/dark × standard/high の全組み合わせで src/color-engine.js の contrast() が4.5(Standard)または7(High)を下回る",
     "appliesTo": "同一ルールで background と color を両方 var(--token) で指定している箇所(片方だけ指定・別ルールでの継承は検出不可)",
     "alternative": "semantic token(primary/success/warning/danger等の -foreground / -on-solid ペア)をそのまま使えば、4.5:1(High contrast は 7:1)を自動的に満たす。独自に色を組み合わせない。",
     "automationStatus": "static",
+    "principle": 5
+  },
+  {
+    "id": "NO_POSITIVE_TABINDEX",
+    "severity": "error",
+    "detector": "regex",
+    "pattern": "tabindex\\s*=\\s*[\\\"'][1-9][0-9]*[\\\"']",
+    "appliesTo": "生成/編集したHTML・JSX・template string",
+    "alternative": "DOM順を論理順へ直し、native focus順またはtabindex=0/-1を使う。Positive tabindexで順序を上書きしない。",
+    "automationStatus": "static",
+    "principle": 5
+  },
+  {
+    "id": "INTERACTIVE_NAME_REQUIRED",
+    "severity": "error",
+    "detector": "accessible-name",
+    "pattern": "Interactive elementにcomputed accessible nameがない、またはvisible labelがnameに含まれない",
+    "appliesTo": "button、link、input、select、textarea、custom widget",
+    "alternative": "Visible label、label要素、aria-labelledby、またはicon-only時のaria-labelを所有controlへ付ける。",
+    "automationStatus": "manual",
+    "principle": 5
+  },
+  {
+    "id": "TARGET_SIZE_MINIMUM",
+    "severity": "error",
+    "detector": "rendered-geometry",
+    "pattern": "Pointer targetが24×24 CSS px未満で、WCAG 2.5.8のspacing/inline等の例外も満たさない",
+    "appliesTo": "全density・desktop/mobileのpointer target",
+    "alternative": "Control boxを24px以上にする。Touch中心・主要action・隣接icon controlは44px程度を優先する。",
+    "automationStatus": "manual",
+    "principle": 5
+  },
+  {
+    "id": "STATE_NOT_COLOR_ONLY",
+    "severity": "error",
+    "detector": "semantic-visual-review",
+    "pattern": "Error、selection、status、required stateを色だけで区別する",
+    "appliesTo": "Component state、chart、form feedback、status indicator",
+    "alternative": "Text、shape、icon、pattern、またはprogrammatic stateを色と併用する。",
+    "automationStatus": "manual",
+    "principle": 5
+  },
+  {
+    "id": "DRAG_ALTERNATIVE_REQUIRED",
+    "severity": "error",
+    "detector": "interaction-review",
+    "pattern": "Dragging movementだけで実行できるactionにsingle-pointer alternativeがない",
+    "appliesTo": "Sortable、drag and drop、resize、canvas interaction",
+    "alternative": "Button、menu、click、input等で同じ結果へ到達できるalternativeを提供する。",
+    "automationStatus": "manual",
     "principle": 5
   }
 ]

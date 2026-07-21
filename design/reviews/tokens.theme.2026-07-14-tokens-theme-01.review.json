@@ -1,0 +1,122 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.theme",
+  "cycleId": "2026-07-14-tokens-theme-01",
+  "supersedesCycleId": "2026-07-13-tokens-theme-02",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-14",
+  "completedAt": "2026-07-14",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/token-policy.json",
+    "src/color-engine.js",
+    "tokens/src/component.json",
+    "tokens/src/shadow.json",
+    "tokens/build/tokens.css",
+    "tokens/build/meridian.tokens.json",
+    "tokens/build/meridian.dark.tokens.json",
+    "tokens/build/meridian.high-contrast.tokens.json",
+    "tokens/build/meridian.dark.high-contrast.tokens.json",
+    "js/generated/token-catalog-meta.js",
+    "js/utils.js",
+    "js/app-shell.js",
+    "js/component-pages.js",
+    "js/pages-home.js",
+    "js/pages-foundations.js",
+    "js/pages-overview.js",
+    "index.html",
+    "test/theme-tokens.test.js",
+    "test/color-engine.test.js",
+    "test/token-pipeline.test.js",
+    "js/pages-tokens.js",
+    "design/reviews/foundations.accessibility.2026-07-13-foundations-accessibility-01.review.json",
+    "design/reviews/foundations.elevation.2026-07-13-foundations-elevation-01.review.json",
+    "design/reviews/overview.architecture.review.json",
+    "design/reviews/tokens.component.2026-07-13-tokens-component-01.review.json",
+    "design/reviews/tokens.json-tokens.2026-07-13-tokens-json-tokens-01.review.json",
+    "design/reviews/tokens.motion.2026-07-13-tokens-motion-01.review.json",
+    "design/reviews/tokens.overview.2026-07-13-tokens-overview-01.review.json",
+    "design/reviews/foundations.color.2026-07-14-foundations-color-01.review.json"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "tokens.theme",
+      "summary": "Light/DarkとStandard/HighでSurface/Control roleの意味とAPI shapeが維持されることを確認する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "影響元cycleで一次資料調査と設計判断が完了しており、このfollow-upでは新しい外部解釈を導入せず、確定した方針と実装の整合を確認するため。"
+  },
+  "decisions": [
+    {
+      "id": "theme-resolves-role-not-purpose",
+      "summary": "ThemeとContrastはSurface/Controlの値だけを解決し、用途を変更しない。",
+      "rationale": "4 contextすべてで同じcomponent contractを利用するため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "no-change",
+      "description": "Theme Tokensの現行sourceは影響元cycleの採用方針と整合している。",
+      "action": "関連source、生成物、contract、testを照合し、影響cycleをacknowledgedImpactsへ記録した。",
+      "status": "not-applicable"
+    }
+  ],
+  "changes": [
+    {
+      "path": "src/color-engine.js",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "tokens/build/tokens.css",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "test/theme-tokens.test.js",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "test/color-engine.test.js",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "design/reviews/tokens.theme.2026-07-14-tokens-theme-01.review.json",
+      "summary": "影響判断、source照合、検証、acknowledgementを記録。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "最新follow-up reviewを台帳へ接続。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/color-engine.test.js test/component-specs.test.js test/token-pipeline.test.js test/css-variables.test.js test/theme-tokens.test.js",
+      "status": "passed",
+      "notes": "Color、74 component contract、4 token bundle、CSS変数、theme modifierの関連testが成功。"
+    },
+    {
+      "command": "npm run validate:system",
+      "status": "passed",
+      "notes": "Schema、registry、review dependency、contractの整合が成功。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-elevation-01",
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-tokens-component-01",
+    "2026-07-13-tokens-json-tokens-01",
+    "2026-07-13-tokens-motion-01",
+    "2026-07-13-tokens-overview-01",
+    "2026-07-14-foundations-color-01"
+  ],
+  "impactedItems": [],
+  "nextRecommendedItems": []
+}

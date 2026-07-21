@@ -1,0 +1,470 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "icon-button",
+  "name": "Icon Button",
+  "status": "draft",
+  "category": "core",
+  "description": "アイコンのみのコンパクトなアクション。ツールバーや行内操作に使う。",
+  "source": {
+    "humanDoc": "components/icon-button.md",
+    "registry": "js/components-registry.js#icon-button"
+  },
+  "intent": {
+    "whenToUse": [
+      "ツールバー・カードヘッダーの補助操作",
+      "スペースが限られたテーブル行内"
+    ],
+    "whenNotToUse": [
+      "意味がアイコンだけでは伝わらない主要アクション → ラベル付き Button"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Native interactive root or navigation target."
+    },
+    {
+      "part": "label",
+      "required": true,
+      "description": "Predictable accessible action or destination name."
+    },
+    {
+      "part": "icon",
+      "required": false,
+      "description": "Meaning reinforcement; decorative icons stay hidden from assistive technology."
+    }
+  ],
+  "variants": {
+    "ghost": {
+      "intent": "面を増やさない補助action。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "secondary": {
+      "intent": "主要actionを補助する標準表現。",
+      "tokenRefs": {},
+      "states": {}
+    },
+    "primary": {
+      "intent": "主要actionまたは最優先の選択。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {
+    "xs": {
+      "controlHeight": "--ctl-xs",
+      "paddingInline": [
+        "--sp-2",
+        "--sp-2"
+      ],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "12"
+    },
+    "sm": {
+      "controlHeight": "--ctl-sm",
+      "paddingInline": [
+        "--sp-2",
+        "--sp-2"
+      ],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "14"
+    },
+    "md": {
+      "controlHeight": "--ctl-md",
+      "paddingInline": [
+        "--sp-2",
+        "--sp-2"
+      ],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "16"
+    },
+    "lg": {
+      "controlHeight": "--ctl-lg",
+      "paddingInline": [
+        "--sp-2",
+        "--sp-2"
+      ],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "18"
+    }
+  },
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    },
+    {
+      "id": "hover",
+      "description": "Pointer hoverの補助変化。意味をhoverだけに依存させない。",
+      "requiredBehavior": [
+        "Pointer hoverの補助変化。意味をhoverだけに依存させない。"
+      ]
+    },
+    {
+      "id": "disabled",
+      "description": "操作不能である理由を周辺文脈から理解できるようにする。",
+      "requiredBehavior": [
+        "操作不能である理由を周辺文脈から理解できるようにする。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "variant",
+      "type": "\"ghost\" | \"secondary\" | \"primary\"",
+      "required": false,
+      "default": "ghost",
+      "description": "意味と優先度を選ぶ。"
+    },
+    {
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
+      "required": false,
+      "default": "md",
+      "description": "Density内の相対sizeを選ぶ。"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "required": false,
+      "default": "false",
+      "description": "操作不能state。"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--surface",
+      "--border",
+      "--fg",
+      "--surface-muted",
+      "--fg-disabled",
+      "--border-strong",
+      "--primary",
+      "--primary-hover",
+      "--primary-active",
+      "--primary-fg",
+      "--focus-ring"
+    ],
+    "density": [
+      "--ctl-md",
+      "--ctl-xs",
+      "--ctl-sm",
+      "--ctl-lg",
+      "--text-label"
+    ],
+    "spacing": [
+      "--sp-2"
+    ],
+    "radius": [
+      "--radius-sm"
+    ],
+    "motion": [
+      "--dur-fast"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.surface-muted.value",
+        "source": "--surface-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-disabled.value",
+        "source": "--fg-disabled",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border-strong.value",
+        "source": "--border-strong",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.primary.value",
+        "source": "--primary",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.primary-hover.value",
+        "source": "--primary-hover",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.primary-active.value",
+        "source": "--primary-active",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.primary-fg.value",
+        "source": "--primary-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.focus-ring.value",
+        "source": "--focus-ring",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.ctl-md.value",
+        "source": "--ctl-md",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-2.value",
+        "source": "--sp-2",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-sm.value",
+        "source": "--radius-sm",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.dur-fast.value",
+        "source": "--dur-fast",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.ctl-xs.value",
+        "source": "--ctl-xs",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.ctl-sm.value",
+        "source": "--ctl-sm",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.ctl-lg.value",
+        "source": "--ctl-lg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.text-label.value",
+        "source": "--text-label",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.icon-button"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "aria-label を必須にする",
+      "ツールチップはフォーカス時にも表示する",
+      "Keyboardとpointerで同じ機能を実行できる。",
+      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
+      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+    ],
+    "aria": [
+      "Native <button>と必須のaria-labelを使う。"
+    ],
+    "focus": [
+      "focus-visibleで--focus-ringを使う。",
+      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+    ]
+  },
+  "keyboardInteractions": [
+    {
+      "key": "Enter / Space",
+      "action": "Actionを実行する。"
+    }
+  ],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "ツールバー・カードヘッダーの補助操作",
+      "recommended": [
+        "必ず aria-label とツールチップを併用する。"
+      ],
+      "avoid": [
+        "意味がアイコンだけでは伝わらない主要アクション → ラベル付き Button"
+      ]
+    },
+    {
+      "id": "recommended-2",
+      "title": "Secondary context",
+      "description": "スペースが限られたテーブル行内",
+      "recommended": [
+        "操作ターゲットは 24px 以上を最低条件とし、タッチ中心の主要操作は原則 44px 以上にする。"
+      ],
+      "avoid": [
+        "意味がアイコンだけでは伝わらない主要アクション → ラベル付き Button"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのIcon Button。",
+      "rules": [
+        "周辺layoutに応じたintrinsic widthを基本にし、formではlabelとの整列を保つ。",
+        "Keyboard focusとhoverを別々に確認する。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのIcon Button。",
+      "rules": [
+        "Form文脈では利用可能幅まで広げ、複数controlを無理に横へ詰めない。",
+        "同じpropとstate contractを維持する。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのIcon Button。",
+      "rules": [
+        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
+        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM",
+    "FOCUS_VISIBLE_REQUIRED",
+    "NO_POSITIVE_TABINDEX",
+    "TARGET_SIZE_MINIMUM",
+    "INTERACTIVE_NAME_REQUIRED"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Icon Buttonの標準例。",
+      "code": "<IconButton variant=\"ghost\" size=\"md\" aria-label=\"追加\">\n  <PlusIcon />\n</IconButton>"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

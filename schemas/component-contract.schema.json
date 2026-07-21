@@ -1,0 +1,303 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/component-contract.schema.json",
+  "title": "Meridian Component Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "status",
+    "category",
+    "description",
+    "source",
+    "intent",
+    "anatomy",
+    "variants",
+    "sizes",
+    "states",
+    "props",
+    "tokenRefs",
+    "tokenBindings",
+    "accessibility",
+    "keyboardInteractions",
+    "usagePatterns",
+    "responsiveBehavior",
+    "rules",
+    "qualityChecks",
+    "examples"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "type": "string" },
+    "contractVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "name": { "type": "string" },
+    "status": { "enum": ["draft", "stable", "deprecated"] },
+    "category": { "type": "string" },
+    "description": { "type": "string" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["humanDoc", "registry"],
+      "properties": {
+        "humanDoc": { "type": "string" },
+        "registry": { "type": "string" }
+      }
+    },
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["whenToUse", "whenNotToUse", "principles"],
+      "properties": {
+        "whenToUse": { "type": "array", "items": { "type": "string" } },
+        "whenNotToUse": { "type": "array", "items": { "type": "string" } },
+        "principles": { "type": "array", "items": { "type": "integer" } }
+      }
+    },
+    "anatomy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["part", "required", "description"],
+        "properties": {
+          "part": { "type": "string" },
+          "required": { "type": "boolean" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "variants": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["intent", "tokenRefs", "states"],
+        "properties": {
+          "intent": { "type": "string" },
+          "tokenRefs": { "$ref": "#/$defs/tokenMap" },
+          "states": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/$defs/tokenMap" }
+          }
+        }
+      }
+    },
+    "sizes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["controlHeight", "paddingInline", "gap", "textToken"],
+        "properties": {
+          "controlHeight": { "type": "string" },
+          "paddingInline": { "type": "array", "items": { "type": "string" } },
+          "gap": { "type": "string" },
+          "textToken": { "type": "string" },
+          "iconSize": { "type": "string" }
+        }
+      }
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "description", "requiredBehavior"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "requiredBehavior": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "props": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "type", "required", "default", "description"],
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "required": { "type": "boolean" },
+          "default": { "type": ["string", "null"] },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "tokenRefs": { "$ref": "#/$defs/tokenGroups" },
+    "tokenBindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coverage", "bindings", "unboundSlots"],
+      "properties": {
+        "coverage": { "enum": ["partial", "complete"] },
+        "bindings": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/tokenBinding" }
+        },
+        "unboundSlots": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/unboundSlot" }
+        }
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requirements", "aria", "focus"],
+      "properties": {
+        "requirements": { "type": "array", "items": { "type": "string" } },
+        "aria": { "type": "array", "items": { "type": "string" } },
+        "focus": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "keyboardInteractions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "action"],
+        "properties": {
+          "key": { "type": "string" },
+          "action": { "type": "string" }
+        }
+      }
+    },
+    "usagePatterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "description", "recommended", "avoid"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "recommended": { "type": "array", "items": { "type": "string" } },
+          "avoid": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "responsiveBehavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["desktop", "mobile", "touch"],
+      "properties": {
+        "desktop": { "$ref": "#/$defs/responsiveMode" },
+        "mobile": { "$ref": "#/$defs/responsiveMode" },
+        "touch": { "$ref": "#/$defs/responsiveMode" }
+      }
+    },
+    "rules": { "type": "array", "items": { "type": "string" } },
+    "qualityChecks": { "type": "array", "items": { "type": "string" } },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "description", "code"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "code": { "type": "string" }
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["compatibility", "rootElements", "slots", "attributes", "stateModel", "events", "relations", "provenance"],
+      "properties": {
+        "compatibility": { "type": "string", "minLength": 1 },
+        "rootElements": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+        "slots": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+        "attributes": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "stateModel": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+        "events": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "relations": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "provenance": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } }
+      }
+    },
+    "selectionRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["useWhen", "avoidWhen", "alternatives"],
+      "properties": {
+        "useWhen": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "avoidWhen": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "alternatives": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "negativeExamples": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pattern", "reason", "ruleIds"],
+        "properties": {
+          "pattern": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "ruleIds": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+        }
+      }
+    },
+    "requiredScenarios": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+    "openQuestions": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "tokenMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "array"],
+        "items": { "type": "string" }
+      }
+    },
+    "tokenGroups": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
+    "tokenBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot", "source", "scope", "componentToken", "aliases", "trigger", "reason"],
+      "properties": {
+        "slot": { "type": "string", "pattern": "^[a-z0-9*]+(?:[.-][a-z0-9*]+)*$" },
+        "source": { "type": "string", "minLength": 1 },
+        "scope": { "enum": ["semantic", "component", "reference", "literal"] },
+        "componentToken": { "type": ["string", "null"] },
+        "aliases": { "type": ["string", "null"] },
+        "trigger": { "type": ["string", "null"] },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "unboundSlot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot", "reason", "owner"],
+      "properties": {
+        "slot": { "type": "string", "pattern": "^[a-z0-9*]+(?:[.-][a-z0-9*]+)*$" },
+        "reason": { "type": "string", "minLength": 1 },
+        "owner": { "type": "string", "minLength": 1 }
+      }
+    },
+    "responsiveMode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "rules", "avoid"],
+      "properties": {
+        "summary": { "type": "string" },
+        "rules": { "type": "array", "items": { "type": "string" } },
+        "avoid": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

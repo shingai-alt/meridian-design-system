@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../schemas/pattern-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "contractVersion": "0.1.0",
+  "id": "interactive-row-group",
+  "name": "Interactive Row Group",
+  "status": "draft",
+  "description": "反復する編集行をDesktopでは比較可能なTable、Mobileでは同じreading orderのfield groupとして提示する。",
+  "components": ["table", "form-field", "text-field", "select", "validation-message", "status-indicator", "button"],
+  "layoutRecipes": ["stack", "cluster", "grid", "section", "responsive-switch"],
+  "rules": [
+    "すべてのleaf nodeを登録済みComponentへ解決する。",
+    "DesktopとMobileで同じdata model、field relation、component identityを維持する。",
+    "行追加、削除、検証、結果通知はnative controlとlive regionで操作可能にする。"
+  ],
+  "accessibility": [
+    "Desktopはcaptionとcolumn headerを持つnative tableを使う。",
+    "Mobile reflow後もDOM order、reading order、focus orderを一致させる。",
+    "各controlのaccessible nameに行の識別情報を含める。"
+  ]
+}

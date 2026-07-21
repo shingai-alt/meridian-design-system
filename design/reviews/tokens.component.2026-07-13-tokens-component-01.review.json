@@ -1,0 +1,146 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.component",
+  "cycleId": "2026-07-13-tokens-component-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/token-policy.json",
+    "tokens/src/component.json",
+    "tokens/build/tokens.css",
+    "tokens/build/meridian.tokens.json",
+    "js/generated/token-catalog-meta.js",
+    "design/contracts/components",
+    "components/button.md",
+    "DESIGN.md",
+    "index.html",
+    "js/utils.js",
+    "js/ui-builders.js",
+    "js/components-registry.js",
+    "js/pages-foundations.js",
+    "test/component-tokens.test.js",
+    "js/pages-tokens.js"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "tokens.component",
+      "summary": "System Architectureで確定したComponent token昇格条件を、12個の公開token、生成output、実consumer、Button contractへ適用する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "新しいtoken layerや外部APIを導入せず、overview.architectureで外部比較済みの昇格条件を既存12 tokenへ機械的に適用し検証するcycleのため。"
+  },
+  "decisions": [
+    {
+      "id": "component-token-policy-gate",
+      "summary": "公開Component tokenにはCSS名、許可trigger、具体的reasonを必須とし、Semantic aliasを既定とする。",
+      "rationale": "Semantic tokenの無秩序な複製を防ぎ、人間とAIが同じ昇格基準を判定できるようにするため。"
+    },
+    {
+      "id": "intrinsic-direct-value-exception",
+      "summary": "Semanticに一般化できない直値はintrinsic-component-value triggerと明示reasonがある場合だけ許可する。",
+      "rationale": "Table row hoverの固有alphaを保持しつつ、説明できないone-off valueを拒否するため。"
+    },
+    {
+      "id": "reject-unused-component-tokens",
+      "summary": "公開Component tokenは全contextへ生成され、実装consumerを最低1つ持たなければならない。",
+      "rationale": "公開APIだけが増えて実装との対応が失われることをrelease前に検出するため。"
+    },
+    {
+      "id": "canonical-semantic-css-alias",
+      "summary": "ContractとAI文書はDTCG path名ではなくgenerated catalogが定義するCSS variable名を使用する。",
+      "rationale": "primary-foregroundとprimary-fgのようなpath/CSS命名差を公開利用者へ誤案内しないため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "source-wrong",
+      "description": "Table row hoverが直接color valueを持つのにcomponent-anatomy triggerを使い、intrinsic value例外として明示されていなかった。",
+      "action": "triggerをintrinsic-component-valueへ変更し、policyに明示的なintrinsic value参照条件を追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "cross-layer-conflict",
+      "description": "Button contractのcomponent triggerとSemantic alias名がtokens/src/component.jsonおよびgenerated CSSと一致していなかった。",
+      "action": "4 bindingのtriggerを原本へ同期し、foreground aliasを--primary-fgへ修正した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Foundation例、Button md、registry、AI向けDESIGN.mdが存在しない--primary-foregroundをCSS名として案内していた。",
+      "action": "Component境界を--primary-fgへ直し、DESIGN.md generatorを全Semantic tokenの実CSS名から出力するよう変更した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "未使用Component token、直値例外、source/contract trigger差を自動で拒否する検証がなかった。",
+      "action": "12 tokenのpolicy、生成、consumer、Button bindingを検証するcomponent-tokens testを追加した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "design/token-policy.json",
+      "summary": "Component layerへintrinsic-value-with-explicit-reason例外を明記した。"
+    },
+    {
+      "path": "tokens/src/component.json",
+      "summary": "Table row hoverをintrinsic-component-valueとして分類した。"
+    },
+    {
+      "path": "design/contracts/components/button.contract.json",
+      "summary": "4 Component token bindingのtriggerとSemantic CSS aliasを原本へ同期した。"
+    },
+    {
+      "path": "scripts/build-design-md.mjs",
+      "summary": "AI向けSemantic token表をgenerated CSS naming ruleから生成するよう変更した。"
+    },
+    {
+      "path": "test/component-tokens.test.js",
+      "summary": "Policy gate、3 context出力、実consumer、contract、docs namingの4検証を追加した。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "Component Tokenのsource、output、contract、consumer、docs、testをreview scopeへ登録した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/component-tokens.test.js test/token-pipeline.test.js",
+      "status": "passed",
+      "notes": "9 tests passed。12/12 tokenのpolicy、output、consumerとButton 4 bindingを確認した。"
+    },
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "全generator、schema、38 JavaScript files、76 tests、102 registry items、25 review cyclesを確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-components-button-bootstrap",
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-tokens-motion-01",
+    "2026-07-13-tokens-overview-01"
+  ],
+  "impactedItems": [
+    "tokens.theme",
+    "components.button",
+    "components.text-field",
+    "components.table",
+    "components.sidebar",
+    "components.tooltip"
+  ],
+  "nextRecommendedItems": [
+    "tokens.theme"
+  ]
+}

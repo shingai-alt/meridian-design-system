@@ -1,0 +1,300 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "run-log",
+  "name": "Run Log",
+  "status": "draft",
+  "category": "ai & developer",
+  "description": "実行ログのストリーム表示。タイムスタンプ・レベル・展開可能な詳細を持つ。",
+  "source": {
+    "humanDoc": "components/run-log.md",
+    "registry": "js/components-registry.js#run-log"
+  },
+  "intent": {
+    "whenToUse": [
+      "長時間処理の逐次logを時刻・level付きで確認するとき。"
+    ],
+    "whenNotToUse": [
+      "要約だけで十分な進捗にはProgressやAgent Statusを使う。"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Collection container with an explicit reading order."
+    },
+    {
+      "part": "item",
+      "required": true,
+      "description": "Repeated row, event, node, message, or entry."
+    },
+    {
+      "part": "primary-content",
+      "required": true,
+      "description": "Main scannable value."
+    },
+    {
+      "part": "metadata",
+      "required": false,
+      "description": "Secondary state, time, owner, or count."
+    },
+    {
+      "part": "actions",
+      "required": false,
+      "description": "Item-level operations with independent names."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "children",
+      "type": "ReactNode",
+      "required": true,
+      "default": null,
+      "description": "Componentの主要content。"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--border",
+      "--border-muted",
+      "--danger-fg",
+      "--fg",
+      "--fg-muted",
+      "--fg-subtle",
+      "--focus-ring",
+      "--surface",
+      "--surface-muted",
+      "--table-row-hover"
+    ],
+    "density": [
+      "--cell-y",
+      "--row-h"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Run Logの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Run Logの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Run Logの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.surface-muted.value",
+        "source": "--surface-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Run Logの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Run Logの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border-muted.value",
+        "source": "--border-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Run Logの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.table-row-hover.value",
+        "source": "--table-row-hover",
+        "scope": "component",
+        "componentToken": "--table-row-hover",
+        "aliases": null,
+        "trigger": "intrinsic-component-value",
+        "reason": "大量行で反復するTable hoverはsurface tokenより弱い固有濃度を必要とする。"
+      },
+      {
+        "slot": "token.row-h.value",
+        "source": "--row-h",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Run Logの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.cell-y.value",
+        "source": "--cell-y",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Run Logの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.focus-ring.value",
+        "source": "--focus-ring",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Run Logの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger-fg.value",
+        "source": "--danger-fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Run LogのHTML showcaseで実際に参照する公開token。"
+      },
+      {
+        "slot": "token.fg-subtle.value",
+        "source": "--fg-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Run LogのHTML showcaseで実際に参照する公開token。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.run-log"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "表示専用rootを不要にtab順へ追加しない。",
+      "状態は色だけで表さずtext、icon、shapeを併用する。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+    ]
+  },
+  "keyboardInteractions": [],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "長時間処理の逐次logを時刻・level付きで確認するとき。",
+      "recommended": [
+        "等幅フォント+タブラー数字で桁を揃える。"
+      ],
+      "avoid": [
+        "要約だけで十分な進捗にはProgressやAgent Statusを使う。"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのRun Log。",
+      "rules": [
+        "CompactまたはDefault densityで走査性を優先し、metadataとactionの列を安定させる。",
+        "Hover actionはfocusでも表示する。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのRun Log。",
+      "rules": [
+        "主情報を先にしてmetadataを折り返し、非表示情報にはdetail viewから到達できるようにする。",
+        "行全体clickだけに依存せず明示的なtargetを残す。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのRun Log。",
+      "rules": [
+        "表示専用rootをtab順へ追加しない。",
+        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Run Logの標準例。",
+      "code": "<RunLog\n  entries={logs}\n  follow\n  levelFilter={[\"info\", \"warn\", \"error\"]}\n/>"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

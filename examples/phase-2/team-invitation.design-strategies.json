@@ -1,0 +1,45 @@
+{
+  "$schema": "../../schemas/design-strategies.schema.json",
+  "schemaVersion": "0.1.0",
+  "conceptId": "phase2_team_invitation",
+  "principlesRef": "research/principles/team-invitation.principles.json",
+  "strategies": [
+    {
+      "id": "direct-batch-editor",
+      "label": "Direct batch editor",
+      "taskModel": "direct-batch-edit",
+      "hypothesis": "招待入力を唯一の主役にし、必要なcapacityだけを直前に示すと最短で正確に完了できる。",
+      "interactionModel": ["宛先行を追加する", "行ごとにRoleを選ぶ", "行内でvalidationする", "対象数を含む確認Actionへ進む"],
+      "informationArchitecture": ["task heading", "compact capacity context", "batch editor", "row status", "review action"],
+      "principleRefs": ["decision-point-constraints", "concrete-action-outcome", "row-level-recovery"],
+      "requiredComponents": ["form-field", "text-field", "select", "validation-message", "table", "status-indicator", "alert", "button"],
+      "tradeoffs": ["Workspace設定全体の位置感覚より、招待完了までの速さを優先する。"],
+      "invalidWhen": ["RoleやSeatの判断が複雑で、入力中に長い説明を常時参照する必要がある場合。"]
+    },
+    {
+      "id": "context-supported-editor",
+      "label": "Context-supported editor",
+      "taskModel": "context-supported-edit",
+      "hypothesis": "Seatと権限の文脈を独立した参照領域に置くと、入力を妨げず判断材料を維持できる。",
+      "interactionModel": ["capacityを参照する", "宛先とRoleを編集する", "高権限時だけ追加確認する", "main columnから確認へ進む"],
+      "informationArchitecture": ["workspace navigation", "task heading", "batch editor", "capacity aside", "review action"],
+      "principleRefs": ["decision-point-constraints", "separate-context-from-task", "progressive-risk"],
+      "requiredComponents": ["form-field", "text-field", "select", "checkbox", "validation-message", "table", "alert", "button"],
+      "tradeoffs": ["Desktopでは判断しやすいが、中間幅でasideがmainの幅を圧迫しやすい。"],
+      "invalidWhen": ["参照文脈が一つの短い数値だけで、asideが情報量に対して過剰になる場合。"]
+    },
+    {
+      "id": "staged-risk-review",
+      "label": "Staged risk review",
+      "taskModel": "staged-risk-review",
+      "hypothesis": "入力、確認、結果を段階化すると、高権限や部分失敗を含む招待でも現在地と次の結果を理解できる。",
+      "interactionModel": ["入力段階で宛先を整える", "確認段階で対象とRole影響をレビューする", "送信後に成功と失敗を分離する", "失敗行だけを再編集する"],
+      "informationArchitecture": ["flow status", "task heading", "batch editor", "risk review", "per-row result"],
+      "principleRefs": ["progressive-risk", "concrete-action-outcome", "preserve-successful-work"],
+      "requiredComponents": ["form-field", "text-field", "select", "checkbox", "validation-message", "table", "status-indicator", "alert", "button"],
+      "tradeoffs": ["単純な少人数招待では段階表示が操作量以上に重く感じられる。"],
+      "invalidWhen": ["招待が常に単一宛先かつ低権限で、確認段階に新しい判断がない場合。"]
+    }
+  ],
+  "recommendation": "direct-batch-editor"
+}

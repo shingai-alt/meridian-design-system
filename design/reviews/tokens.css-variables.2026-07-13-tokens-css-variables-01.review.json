@@ -1,0 +1,131 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.css-variables",
+  "cycleId": "2026-07-13-tokens-css-variables-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/contracts/components/_template.contract.json",
+    "design/contracts/components/button.contract.json",
+    "components/button.md",
+    "examples",
+    "tokens/src",
+    "scripts/build-tokens.mjs",
+    "tokens/build/tokens.css",
+    "js/pages-tokens.js",
+    "js/pages-resources.js",
+    "js/pages-overview.js",
+    "js/components-registry.js",
+    "index.html",
+    "test/css-variables.test.js"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "tokens.css-variables",
+      "summary": "生成CSSの公開名、4 theme/contrast context、3 density mode、実装・example・machine-readable spec・配布説明の整合を確認する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "新しいCSS Custom Propertiesの挙動や外部配布方式を設計するcycleではなく、既存の生成器を正本として内部参照と現行配布境界のドリフトを解消する作業であり、判断はリポジトリ内の生成物と実consumerを直接照合できるため。"
+  },
+  "decisions": [
+    {
+      "id": "generated-css-is-public-css-contract",
+      "summary": "現行のCSS配布契約はtokens/build/tokens.cssに実際に生成される短いCustom Property名とする。",
+      "rationale": "人間向けdocs、AI contract、screen spec、exampleが同じ実在名を使い、未定義参照を許さないため。"
+    },
+    {
+      "id": "complete-modifier-output",
+      "summary": "SemanticとComponentは4 theme/contrast context、Densityは3 modeの全公開変数を欠けなく出力する。",
+      "rationale": "Consumerがcontextを切り替えてもAPI名や利用可能なproperty集合が変わらないようにするため。"
+    },
+    {
+      "id": "honest-current-distribution",
+      "summary": "npm packageとFigma libraryは未提供と明記し、現在のCSS/JSON生成物だけを利用可能な配布境界として案内する。",
+      "rationale": "存在しないpackage importや直接import機能を利用者とAIに生成させないため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "implementation-stale",
+      "description": "Standalone examples、screen specs、Button docs/contract、Overview実装が--foreground系などの旧long-nameを参照していた。",
+      "action": "全参照を生成済みの--fg、--bg、--primary-fg、status-fg系へ同期した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Resourcesが未公開の@meridian/tokens/css packageとFigma Variables直接配布を現在利用可能として案内していた。",
+      "action": "repository内のtokens/build/tokens.cssと4 resolved JSON bundleを現行境界として案内し、将来のadapter/packageと区別した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "ResourcesにLight/Dark/HC、9組合せ、40px touch targetという旧policyが残っていた。",
+      "action": "Light/Dark × Standard/High、12組合せ、24px minimumと44px touch preferenceへ更新した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-contract",
+      "description": "公開Custom Propertyの出力数とconsumer参照を横断して検証するtestがなかった。",
+      "action": "生成CSS、docs app、5 examples、3 screen specs、component docs/contracts/registryを照合するcss-variables testを追加した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "examples",
+      "summary": "5 standalone exampleと3 screen specを生成済みCSS variable名へ同期した。"
+    },
+    {
+      "path": "design/contracts/components/button.contract.json",
+      "summary": "Buttonのforeground bindingを--fgと--fg-disabledへ同期した。"
+    },
+    {
+      "path": "components/button.md",
+      "summary": "Token inventoryを現行の短いCSS公開名へ同期した。"
+    },
+    {
+      "path": "js/pages-resources.js",
+      "summary": "Figma、Tailwind、handoff、accessibility、contributionの案内を現行配布物とmodifier policyへ同期した。"
+    },
+    {
+      "path": "test/css-variables.test.js",
+      "summary": "公開変数の依存解決、context/mode完全性、全consumerの未定義参照、配布説明を継続検証するtestを追加した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/css-variables.test.js",
+      "status": "passed",
+      "notes": "5 tests passed。生成CSS、4 context、3 density、docs app、5 examples、3 screen specs、contracts/docs/registryを確認した。"
+    },
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "全generator、schema、38 JavaScript files、93 tests、102 registry items、28 review cyclesを確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-layout-01",
+    "2026-07-13-tokens-density-01",
+    "2026-07-13-tokens-overview-01",
+    "2026-07-13-tokens-theme-01"
+  ],
+  "impactedItems": [
+    "tokens.json-tokens",
+    "components.button"
+  ],
+  "nextRecommendedItems": [
+    "tokens.json-tokens"
+  ]
+}

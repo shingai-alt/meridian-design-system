@@ -1,0 +1,33 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "overview.item-id",
+  "cycleId": "YYYY-MM-DD-item-id-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "in-progress",
+  "startedAt": "YYYY-MM-DD",
+  "completedAt": null,
+  "reviewedSources": ["design/research-policy.json"],
+  "research": {
+    "status": "pending",
+    "scope": {
+      "itemId": "domain.item",
+      "summary": ""
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": null
+  },
+  "decisions": [],
+  "differences": [],
+  "changes": [],
+  "validations": [],
+  "openQuestions": [],
+  "acknowledgedImpacts": [],
+  "impactedItems": [],
+  "nextRecommendedItems": []
+}

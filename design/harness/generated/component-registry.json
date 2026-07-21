@@ -1,0 +1,1047 @@
+{
+  "schemaVersion": "0.1.0",
+  "runtimeVersion": "0.1.0",
+  "sourcePackageIds": [
+    "phase1_team_invitation"
+  ],
+  "exceptionApprovals": [],
+  "translationPackDigest": "sha256-0183e37d772d938042a98063426412505dce847213b3648225dab190d1ecbd8b",
+  "draftAllowlist": [
+    "button",
+    "text-field",
+    "select",
+    "form-field",
+    "validation-message",
+    "checkbox",
+    "alert",
+    "status-indicator",
+    "table"
+  ],
+  "draftPatternAllowlist": [
+    "interactive-row-group"
+  ],
+  "components": [
+    {
+      "id": "button",
+      "name": "Button",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/button.contract.json",
+      "sourceDigest": "sha256-c788bac60513db39533b701411374df39c3fc5f2164d16228aebf115362d146c",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "variants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "outline",
+        "danger",
+        "success",
+        "link"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "sizes": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
+      "props": [
+        {
+          "name": "variant",
+          "type": "\"primary\" | \"secondary\" | \"tertiary\" | \"ghost\" | \"outline\" | \"danger\" | \"success\" | \"link\"",
+          "required": false,
+          "default": "primary",
+          "description": "視覚的な優先度と文脈。"
+        },
+        {
+          "name": "size",
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"",
+          "required": false,
+          "default": "md",
+          "description": "密度 token に連動する高さと余白。"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "実行中表示。aria-busy と二重送信防止を伴う。"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "操作不可。フォーム送信対象から外す場合に使う。"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "iconOnly または視覚ラベルがない場合に必須。"
+        },
+        {
+          "name": "fullWidth",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "親コンテナ幅いっぱいに広げる。モバイルの主要アクションで使う。"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "button"
+        ],
+        "slots": [
+          "label",
+          "leading-icon",
+          "trailing-icon",
+          "spinner"
+        ],
+        "attributes": [
+          "type",
+          "disabled",
+          "aria-disabled",
+          "aria-label",
+          "aria-busy"
+        ],
+        "stateModel": [
+          "data-meridian-variant",
+          "data-meridian-state"
+        ],
+        "events": [
+          "click"
+        ],
+        "relations": [
+          "accessible-name"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      },
+      "tokenRefs": {
+        "componentColor": [
+          "--button-primary-bg",
+          "--button-primary-bg-hover",
+          "--button-primary-bg-active",
+          "--button-primary-fg"
+        ],
+        "semanticColor": [
+          "--primary",
+          "--primary-hover",
+          "--primary-active",
+          "--primary-subtle",
+          "--primary-muted",
+          "--primary-fg",
+          "--control-bg",
+          "--control-bg-hover",
+          "--control-bg-active",
+          "--control-border",
+          "--control-border-hover",
+          "--surface",
+          "--surface-muted",
+          "--fg",
+          "--fg-disabled",
+          "--border",
+          "--border-muted",
+          "--border-strong",
+          "--danger",
+          "--danger-on-solid",
+          "--success",
+          "--success-on-solid",
+          "--disabled",
+          "--focus-ring"
+        ],
+        "density": [
+          "--ctl-xs",
+          "--ctl-sm",
+          "--ctl-md",
+          "--ctl-lg",
+          "--ctl-xl",
+          "--text-micro",
+          "--text-small",
+          "--text-label",
+          "--text-body"
+        ],
+        "spacing": [
+          "--sp-1",
+          "--sp-15",
+          "--sp-2",
+          "--sp-25",
+          "--sp-3",
+          "--sp-4",
+          "--sp-5"
+        ],
+        "radius": [
+          "--radius-sm"
+        ],
+        "motion": [
+          "--dur-fast",
+          "--dur-normal"
+        ]
+      }
+    },
+    {
+      "id": "text-field",
+      "name": "Text Field",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/text-field.contract.json",
+      "sourceDigest": "sha256-295408ed9d748a7ff13e7fd8f7b52db74f01290ae2bfeccdfa964a3c5bd7be03",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "error",
+        "disabled",
+        "readonly"
+      ],
+      "sizes": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "props": [
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "required": false,
+          "default": "md",
+          "description": "Density内の相対sizeを選ぶ。"
+        },
+        {
+          "name": "value",
+          "type": "unknown",
+          "required": false,
+          "default": null,
+          "description": "Controlled value。"
+        },
+        {
+          "name": "onChange",
+          "type": "(value) => void",
+          "required": false,
+          "default": null,
+          "description": "User操作で値が変わるときに通知する。"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "操作不能state。"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "Label"
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "Placeholder"
+        },
+        {
+          "name": "helper",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "Helper text"
+        },
+        {
+          "name": "leading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Leading icon"
+        },
+        {
+          "name": "trailing",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Trailing affix"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "input"
+        ],
+        "slots": [
+          "control",
+          "leading",
+          "trailing"
+        ],
+        "attributes": [
+          "type",
+          "value",
+          "disabled",
+          "readonly",
+          "aria-invalid",
+          "aria-labelledby",
+          "aria-describedby"
+        ],
+        "stateModel": [
+          "native-attributes",
+          "data-meridian-state"
+        ],
+        "events": [
+          "input",
+          "change",
+          "blur"
+        ],
+        "relations": [
+          "labelledby",
+          "describedby",
+          "error-message"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      },
+      "tokenRefs": {
+        "semanticColor": [
+          "--input-bg",
+          "--surface",
+          "--input-border",
+          "--border",
+          "--input-border-focus",
+          "--primary",
+          "--input-placeholder",
+          "--fg-subtle",
+          "--danger",
+          "--fg",
+          "--fg-muted",
+          "--fg-disabled",
+          "--focus-ring"
+        ],
+        "density": [
+          "--ctl-md",
+          "--input-x",
+          "--ctl-sm",
+          "--ctl-lg",
+          "--text-label"
+        ],
+        "spacing": [
+          "--sp-2"
+        ],
+        "radius": [
+          "--radius-sm"
+        ],
+        "motion": [
+          "--dur-fast"
+        ]
+      }
+    },
+    {
+      "id": "select",
+      "name": "Select",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/select.contract.json",
+      "sourceDigest": "sha256-c23aebeb937531580b78c7824ede5265ab520e1334e55ecbeaffabb5c16de465",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "focus",
+        "error",
+        "disabled"
+      ],
+      "sizes": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "props": [
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "required": false,
+          "default": "md",
+          "description": "Density内の相対sizeを選ぶ。"
+        },
+        {
+          "name": "value",
+          "type": "unknown",
+          "required": false,
+          "default": null,
+          "description": "Controlled value。"
+        },
+        {
+          "name": "onChange",
+          "type": "(value) => void",
+          "required": false,
+          "default": null,
+          "description": "User操作で値が変わるときに通知する。"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "操作不能state。"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "select"
+        ],
+        "slots": [
+          "control",
+          "option"
+        ],
+        "attributes": [
+          "value",
+          "disabled",
+          "aria-invalid",
+          "aria-labelledby",
+          "aria-describedby"
+        ],
+        "stateModel": [
+          "native-attributes",
+          "data-meridian-state"
+        ],
+        "events": [
+          "change"
+        ],
+        "relations": [
+          "labelledby",
+          "describedby",
+          "error-message"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      },
+      "tokenRefs": {
+        "semanticColor": [
+          "--surface",
+          "--border",
+          "--fg",
+          "--surface-muted",
+          "--fg-muted",
+          "--border-strong",
+          "--primary",
+          "--primary-subtle",
+          "--focus-ring"
+        ],
+        "density": [
+          "--ctl-md",
+          "--ctl-sm",
+          "--ctl-lg",
+          "--text-label"
+        ],
+        "spacing": [
+          "--sp-2"
+        ],
+        "radius": [
+          "--radius-sm"
+        ],
+        "motion": [
+          "--dur-fast"
+        ]
+      }
+    },
+    {
+      "id": "form-field",
+      "name": "Form Field",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/form-field.contract.json",
+      "sourceDigest": "sha256-6d4e90d69b4d1d23d431494e57b0d9b8d6a37ee38c63baba4df956905ee25228",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "error"
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "Componentの主要content。"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "div"
+        ],
+        "slots": [
+          "label",
+          "control",
+          "description",
+          "message"
+        ],
+        "attributes": [
+          "data-meridian-state"
+        ],
+        "stateModel": [
+          "data-meridian-state"
+        ],
+        "events": [],
+        "relations": [
+          "labelledby",
+          "describedby",
+          "error-message"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      },
+      "tokenRefs": {
+        "semanticColor": [
+          "--surface",
+          "--border",
+          "--fg",
+          "--fg-muted"
+        ]
+      }
+    },
+    {
+      "id": "validation-message",
+      "name": "Validation Message",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/validation-message.contract.json",
+      "sourceDigest": "sha256-9bd8e87486735307b3f8341f3e6b85edd450ce2e9cdb7a0e44a5df3030062066",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "variants": [
+        "error",
+        "success",
+        "warning"
+      ],
+      "states": [
+        "default"
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "variant",
+          "type": "\"error\" | \"success\" | \"warning\"",
+          "required": false,
+          "default": "error",
+          "description": "意味と優先度を選ぶ。"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "span",
+          "div"
+        ],
+        "slots": [
+          "icon",
+          "message"
+        ],
+        "attributes": [
+          "id",
+          "aria-live"
+        ],
+        "stateModel": [
+          "data-meridian-variant"
+        ],
+        "events": [],
+        "relations": [
+          "describedby-target"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      },
+      "tokenRefs": {
+        "semanticColor": [
+          "--border",
+          "--danger-fg",
+          "--danger-subtle",
+          "--fg",
+          "--fg-muted",
+          "--info-fg",
+          "--info-subtle",
+          "--success-fg",
+          "--success-subtle",
+          "--surface",
+          "--warning-fg",
+          "--warning-subtle"
+        ],
+        "spacing": [
+          "--sp-3"
+        ],
+        "radius": [
+          "--radius-md"
+        ],
+        "typography": [
+          "--text-small"
+        ]
+      }
+    },
+    {
+      "id": "checkbox",
+      "name": "Checkbox",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/checkbox.contract.json",
+      "sourceDigest": "sha256-1709689ff5bab3533c360a492c463a810dd5df7df73a6f41682b3068bacc6934",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "checked",
+        "disabled"
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "value",
+          "type": "unknown",
+          "required": false,
+          "default": null,
+          "description": "Controlled value。"
+        },
+        {
+          "name": "onChange",
+          "type": "(value) => void",
+          "required": false,
+          "default": null,
+          "description": "User操作で値が変わるときに通知する。"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "操作不能state。"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "Label"
+        },
+        {
+          "name": "checked",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Checked"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "input"
+        ],
+        "slots": [
+          "control",
+          "label"
+        ],
+        "attributes": [
+          "type",
+          "checked",
+          "disabled",
+          "aria-describedby"
+        ],
+        "stateModel": [
+          "native-checked",
+          "native-disabled",
+          "data-meridian-state"
+        ],
+        "events": [
+          "change"
+        ],
+        "relations": [
+          "explicit-label",
+          "describedby"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      },
+      "tokenRefs": {
+        "semanticColor": [
+          "--surface",
+          "--border",
+          "--fg",
+          "--surface-muted",
+          "--fg-muted",
+          "--border-strong",
+          "--primary",
+          "--primary-subtle",
+          "--focus-ring"
+        ],
+        "density": [
+          "--ctl-md"
+        ],
+        "spacing": [
+          "--sp-2"
+        ],
+        "radius": [
+          "--radius-sm"
+        ],
+        "motion": [
+          "--dur-fast"
+        ]
+      }
+    },
+    {
+      "id": "alert",
+      "name": "Alert",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/alert.contract.json",
+      "sourceDigest": "sha256-149c310306e8bec9115ac31c77cc3cdbbb1693aa91404637d3afd461537d068c",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "variants": [
+        "info",
+        "success",
+        "warning",
+        "danger"
+      ],
+      "states": [
+        "default"
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "variant",
+          "type": "\"info\" | \"success\" | \"warning\" | \"danger\"",
+          "required": false,
+          "default": "info",
+          "description": "意味と優先度を選ぶ。"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "div",
+          "section"
+        ],
+        "slots": [
+          "title",
+          "message",
+          "actions"
+        ],
+        "attributes": [
+          "role",
+          "aria-labelledby"
+        ],
+        "stateModel": [
+          "data-meridian-variant"
+        ],
+        "events": [],
+        "relations": [
+          "labelledby",
+          "live-announcement-owned-externally"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      },
+      "tokenRefs": {
+        "semanticColor": [
+          "--surface",
+          "--border",
+          "--fg",
+          "--fg-muted",
+          "--info-subtle",
+          "--info-fg",
+          "--success-subtle",
+          "--success-fg",
+          "--warning-subtle",
+          "--warning-fg",
+          "--danger-subtle",
+          "--danger-fg"
+        ],
+        "spacing": [
+          "--sp-3"
+        ],
+        "radius": [
+          "--radius-md"
+        ]
+      }
+    },
+    {
+      "id": "status-indicator",
+      "name": "Status Indicator",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/status-indicator.contract.json",
+      "sourceDigest": "sha256-25d69eee9af012c2e597776efc0269ae7d603edcb1106835b90a164639efebce",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "variants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "states": [
+        "default"
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "variant",
+          "type": "\"success\" | \"running\" | \"warning\" | \"error\" | \"idle\"",
+          "required": false,
+          "default": "success",
+          "description": "意味と優先度を選ぶ。"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "span"
+        ],
+        "slots": [
+          "indicator",
+          "label"
+        ],
+        "attributes": [
+          "aria-label"
+        ],
+        "stateModel": [
+          "data-meridian-variant"
+        ],
+        "events": [],
+        "relations": [
+          "accessible-name"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      },
+      "tokenRefs": {
+        "semanticColor": [
+          "--surface",
+          "--border",
+          "--fg",
+          "--fg-muted",
+          "--info-subtle",
+          "--info-fg",
+          "--success-subtle",
+          "--success-fg",
+          "--warning-subtle",
+          "--warning-fg",
+          "--danger-subtle",
+          "--danger-fg"
+        ],
+        "spacing": [
+          "--sp-3"
+        ],
+        "radius": [
+          "--radius-md"
+        ]
+      }
+    },
+    {
+      "id": "table",
+      "name": "Table",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/table.contract.json",
+      "sourceDigest": "sha256-b6ca0a72a8bd9cc995a8a02fa070f2362504f7ffd9a9a0813ea8e394db3579b9",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "selected",
+        "loading",
+        "empty"
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "進行中stateと二重実行防止。"
+        },
+        {
+          "name": "selectable",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Row selection"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "table"
+        ],
+        "slots": [
+          "caption",
+          "head",
+          "body",
+          "row",
+          "cell",
+          "actions"
+        ],
+        "attributes": [
+          "aria-describedby"
+        ],
+        "stateModel": [
+          "data-meridian-state"
+        ],
+        "events": [],
+        "relations": [
+          "caption",
+          "column-headers"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      },
+      "tokenRefs": {
+        "semanticColor": [
+          "--border",
+          "--border-muted",
+          "--fg",
+          "--fg-muted",
+          "--fg-subtle",
+          "--focus-ring",
+          "--surface",
+          "--surface-muted",
+          "--table-row-hover"
+        ],
+        "density": [
+          "--cell-y",
+          "--row-h"
+        ]
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "interactive-row-group",
+      "name": "Interactive Row Group",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/patterns/interactive-row-group.pattern.json",
+      "sourceDigest": "sha256-91f73935f41f3158f9614a573fc4f4145e2ea49edd5ef50cbfb236e100e0fd9d",
+      "components": [
+        "table",
+        "form-field",
+        "text-field",
+        "select",
+        "validation-message",
+        "status-indicator",
+        "button"
+      ],
+      "layoutRecipes": [
+        "stack",
+        "cluster",
+        "grid",
+        "section",
+        "responsive-switch"
+      ]
+    }
+  ]
+}

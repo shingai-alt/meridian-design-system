@@ -1,0 +1,328 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "progress",
+  "name": "Progress",
+  "status": "draft",
+  "category": "feedback",
+  "description": "進捗率が分かる処理の可視化。残り時間の目安があれば併記する。",
+  "source": {
+    "humanDoc": "components/progress.md",
+    "registry": "js/components-registry.js#progress"
+  },
+  "intent": {
+    "whenToUse": [
+      "アップロード・エクスポートなど進捗が計測できる処理"
+    ],
+    "whenNotToUse": [
+      "所要不明 → Spinner"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Progress or execution status boundary."
+    },
+    {
+      "part": "indicator",
+      "required": true,
+      "description": "Current state, track, or active step."
+    },
+    {
+      "part": "label",
+      "required": true,
+      "description": "Accessible status text."
+    },
+    {
+      "part": "value",
+      "required": false,
+      "description": "Numeric progress, duration, or quota."
+    },
+    {
+      "part": "action",
+      "required": false,
+      "description": "Stop, retry, or inspect action."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "children",
+      "type": "ReactNode",
+      "required": true,
+      "default": null,
+      "description": "Componentの主要content。"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--border",
+      "--danger",
+      "--fg",
+      "--fg-muted",
+      "--primary",
+      "--success",
+      "--surface",
+      "--surface-muted",
+      "--warning"
+    ],
+    "spacing": [
+      "--sp-2"
+    ],
+    "radius": [
+      "--radius-full"
+    ],
+    "motion": [
+      "--dur-normal"
+    ],
+    "typography": [
+      "--font-mono",
+      "--text-small"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Progressの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Progressの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Progressの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.surface-muted.value",
+        "source": "--surface-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Progressの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Progressの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.primary.value",
+        "source": "--primary",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Progressの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.success.value",
+        "source": "--success",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Progressの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.warning.value",
+        "source": "--warning",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Progressの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger.value",
+        "source": "--danger",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Progressの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-2.value",
+        "source": "--sp-2",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Progressの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-full.value",
+        "source": "--radius-full",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Progressの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.dur-normal.value",
+        "source": "--dur-normal",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Progressの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.font-mono.value",
+        "source": "--font-mono",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "ProgressのHTML showcaseで実際に参照する公開token。"
+      },
+      {
+        "slot": "token.text-small.value",
+        "source": "--text-small",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "ProgressのHTML showcaseで実際に参照する公開token。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.progress"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "role=\"progressbar\" + aria-valuenow / min / max",
+      "表示専用rootを不要にtab順へ追加しない。",
+      "状態は色だけで表さずtext、icon、shapeを併用する。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+    ]
+  },
+  "keyboardInteractions": [],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "アップロード・エクスポートなど進捗が計測できる処理",
+      "recommended": [
+        "100% 到達後は完了状態(チェック)へ切り替える。"
+      ],
+      "avoid": [
+        "所要不明 → Spinner"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのProgress。",
+      "rules": [
+        "Contentと周辺layoutに応じたintrinsic sizeを使う。",
+        "Viewportだけを理由にdensityを変更しない。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのProgress。",
+      "rules": [
+        "意味とDOM順を変えず、wrapとavailable widthで適応する。",
+        "省略した情報へ別経路から到達できるようにする。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのProgress。",
+      "rules": [
+        "表示専用rootをtab順へ追加しない。",
+        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM",
+    "STATE_NOT_COLOR_ONLY"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Progressの標準例。",
+      "code": "<Progress value={64} label=\"アップロード中\" />"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

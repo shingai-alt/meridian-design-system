@@ -1,0 +1,239 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "screen",
+    "id": "screen_ai_workspace",
+    "title": "AI Workspace",
+    "source": "template",
+    "status": "draft"
+  },
+  "context": {
+    "productType": "ai-workspace",
+    "targetUsers": ["designer", "developer", "product-manager"],
+    "primaryUseCase": "AIとの対話、実行ログ、差分、ファイル状態を同じ作業空間で確認する",
+    "userIntent": "AIが何を考え、何を変更し、次に何をするのかを把握しながら作業したい",
+    "constraints": ["desktop-first", "multi-panel", "long-running-agent", "high-transparency"],
+    "locale": "ja-JP"
+  },
+  "ux": {
+    "primaryTask": "AIとの会話を続けながら、実行状態と成果物の差分を確認する",
+    "secondaryTasks": ["ファイルツリーから対象を確認する", "ツール実行ログを見る", "生成差分をレビューする", "AIの処理を停止する"],
+    "successCriteria": ["会話、ログ、差分の関係が理解できる", "実行中か待機中かが常に分かる", "ユーザーが安全に停止や確認を行える"],
+    "userRisks": ["AIが何をしているか分からず不安になる", "ログと会話の対応関係を見失う", "差分を確認せずに採用してしまう"],
+    "assumptions": ["主利用はデスクトップ", "モバイルでは補助的な確認のみを想定する", "実行ログは折りたたみ可能にする"]
+  },
+  "informationArchitecture": {
+    "hierarchy": ["agent-status", "conversation", "prompt-input", "file-tree", "run-log", "diff", "workflow-steps"],
+    "navigationRole": "entry",
+    "contentGroups": [
+      {
+        "id": "group_conversation",
+        "title": "会話",
+        "purpose": "ユーザーとAIの主作業空間を提供する",
+        "priority": "critical"
+      },
+      {
+        "id": "group_context",
+        "title": "ファイルコンテキスト",
+        "purpose": "作業対象ファイルを確認する",
+        "priority": "high"
+      },
+      {
+        "id": "group_execution",
+        "title": "実行状態",
+        "purpose": "ツール実行、差分、進行ステップを表示する",
+        "priority": "high"
+      }
+    ]
+  },
+  "layout": {
+    "templateId": "ai-workspace",
+    "density": "compact",
+    "regions": [
+      {
+        "id": "region_left_panel",
+        "role": "sidebar",
+        "purpose": "ファイルツリーと作業対象を表示する",
+        "componentRefs": ["component_file_tree"]
+      },
+      {
+        "id": "region_chat",
+        "role": "main",
+        "purpose": "会話、エージェント状態、プロンプト入力を表示する",
+        "componentRefs": ["component_agent_status", "component_chat_thread", "component_prompt_input"]
+      },
+      {
+        "id": "region_right_panel",
+        "role": "panel",
+        "purpose": "実行ログ、差分、ワークフローステップを表示する",
+        "componentRefs": ["component_run_log", "component_diff_view", "component_workflow_steps"]
+      }
+    ],
+    "responsiveBehavior": [
+      {
+        "viewport": "desktop",
+        "behavior": "左にFile tree、中央にChat、右にRun logとDiffを表示する3ペイン構成にする"
+      },
+      {
+        "viewport": "tablet",
+        "behavior": "右パネルをタブ化し、Chatを主領域として維持する"
+      },
+      {
+        "viewport": "mobile",
+        "behavior": "Chatを主画面にし、File treeとRun logはDrawerまたはTabsで切り替える"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "component_file_tree",
+      "componentId": "file-tree",
+      "purpose": "AIが参照または変更しているファイルを表示する",
+      "props": {
+        "activeFile": "docs/ai-generation/specs.md"
+      },
+      "meridianTokens": ["--bg-subtle", "--border", "--fg-muted"],
+      "states": ["default", "selected", "modified", "loading"],
+      "accessibilityNotes": ["ツリー構造は role tree と展開状態を伝える", "変更済みは色だけでなくラベルで表示する"]
+    },
+    {
+      "id": "component_agent_status",
+      "componentId": "agent-status",
+      "purpose": "AIの状態、実行中タスク、停止操作を表示する",
+      "props": {
+        "status": "running",
+        "canStop": true
+      },
+      "meridianTokens": ["--info-subtle", "--info-fg", "--focus-ring"],
+      "states": ["idle", "running", "blocked", "complete", "error"],
+      "accessibilityNotes": ["状態変化は aria-live polite で通知する", "停止ボタンには明確な accessible name を付ける"]
+    },
+    {
+      "id": "component_chat_thread",
+      "componentId": "chat-thread",
+      "purpose": "ユーザー、AI、システム、ツール実行結果の会話履歴を表示する",
+      "props": {
+        "showToolCalls": true
+      },
+      "meridianTokens": ["--surface", "--border", "--fg", "--fg-muted"],
+      "states": ["default", "streaming", "tool-running", "error"],
+      "accessibilityNotes": ["新規メッセージは読み上げ過多を避ける", "tool callは折りたたみ可能にする"]
+    },
+    {
+      "id": "component_prompt_input",
+      "componentId": "prompt-input",
+      "purpose": "次の依頼や修正指示を入力する",
+      "props": {
+        "multiline": true,
+        "submitLabel": "送信"
+      },
+      "meridianTokens": ["--input-bg", "--input-border", "--primary", "--focus-ring"],
+      "states": ["default", "focus", "disabled", "submitting"],
+      "accessibilityNotes": ["送信ショートカットを明示し、通常改行との衝突を避ける", "送信中は aria-busy を使う"]
+    },
+    {
+      "id": "component_run_log",
+      "componentId": "run-log",
+      "purpose": "実行されたコマンド、ツール、結果を時系列で表示する",
+      "props": {
+        "collapsedByDefault": false
+      },
+      "meridianTokens": ["--surface", "--border", "--fg-muted"],
+      "states": ["default", "running", "failed", "complete"],
+      "accessibilityNotes": ["失敗行にはエラー文を併記する", "タイムスタンプを読み上げ可能にする"]
+    },
+    {
+      "id": "component_diff_view",
+      "componentId": "code-diff",
+      "purpose": "AIが加えた変更を確認する",
+      "props": {
+        "viewMode": "unified"
+      },
+      "meridianTokens": ["--surface", "--border", "--success-subtle", "--danger-subtle"],
+      "states": ["default", "empty", "loading"],
+      "accessibilityNotes": ["追加と削除を色だけでなく記号とテキストで表す", "横スクロール時も行番号を追える"]
+    },
+    {
+      "id": "component_workflow_steps",
+      "componentId": "workflow-steps",
+      "purpose": "AI作業の段階と現在位置を示す",
+      "props": {
+        "currentStep": "implement"
+      },
+      "meridianTokens": ["--primary", "--success", "--border-muted"],
+      "states": ["pending", "running", "complete", "error"],
+      "accessibilityNotes": ["現在ステップは aria-current step で伝える"]
+    }
+  ],
+  "states": {
+    "default": {
+      "applicable": true,
+      "description": "会話、ファイルツリー、ログ、差分が表示され、AIは待機中または完了状態",
+      "componentRefs": ["component_chat_thread", "component_file_tree", "component_run_log", "component_diff_view"],
+      "userRecovery": null
+    },
+    "loading": {
+      "applicable": true,
+      "description": "会話履歴とファイル状態を読み込み中。中央はSkeletonではなく直前状態を維持して更新中表示にする",
+      "componentRefs": ["component_agent_status", "component_chat_thread"],
+      "userRecovery": "読み込みが長い場合は再接続を試す"
+    },
+    "empty": {
+      "applicable": true,
+      "description": "新規セッションではプロンプト入力を中心に置き、開始例を表示する",
+      "componentRefs": ["component_prompt_input"],
+      "userRecovery": "最初の依頼を入力する"
+    },
+    "error": {
+      "applicable": true,
+      "description": "ツール実行失敗時は該当ログを強調し、会話内で要約と次の選択肢を提示する",
+      "componentRefs": ["component_agent_status", "component_run_log", "component_chat_thread"],
+      "userRecovery": "再試行、指示変更、または停止を選択する"
+    },
+    "permissionDenied": {
+      "applicable": true,
+      "description": "ファイルやツールへの権限が無い場合は実行せず、必要な許可を明示する",
+      "componentRefs": ["component_agent_status", "component_run_log"],
+      "userRecovery": "必要な権限を付与する、または別の作業範囲を指定する"
+    }
+  },
+  "accessibility": {
+    "wcagTarget": "WCAG-2.2-AA",
+    "keyboardInteractions": ["Chat入力へショートカットで移動できる", "File treeを矢印キーで移動できる", "右パネルのTabsをキーボードで切り替えられる"],
+    "focusManagement": ["メッセージ送信後は入力欄にフォーカスを維持する", "エラー詳細を開いた後は元のログ行へ戻れる"],
+    "screenReaderNotes": ["実行状態の変化は短い文で通知する", "差分は追加、削除、変更なしをテキストで伝える"],
+    "nonColorCues": ["running、failed、complete はアイコンとラベルで表示する", "Diffは + と - とラベルを併用する"]
+  },
+  "rationale": [
+    {
+      "decision": "中央に会話、左右にコンテキストと検証情報を置く",
+      "reason": "AIとの対話が主作業でありながら、実行内容への透明性が必要なため",
+      "evidenceType": "user-goal",
+      "tradeoff": "デスクトップに最適化されるが、作業時の情報追跡性が高い",
+      "references": ["template:ai-workspace"]
+    },
+    {
+      "decision": "Agent Statusを常時表示する",
+      "reason": "長時間実行時にAIが停止中か実行中か分からない不安を減らすため",
+      "evidenceType": "accessibility",
+      "tradeoff": null,
+      "references": ["WCAG-2.2:Status Messages"]
+    },
+    {
+      "decision": "ログと差分を会話から分離して右パネルに置く",
+      "reason": "会話の読みやすさを保ちながら、検証情報を常に参照できるため",
+      "evidenceType": "pattern",
+      "tradeoff": "狭い画面ではパネル切り替えが必要になる",
+      "references": ["DESIGN.md:Density with rhythm"]
+    }
+  ],
+  "qualityChecks": {
+    "tokenComplianceRequired": true,
+    "componentRegistryComplianceRequired": true,
+    "keyboardRequired": true,
+    "responsiveRequired": true,
+    "stateCoverageRequired": true,
+    "rationaleRequired": true,
+    "unresolvedItems": ["file-tree、agent-status、chat-thread、run-log、code-diff の正式なcomponentId登録が必要"]
+  }
+}

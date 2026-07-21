@@ -1,0 +1,542 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "contractVersion": "0.1.0",
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["input"],
+    "slots": ["control", "leading", "trailing"],
+    "attributes": ["type", "value", "disabled", "readonly", "aria-invalid", "aria-labelledby", "aria-describedby"],
+    "stateModel": ["native-attributes", "data-meridian-state"],
+    "events": ["input", "change", "blur"],
+    "relations": ["labelledby", "describedby", "error-message"],
+    "provenance": ["component", "instance", "variant", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": { "useWhen": ["短い自由入力を受け付ける。"], "avoidWhen": ["長文または有限選択肢には使わない。"], "alternatives": ["textarea", "select", "radio"] },
+  "negativeExamples": [{ "pattern": "labelをplaceholderだけで代用する。", "reason": "入力後にaccessible labelが失われるため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] }],
+  "requiredScenarios": ["default", "error", "disabled", "readonly", "focus"],
+  "id": "text-field",
+  "name": "Text Field",
+  "status": "draft",
+  "category": "forms",
+  "description": "1 行のテキスト入力。ラベル・ヘルプ・エラーは Form Field と組み合わせる。",
+  "source": {
+    "humanDoc": "components/text-field.md",
+    "registry": "js/components-registry.js#text-field"
+  },
+  "intent": {
+    "whenToUse": [
+      "短い自由入力(名前・URL・メール)"
+    ],
+    "whenNotToUse": [
+      "長文 → Textarea",
+      "限られた選択肢 → Select / Radio"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Control boundary and focus indicator."
+    },
+    {
+      "part": "control",
+      "required": true,
+      "description": "Native input or textarea that owns the value."
+    },
+    {
+      "part": "adornment",
+      "required": false,
+      "description": "Prefix, suffix, clear, attachment, or submit action."
+    },
+    {
+      "part": "message",
+      "required": false,
+      "description": "Help, count, loading, or validation feedback."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {
+    "sm": {
+      "controlHeight": "--ctl-sm",
+      "paddingInline": [
+        "--sp-2",
+        "--sp-2"
+      ],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "14"
+    },
+    "md": {
+      "controlHeight": "--ctl-md",
+      "paddingInline": [
+        "--sp-2",
+        "--sp-2"
+      ],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "16"
+    },
+    "lg": {
+      "controlHeight": "--ctl-lg",
+      "paddingInline": [
+        "--sp-2",
+        "--sp-2"
+      ],
+      "gap": "--sp-2",
+      "textToken": "--text-label",
+      "iconSize": "18"
+    }
+  },
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    },
+    {
+      "id": "hover",
+      "description": "Pointer hoverの補助変化。意味をhoverだけに依存させない。",
+      "requiredBehavior": [
+        "Pointer hoverの補助変化。意味をhoverだけに依存させない。"
+      ]
+    },
+    {
+      "id": "focus",
+      "description": "focus-visibleで明確なringを表示する。",
+      "requiredBehavior": [
+        "focus-visibleで明確なringを表示する。"
+      ]
+    },
+    {
+      "id": "error",
+      "description": "色だけでなくmessageとaria stateで問題を伝える。",
+      "requiredBehavior": [
+        "色だけでなくmessageとaria stateで問題を伝える。"
+      ]
+    },
+    {
+      "id": "disabled",
+      "description": "操作不能である理由を周辺文脈から理解できるようにする。",
+      "requiredBehavior": [
+        "操作不能である理由を周辺文脈から理解できるようにする。"
+      ]
+    },
+    {
+      "id": "readonly",
+      "description": "値を参照・選択できるが変更できない。",
+      "requiredBehavior": [
+        "値を参照・選択できるが変更できない。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "size",
+      "type": "\"sm\" | \"md\" | \"lg\"",
+      "required": false,
+      "default": "md",
+      "description": "Density内の相対sizeを選ぶ。"
+    },
+    {
+      "name": "value",
+      "type": "unknown",
+      "required": false,
+      "default": null,
+      "description": "Controlled value。"
+    },
+    {
+      "name": "onChange",
+      "type": "(value) => void",
+      "required": false,
+      "default": null,
+      "description": "User操作で値が変わるときに通知する。"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "required": false,
+      "default": "false",
+      "description": "操作不能state。"
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Label"
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Placeholder"
+    },
+    {
+      "name": "helper",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Helper text"
+    },
+    {
+      "name": "leading",
+      "type": "boolean",
+      "required": false,
+      "default": "false",
+      "description": "Leading icon"
+    },
+    {
+      "name": "trailing",
+      "type": "boolean",
+      "required": false,
+      "default": "false",
+      "description": "Trailing affix"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--input-bg",
+      "--surface",
+      "--input-border",
+      "--border",
+      "--input-border-focus",
+      "--primary",
+      "--input-placeholder",
+      "--fg-subtle",
+      "--danger",
+      "--fg",
+      "--fg-muted",
+      "--fg-disabled",
+      "--focus-ring"
+    ],
+    "density": [
+      "--ctl-md",
+      "--input-x",
+      "--ctl-sm",
+      "--ctl-lg",
+      "--text-label"
+    ],
+    "spacing": [
+      "--sp-2"
+    ],
+    "radius": [
+      "--radius-sm"
+    ],
+    "motion": [
+      "--dur-fast"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.input-bg.value",
+        "source": "--input-bg",
+        "scope": "component",
+        "componentToken": "--input-bg",
+        "aliases": "--surface",
+        "trigger": "semantic-divergence",
+        "reason": "Dark themeでは入力面を周囲から識別するためsurface-sunkenへ切り替える。"
+      },
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.input-border.value",
+        "source": "--input-border",
+        "scope": "component",
+        "componentToken": "--input-border",
+        "aliases": "--border",
+        "trigger": "semantic-divergence",
+        "reason": "High contrastでは入力境界だけをborder-strongへ強める。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.input-border-focus.value",
+        "source": "--input-border-focus",
+        "scope": "component",
+        "componentToken": "--input-border-focus",
+        "aliases": "--primary",
+        "trigger": "component-anatomy",
+        "reason": "Inputのfocus border slotをcomponent contractで固定する。"
+      },
+      {
+        "slot": "token.primary.value",
+        "source": "--primary",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.input-placeholder.value",
+        "source": "--input-placeholder",
+        "scope": "component",
+        "componentToken": "--input-placeholder",
+        "aliases": "--fg-subtle",
+        "trigger": "component-anatomy",
+        "reason": "Input固有のplaceholder anatomyへ安定してbindingする。"
+      },
+      {
+        "slot": "token.fg-subtle.value",
+        "source": "--fg-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger.value",
+        "source": "--danger",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-sm.value",
+        "source": "--radius-sm",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.ctl-md.value",
+        "source": "--ctl-md",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-disabled.value",
+        "source": "--fg-disabled",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.focus-ring.value",
+        "source": "--focus-ring",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.input-x.value",
+        "source": "--input-x",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.dur-fast.value",
+        "source": "--dur-fast",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.ctl-sm.value",
+        "source": "--ctl-sm",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.ctl-lg.value",
+        "source": "--ctl-lg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.text-label.value",
+        "source": "--text-label",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.sp-2.value",
+        "source": "--sp-2",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Text Fieldの公開visual contractで用途tokenとして共有する。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.text-field"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "label 要素と htmlFor で関連付ける",
+      "エラーは aria-describedby + aria-invalid で通知する",
+      "focus ring はコントラスト比 3:1 以上",
+      "Keyboardとpointerで同じ機能を実行できる。",
+      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
+      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+    ],
+    "aria": [
+      "Native <input>をlabelとdescription/errorへ関連付ける。"
+    ],
+    "focus": [
+      "focus-visibleで--focus-ringを使う。",
+      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+    ]
+  },
+  "keyboardInteractions": [
+    {
+      "key": "Tab",
+      "action": "順序どおりにfocusを移動する。"
+    }
+  ],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "短い自由入力(名前・URL・メール)",
+      "recommended": [
+        "Placeholder に必須情報を書かない。入力を始めると消える。"
+      ],
+      "avoid": [
+        "長文 → Textarea"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのText Field。",
+      "rules": [
+        "周辺layoutに応じたintrinsic widthを基本にし、formではlabelとの整列を保つ。",
+        "Keyboard focusとhoverを別々に確認する。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのText Field。",
+      "rules": [
+        "Form文脈では利用可能幅まで広げ、複数controlを無理に横へ詰めない。",
+        "同じpropとstate contractを維持する。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのText Field。",
+      "rules": [
+        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
+        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM",
+    "FOCUS_VISIBLE_REQUIRED",
+    "NO_POSITIVE_TABINDEX",
+    "TARGET_SIZE_MINIMUM",
+    "INTERACTIVE_NAME_REQUIRED"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Text Fieldの標準例。",
+      "code": "<TextField\n  label=\"Project name\"\n  placeholder=\"Acme Dashboard\"\n  helperText=\"後から変更できます。\"\n/>"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

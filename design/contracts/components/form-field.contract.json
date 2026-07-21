@@ -1,0 +1,230 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "contractVersion": "0.1.0",
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["div"],
+    "slots": ["label", "control", "description", "message"],
+    "attributes": ["data-meridian-state"],
+    "stateModel": ["data-meridian-state"],
+    "events": [],
+    "relations": ["labelledby", "describedby", "error-message"],
+    "provenance": ["component", "instance", "variant", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": { "useWhen": ["label、control、description、messageを1つのfield relationへ束ねる。"], "avoidWhen": ["form controlを含まない静的contentには使わない。"], "alternatives": ["section"] },
+  "negativeExamples": [{ "pattern": "error messageをcontrolとIDで関連付けない。", "reason": "支援技術が入力エラーを特定できないため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] }],
+  "requiredScenarios": ["default", "error", "labelledby", "describedby"],
+  "id": "form-field",
+  "name": "Form Field",
+  "status": "draft",
+  "category": "forms",
+  "description": "ラベル・コントロール・ヘルプ・エラーを束ねるレイアウトプリミティブ。",
+  "source": {
+    "humanDoc": "components/form-field.md",
+    "registry": "js/components-registry.js#form-field"
+  },
+  "intent": {
+    "whenToUse": [
+      "すべてのフォームコントロールの配置"
+    ],
+    "whenNotToUse": [
+      "表示だけのlabel/value対にはDescription Listを使う。"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Semantic display root."
+    },
+    {
+      "part": "content",
+      "required": true,
+      "description": "Primary perceivable content."
+    },
+    {
+      "part": "supporting",
+      "required": false,
+      "description": "Optional metadata or visual reinforcement."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    },
+    {
+      "id": "error",
+      "description": "色だけでなくmessageとaria stateで問題を伝える。",
+      "requiredBehavior": [
+        "色だけでなくmessageとaria stateで問題を伝える。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "children",
+      "type": "ReactNode",
+      "required": true,
+      "default": null,
+      "description": "Componentの主要content。"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--surface",
+      "--border",
+      "--fg",
+      "--fg-muted"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Form Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Form Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Form Fieldの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Form Fieldの公開visual contractで用途tokenとして共有する。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.form-field"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "label / aria-describedby / aria-invalid の関連付けを一元管理する",
+      "表示専用rootを不要にtab順へ追加しない。",
+      "状態は色だけで表さずtext、icon、shapeを併用する。"
+    ],
+    "aria": [
+      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+    ],
+    "focus": [
+      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+    ]
+  },
+  "keyboardInteractions": [],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "すべてのフォームコントロールの配置",
+      "recommended": [
+        "ラベル → コントロール → ヘルプ/エラー の縦順を固定する。"
+      ],
+      "avoid": [
+        "表示だけのlabel/value対にはDescription Listを使う。"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのForm Field。",
+      "rules": [
+        "Contentと周辺layoutに応じたintrinsic sizeを使う。",
+        "Viewportだけを理由にdensityを変更しない。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのForm Field。",
+      "rules": [
+        "意味とDOM順を変えず、wrapとavailable widthで適応する。",
+        "省略した情報へ別経路から到達できるようにする。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのForm Field。",
+      "rules": [
+        "表示専用rootをtab順へ追加しない。",
+        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Form Fieldの標準例。",
+      "code": "<FormField label=\"API キー名\" required error={errors.name}>\n  <TextField placeholder=\"production-key\" />\n  <FormField.Help>用途が分かる名前を付けてください。</FormField.Help>\n</FormField>"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

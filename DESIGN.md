@@ -13,7 +13,7 @@ Meridian はプロダクトインターフェースのための、トークン�
 ## 絶対に守ること
 
 1. **色は必ず `var(--token-name)` を使う。生の hex を書かない。** 実際の値は Seed
-   color と Theme(light/dark/hc)に応じて `src/color-engine.js` が実行時に計算する
+   color、Theme(light/dark)、Contrast(standard/high)に応じて `src/color-engine.js` が実行時に計算する
    ため、コード側で特定の hex を決め打ちできません。
 2. **余白・角丸・モーションは必ずトークンを使う。** 任意の px 値や ms 値を直接書かない。
 3. **`--accent` は一般 UI に使わない。** ロゴマーク・アバターなどブランド識別専用です。
@@ -21,6 +21,12 @@ Meridian はプロダクトインターフェースのための、トークン�
    面は border のみで階層を表現します。
 5. **アクセシビリティは後付けしない。** フォーカスリング・キーボード操作・コントラスト
    比(AA 4.5:1 / High contrast 7:1)は最初から満たす。
+6. **UIからReference tokenを直接参照しない。** 通常はSemantic tokenを使い、component固有の
+   安定した変更境界が必要な場合だけComponent tokenを作る。
+7. **全refinement cycleでResearch Gateを評価する。** 調査が必要なら一次資料と判断への影響を
+   記録し、不要なら対象scopeに即した理由を残す。
+8. **Icon SVGを直接accessibility treeへ露出しない。** Icon-only controlのaccessible nameは
+   Button/Link側が所有し、同じ機能には同じcanonical iconを使う。
 
 詳細な禁止パターンは下記「Rules」と `design/rules.json` を参照してください。
 
@@ -40,7 +46,7 @@ UI は装飾ではなく、意思決定を助けるためのものです。情�
 
 ### 4. Adaptive by default
 
-Light / Dark / High contrast、Compact / Default / Comfortable、Primary color seed の変更に自然に対応します。「ダークモード対応」は後付けの作業ではなく、Semantic token を使っていれば自動的に成立する性質です。
+Light / Dark、Standard / High contrast、Compact / Default / Comfortable、Primary color seed の変更に自然に対応します。Theme、Contrast、Densityは独立した軸として扱い、Semantic tokenを使うことで各contextへ一貫して解決します。
 
 ### 5. Accessible precision
 
@@ -54,61 +60,312 @@ Light / Dark / High contrast、Compact / Default / Comfortable、Primary color s
 
 ドキュメントは説明ではなく、利用判断を助けるものです。すべてのコンポーネントページに「いつ使うか」「いつ使わないか」「どう実装するか」を明記し、Playground で挙動を確認できるようにします。
 
+## Research Gate
+
+Overview、Foundations、Tokens、Componentsのすべてのrefinement cycleで、実装や文書更新の前に
+Research Gateを評価します。次のいずれかに該当する場合は外部調査が必要です。
+
+- **standard-or-regulation** — Web標準、DTCG、WCAG、法規、業界標準の解釈または版に関係する。
+- **accessibility-or-safety** — アクセシビリティ、認知負荷、誤操作、破壊的操作、安全性に影響する。
+- **new-pattern-or-api** — Meridianに存在しないFoundation、Token、Component、API、interaction patternを導入する。
+- **cross-platform-behavior** — Web、iOS、Android、desktop、mobile、touch間で振る舞いを決める。
+- **conflicting-guidance** — 内部仕様、実装、複数の外部資料が異なる判断を示している。
+- **uncertainty** — 担当者またはAIが判断根拠に十分な確信を持てない。
+- **ecosystem-change** — ライブラリ、platform、browser、toolingなど変更頻度の高い外部環境に依存する。
+- **benchmark-needed** — 他の成熟したdesign systemとの比較が判断品質を上げる。
+
+調査を行う場合は、少なくとも1件のevidenceと
+1件の一次資料を記録し、各evidenceを
+Meridianのdecisionへ紐づけます。すべての判定で`research.scope`へitem IDと確認範囲を記録し、
+調査不要の場合も、そのscopeに即した具体的な理由が必要です。
+完全なpolicyは`design/research-policy.json`、実際の記録は`design/reviews/*.review.json`を参照してください。
+
+## Token Architecture
+
+Seed colorとbrand configはgenerator inputであり、token layerではありません。token dependencyは次の3層です。
+
+| Order | Layer | Responsibility | Allowed references |
+|---:|---|---|---|
+| 1 | reference | 実値または生成値を持つ基礎scale。UIの用途を表さない。 | none |
+| 2 | semantic | 対象、用途、状態を表す共通語彙。通常のUI実装とcomponent bindingが参照する。 | reference |
+| 3 | component | 特定componentだけを独立して変更するための安定した公開binding。必要な場合だけ作る。 | semantic, reference-with-explicit-reason, intrinsic-value-with-explicit-reason |
+
+Themeなどのcontextはlayerを増やさず、直交するmodifierとして扱います。
+
+| Modifier | Contexts | Default | Owns |
+|---|---|---|---|
+| theme | light / dark | light | surface luminance, foreground luminance, theme-relative color mapping |
+| contrast | standard / high | standard | contrast target, focus width, border strength |
+| density | compact / default / comfortable | default | control size, text size, component padding, row height |
+| platform | web / ios / android | web | platform font, native focus expression, platform-specific metric when required |
+| motion | standard / reduced | standard | duration, transition distance, nonessential animation removal |
+
+### Component tokenを作る条件
+
+次のtriggerのいずれかと具体的なreasonをcomponent contractの`tokenBindings`へ記録できる場合だけ作ります。
+
+- **independent-customization** — Semantic tokenを変えず、そのcomponentだけ変更する必要がある。
+- **public-component-api** — Figma、React、Nativeでcomponent単位の安定したcustomization APIとして公開する。
+- **semantic-divergence** — 同じSemantic roleでも、そのcomponentでは独立した値が必要になる。
+- **component-anatomy** — component固有のanatomy、variant、stateを表し、一般Semanticへ昇格できない。
+- **cross-platform-stability** — 複数platform間でcomponent固有の設計判断を固定する。
+- **intrinsic-component-value** — component固有の寸法など、Semanticに一般化できない固有値を保持する。
+
+Semantic tokenの単純な別名、CSS実装上の都合、一度限りの見た目調整を理由に作ってはいけません。
+完全なpolicyは`design/token-policy.json`、各componentのbindingは`design/contracts/components/*.contract.json`を参照してください。
+
 ## Tokens — Spacing
 
-| Token | Value |
-|---|---|
-| --sp-0 | 0px |
-| --sp-1 | 4px |
-| --sp-2 | 8px |
-| --sp-3 | 12px |
-| --sp-4 | 16px |
-| --sp-5 | 20px |
-| --sp-6 | 24px |
-| --sp-8 | 32px |
-| --sp-10 | 40px |
-| --sp-12 | 48px |
-| --sp-15 | 6px |
-| --sp-16 | 64px |
-| --sp-20 | 80px |
-| --sp-24 | 96px |
-| --sp-25 | 10px |
-| --sp-05 | 2px |
+| Token | Value | Usage |
+|---|---|---|
+| --sp-0 | 0px | resetとedge alignment |
+| --sp-05 | 2px | optical adjustmentのみ |
+| --sp-1 | 4px | icon内部・密接したmetadata |
+| --sp-15 | 6px | compact controlの内部gap |
+| --sp-2 | 8px | inline group・iconとlabel |
+| --sp-25 | 10px | compact control padding |
+| --sp-3 | 12px | small group・compact card |
+| --sp-4 | 16px | component padding・form gap |
+| --sp-5 | 20px | comfortable container |
+| --sp-6 | 24px | page padding・large group |
+| --sp-8 | 32px | section gap |
+| --sp-10 | 40px | content block separation |
+| --sp-12 | 48px | page section |
+| --sp-16 | 64px | major region |
+| --sp-20 | 80px | wide layout region |
+| --sp-24 | 96px | large regionのみ |
+
+## Tokens — Typography
+
+PCとSPで同じsemantic roleを使います。headingのHTML levelは文書構造で決め、見た目のroleとは分離します。
+複数段落の本文はReading、短いUI本文はBody、操作名はLabelを選びます。
+
+| Token | Size / Line height | Weight | Usage |
+|---|---|---:|---|
+| --type-display | 1.75rem / 1.2 | 650 | ページタイトル・product title |
+| --type-h1 | 1.5rem / 1.25 | 650 | 画面見出し |
+| --type-h2 | 1.1875rem / 1.3 | 600 | section見出し |
+| --type-h3 | 1rem / 1.4 | 600 | 小section・card見出し |
+| --type-h4 | 0.875rem / 1.4 | 600 | compact panel見出し |
+| --type-h5 | 0.8125rem / 1.4 | 600 | label的見出し |
+| --type-reading | 1rem / 1.65 | 400 | 長文・help・documentation |
+| --type-body-lg | 0.9375rem / 1.6 | 400 | lead文・設定画面 |
+| --type-body | 0.875rem / 1.55 | 400 | 標準UI本文 |
+| --type-body-sm | 0.8125rem / 1.5 | 400 | 補助説明 |
+| --type-label-lg | 0.875rem / 1.4 | 550 | large control label |
+| --type-label | 0.8125rem / 1.4 | 550 | button・form label |
+| --type-label-sm | 0.75rem / 1.4 | 550 | tab・small control |
+| --type-caption | 0.6875rem / 1.4 | 500 | metadata・timestamp |
+| --type-code | 0.8125rem / 1.6 | 400 | code block |
+| --type-code-sm | 0.71875rem / 1.6 | 400 | log・diff |
+| --type-numeric | 0.875rem / 1.4 | 500 | table数値・metric |
 
 ## Tokens — Radius
 
-| Token | Value |
-|---|---|
-| --radius-none | 0px |
-| --radius-2xs | 2px |
-| --radius-xs | 4px |
-| --radius-sm | 6px |
-| --radius-md | 8px |
-| --radius-lg | 10px |
-| --radius-xl | 12px |
-| --radius-2xl | 16px |
-| --radius-full | 999px |
+| Token | Value | Usage |
+|---|---|---|
+| --radius-none | 0px | table cell、divider、connected edge |
+| --radius-2xs | 2px | code、focus clipping補助 |
+| --radius-xs | 4px | xs control、table row state |
+| --radius-sm | 6px | button、input、navigation item |
+| --radius-md | 8px | card、panel、tile、framed tool |
+| --radius-lg | 10px | menu、popover、tooltip surface |
+| --radius-xl | 12px | dialog、command menu、prompt input |
+| --radius-2xl | 16px | hero mediaのみ |
+| --radius-full | 999px | avatar、status dot、badge pill |
 
 ## Tokens — Motion (duration)
 
-| Token | Value |
-|---|---|
-| --dur-instant | 50ms |
-| --dur-fast | 120ms |
-| --dur-normal | 180ms |
-| --dur-slow | 240ms |
-| --dur-slower | 320ms |
+| Token | Value | Usage |
+|---|---|---|
+| --dur-instant | 50ms | hover、pressed color feedback |
+| --dur-fast | 120ms | button、input、toggle state |
+| --dur-normal | 180ms | menu、popover、toast、collapse |
+| --dur-slow | 240ms | dialog、drawer、large expansion |
+| --dur-slower | 320ms | rare page-level transition only |
+
+## Tokens — Shadow
+
+Shadow geometryは全themeで不変です。Light、Dark、High Contrastはcolor/alpha modeだけを変更します。
+`shadow-sm`以上は他contentに重なる一時surfaceに限定し、静的なCard/Panelには使いません。
+
+| Token | Usage | Layers |
+|---|---|---:|
+| --shadow-xs | control tactile cue、small transient surface | 1 |
+| --shadow-sm | dropdown、menu、calendar popover | 2 |
+| --shadow-md | popover、tooltip、floating panel | 2 |
+| --shadow-lg | toast、high transient surface | 2 |
+| --shadow-overlay | dialog、drawer、modal overlay | 2 |
 
 ## Tokens — Layout
 
-| Token | Value |
-|---|---|
-| --sidebar-w | 264px |
-| --sidebar-w-collapsed | 0px |
-| --topbar-h | 52px |
-| --content-max | 880px |
-| --toc-w | 200px |
-| --focus-w | 2px |
+| Token | Value / Alias | Usage |
+|---|---|---|
+| --sidebar-w | 264px | desktop app shell sidebar |
+| --sidebar-w-collapsed | 0px | collapsed shell track |
+| --topbar-h | 52px | sticky top bar |
+| --content-max | 880px | standard content region |
+| --content-wide | 1280px | wide data region |
+| --reading-max | 640px | reading text and callout |
+| --toc-w | 200px | documentation table of contents |
+| --page-pad-inline | {spacing.6} | page inline padding |
+| --page-pad-block | {spacing.8} | page block padding |
+| --section-gap | {spacing.8} | major section separation |
+| --dialog-w-sm | 400px | short confirmation dialog |
+| --dialog-w-md | 480px | standard dialog |
+| --dialog-w-lg | 640px | large form dialog |
+| --drawer-w | 420px | detail and edit drawer |
+| --command-w | 560px | command menu and compact tool |
+| --focus-w | 2px | legacy location; accessibility sourceへ移行予定 |
+
+## Iconography
+
+正本は `design/iconography.json` です。Reusable SVG glyphは `aria-hidden="true"`、
+`focusable="false"` とし、accessible nameは所有するButton/Linkへ付与します。Tooltipは補足であり、
+accessible nameの代替ではありません。`mirror-in-rtl` だけRTLで反転します。
+
+| ID | Canonical name | Meaning | Default size | Directionality |
+|---|---|---|---|---|
+| search | search | 検索を開始または検索fieldを示す | sm | neutral |
+| chevD | chevron-down | 下方向の展開またはmenu open | xs | neutral |
+| chevR | chevron-right | 次階層または進行方向 | xs | mirror-in-rtl |
+| sun | sun | Light theme | md | neutral |
+| moon | moon | Dark theme | md | neutral |
+| contrast | contrast | High Contrast theme | md | neutral |
+| density | density | UI density selector | md | neutral |
+| code | code | Source codeまたはdeveloper view | md | neutral |
+| menu | menu | Navigation menuを開く | md | neutral |
+| copy | copy | 内容をclipboardへコピー | xs | neutral |
+| check | check | 完了、選択、肯定 | xs | neutral |
+| x | x | Surfaceを閉じるまたは一時itemを除く。削除には使わない | xs | neutral |
+| plus | plus | Itemを追加または作成 | sm | neutral |
+| info | info | Informational status | md | neutral |
+| warn | warning | Warning status | md | neutral |
+| ok | success-circle | Successful result | md | neutral |
+| err | error-circle | Error or failed result | md | neutral |
+| spark | sparkle | AI-originated action or content | sm | neutral |
+| folder | folder | Directory or content group | sm | neutral |
+| file | file | File or document | sm | neutral |
+| send | arrow-up | Prompt or messageを送信 | sm | neutral |
+| clip | paperclip | Fileを添付 | sm | neutral |
+| bell | bell | Notifications | md | neutral |
+| github | github | GitHub brand destination | md | brand-fixed |
+| arrowR | arrow-right | 次のstepまたはdestination | sm | mirror-in-rtl |
+| dots | ellipsis | Overflow actions menu | sm | neutral |
+| cal | calendar | Date or calendar picker | sm | neutral |
+| filter | filter | Filter conditions | sm | neutral |
+| refresh | refresh | Dataを再取得または再試行 | sm | neutral |
+| cmd | command | Command menu or command key | sm | neutral |
+| zap | bolt | Fast action、run、automation | sm | neutral |
+| users | users | People、member、team | sm | neutral |
+| gear | settings | Settings or configuration | sm | neutral |
+
+## Accessibility
+
+Baselineは **WCAG 2.2 AA**。
+適用されるLevel A / AAをすべて満たし、個別項目だけで適合を表明しません。
+Pointer targetは全densityで24px以上を基本とし、touch中心・主要actionは
+44px程度を優先します。完全なpolicyは
+`design/accessibility.json`、component固有の挙動は各contractを参照してください。
+
+| Requirement | WCAG | Level | Rule |
+|---|---|---|---|
+| text-alternatives | 1.1.1 | A | 意味を持つnon-text contentへ同じ目的を果たすtext alternativeを提供し、装飾は支援技術から除外する。 |
+| structure-and-relationships | 1.3.1 | A | 視覚的な構造、関係、順序をsemantic HTMLまたは適切なARIAでprogrammatically determinableにする。 |
+| orientation | 1.3.4 | AA | Essentialでない限りportraitまたはlandscapeの一方向へ表示や操作を固定しない。 |
+| color-not-only | 1.4.1 | A | 色を情報、action、response、状態の唯一の視覚的手段にしない。 |
+| text-contrast | 1.4.3 | AA | 通常textは4.5:1以上、大きなtextは3:1以上を実際のforeground/background pairで満たす。 |
+| resize-and-reflow | 1.4.4, 1.4.10 | AA | 200% text拡大と320 CSS px相当でcontentと機能を失わず、一方向scrollを基本に再配置する。 |
+| non-text-contrast | 1.4.11 | AA | 識別に必要なvisual informationは隣接色と3:1以上を満たす。 |
+| text-spacing | 1.4.12 | AA | 利用者がline、paragraph、letter、word spacingを上書きしてもcontentと機能を失わない。 |
+| keyboard-operation | 2.1.1, 2.1.2 | A | Pointer固有のtimingに依存せずkeyboardで全機能を操作でき、focusを閉じ込めない。 |
+| timing-and-autoplay | 2.2.1, 2.2.2 | A | Time limitは延長または解除可能にし、5秒を超える自動更新・移動・点滅contentにはpause/stop/hideを提供する。 |
+| flash-threshold | 2.3.1 | A | 1秒間に3回を超えるflashを発生させない。 |
+| bypass-blocks | 2.4.1 | A | Skip linkとlandmarkで繰り返しblockを迂回できるようにする。 |
+| focus-order | 2.4.3 | A | Focus順をDOMとtaskの論理順に一致させ、positive tabindexで順序を修正しない。 |
+| focus-visible-and-unobscured | 2.4.7, 2.4.11 | AA | Keyboard focusを常に視認でき、sticky headerやauthor-created overlayで完全に隠さない。 |
+| drag-alternative | 2.5.7 | AA | Draggingで行うactionへclick、button、menu、inputなどsingle-pointer alternativeを提供する。 |
+| label-in-name | 2.5.3 | A | Accessible nameにvisible label textを含め、voice controlで見た名前を使えるようにする。 |
+| target-size-minimum | 2.5.8 | AA | 全densityで24×24 CSS px以上または24px clearanceを確保し、touch主要actionは44px程度を優先する。 |
+| page-language | 3.1.1 | A | Pageのprimary languageをhtml langで指定し、異なる言語のphraseは必要に応じてlangを付ける。 |
+| consistent-navigation-and-help | 3.2.3, 3.2.4, 3.2.6 | AA | 繰り返すnavigation、識別、help mechanismのrelative orderと名称を一貫させる。 |
+| labels-and-instructions | 3.3.2 | A | 入力にprogrammatic labelを付け、format、required、constraintを入力前に理解できるようにする。Placeholderだけをlabelにしない。 |
+| error-identification-and-suggestion | 3.3.1, 3.3.3 | AA | Error箇所、原因、既知の修正方法をtextで示し、入力を保持してerror messageへprogrammaticに関連付ける。 |
+| redundant-entry | 3.3.7 | A | 同じprocessで既に入力した情報を再入力させず、自動入力または選択できるようにする。 |
+| accessible-authentication | 3.3.8 | AA | Cognitive function testを唯一の認証手段にせず、paste、password manager、autocomplete、passkey等を妨げない。 |
+| name-role-value | 4.1.2 | A | Name、role、state、valueをprogrammatically determinableにし、変更を支援技術へ通知する。Native elementを優先する。 |
+| status-messages | 4.1.3 | AA | Focusを移動せず提示するstatus messageはrole/status/live regionで支援技術が判別できるようにする。 |
+| reduced-motion-preference | 2.3.3 | recommended | prefers-reduced-motionで非本質的なspatial motionを0ms/0pxまたは静的代替へ置換し、final stateとfeedbackを保持する。 |
+
+### Accessibility quality gates
+
+- **contract-gate** (contract, Component author) — Semantic element/role; Accessible name and description; Keyboard map; Focus entry/exit/return; State announcement; Responsive and reduced-motion behavior
+- **implementation-gate** (implementation, Engineer) — Native semantics first; ARIA state synchronization; No positive tabindex; Target size; Input preservation and recovery
+- **automated-gate** (automated, CI) — Schema and contract validation; Static design rules; Accessible-name and landmark checks where testable; Token contrast matrix; No stale generated artifact
+- **keyboard-gate** (manual, Reviewer) — Tab/Shift+Tab order; Enter/Space/Escape and pattern keys; No trap; Visible and unobscured focus; Focus return after overlay
+- **visual-gate** (manual, Reviewer) — 320px and wide desktop; 200% text and 400% zoom; Light/Dark × Standard/High; Text spacing override; Reduced motion; Pointer target measurement
+- **assistive-tech-gate** (release, Release reviewer) — VoiceOver/Safari smoke test; NVDA/Firefox or Chrome smoke test; Name/role/state/value; Live region timing; Reading and landmark order
+
+## Content Guidelines
+
+Default localeは **ja-JP**、fallbackは **en**。
+UI textはtask、state、risk、次のactionを伝える設計要素です。Voiceは明快・落ち着き・尊重・正確を保ち、
+errorやsuccessでも温度を過度に変えません。完全な正本は `design/content-guidelines.json` です。
+
+| Rule | Category | Decision |
+|---|---|---|
+| user-task-first | voice | Systemの内部都合ではなく、利用者のtaskと対象から書き始める。 |
+| front-load-and-scan | voice | 結論、対象、actionを先に置き、1文1目的を基本にする。 |
+| canonical-terminology | voice | 1 conceptに1つのcanonical termを使い、同じflow内で言い換えない。 |
+| plain-specific-language | voice | 短く一般的な語を使い、必要なtechnical termは定義またはcontextを付ける。 |
+| action-label-outcome | actions | Action labelは動詞と必要な対象で結果を予測できるようにする。Contextで対象が明白なら短縮できる。 |
+| destructive-label-exact | actions | 破壊的actionは対象と操作を同じ語で明示し、genericな確認語に置き換えない。 |
+| cancel-means-no-change | actions | 取消で変更を保存しない場合は「キャンセル」を使い、戻る/閉じる/後で行うと混同しない。 |
+| error-problem-and-recovery | states | 何が起きたか、どこか、利用者ができる修正または次のstepを具体的に示す。 |
+| success-confirm-result | states | 完了が画面変化だけでは分かりにくい場合に、対象と完了結果を過去形で伝える。 |
+| empty-state-next-step | states | 何がないか、なぜ見えるか、可能な次のstepをcontextに応じて示す。 |
+| confirmation-consequence | states | Titleにactionと対象、bodyに直接の結果と取消可否、primary actionに同じ動詞を使う。 |
+| loading-object-and-progress | states | 必要な場合は何を処理中かを現在進行で示し、既知ならprogressまたは残りstepを伝える。 |
+| permission-explain-path | states | 実行できない理由と、権限request、owner連絡、plan変更など可能な経路を示す。 |
+| visible-label-required | forms | Labelは常時表示し、placeholderは短い入力例または補足だけに使う。 |
+| instructions-before-input | forms | 利用者が入力を始める前に必要なformat、範囲、用途を示す。 |
+| punctuation-by-container | format | 短いlabel/button/headingには句点を付けず、複数文や完全な説明文にはlocaleの句読点を使う。 |
+| localized-number-date-time | format | Intl相当のlocale-aware formatterを使い、曖昧な日付を避け、relative timeには必要に応じてabsolute valueを補う。 |
+| no-string-concatenation | localization | Sentenceをfragment連結せず、placeholderを含む完全なmessage単位で翻訳する。 |
+| flexible-content-length | localization | Text lengthを固定前提にせず、wrap、reflow、overflow policyをcomponent contractに持たせる。 |
+| descriptive-accessible-label | accessibility | 文脈外でも目的を特定できるvisible/accessibility labelを使い、visible labelをaccessible nameに含める。 |
+| ai-disclosure-and-scope | ai | AIを使う場所、できること、主要な制約をtaskの前またはoutput近傍で明示する。 |
+| ai-uncertainty-and-recovery | ai | Uncertaintyや失敗可能性をriskに応じて示し、review、edit、retry、undo、non-AI fallbackを提供する。 |
+| ai-data-transparency | ai | 送信するdata、用途、保存、training利用、第三者共有をaction前に簡潔かつ具体的に示す。 |
+
+### Message patterns
+
+| State | Required parts | Example |
+|---|---|---|
+| error | 対象または場所 + 問題 + 修正方法または次のstep | API keyの期限が切れました。新しいkeyを作成してください。 |
+| success | 対象 + 完了したaction | プロジェクトを作成しました。 |
+| empty | ない対象 + 理由またはcontext + 次のstep | 条件に一致するIssueはありません。フィルターを変更してください。 |
+| confirmation | actionと対象 + 直接の結果 + 取消可否 + 同じ動詞のprimary label | 「Meridian Docs」を削除します。関連dataも削除され、取り消せません。 |
+| loading | 処理中の対象 + 既知ならprogressまたは残りstep | Repositoryを解析中 (2 / 4) |
+| permission | 実行できないaction + 理由 + 利用可能な経路 | プロジェクトを削除する権限がありません。オーナーに権限を依頼してください。 |
+| ai-output | AI利用の明示 + 必要なreviewまたは制約 + edit/retry/undoの選択 | AIが変更案を生成しました。差分を確認してから適用してください。 |
+
+### Canonical terms
+
+| Concept | ja-JP | en |
+|---|---|---|
+| project | プロジェクト | Project |
+| workspace | ワークスペース | Workspace |
+| member | メンバー | Member |
+| settings | 設定 | Settings |
+| create | 作成 | Create |
+| delete | 削除 | Delete |
+| remove | 外す | Remove |
+| save | 保存 | Save |
+| cancel | キャンセル | Cancel |
+| retry | 再試行 | Retry |
+| issue | Issue | Issue |
+| ai-generated | AIが生成 | Generated by AI |
 
 ## Semantic Color Tokens
 
@@ -117,17 +374,23 @@ Light / Dark / High contrast、Compact / Default / Comfortable、Primary color s
 
 | Token | Meaning | Usage |
 |---|---|---|
-| --background | ページ全体の最下層 | アプリ背景 |
-| --background-subtle | 背景の一段上 | セクション背景・サイドバー |
-| --surface | カード・パネルの面 | Card / Panel / Input |
-| --surface-muted | 控えめな面 | Table header / Well |
+| --bg | ページ全体の最下層 | アプリ背景 |
+| --bg-subtle | 背景の一段上 | セクション背景・サイドバー |
+| --surface | カード・パネルの標準面 | Flat Card / Panel |
+| --surface-muted | 控えめな非操作面 | Table header / Subtle section |
+| --surface-sunken | 標準面より奥まった面 | Well / Recessed region / Dark field |
 | --surface-raised | 浮いた面 | Dropdown / Hover card |
 | --surface-overlay | オーバーレイ面 | Dialog / Popover |
 | --surface-inverse | 反転面 | Tooltip |
-| --foreground | 主要テキスト | 見出し・本文 |
-| --foreground-muted | 補助テキスト | 説明文・ラベル |
-| --foreground-subtle | 弱いテキスト | placeholder・メタ情報 |
-| --foreground-disabled | 無効テキスト | Disabled状態 |
+| --control-bg | Neutral controlの通常面 | Secondary Button / Neutral action |
+| --control-bg-hover | Neutral controlのhover面 | Secondary Button hover |
+| --control-bg-active | Neutral controlのpressed面 | Secondary Button pressed |
+| --control-border | Neutral controlの通常境界 | Secondary Button boundary |
+| --control-border-hover | Neutral controlの強調境界 | Secondary Button hover / pressed boundary |
+| --fg | 主要テキスト | 見出し・本文 |
+| --fg-muted | 補助テキスト | 説明文・ラベル |
+| --fg-subtle | 弱いテキスト | placeholder・メタ情報 |
+| --fg-disabled | 無効テキスト | Disabled状態 |
 | --border | 標準の境界線 | Card / Input / Divider |
 | --border-muted | 弱い境界線 | Table row / List |
 | --border-strong | 強い境界線 | Hover / 強調 |
@@ -136,27 +399,37 @@ Light / Dark / High contrast、Compact / Default / Comfortable、Primary color s
 | --primary-active | Primary active | Button pressed |
 | --primary-subtle | Primary の淡い面 | Selected bg / Tertiary btn |
 | --primary-muted | Primary の中間面 | Avatar bg / Chip |
-| --primary-foreground | Primary 上のテキスト | Button label |
+| --primary-fg | Primary 上のテキスト | Button label |
 | --secondary | 第二の色相 | 補助的なUI |
+| --secondary-hover | Secondary hover | Secondary solid action hover |
+| --secondary-active | Secondary active | Secondary solid action pressed |
 | --secondary-on-solid | secondary の solid 背景の上の文字色 | secondary ボタンの label(solid背景時) |
-| --accent | アクセント色 | グラフ・強調点 |
+| --accent | ブランド識別用アクセント色 | ロゴマーク・アバターなどの識別表現 |
+| --accent-hover | Accent hover | ブランド識別要素が操作可能な場合のhover |
+| --accent-active | Accent active | ブランド識別要素が操作可能な場合のpressed |
 | --accent-on-solid | accent の solid 背景の上の文字色 | ロゴマーク・アバターの文字色 |
 | --success | 成功 | 完了・正常 |
 | --success-subtle | 成功の淡い面 | Alert / Badge bg |
-| --success-foreground | 成功テキスト(subtle背景の上) | Badge / Alert text |
+| --success-fg | 成功テキスト(subtle背景の上) | Badge / Alert text |
 | --success-on-solid | success の solid 背景の上の文字色 | success ボタンの label(solid背景時) |
 | --warning | 警告 | 注意喚起 |
 | --warning-subtle | 警告の淡い面 | Banner bg |
-| --warning-foreground | 警告テキスト(subtle背景の上) | Banner text |
+| --warning-fg | 警告テキスト(subtle背景の上) | Banner text |
 | --warning-on-solid | warning の solid 背景の上の文字色 | warning ボタンの label(solid背景時) |
 | --danger | 危険・破壊的 | 削除・エラー |
 | --danger-subtle | 危険の淡い面 | Error alert bg |
-| --danger-foreground | 危険テキスト(subtle背景の上) | Error text |
+| --danger-fg | 危険テキスト(subtle背景の上) | Error text |
 | --danger-on-solid | danger の solid 背景の上の文字色 | danger ボタンの label(solid背景時) |
 | --info | 情報 | ヒント・通知 |
 | --info-subtle | 情報の淡い面 | Info alert bg |
-| --info-foreground | 情報テキスト(subtle背景の上) | Info text |
+| --info-fg | 情報テキスト(subtle背景の上) | Info text |
 | --info-on-solid | info の solid 背景の上の文字色 | info ボタンの label(solid背景時) |
+| --chart-1 | カテゴリチャート色1 | 最初のカテゴリ系列 |
+| --chart-2 | カテゴリチャート色2 | 2番目のカテゴリ系列 |
+| --chart-3 | カテゴリチャート色3 | 3番目のカテゴリ系列 |
+| --chart-4 | カテゴリチャート色4 | 4番目のカテゴリ系列 |
+| --chart-5 | カテゴリチャート色5 | 5番目のカテゴリ系列 |
+| --chart-6 | カテゴリチャート色6 | 6番目のカテゴリ系列 |
 | --chart-fg-1 | chart-1 の上の文字色 | カテゴリアイコン・凡例ラベル |
 | --chart-fg-2 | chart-2 の上の文字色 | カテゴリアイコン・凡例ラベル |
 | --chart-fg-3 | chart-3 の上の文字色 | カテゴリアイコン・凡例ラベル |
@@ -172,7 +445,7 @@ Light / Dark / High contrast、Compact / Default / Comfortable、Primary color s
 
 ## Rules (summary)
 
-全 9 件。詳細(detector・pattern・適用範囲)は `design/rules.json` を参照。
+全 14 件。詳細(detector・pattern・適用範囲)は `design/rules.json` を参照。
 
 - **NO_RAW_HEX_COLOR** (error) — var(--token-name) を使う。色の実値は seed / theme に応じて src/color-engine.js が計算するため、コード側で決め打ちしない。ボタンやアイコンなど solid 背景の上の文字色が必要な場合は、hex を直書きせず対応する `-on-solid` トークン(例: danger-on-solid, chart-fg-1)を使う。
 - **TEXT_ON_SOLID_MUST_USE_TOKEN** (error) — var(--{role}-on-solid)(chartの場合は var(--chart-fg-N))を使う。primary-foreground と同じ設計で、secondary/accent/success/warning/danger/info の6ロール全てに -on-solid が用意されている。
@@ -183,3 +456,8 @@ Light / Dark / High contrast、Compact / Default / Comfortable、Primary color s
 - **MOTION_DURATION_FROM_TOKENS_ONLY** (warning) — var(--dur-*) を使う。標準は 120–180ms(--dur-fast / --dur-normal)。
 - **FOCUS_VISIBLE_REQUIRED** (error) — outline を消す場合は必ず :focus-visible に var(--focus-ring) のリングを与える。
 - **CONTRAST_AA_MINIMUM** (error) — semantic token(primary/success/warning/danger等の -foreground / -on-solid ペア)をそのまま使えば、4.5:1(High contrast は 7:1)を自動的に満たす。独自に色を組み合わせない。
+- **NO_POSITIVE_TABINDEX** (error) — DOM順を論理順へ直し、native focus順またはtabindex=0/-1を使う。Positive tabindexで順序を上書きしない。
+- **INTERACTIVE_NAME_REQUIRED** (error) — Visible label、label要素、aria-labelledby、またはicon-only時のaria-labelを所有controlへ付ける。
+- **TARGET_SIZE_MINIMUM** (error) — Control boxを24px以上にする。Touch中心・主要action・隣接icon controlは44px程度を優先する。
+- **STATE_NOT_COLOR_ONLY** (error) — Text、shape、icon、pattern、またはprogrammatic stateを色と併用する。
+- **DRAG_ALTERNATIVE_REQUIRED** (error) — Button、menu、click、input等で同じ結果へ到達できるalternativeを提供する。

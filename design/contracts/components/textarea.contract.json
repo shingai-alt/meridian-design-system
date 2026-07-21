@@ -1,0 +1,409 @@
+{
+  "$schema": "../../../schemas/component-contract.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "textarea",
+  "name": "Textarea",
+  "status": "draft",
+  "category": "forms",
+  "description": "複数行のテキスト入力。行数の目安を rows で示す。",
+  "source": {
+    "humanDoc": "components/textarea.md",
+    "registry": "js/components-registry.js#textarea"
+  },
+  "intent": {
+    "whenToUse": [
+      "説明文・コメントなどの長文入力"
+    ],
+    "whenNotToUse": [
+      "1 行で収まる入力 → Text Field"
+    ],
+    "principles": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ]
+  },
+  "anatomy": [
+    {
+      "part": "root",
+      "required": true,
+      "description": "Control boundary and focus indicator."
+    },
+    {
+      "part": "control",
+      "required": true,
+      "description": "Native input or textarea that owns the value."
+    },
+    {
+      "part": "adornment",
+      "required": false,
+      "description": "Prefix, suffix, clear, attachment, or submit action."
+    },
+    {
+      "part": "message",
+      "required": false,
+      "description": "Help, count, loading, or validation feedback."
+    }
+  ],
+  "variants": {
+    "default": {
+      "intent": "標準文脈。",
+      "tokenRefs": {},
+      "states": {}
+    }
+  },
+  "sizes": {},
+  "states": [
+    {
+      "id": "default",
+      "description": "通常状態。意味、label、valueを省略しない。",
+      "requiredBehavior": [
+        "通常状態。意味、label、valueを省略しない。"
+      ]
+    },
+    {
+      "id": "focus",
+      "description": "focus-visibleで明確なringを表示する。",
+      "requiredBehavior": [
+        "focus-visibleで明確なringを表示する。"
+      ]
+    },
+    {
+      "id": "error",
+      "description": "色だけでなくmessageとaria stateで問題を伝える。",
+      "requiredBehavior": [
+        "色だけでなくmessageとaria stateで問題を伝える。"
+      ]
+    },
+    {
+      "id": "disabled",
+      "description": "操作不能である理由を周辺文脈から理解できるようにする。",
+      "requiredBehavior": [
+        "操作不能である理由を周辺文脈から理解できるようにする。"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "value",
+      "type": "unknown",
+      "required": false,
+      "default": null,
+      "description": "Controlled value。"
+    },
+    {
+      "name": "onChange",
+      "type": "(value) => void",
+      "required": false,
+      "default": null,
+      "description": "User操作で値が変わるときに通知する。"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "required": false,
+      "default": "false",
+      "description": "操作不能state。"
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Label"
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false,
+      "default": null,
+      "description": "Placeholder"
+    }
+  ],
+  "tokenRefs": {
+    "semanticColor": [
+      "--surface",
+      "--border",
+      "--fg",
+      "--input-bg",
+      "--input-border",
+      "--input-border-focus",
+      "--primary",
+      "--input-placeholder",
+      "--fg-subtle",
+      "--fg-muted",
+      "--fg-disabled",
+      "--danger",
+      "--focus-ring"
+    ],
+    "density": [
+      "--ctl-md",
+      "--input-x"
+    ],
+    "radius": [
+      "--radius-sm"
+    ],
+    "motion": [
+      "--dur-fast"
+    ]
+  },
+  "tokenBindings": {
+    "coverage": "partial",
+    "bindings": [
+      {
+        "slot": "token.surface.value",
+        "source": "--surface",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Textareaの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.border.value",
+        "source": "--border",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Textareaの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg.value",
+        "source": "--fg",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Textareaの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.input-bg.value",
+        "source": "--input-bg",
+        "scope": "component",
+        "componentToken": "--input-bg",
+        "aliases": "--surface",
+        "trigger": "semantic-divergence",
+        "reason": "Dark themeでは入力面を周囲から識別するためsurface-sunkenへ切り替える。"
+      },
+      {
+        "slot": "token.input-border.value",
+        "source": "--input-border",
+        "scope": "component",
+        "componentToken": "--input-border",
+        "aliases": "--border",
+        "trigger": "semantic-divergence",
+        "reason": "High contrastでは入力境界だけをborder-strongへ強める。"
+      },
+      {
+        "slot": "token.input-border-focus.value",
+        "source": "--input-border-focus",
+        "scope": "component",
+        "componentToken": "--input-border-focus",
+        "aliases": "--primary",
+        "trigger": "component-anatomy",
+        "reason": "Inputのfocus border slotをcomponent contractで固定する。"
+      },
+      {
+        "slot": "token.primary.value",
+        "source": "--primary",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Textareaの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.input-placeholder.value",
+        "source": "--input-placeholder",
+        "scope": "component",
+        "componentToken": "--input-placeholder",
+        "aliases": "--fg-subtle",
+        "trigger": "component-anatomy",
+        "reason": "Input固有のplaceholder anatomyへ安定してbindingする。"
+      },
+      {
+        "slot": "token.fg-subtle.value",
+        "source": "--fg-subtle",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Textareaの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-muted.value",
+        "source": "--fg-muted",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Textareaの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.fg-disabled.value",
+        "source": "--fg-disabled",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Textareaの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.danger.value",
+        "source": "--danger",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Textareaの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.focus-ring.value",
+        "source": "--focus-ring",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Textareaの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.ctl-md.value",
+        "source": "--ctl-md",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Textareaの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.input-x.value",
+        "source": "--input-x",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Textareaの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.radius-sm.value",
+        "source": "--radius-sm",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Textareaの公開visual contractで用途tokenとして共有する。"
+      },
+      {
+        "slot": "token.dur-fast.value",
+        "source": "--dur-fast",
+        "scope": "semantic",
+        "componentToken": null,
+        "aliases": null,
+        "trigger": null,
+        "reason": "Textareaの公開visual contractで用途tokenとして共有する。"
+      }
+    ],
+    "unboundSlots": [
+      {
+        "slot": "implementation.visual-state-audit",
+        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
+        "owner": "components.textarea"
+      }
+    ]
+  },
+  "accessibility": {
+    "requirements": [
+      "Keyboardとpointerで同じ機能を実行できる。",
+      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
+      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+    ],
+    "aria": [
+      "Native <textarea>をlabelとcounterへ関連付ける。"
+    ],
+    "focus": [
+      "focus-visibleで--focus-ringを使う。",
+      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+    ]
+  },
+  "keyboardInteractions": [
+    {
+      "key": "Tab",
+      "action": "順序どおりにfocusを移動する。"
+    }
+  ],
+  "usagePatterns": [
+    {
+      "id": "recommended-1",
+      "title": "Primary context",
+      "description": "説明文・コメントなどの長文入力",
+      "recommended": [
+        "最大文字数がある場合はカウンタを表示する。"
+      ],
+      "avoid": [
+        "1 行で収まる入力 → Text Field"
+      ]
+    }
+  ],
+  "responsiveBehavior": {
+    "desktop": {
+      "summary": "DesktopでのTextarea。",
+      "rules": [
+        "周辺layoutに応じたintrinsic widthを基本にし、formではlabelとの整列を保つ。",
+        "Keyboard focusとhoverを別々に確認する。"
+      ],
+      "avoid": [
+        "Hoverだけで状態や操作を伝えない。"
+      ]
+    },
+    "mobile": {
+      "summary": "MobileでのTextarea。",
+      "rules": [
+        "Form文脈では利用可能幅まで広げ、複数controlを無理に横へ詰めない。",
+        "同じpropとstate contractを維持する。"
+      ],
+      "avoid": [
+        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+      ]
+    },
+    "touch": {
+      "summary": "Touch入力でのTextarea。",
+      "rules": [
+        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
+        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+      ],
+      "avoid": [
+        "小さな隣接targetやgestureだけの操作を作らない。"
+      ]
+    }
+  },
+  "rules": [
+    "NO_RAW_HEX_COLOR",
+    "SPACING_FROM_TOKENS_ONLY",
+    "RADIUS_FROM_TOKENS_ONLY",
+    "CONTRAST_AA_MINIMUM",
+    "FOCUS_VISIBLE_REQUIRED",
+    "NO_POSITIVE_TABINDEX",
+    "TARGET_SIZE_MINIMUM",
+    "INTERACTIVE_NAME_REQUIRED"
+  ],
+  "qualityChecks": [
+    "When to use / not useの境界が明確",
+    "PC / SP / touchで同じsemantic contractを維持",
+    "公開tokenだけを参照",
+    "Keyboardとaccessible nameを検証",
+    "Light / Dark × Standard / Highと3 densityで確認"
+  ],
+  "examples": [
+    {
+      "id": "default",
+      "description": "Textareaの標準例。",
+      "code": "<Textarea label=\"説明\" rows={4} maxLength={500} />"
+    }
+  ],
+  "openQuestions": [
+    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
+  ]
+}

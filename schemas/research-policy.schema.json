@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/research-policy.schema.json",
+  "title": "Meridian Research Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "appliesTo", "gate", "sourcePolicy", "domainGuidance", "freshness", "invariants"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "type": "string" },
+    "appliesTo": {
+      "type": "array",
+      "minItems": 4,
+      "uniqueItems": true,
+      "items": { "enum": ["overview", "foundations", "tokens", "components"] }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assessmentRequiredEveryCycle", "researchRequiredWhen", "completionStatuses"],
+      "properties": {
+        "assessmentRequiredEveryCycle": { "const": true },
+        "researchRequiredWhen": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/trigger" }
+        },
+        "completionStatuses": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "enum": ["complete", "not-required"] }
+        }
+      }
+    },
+    "sourcePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["priority", "allowedTypes", "minimumEvidence", "secondarySourceRule"],
+      "properties": {
+        "priority": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "allowedTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/sourceType" }
+        },
+        "minimumEvidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["total", "primary"],
+          "properties": {
+            "total": { "type": "integer" },
+            "primary": { "type": "integer" }
+          }
+        },
+        "secondarySourceRule": { "type": "string", "minLength": 1 }
+      }
+    },
+    "domainGuidance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["overview", "foundations", "tokens", "components"],
+      "properties": {
+        "overview": { "$ref": "#/$defs/domainGuidance" },
+        "foundations": { "$ref": "#/$defs/domainGuidance" },
+        "tokens": { "$ref": "#/$defs/domainGuidance" },
+        "components": { "$ref": "#/$defs/domainGuidance" }
+      }
+    },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["defaultReviewWindowDays", "unstableTopicWindowDays", "alwaysCheckLatestStandard"],
+      "properties": {
+        "defaultReviewWindowDays": { "type": "integer" },
+        "unstableTopicWindowDays": { "type": "integer" },
+        "alwaysCheckLatestStandard": { "const": true }
+      }
+    },
+    "invariants": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+  },
+  "$defs": {
+    "trigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "sourceType": {
+      "enum": ["standard", "official-guideline", "official-design-system", "platform-documentation", "research-paper", "secondary-analysis"]
+    },
+    "domainGuidance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["typicalQuestions", "preferredSources"],
+      "properties": {
+        "typicalQuestions": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "preferredSources": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      }
+    }
+  }
+}

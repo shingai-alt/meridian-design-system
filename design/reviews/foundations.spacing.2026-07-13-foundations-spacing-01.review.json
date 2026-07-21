@@ -1,0 +1,190 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.spacing",
+  "cycleId": "2026-07-13-foundations-spacing-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "tokens/src/spacing.json",
+    "tokens/src/density.json",
+    "tokens/build/tokens.css",
+    "js/generated/foundation-token-meta.js",
+    "js/pages-foundations.js",
+    "js/pages-tokens.js",
+    "scripts/build-tokens.mjs",
+    "scripts/build-design-md.mjs",
+    "test/spacing-tokens.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "foundations.spacing",
+      "summary": "Spacing scale、micro-stepの例外、densityとの所有境界、PC/SPでの関係性維持、pointer targetのsizeとclearanceを確認する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "accessibility-or-safety",
+      "cross-platform-behavior",
+      "conflicting-guidance",
+      "benchmark-needed"
+    ],
+    "questions": [
+      "4px基準と2px系補助stepをどの範囲で許可するか。",
+      "viewportとdensityを連動させるべきか。",
+      "小さい操作targetでsizeとspacingをどう検証するか。"
+    ],
+    "evidence": [
+      {
+        "id": "carbon-spacing",
+        "title": "Carbon Design System Spacing",
+        "url": "https://carbondesignsystem.com/elements/spacing/overview/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "2、4、8の倍数を使い、detail-levelからlayout densityまでを一つのtoken scaleで扱う成熟した運用例を示している。",
+        "supportedDecisions": [
+          "four-pixel-base-with-optical-steps",
+          "generated-reference-scale"
+        ]
+      },
+      {
+        "id": "wcag-target-size-minimum",
+        "title": "WCAG 2.2 Understanding Target Size Minimum",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "pointer targetを24×24 CSS px以上にするか、undersized targetの24px clearance circleが隣接targetと交差しない条件を示している。",
+        "supportedDecisions": [
+          "target-size-and-clearance"
+        ]
+      },
+      {
+        "id": "wcag-target-size-enhanced",
+        "title": "WCAG 2.2 Understanding Target Size Enhanced",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "custom targetの44×44 CSS px基準と、頻繁・取り消し困難・edge付近など大きなtargetが特に有益な文脈を説明している。",
+        "supportedDecisions": [
+          "target-size-and-clearance"
+        ]
+      }
+    ],
+    "synthesis": "Carbonのscale運用をspacing rhythmの比較対象にし、WCAGの24px最低条件と44px強化条件をinteraction spacingへ適用した。Densityはviewportではなく利用文脈とinput precisionのmodifierとして維持する。",
+    "decisionImpact": "4px基準、2/6/10pxの限定用途、semantic/density tokenを先に選ぶ順序を明文化した。Pointer targetの24px最低条件、clearance例外、44px目標を追加し、SPで関係性を無条件に縮小しない規則を追加した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "four-pixel-base-with-optical-steps",
+      "summary": "4pxを基本unitとし、2px、6px、10pxは光学調整とcompact controlに用途を限定する。",
+      "rationale": "予測可能なrhythmを保ちながらborderと小型controlに必要なhalf-stepを明示的に扱うため。"
+    },
+    {
+      "id": "generated-reference-scale",
+      "summary": "16段の--sp-* reference scaleをDTCG dimension sourceからCSSとdocs metadataへ生成する。",
+      "rationale": "表示名、copy値、CSS実装のdriftをなくし、AIが存在しない--space-*を生成しないため。"
+    },
+    {
+      "id": "semantic-first-selection",
+      "summary": "Spacingは用途別semantic/density token、関係性、reference step、token昇格の順で選ぶ。",
+      "rationale": "数値の近さだけで選ばず、変更所有者と再利用される意味を保持するため。"
+    },
+    {
+      "id": "density-independent-from-viewport",
+      "summary": "Compact/Default/Comfortable densityをviewport幅へ自動的に結び付けない。",
+      "rationale": "SPでもpointer、external keyboard、業務密度など利用条件が異なり、viewportとinput precisionは別軸だから。"
+    },
+    {
+      "id": "target-size-and-clearance",
+      "summary": "24×24 CSS pxを最低条件とし、主要touch操作は44×44を目標にする。undersized targetは24px clearanceを検証する。",
+      "rationale": "見た目のicon sizeを保ちながら誤操作を減らし、WCAG 2.2 AAと強化基準を区別するため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "source-wrong",
+      "description": "spacing.jsonはdimension値を文字列で持ち、DTCG 2025.10のdimension object形式と一致していなかった。",
+      "action": "$schemaとgroup $typeを追加し、全16値をvalue/unit objectへ移行した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "docsは存在しない--space-*名を表示し、copyだけ--sp-*へ変換していた。",
+      "action": "正本から生成したSPACING_SCALEで表示名、値、copy targetを--sp-*へ統一した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "integer-like JSON keyの列挙規則により2px、6px、10px stepがscale末尾へ並ぶ可能性があった。",
+      "action": "build時にdimension valueで明示sortし、testでmonotonic orderを固定した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "cross-layer-conflict",
+      "description": "spacing referenceとdensity-owned spacingの選択境界がなく、componentが任意のstepを直接選べた。",
+      "action": "semantic/density-firstのselection orderと昇格条件をFoundationへ追加した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "tokens/src/spacing.json",
+      "summary": "16段scaleをDTCG dimension object、説明、用途metadata付きの正本へ更新した。"
+    },
+    {
+      "path": "scripts/build-tokens.mjs",
+      "summary": "object dimension解決、value sort、foundation metadata生成とdrift checkを追加した。"
+    },
+    {
+      "path": "js/pages-foundations.js",
+      "summary": "Spacing scale、選択順序、density境界、responsive、target size evidenceを更新した。"
+    },
+    {
+      "path": "js/pages-tokens.js",
+      "summary": "実在する--sp-*名、生成件数、用途を表示するtoken表へ更新した。"
+    },
+    {
+      "path": "test/spacing-tokens.test.js",
+      "summary": "source、CSS、metadataのcoverage、scale順、density aliasを検証した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/spacing-tokens.test.js",
+      "status": "passed",
+      "notes": "2 tests passed。16 tokenの同期、value順、density alias integrityを確認した。"
+    },
+    {
+      "command": "npm run build:tokens && npm run design:build",
+      "status": "passed",
+      "notes": "CSS、foundation metadata、DESIGN.mdを正本から再生成した。"
+    },
+    {
+      "command": "npm run check:js",
+      "status": "passed",
+      "notes": "生成metadataを含む29 JavaScript filesの構文を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [],
+  "impactedItems": [
+    "foundations.layout",
+    "foundations.accessibility",
+    "tokens.overview",
+    "tokens.spacing",
+    "tokens.density",
+    "components.button",
+    "components.icon-button"
+  ],
+  "nextRecommendedItems": [
+    "foundations.layout"
+  ]
+}

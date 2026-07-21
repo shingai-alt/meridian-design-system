@@ -1,0 +1,142 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.density",
+  "cycleId": "2026-07-13-tokens-density-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/token-policy.json",
+    "design/accessibility.json",
+    "tokens/src/density.json",
+    "tokens/build/tokens.css",
+    "tokens/build/meridian.tokens.json",
+    "js/generated/token-catalog-meta.js",
+    "js/generated/accessibility-meta.js",
+    "index.html",
+    "js/pages-foundations.js",
+    "test/density-tokens.test.js",
+    "test/accessibility-policy.test.js",
+    "js/pages-tokens.js"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "tokens.density",
+      "summary": "Density 3 modeの型、control minimum、mode順序、viewport境界、生成outputを既存Accessibility policyへ同期する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "新しいtarget基準を導入せず、foundations.accessibilityとfoundations.spacingで一次資料確認済みの24px minimum、44px preference、density/viewport境界をToken sourceへ適用するcycleのため。"
+  },
+  "decisions": [
+    {
+      "id": "minimum-control-token",
+      "summary": "全Density modeのctl-xsからctl-xlを24px以上にする。",
+      "rationale": "Consumerがglobal CSSの救済に依存せず、token単体でMeridian minimum target policyを満たすため。"
+    },
+    {
+      "id": "contextual-density-selection",
+      "summary": "Densityはviewportではなくinput method、作業密度、利用文脈から選ぶ。",
+      "rationale": "PC/SP専用componentを増やさず、同じcomponentを適切なcontrol rhythmで利用するため。"
+    },
+    {
+      "id": "stable-density-contract",
+      "summary": "3 modeで同じ16 token keyと型を公開し、Compact ≤ Default ≤ Comfortableの順序を保つ。",
+      "rationale": "Mode変更でAPIや意味を変えず、値だけを予測可能に切り替えるため。"
+    },
+    {
+      "id": "reading-role-independent",
+      "summary": "長文Reading typographyはDensityで縮小しない。",
+      "rationale": "高密度UIの設定がdocumentationやconsumer contentの可読性を損なわないため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "source-wrong",
+      "description": "Compact ctl-xsが22pxで、全density 24px minimumというAccessibility sourceと矛盾していた。",
+      "action": "Compact ctl-xsを24pxへ変更し、生成CSSと4 bundleを再生成した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Density Token pageはmode選択を説明していたが、control token自体の24px下限を明記していなかった。",
+      "action": "全mode minimumとtouch主要actionの44px preferenceをSelection rulesへ追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "Mode key、型、minimum、単調性、bundle/CSS同期、viewport非依存をまとめて拒否するtestがなかった。",
+      "action": "density-tokens testへ5つの継続検証を追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Accessibility quality gateに旧Light/Dark/HC表記が残り、Theme Tokenの4 contextとずれていた。",
+      "action": "Light/Dark × Standard/Highへ更新し、generated accessibility metadataとDESIGN.mdを再生成した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "tokens/src/density.json",
+      "summary": "Compact ctl-xsを22pxから24pxへ修正した。"
+    },
+    {
+      "path": "js/pages-tokens.js",
+      "summary": "Density selectionへ24px minimumと44px touch preferenceを追加した。"
+    },
+    {
+      "path": "design/accessibility.json",
+      "summary": "Quality gateのtheme/contrast context表記を現行4 contextへ同期した。"
+    },
+    {
+      "path": "test/density-tokens.test.js",
+      "summary": "3 modeの型、minimum、順序、4 bundle/CSS同期、viewport境界を検証した。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "Densityのpolicy、source、generated output、runtime minimum、docs、testをreview scopeへ登録した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/density-tokens.test.js test/accessibility-policy.test.js test/spacing-tokens.test.js test/token-pipeline.test.js",
+      "status": "passed",
+      "notes": "18 tests passed。全16 token、24px minimum、mode順序、4 context bundle同期を確認した。"
+    },
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "全generator、schema、38 JavaScript files、88 tests、102 registry items、27 review cyclesを確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-spacing-01",
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-tokens-overview-01",
+    "2026-07-13-tokens-spacing-01",
+    "2026-07-13-tokens-theme-01"
+  ],
+  "impactedItems": [
+    "tokens.css-variables",
+    "tokens.json-tokens",
+    "components.button",
+    "components.icon-button",
+    "components.segmented-control",
+    "components.table",
+    "components.text-field"
+  ],
+  "nextRecommendedItems": [
+    "tokens.css-variables"
+  ]
+}

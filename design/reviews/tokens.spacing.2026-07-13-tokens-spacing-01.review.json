@@ -1,0 +1,150 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.spacing",
+  "cycleId": "2026-07-13-tokens-spacing-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "tokens/src/spacing.json",
+    "tokens/src/layout.json",
+    "tokens/src/density.json",
+    "tokens/build/tokens.css",
+    "tokens/build/meridian.tokens.json",
+    "js/generated/foundation-token-meta.js",
+    "js/pages-tokens.js",
+    "test/spacing-tokens.test.js",
+    "test/layout-tokens.test.js",
+    "test/token-pipeline.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "tokens.spacing",
+      "summary": "DTCG dimension/alias形式、16step scale、Layout/Density consumer、CSS outputと用途制限を確認する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "accessibility-or-safety"
+    ],
+    "questions": [
+      "Spacing dimensionとaliasはDTCGの型で交換できるか。",
+      "補助stepと4px基準stepの用途境界は機械可読か。",
+      "Layout / Densityのaliasが未解決や値複製になっていないか。"
+    ],
+    "evidence": [
+      {
+        "id": "dtcg-dimension-alias",
+        "title": "Design Tokens Format Module 2025.10 - Dimension and Aliases",
+        "url": "https://www.w3.org/community/reports/design-tokens/CG-FINAL-format-20251028/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Dimensionをpx/remの{value,unit}で表し、curly-brace aliasで完全なtoken valueを参照する形式を定義する。",
+        "supportedDecisions": [
+          "typed-spacing-scale",
+          "consumer-aliases"
+        ]
+      },
+      {
+        "id": "wcag-target-spacing",
+        "title": "WCAG 2.2 Understanding Target Size (Minimum)",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Pointer targetは24×24 CSS pxまたは十分なspacing exceptionを必要とし、見た目のgapとhit areaを一体で検証する必要がある。",
+        "supportedDecisions": [
+          "semantic-spacing-first"
+        ]
+      }
+    ],
+    "synthesis": "Spacingはtyped Reference scaleとして保持し、Layout/Densityは値を複製せずaliasする。Product UIではReferenceを直接選ぶ前に用途を持つsemantic/modifier tokenを優先し、target sizeはspacing値だけで適合を推定しない。",
+    "decisionImpact": "16step全件とconsumer aliasをbundleまで検証し、Token pageにpath、usage、実aliasを表示した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "typed-spacing-scale",
+      "summary": "0から96pxの16stepをDTCG dimension Reference tokenとして管理する。",
+      "rationale": "値、単位、usageをsourceからCSSとplatform outputへ決定的に変換するため。"
+    },
+    {
+      "id": "consumer-aliases",
+      "summary": "LayoutとDensityはSpacing valueを複製せず{spacing.*} aliasで参照する。",
+      "rationale": "Scale変更時のdriftを防ぎ、参照関係をmachine-readableに保つため。"
+    },
+    {
+      "id": "semantic-spacing-first",
+      "summary": "Product compositionでは用途を持つLayout/Density tokenを優先し、Reference直接利用を限定する。",
+      "rationale": "見た目が近い値ではなく関係性と所有者でspacingを選べるようにするため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "source-wrong",
+      "description": "Densityのdimension/number valueが文字列で、DTCG typed valueとして不正だった。",
+      "action": "Dimensionを{value,unit}、Numberを数値へ正規化し、aliasは文字列referenceとして維持した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Spacing pageはscale表だけで、Layout/Densityがどのpathをaliasするかを示していなかった。",
+      "action": "DTCG path、CSS名、description、usage、実alias例を追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-contract",
+      "description": "LayoutとDensityの全Spacing aliasがbundle内sourceへ解決することを一括検証していなかった。",
+      "action": "Consumer groupsを走査し、alias targetとbundle source一致をtestした。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "tokens/src/density.json",
+      "summary": "DimensionとNumberをDTCG typed valueへ正規化した。"
+    },
+    {
+      "path": "js/pages-tokens.js",
+      "summary": "16stepのpath/usageとLayout/Density aliasを表示するSpacing token pageへ更新した。"
+    },
+    {
+      "path": "test/spacing-tokens.test.js",
+      "summary": "Bundle一致とLayout/Density全aliasの解決を追加検証した。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "Spacing itemへconsumer source、bundle、metadata、testを登録した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/spacing-tokens.test.js test/layout-tokens.test.js test/token-pipeline.test.js",
+      "status": "passed",
+      "notes": "11 tests passed。Scale、CSS、metadata、breakpoint、全consumer alias、DTCG bundleを確認した。"
+    },
+    {
+      "command": "npm run check:tokens && npm run validate:system",
+      "status": "passed",
+      "notes": "Generated artifactsと102 registry items、21 review cyclesの整合性を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-spacing-01",
+    "2026-07-13-tokens-overview-01",
+    "2026-07-13-tokens-typography-01"
+  ],
+  "impactedItems": [
+    "tokens.radius",
+    "tokens.density"
+  ],
+  "nextRecommendedItems": [
+    "tokens.radius"
+  ]
+}

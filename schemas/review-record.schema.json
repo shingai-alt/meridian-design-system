@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/review-record.schema.json",
+  "title": "Meridian Refinement Review Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "itemId",
+    "cycleId",
+    "supersedesCycleId",
+    "reviewType",
+    "status",
+    "startedAt",
+    "completedAt",
+    "reviewedSources",
+    "research",
+    "decisions",
+    "differences",
+    "changes",
+    "validations",
+    "openQuestions",
+    "acknowledgedImpacts",
+    "impactedItems",
+    "nextRecommendedItems"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "type": "string" },
+    "itemId": { "type": "string", "pattern": "^[a-z]+\\.[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "cycleId": { "type": "string", "minLength": 1 },
+    "supersedesCycleId": { "type": ["string", "null"] },
+    "reviewType": { "enum": ["full", "follow-up", "bootstrap"] },
+    "status": { "enum": ["in-progress", "complete", "blocked"] },
+    "startedAt": { "type": "string", "minLength": 10 },
+    "completedAt": { "type": ["string", "null"] },
+    "reviewedSources": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "research": { "$ref": "#/$defs/research" },
+    "decisions": { "type": "array", "items": { "$ref": "#/$defs/decision" } },
+    "differences": { "type": "array", "items": { "$ref": "#/$defs/difference" } },
+    "changes": { "type": "array", "items": { "$ref": "#/$defs/change" } },
+    "validations": { "type": "array", "items": { "$ref": "#/$defs/validation" } },
+    "openQuestions": { "type": "array", "items": { "$ref": "#/$defs/openQuestion" } },
+    "acknowledgedImpacts": { "type": "array", "items": { "type": "string" } },
+    "impactedItems": { "type": "array", "items": { "type": "string" } },
+    "nextRecommendedItems": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "research": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "scope", "triggers", "questions", "evidence", "synthesis", "decisionImpact", "notRequiredReason"],
+      "properties": {
+        "status": { "enum": ["pending", "complete", "not-required"] },
+        "scope": { "$ref": "#/$defs/researchScope" },
+        "triggers": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "questions": { "type": "array", "items": { "type": "string", "pattern": ".*\\S.*" } },
+        "evidence": { "type": "array", "items": { "$ref": "#/$defs/researchEvidence" } },
+        "synthesis": { "type": "string" },
+        "decisionImpact": { "type": "string" },
+        "notRequiredReason": { "type": ["string", "null"] }
+      }
+    },
+    "researchScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["itemId", "summary"],
+      "properties": {
+        "itemId": { "type": "string", "pattern": "^[a-z]+\\.[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "summary": { "type": "string" }
+      }
+    },
+    "researchEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "url", "sourceType", "authority", "accessedAt", "summary", "supportedDecisions"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "title": { "type": "string", "pattern": ".*\\S.*" },
+        "url": { "type": "string", "pattern": "^https://" },
+        "sourceType": { "enum": ["standard", "official-guideline", "official-design-system", "platform-documentation", "research-paper", "secondary-analysis"] },
+        "authority": { "enum": ["primary", "secondary"] },
+        "accessedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "summary": { "type": "string", "pattern": ".*\\S.*" },
+        "supportedDecisions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" } }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "summary", "rationale"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "summary": { "type": "string", "minLength": 1 },
+        "rationale": { "type": "string", "minLength": 1 }
+      }
+    },
+    "difference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["classification", "description", "action", "status"],
+      "properties": {
+        "classification": {
+          "enum": ["source-wrong", "docs-stale", "implementation-stale", "missing-token", "missing-contract", "cross-layer-conflict", "open-question", "no-change"]
+        },
+        "description": { "type": "string" },
+        "action": { "type": "string" },
+        "status": { "enum": ["resolved", "deferred", "not-applicable"] }
+      }
+    },
+    "change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "summary"],
+      "properties": {
+        "path": { "type": "string" },
+        "summary": { "type": "string" }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command", "status", "notes"],
+      "properties": {
+        "command": { "type": "string" },
+        "status": { "enum": ["passed", "failed", "manual", "not-run"] },
+        "notes": { "type": "string" }
+      }
+    },
+    "openQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question", "owner", "exitCriteria"],
+      "properties": {
+        "question": { "type": "string" },
+        "owner": { "type": "string" },
+        "exitCriteria": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "0.1.0",
+  "conceptId": "phase2_team_invitation",
+  "rubricId": "meridian-product-ui-v1",
+  "status": "awaiting-human-comparison",
+  "critic": {
+    "kind": "rubric-grounded-visual-agent",
+    "input": [
+      "rendered-desktop-screenshot",
+      "rendered-mobile-screenshot",
+      "design-brief",
+      "reference-principles",
+      "design-strategy",
+      "visual-quality-rubric",
+      "candidate-hypothesis"
+    ],
+    "maximumRepairRounds": 2
+  },
+  "screenshotManifest": "examples/generated/visual-review/manifest.json",
+  "candidates": [
+    {
+      "id": "baseline",
+      "kind": "baseline",
+      "weightedScore": 57,
+      "majorFindingsAfterRepair": 1,
+      "passesProvisionalGate": false,
+      "screenshots": [
+        "examples/generated/visual-review/baseline.desktop.png",
+        "examples/generated/visual-review/baseline.mobile.png"
+      ],
+      "repairRounds": 0
+    },
+    {
+      "id": "task-focus",
+      "kind": "candidate",
+      "weightedScore": 79,
+      "majorFindingsAfterRepair": 0,
+      "passesProvisionalGate": true,
+      "screenshots": [
+        "examples/generated/visual-review/task-focus.desktop.png",
+        "examples/generated/visual-review/task-focus.mobile.png"
+      ],
+      "repairRounds": 2
+    },
+    {
+      "id": "context-aside",
+      "kind": "candidate",
+      "weightedScore": 73,
+      "majorFindingsAfterRepair": 1,
+      "passesProvisionalGate": false,
+      "screenshots": [
+        "examples/generated/visual-review/context-aside.desktop.png",
+        "examples/generated/visual-review/context-aside.mobile.png"
+      ],
+      "repairRounds": 2
+    },
+    {
+      "id": "guided-flow",
+      "kind": "candidate",
+      "weightedScore": 68,
+      "majorFindingsAfterRepair": 1,
+      "passesProvisionalGate": false,
+      "screenshots": [
+        "examples/generated/visual-review/guided-flow.desktop.png",
+        "examples/generated/visual-review/guided-flow.mobile.png"
+      ],
+      "repairRounds": 2
+    }
+  ],
+  "comparisons": [
+    {
+      "id": "comparison.a-b",
+      "left": "task-focus",
+      "right": "context-aside",
+      "status": "pending-human-review"
+    },
+    {
+      "id": "comparison.a-c",
+      "left": "task-focus",
+      "right": "guided-flow",
+      "status": "pending-human-review"
+    },
+    {
+      "id": "comparison.b-c",
+      "left": "context-aside",
+      "right": "guided-flow",
+      "status": "pending-human-review"
+    },
+    {
+      "id": "comparison.a-baseline",
+      "left": "task-focus",
+      "right": "baseline",
+      "status": "pending-human-review"
+    },
+    {
+      "id": "comparison.b-baseline",
+      "left": "context-aside",
+      "right": "baseline",
+      "status": "pending-human-review"
+    },
+    {
+      "id": "comparison.c-baseline",
+      "left": "guided-flow",
+      "right": "baseline",
+      "status": "pending-human-review"
+    }
+  ],
+  "humanDecisionRequired": true,
+  "provisionalPreference": "task-focus"
+}

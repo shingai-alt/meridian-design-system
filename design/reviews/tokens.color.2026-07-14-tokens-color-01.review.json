@@ -1,0 +1,103 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.color",
+  "cycleId": "2026-07-14-tokens-color-01",
+  "supersedesCycleId": "2026-07-13-tokens-color-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-14",
+  "completedAt": "2026-07-14",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "src/color-engine.js",
+    "design/semantic-tokens.json",
+    "tokens/build/meridian.tokens.json",
+    "tokens/build/meridian.dark.tokens.json",
+    "tokens/build/meridian.high-contrast.tokens.json",
+    "js/generated/token-catalog-meta.js",
+    "test/color-engine.test.js",
+    "test/token-pipeline.test.js",
+    "js/pages-tokens.js",
+    "tokens/build/tokens.css",
+    "design/reviews/foundations.accessibility.2026-07-13-foundations-accessibility-01.review.json",
+    "design/reviews/foundations.color.2026-07-13-foundations-color-01.review.json",
+    "design/reviews/tokens.overview.2026-07-13-tokens-overview-01.review.json",
+    "design/reviews/foundations.color.2026-07-14-foundations-color-01.review.json"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "tokens.color",
+      "summary": "Neutral-first canvasとSurface/Control roleの解決値をColor token仕様へ照合する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "影響元cycleで一次資料調査と設計判断が完了しており、このfollow-upでは新しい外部解釈を導入せず、確定した方針と実装の整合を確認するため。"
+  },
+  "decisions": [
+    {
+      "id": "color-roles-follow-foundation",
+      "summary": "Color tokenはNeutral canvas、surface hierarchy、control stateを別roleとして公開する。",
+      "rationale": "Primitiveの近似色選択に戻らず、Foundationの意味を実装へ伝えるため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "no-change",
+      "description": "Color Tokensの現行sourceは影響元cycleの採用方針と整合している。",
+      "action": "関連source、生成物、contract、testを照合し、影響cycleをacknowledgedImpactsへ記録した。",
+      "status": "not-applicable"
+    }
+  ],
+  "changes": [
+    {
+      "path": "src/color-engine.js",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "design/semantic-tokens.json",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "tokens/build/tokens.css",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "test/color-engine.test.js",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "design/reviews/tokens.color.2026-07-14-tokens-color-01.review.json",
+      "summary": "影響判断、source照合、検証、acknowledgementを記録。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "最新follow-up reviewを台帳へ接続。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/color-engine.test.js test/component-specs.test.js test/token-pipeline.test.js test/css-variables.test.js test/theme-tokens.test.js",
+      "status": "passed",
+      "notes": "Color、74 component contract、4 token bundle、CSS変数、theme modifierの関連testが成功。"
+    },
+    {
+      "command": "npm run validate:system",
+      "status": "passed",
+      "notes": "Schema、registry、review dependency、contractの整合が成功。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-color-01",
+    "2026-07-13-tokens-overview-01",
+    "2026-07-14-foundations-color-01"
+  ],
+  "impactedItems": [],
+  "nextRecommendedItems": []
+}

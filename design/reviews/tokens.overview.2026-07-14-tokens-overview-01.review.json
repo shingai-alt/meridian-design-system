@@ -1,0 +1,116 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.overview",
+  "cycleId": "2026-07-14-tokens-overview-01",
+  "supersedesCycleId": "2026-07-13-tokens-overview-02",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-14",
+  "completedAt": "2026-07-14",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/token-policy.json",
+    "tokens/src",
+    "design/semantic-tokens.json",
+    "scripts/build-tokens.mjs",
+    "scripts/lib/token-artifacts.mjs",
+    "js/generated/token-catalog-meta.js",
+    "test/token-pipeline.test.js",
+    "test/theme-tokens.test.js",
+    "js/pages-tokens.js",
+    "design/reviews/foundations.accessibility.2026-07-13-foundations-accessibility-01.review.json",
+    "design/reviews/foundations.color.2026-07-13-foundations-color-01.review.json",
+    "design/reviews/foundations.content.2026-07-13-foundations-content-01.review.json",
+    "design/reviews/foundations.elevation.2026-07-13-foundations-elevation-01.review.json",
+    "design/reviews/foundations.layout.2026-07-13-foundations-layout-01.review.json",
+    "design/reviews/foundations.motion.2026-07-13-foundations-motion-01.review.json",
+    "design/reviews/foundations.radius.2026-07-13-foundations-radius-01.review.json",
+    "design/reviews/foundations.spacing.2026-07-13-foundations-spacing-01.review.json",
+    "design/reviews/foundations.typography.2026-07-13-foundations-typography-01.review.json",
+    "design/reviews/overview.architecture.review.json",
+    "design/reviews/overview.for-engineers.2026-07-13-overview-for-engineers-01.review.json",
+    "design/reviews/tokens.json-tokens.2026-07-13-tokens-json-tokens-01.review.json",
+    "design/reviews/foundations.color.2026-07-14-foundations-color-01.review.json"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "tokens.overview",
+      "summary": "追加Semantic roleが4 context bundleと公開token総数へ一貫して反映されることを確認する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "影響元cycleで一次資料調査と設計判断が完了しており、このfollow-upでは新しい外部解釈を導入せず、確定した方針と実装の整合を確認するため。"
+  },
+  "decisions": [
+    {
+      "id": "stable-expanded-token-surface",
+      "summary": "追加したsurface/control roleを全bundleへ同じpathと型で公開する。",
+      "rationale": "Theme選択によって利用可能なtoken APIが変わらないようにするため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "no-change",
+      "description": "Token Overviewの現行sourceは影響元cycleの採用方針と整合している。",
+      "action": "関連source、生成物、contract、testを照合し、影響cycleをacknowledgedImpactsへ記録した。",
+      "status": "not-applicable"
+    }
+  ],
+  "changes": [
+    {
+      "path": "design/semantic-tokens.json",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "scripts/build-tokens.mjs",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "test/token-pipeline.test.js",
+      "summary": "影響元cycleで更新または再検証したsource。"
+    },
+    {
+      "path": "design/reviews/tokens.overview.2026-07-14-tokens-overview-01.review.json",
+      "summary": "影響判断、source照合、検証、acknowledgementを記録。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "最新follow-up reviewを台帳へ接続。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/color-engine.test.js test/component-specs.test.js test/token-pipeline.test.js test/css-variables.test.js test/theme-tokens.test.js",
+      "status": "passed",
+      "notes": "Color、74 component contract、4 token bundle、CSS変数、theme modifierの関連testが成功。"
+    },
+    {
+      "command": "npm run validate:system",
+      "status": "passed",
+      "notes": "Schema、registry、review dependency、contractの整合が成功。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-color-01",
+    "2026-07-13-foundations-content-01",
+    "2026-07-13-foundations-elevation-01",
+    "2026-07-13-foundations-layout-01",
+    "2026-07-13-foundations-motion-01",
+    "2026-07-13-foundations-radius-01",
+    "2026-07-13-foundations-spacing-01",
+    "2026-07-13-foundations-typography-01",
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-overview-for-engineers-01",
+    "2026-07-13-tokens-json-tokens-01",
+    "2026-07-14-foundations-color-01"
+  ],
+  "impactedItems": [],
+  "nextRecommendedItems": []
+}

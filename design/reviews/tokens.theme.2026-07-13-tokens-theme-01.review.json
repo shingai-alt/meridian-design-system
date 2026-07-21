@@ -1,0 +1,232 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "tokens.theme",
+  "cycleId": "2026-07-13-tokens-theme-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/token-policy.json",
+    "src/color-engine.js",
+    "tokens/src/component.json",
+    "tokens/src/shadow.json",
+    "tokens/build/tokens.css",
+    "tokens/build/meridian.tokens.json",
+    "tokens/build/meridian.dark.tokens.json",
+    "tokens/build/meridian.high-contrast.tokens.json",
+    "tokens/build/meridian.dark.high-contrast.tokens.json",
+    "js/generated/token-catalog-meta.js",
+    "js/utils.js",
+    "js/app-shell.js",
+    "js/component-pages.js",
+    "js/pages-home.js",
+    "js/pages-foundations.js",
+    "js/pages-overview.js",
+    "index.html",
+    "test/theme-tokens.test.js",
+    "test/color-engine.test.js",
+    "test/token-pipeline.test.js",
+    "js/pages-tokens.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "tokens.theme",
+      "summary": "tokens.themeのThemeとContrast modifier、4 permutation、browser preference、forced colorsとの境界を確認する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "accessibility-or-safety",
+      "conflicting-guidance",
+      "ecosystem-change"
+    ],
+    "questions": [
+      "Light / DarkとStandard / Highを別modifierとしてどの順序で解決すべきか。",
+      "Author High Contrast、prefers-contrast、forced-colorsをどの境界で扱うべきか。",
+      "Dark / Highを含む全permutationを公開すべきか。"
+    ],
+    "evidence": [
+      {
+        "id": "dtcg-resolver-2025-10",
+        "title": "Design Tokens Resolver Module 2025.10",
+        "url": "https://www.w3.org/community/reports/design-tokens/CG-FINAL-resolver-20251028/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Modifierのcontext permutation、非直交modifierの順序依存、明示的resolutionOrder、Light/Dark High Contrastの解決例を定義している。",
+        "supportedDecisions": ["separate-theme-contrast", "explicit-resolution-order", "four-resolved-contexts"]
+      },
+      {
+        "id": "media-queries-level-5",
+        "title": "Media Queries Level 5",
+        "url": "https://www.w3.org/TR/mediaqueries-5/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "prefers-contrastはmore/less/customを表し、forced-colorsは必ずしも高contrast嗜好を意味しないと定義している。",
+        "supportedDecisions": ["preference-initialization", "distinguish-author-high-forced-colors"]
+      },
+      {
+        "id": "css-color-adjust-1",
+        "title": "CSS Color Adjustment Module Level 1",
+        "url": "https://www.w3.org/TR/css-color-adjust-1/",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "forced colorsではUAが利用者paletteをsystem colorとして適用し、forced-color-adjust:noneは限定利用すべきと定義している。",
+        "supportedDecisions": ["distinguish-author-high-forced-colors"]
+      },
+      {
+        "id": "wcag-contrast-enhanced",
+        "title": "Understanding SC 1.4.6 Contrast Enhanced",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-enhanced.html",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "Level AAAの通常textに7:1、大きなtextに4.5:1のcontrast目標を示している。",
+        "supportedDecisions": ["high-contrast-target"]
+      }
+    ],
+    "synthesis": "ThemeとContrastは独立入力として4 permutationを持たせ、同じSemantic colorへ影響するため解決順をTheme→Contrastと明示する。prefers-contrast: moreは未保存時のAuthor High初期値に使えるが、forced-colorsは利用者のsystem paletteをUAが適用する別機構として保持する。",
+    "decisionImpact": "hcを第3 themeとして扱う実装を廃止し、Light / Dark × Standard / Highの4 context、4 bundle、2軸runtime control、Dark / High color resolutionへ移行した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "separate-theme-contrast",
+      "summary": "ThemeはLight / Dark、ContrastはStandard / Highとして別modifierにする。",
+      "rationale": "Surface luminanceの選択とcontrast目標を独立して選べ、policyとruntimeを一致させるため。"
+    },
+    {
+      "id": "explicit-resolution-order",
+      "summary": "Semantic resolutionはThemeを先に適用し、Contrastを後に適用する。",
+      "rationale": "両modifierが一部のcolor tokenへ影響する非直交関係で、結果を決定的にするため。"
+    },
+    {
+      "id": "four-resolved-contexts",
+      "summary": "Light / Standard、Dark / Standard、Light / High、Dark / Highの4 bundleとCSS selectorを公開する。",
+      "rationale": "全入力permutationを保存・検証可能にし、LightだけにHighを結合した欠落をなくすため。"
+    },
+    {
+      "id": "preference-initialization",
+      "summary": "保存設定がない初回だけprefers-color-schemeとprefers-contrast: moreを初期値に使う。",
+      "rationale": "OS設定を尊重しつつ、Meridian内で明示した設定を次回以降も維持するため。"
+    },
+    {
+      "id": "distinguish-author-high-forced-colors",
+      "summary": "forced-colorsをAuthor Highへ変換せず、UAのsystem color置換を妨げない。",
+      "rationale": "Forced colorsは高contrastとは限らず、利用者が選んだpaletteの意味を上書きしないため。"
+    },
+    {
+      "id": "high-contrast-target",
+      "summary": "High modeはLight / Dark双方で主要textとprimary/backgroundに7:1を目標とする。",
+      "rationale": "Contrast Enhancedの基準をAuthor modeの明確な検証目標として使うため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "cross-layer-conflict",
+      "description": "PolicyはThemeとContrastを別modifierとしていたが、runtimeとCSSはhcを第3 themeとして扱っていた。",
+      "action": "State、selector、control、component previewをtheme/contrastの2軸へ分離した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-token",
+      "description": "Dark / HighのSemantic値、Component解決、DTCG bundleが存在しなかった。",
+      "action": "Color engineとgeneratorへDark / Highを追加し、4 contextを同じ309-token構造で出力した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "source-wrong",
+      "description": "ComponentとShadowのmode metadataがhcをTheme keyとして持ち、ownerが曖昧だった。",
+      "action": "ComponentのHigh overrideをhigh keyへ変更し、ShadowはLight/Darkだけが所有するようhc overrideを削除した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Token、Foundation、Overview、README、AI文書がLight/Dark/HCの3 themeとして説明していた。",
+      "action": "4 context、解決順、browser preference、forced-colors境界へ同期した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "4 permutation、modifier metadata、runtime状態、forced colors境界をまとめて検証するtestがなかった。",
+      "action": "theme-tokens testを追加し、color、token pipeline、component、shadow testを4 contextへ拡張した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "src/color-engine.js",
+      "summary": "buildSemanticsをTheme × Contrast入力へ変更し、Dark / Highを追加した。"
+    },
+    {
+      "path": "scripts/lib/token-artifacts.mjs",
+      "summary": "4 context bundle、modifier metadata、Theme→Contrast解決順、4 CSS selectorを生成した。"
+    },
+    {
+      "path": "js/utils.js",
+      "summary": "Runtime state、保存、旧hc migration、OS preference初期値を2軸化した。"
+    },
+    {
+      "path": "js/app-shell.js",
+      "summary": "ThemeとContrastを別segmented controlおよびcommandとして操作可能にした。"
+    },
+    {
+      "path": "js/component-pages.js",
+      "summary": "Playground比較を4 contextへ拡張した。"
+    },
+    {
+      "path": "js/pages-tokens.js",
+      "summary": "全token表、Theme docs、selector、standards、forced-colors境界を4 contextへ更新した。"
+    },
+    {
+      "path": "test/theme-tokens.test.js",
+      "summary": "Modifier ownership、bundle、CSS、runtime、forced colorsの6検証を追加した。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "Theme itemへ全source、output、runtime、docs、testを登録した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/theme-tokens.test.js test/color-engine.test.js test/token-pipeline.test.js test/component-tokens.test.js test/shadow-tokens.test.js",
+      "status": "passed",
+      "notes": "33 tests passed。全Seed・4 context、bundle、selector、component/shadow ownership、runtimeを確認した。"
+    },
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "全generator、schema、38 JavaScript files、83 tests、102 registry items、26 review cyclesを確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-elevation-01",
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-tokens-component-01",
+    "2026-07-13-tokens-motion-01",
+    "2026-07-13-tokens-overview-01"
+  ],
+  "impactedItems": [
+    "foundations.color",
+    "foundations.elevation",
+    "foundations.accessibility",
+    "tokens.density",
+    "tokens.css-variables",
+    "tokens.json-tokens",
+    "components.button",
+    "components.text-field",
+    "components.sidebar",
+    "components.table"
+  ],
+  "nextRecommendedItems": [
+    "tokens.density"
+  ]
+}

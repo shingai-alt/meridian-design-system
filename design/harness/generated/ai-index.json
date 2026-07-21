@@ -1,0 +1,1916 @@
+{
+  "schemaVersion": "0.1.0",
+  "translationPackDigest": "sha256-0183e37d772d938042a98063426412505dce847213b3648225dab190d1ecbd8b",
+  "runtimeVersion": "0.1.0",
+  "components": [
+    {
+      "id": "button",
+      "name": "Button",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/button.contract.json",
+      "sourceDigest": "sha256-c788bac60513db39533b701411374df39c3fc5f2164d16228aebf115362d146c",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "description": "アクションを実行するための基本コントロール。優先度、危険度、文脈に応じて variant を選ぶ。",
+      "whenToUse": [
+        "フォームを送信する。",
+        "設定変更を保存する。",
+        "新しいリソースを作成する。",
+        "ダイアログ内で操作を確定またはキャンセルする。",
+        "テーブル行やツールバーで補助操作を実行する。",
+        "削除、権限変更、取り消し不能な操作を明示する。"
+      ],
+      "whenNotToUse": [
+        "ページ遷移や外部参照だけが目的の場合は Link を使う。",
+        "2 から 4 個の表示モードを切り替える場合は Segmented Control を使う。",
+        "複数の排他選択肢を提示する場合は Radio Group を使う。",
+        "即時反映する設定の ON/OFF は Switch を使う。",
+        "アイコンだけで意味が明確な補助操作は Icon Button を使う。",
+        "ただ目立たせたいだけのテキストやラベルには使わない。"
+      ],
+      "alternatives": [
+        "ページ遷移や外部参照だけが目的の場合は Link を使う。",
+        "2 から 4 個の表示モードを切り替える場合は Segmented Control を使う。",
+        "複数の排他選択肢を提示する場合は Radio Group を使う。",
+        "即時反映する設定の ON/OFF は Switch を使う。",
+        "アイコンだけで意味が明確な補助操作は Icon Button を使う。",
+        "ただ目立たせたいだけのテキストやラベルには使わない。"
+      ],
+      "anatomy": [
+        {
+          "part": "root",
+          "required": true,
+          "description": "button 要素。variant、size、state に応じた token だけで見た目を構成する。"
+        },
+        {
+          "part": "label",
+          "required": true,
+          "description": "操作結果を予測できる短い文言。iconOnly の場合は視覚表示ではなく accessible name として必須。"
+        },
+        {
+          "part": "leadingIcon",
+          "required": false,
+          "description": "操作の意味を補強するアイコン。装飾だけのアイコンは aria-hidden にする。"
+        },
+        {
+          "part": "trailingIcon",
+          "required": false,
+          "description": "遷移、展開、外部リンクなど、操作後の方向を補足するアイコン。"
+        },
+        {
+          "part": "spinner",
+          "required": false,
+          "description": "loading 中の進行表示。ラベルを消さず、aria-busy と disabled behavior を併用する。"
+        }
+      ],
+      "variants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "outline",
+        "danger",
+        "success",
+        "link"
+      ],
+      "states": [
+        {
+          "id": "default",
+          "description": "操作可能な通常状態。",
+          "requiredBehavior": [
+            "button 要素としてフォーカス可能",
+            "variant と size の既定 token を使う"
+          ]
+        },
+        {
+          "id": "hover",
+          "description": "ポインタが乗った状態。",
+          "requiredBehavior": [
+            "色または面の変化は token で表す",
+            "hover だけに意味を依存しない"
+          ]
+        },
+        {
+          "id": "active",
+          "description": "押下中の状態。",
+          "requiredBehavior": [
+            "短い motion token で状態変化を伝える",
+            "レイアウト寸法を変えない"
+          ]
+        },
+        {
+          "id": "focus",
+          "description": "キーボードフォーカスがある状態。",
+          "requiredBehavior": [
+            "focus-visible で --focus-ring を表示",
+            "outline を消す場合は必ず代替リングを持つ"
+          ]
+        },
+        {
+          "id": "disabled",
+          "description": "操作不可の状態。",
+          "requiredBehavior": [
+            "native disabled または aria-disabled を目的に応じて選ぶ",
+            "無効理由が必要な場合は aria-disabled と説明を併用"
+          ]
+        },
+        {
+          "id": "loading",
+          "description": "実行中の状態。",
+          "requiredBehavior": [
+            "aria-busy=\"true\" を設定",
+            "二重送信を防ぐ",
+            "ラベルまたは accessible name を維持"
+          ]
+        }
+      ],
+      "sizes": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
+      "props": [
+        {
+          "name": "variant",
+          "type": "\"primary\" | \"secondary\" | \"tertiary\" | \"ghost\" | \"outline\" | \"danger\" | \"success\" | \"link\"",
+          "required": false,
+          "default": "primary",
+          "description": "視覚的な優先度と文脈。"
+        },
+        {
+          "name": "size",
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"",
+          "required": false,
+          "default": "md",
+          "description": "密度 token に連動する高さと余白。"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "実行中表示。aria-busy と二重送信防止を伴う。"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "操作不可。フォーム送信対象から外す場合に使う。"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "iconOnly または視覚ラベルがない場合に必須。"
+        },
+        {
+          "name": "fullWidth",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "親コンテナ幅いっぱいに広げる。モバイルの主要アクションで使う。"
+        }
+      ],
+      "accessibility": {
+        "requirements": [
+          "native button 要素を既定にする",
+          "iconOnly の場合は aria-label を必須にする",
+          "loading 中も accessible name を失わない",
+          "色だけで danger や success の意味を伝えない",
+          "操作targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする"
+        ],
+        "aria": [
+          "loading 中は aria-busy=\"true\" を設定する",
+          "toggle 的に使う場合は aria-pressed を明示する",
+          "無効理由を説明したい場合は disabled ではなく aria-disabled と aria-describedby を検討する"
+        ],
+        "focus": [
+          ":focus-visible で --focus-ring を使う",
+          "focus ring は周辺背景とのコントラストを保つ",
+          "focus 時にボタン寸法を変えない"
+        ]
+      },
+      "keyboardInteractions": [
+        {
+          "key": "Enter",
+          "action": "ボタンのアクションを実行する"
+        },
+        {
+          "key": "Space",
+          "action": "ボタンのアクションを実行する"
+        },
+        {
+          "key": "Tab",
+          "action": "次のフォーカス可能要素へ移動する"
+        }
+      ],
+      "prohibitedRules": [
+        "NO_RAW_HEX_COLOR",
+        "TEXT_ON_SOLID_MUST_USE_TOKEN",
+        "ACCENT_BRAND_MARK_ONLY",
+        "SPACING_FROM_TOKENS_ONLY",
+        "RADIUS_FROM_TOKENS_ONLY",
+        "MOTION_DURATION_FROM_TOKENS_ONLY",
+        "FOCUS_VISIBLE_REQUIRED",
+        "CONTRAST_AA_MINIMUM"
+      ],
+      "allowedTokenCategories": [
+        "componentColor",
+        "semanticColor",
+        "density",
+        "spacing",
+        "radius",
+        "motion"
+      ],
+      "selectionRules": {
+        "useWhen": [
+          "状態を変更する明確なactionを実行する。"
+        ],
+        "avoidWhen": [
+          "ページ遷移だけならLinkを使う。"
+        ],
+        "alternatives": [
+          "link",
+          "icon-button"
+        ]
+      },
+      "negativeExamples": [
+        {
+          "pattern": "未登録variantや独自classでButtonを強調する。",
+          "reason": "action hierarchyとToken bindingを迂回するため。",
+          "ruleIds": [
+            "NO_RAW_HEX_COLOR"
+          ]
+        }
+      ],
+      "requiredScenarios": [
+        "default",
+        "disabled",
+        "loading",
+        "focus",
+        "primary",
+        "secondary",
+        "ghost"
+      ],
+      "examples": [
+        {
+          "id": "primary-action",
+          "description": "ページ内の主要アクション。",
+          "code": "<Button variant=\"primary\">プロジェクトを作成</Button>"
+        },
+        {
+          "id": "dialog-actions",
+          "description": "ダイアログの補助操作と確定操作。",
+          "code": "<Button variant=\"ghost\">キャンセル</Button>\n<Button variant=\"primary\">保存</Button>"
+        },
+        {
+          "id": "icon-only",
+          "description": "アイコンのみの操作。aria-label が必須。",
+          "code": "<Button variant=\"ghost\" aria-label=\"検索\">\n  <SearchIcon aria-hidden=\"true\" />\n</Button>"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "button"
+        ],
+        "slots": [
+          "label",
+          "leading-icon",
+          "trailing-icon",
+          "spinner"
+        ],
+        "attributes": [
+          "type",
+          "disabled",
+          "aria-disabled",
+          "aria-label",
+          "aria-busy"
+        ],
+        "stateModel": [
+          "data-meridian-variant",
+          "data-meridian-state"
+        ],
+        "events": [
+          "click"
+        ],
+        "relations": [
+          "accessible-name"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      }
+    },
+    {
+      "id": "text-field",
+      "name": "Text Field",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/text-field.contract.json",
+      "sourceDigest": "sha256-295408ed9d748a7ff13e7fd8f7b52db74f01290ae2bfeccdfa964a3c5bd7be03",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "description": "1 行のテキスト入力。ラベル・ヘルプ・エラーは Form Field と組み合わせる。",
+      "whenToUse": [
+        "短い自由入力(名前・URL・メール)"
+      ],
+      "whenNotToUse": [
+        "長文 → Textarea",
+        "限られた選択肢 → Select / Radio"
+      ],
+      "alternatives": [
+        "長文 → Textarea",
+        "限られた選択肢 → Select / Radio"
+      ],
+      "anatomy": [
+        {
+          "part": "root",
+          "required": true,
+          "description": "Control boundary and focus indicator."
+        },
+        {
+          "part": "control",
+          "required": true,
+          "description": "Native input or textarea that owns the value."
+        },
+        {
+          "part": "adornment",
+          "required": false,
+          "description": "Prefix, suffix, clear, attachment, or submit action."
+        },
+        {
+          "part": "message",
+          "required": false,
+          "description": "Help, count, loading, or validation feedback."
+        }
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        {
+          "id": "default",
+          "description": "通常状態。意味、label、valueを省略しない。",
+          "requiredBehavior": [
+            "通常状態。意味、label、valueを省略しない。"
+          ]
+        },
+        {
+          "id": "hover",
+          "description": "Pointer hoverの補助変化。意味をhoverだけに依存させない。",
+          "requiredBehavior": [
+            "Pointer hoverの補助変化。意味をhoverだけに依存させない。"
+          ]
+        },
+        {
+          "id": "focus",
+          "description": "focus-visibleで明確なringを表示する。",
+          "requiredBehavior": [
+            "focus-visibleで明確なringを表示する。"
+          ]
+        },
+        {
+          "id": "error",
+          "description": "色だけでなくmessageとaria stateで問題を伝える。",
+          "requiredBehavior": [
+            "色だけでなくmessageとaria stateで問題を伝える。"
+          ]
+        },
+        {
+          "id": "disabled",
+          "description": "操作不能である理由を周辺文脈から理解できるようにする。",
+          "requiredBehavior": [
+            "操作不能である理由を周辺文脈から理解できるようにする。"
+          ]
+        },
+        {
+          "id": "readonly",
+          "description": "値を参照・選択できるが変更できない。",
+          "requiredBehavior": [
+            "値を参照・選択できるが変更できない。"
+          ]
+        }
+      ],
+      "sizes": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "props": [
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "required": false,
+          "default": "md",
+          "description": "Density内の相対sizeを選ぶ。"
+        },
+        {
+          "name": "value",
+          "type": "unknown",
+          "required": false,
+          "default": null,
+          "description": "Controlled value。"
+        },
+        {
+          "name": "onChange",
+          "type": "(value) => void",
+          "required": false,
+          "default": null,
+          "description": "User操作で値が変わるときに通知する。"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "操作不能state。"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "Label"
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "Placeholder"
+        },
+        {
+          "name": "helper",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "Helper text"
+        },
+        {
+          "name": "leading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Leading icon"
+        },
+        {
+          "name": "trailing",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Trailing affix"
+        }
+      ],
+      "accessibility": {
+        "requirements": [
+          "label 要素と htmlFor で関連付ける",
+          "エラーは aria-describedby + aria-invalid で通知する",
+          "focus ring はコントラスト比 3:1 以上",
+          "Keyboardとpointerで同じ機能を実行できる。",
+          "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
+          "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        ],
+        "aria": [
+          "Native <input>をlabelとdescription/errorへ関連付ける。"
+        ],
+        "focus": [
+          "focus-visibleで--focus-ringを使う。",
+          "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        ]
+      },
+      "keyboardInteractions": [
+        {
+          "key": "Tab",
+          "action": "順序どおりにfocusを移動する。"
+        }
+      ],
+      "prohibitedRules": [
+        "NO_RAW_HEX_COLOR",
+        "SPACING_FROM_TOKENS_ONLY",
+        "RADIUS_FROM_TOKENS_ONLY",
+        "CONTRAST_AA_MINIMUM",
+        "FOCUS_VISIBLE_REQUIRED",
+        "NO_POSITIVE_TABINDEX",
+        "TARGET_SIZE_MINIMUM",
+        "INTERACTIVE_NAME_REQUIRED"
+      ],
+      "allowedTokenCategories": [
+        "semanticColor",
+        "density",
+        "spacing",
+        "radius",
+        "motion"
+      ],
+      "selectionRules": {
+        "useWhen": [
+          "短い自由入力を受け付ける。"
+        ],
+        "avoidWhen": [
+          "長文または有限選択肢には使わない。"
+        ],
+        "alternatives": [
+          "textarea",
+          "select",
+          "radio"
+        ]
+      },
+      "negativeExamples": [
+        {
+          "pattern": "labelをplaceholderだけで代用する。",
+          "reason": "入力後にaccessible labelが失われるため。",
+          "ruleIds": [
+            "INTERACTIVE_NAME_REQUIRED"
+          ]
+        }
+      ],
+      "requiredScenarios": [
+        "default",
+        "error",
+        "disabled",
+        "readonly",
+        "focus"
+      ],
+      "examples": [
+        {
+          "id": "default",
+          "description": "Text Fieldの標準例。",
+          "code": "<TextField\n  label=\"Project name\"\n  placeholder=\"Acme Dashboard\"\n  helperText=\"後から変更できます。\"\n/>"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "input"
+        ],
+        "slots": [
+          "control",
+          "leading",
+          "trailing"
+        ],
+        "attributes": [
+          "type",
+          "value",
+          "disabled",
+          "readonly",
+          "aria-invalid",
+          "aria-labelledby",
+          "aria-describedby"
+        ],
+        "stateModel": [
+          "native-attributes",
+          "data-meridian-state"
+        ],
+        "events": [
+          "input",
+          "change",
+          "blur"
+        ],
+        "relations": [
+          "labelledby",
+          "describedby",
+          "error-message"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      }
+    },
+    {
+      "id": "select",
+      "name": "Select",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/select.contract.json",
+      "sourceDigest": "sha256-c23aebeb937531580b78c7824ede5265ab520e1334e55ecbeaffabb5c16de465",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "description": "定義済みの選択肢から 1 つを選ぶ。5〜15 個程度の選択肢に向く。",
+      "whenToUse": [
+        "選択肢が 5 個以上で 1 つだけ選ぶ"
+      ],
+      "whenNotToUse": [
+        "4 個以下 → Radio / Segmented Control",
+        "検索が必要な多数の選択肢 → Combobox"
+      ],
+      "alternatives": [
+        "4 個以下 → Radio / Segmented Control",
+        "検索が必要な多数の選択肢 → Combobox"
+      ],
+      "anatomy": [
+        {
+          "part": "root",
+          "required": true,
+          "description": "Selection control boundary."
+        },
+        {
+          "part": "value",
+          "required": true,
+          "description": "Current value or selected option."
+        },
+        {
+          "part": "indicator",
+          "required": true,
+          "description": "Selection, thumb, check, or disclosure indicator."
+        },
+        {
+          "part": "popup",
+          "required": false,
+          "description": "Option list or calendar when the pattern opens one."
+        }
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        {
+          "id": "default",
+          "description": "通常状態。意味、label、valueを省略しない。",
+          "requiredBehavior": [
+            "通常状態。意味、label、valueを省略しない。"
+          ]
+        },
+        {
+          "id": "focus",
+          "description": "focus-visibleで明確なringを表示する。",
+          "requiredBehavior": [
+            "focus-visibleで明確なringを表示する。"
+          ]
+        },
+        {
+          "id": "error",
+          "description": "色だけでなくmessageとaria stateで問題を伝える。",
+          "requiredBehavior": [
+            "色だけでなくmessageとaria stateで問題を伝える。"
+          ]
+        },
+        {
+          "id": "disabled",
+          "description": "操作不能である理由を周辺文脈から理解できるようにする。",
+          "requiredBehavior": [
+            "操作不能である理由を周辺文脈から理解できるようにする。"
+          ]
+        }
+      ],
+      "sizes": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "props": [
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "required": false,
+          "default": "md",
+          "description": "Density内の相対sizeを選ぶ。"
+        },
+        {
+          "name": "value",
+          "type": "unknown",
+          "required": false,
+          "default": null,
+          "description": "Controlled value。"
+        },
+        {
+          "name": "onChange",
+          "type": "(value) => void",
+          "required": false,
+          "default": null,
+          "description": "User操作で値が変わるときに通知する。"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "操作不能state。"
+        }
+      ],
+      "accessibility": {
+        "requirements": [
+          "Keyboardとpointerで同じ機能を実行できる。",
+          "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
+          "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        ],
+        "aria": [
+          "要件を満たせる場合はnative <select>を優先する。"
+        ],
+        "focus": [
+          "focus-visibleで--focus-ringを使う。",
+          "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        ]
+      },
+      "keyboardInteractions": [
+        {
+          "key": "Arrow Up / Down",
+          "action": "Optionを移動する。"
+        },
+        {
+          "key": "Enter / Space",
+          "action": "Optionを選択する。"
+        },
+        {
+          "key": "Escape",
+          "action": "選択を変えずに閉じる。"
+        }
+      ],
+      "prohibitedRules": [
+        "NO_RAW_HEX_COLOR",
+        "SPACING_FROM_TOKENS_ONLY",
+        "RADIUS_FROM_TOKENS_ONLY",
+        "CONTRAST_AA_MINIMUM",
+        "FOCUS_VISIBLE_REQUIRED",
+        "NO_POSITIVE_TABINDEX",
+        "TARGET_SIZE_MINIMUM",
+        "INTERACTIVE_NAME_REQUIRED"
+      ],
+      "allowedTokenCategories": [
+        "semanticColor",
+        "density",
+        "spacing",
+        "radius",
+        "motion"
+      ],
+      "selectionRules": {
+        "useWhen": [
+          "有限の候補から1つを選ぶ。"
+        ],
+        "avoidWhen": [
+          "自由入力または少数の常時比較には使わない。"
+        ],
+        "alternatives": [
+          "text-field",
+          "radio",
+          "combobox"
+        ]
+      },
+      "negativeExamples": [
+        {
+          "pattern": "native selectをdivとclick handlerで再実装する。",
+          "reason": "keyboardとname/value semanticsを失うため。",
+          "ruleIds": [
+            "INTERACTIVE_NAME_REQUIRED"
+          ]
+        }
+      ],
+      "requiredScenarios": [
+        "default",
+        "error",
+        "disabled",
+        "focus"
+      ],
+      "examples": [
+        {
+          "id": "default",
+          "description": "Selectの標準例。",
+          "code": "<Select label=\"ロール\" defaultValue=\"editor\">\n  <Option value=\"editor\">Editor</Option>\n  <Option value=\"viewer\">Viewer</Option>\n</Select>"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "select"
+        ],
+        "slots": [
+          "control",
+          "option"
+        ],
+        "attributes": [
+          "value",
+          "disabled",
+          "aria-invalid",
+          "aria-labelledby",
+          "aria-describedby"
+        ],
+        "stateModel": [
+          "native-attributes",
+          "data-meridian-state"
+        ],
+        "events": [
+          "change"
+        ],
+        "relations": [
+          "labelledby",
+          "describedby",
+          "error-message"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      }
+    },
+    {
+      "id": "form-field",
+      "name": "Form Field",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/form-field.contract.json",
+      "sourceDigest": "sha256-6d4e90d69b4d1d23d431494e57b0d9b8d6a37ee38c63baba4df956905ee25228",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "description": "ラベル・コントロール・ヘルプ・エラーを束ねるレイアウトプリミティブ。",
+      "whenToUse": [
+        "すべてのフォームコントロールの配置"
+      ],
+      "whenNotToUse": [
+        "表示だけのlabel/value対にはDescription Listを使う。"
+      ],
+      "alternatives": [
+        "表示だけのlabel/value対にはDescription Listを使う。"
+      ],
+      "anatomy": [
+        {
+          "part": "root",
+          "required": true,
+          "description": "Semantic display root."
+        },
+        {
+          "part": "content",
+          "required": true,
+          "description": "Primary perceivable content."
+        },
+        {
+          "part": "supporting",
+          "required": false,
+          "description": "Optional metadata or visual reinforcement."
+        }
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        {
+          "id": "default",
+          "description": "通常状態。意味、label、valueを省略しない。",
+          "requiredBehavior": [
+            "通常状態。意味、label、valueを省略しない。"
+          ]
+        },
+        {
+          "id": "error",
+          "description": "色だけでなくmessageとaria stateで問題を伝える。",
+          "requiredBehavior": [
+            "色だけでなくmessageとaria stateで問題を伝える。"
+          ]
+        }
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "Componentの主要content。"
+        }
+      ],
+      "accessibility": {
+        "requirements": [
+          "label / aria-describedby / aria-invalid の関連付けを一元管理する",
+          "表示専用rootを不要にtab順へ追加しない。",
+          "状態は色だけで表さずtext、icon、shapeを併用する。"
+        ],
+        "aria": [
+          "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        ],
+        "focus": [
+          "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+        ]
+      },
+      "keyboardInteractions": [],
+      "prohibitedRules": [
+        "NO_RAW_HEX_COLOR",
+        "SPACING_FROM_TOKENS_ONLY",
+        "RADIUS_FROM_TOKENS_ONLY",
+        "CONTRAST_AA_MINIMUM"
+      ],
+      "allowedTokenCategories": [
+        "semanticColor"
+      ],
+      "selectionRules": {
+        "useWhen": [
+          "label、control、description、messageを1つのfield relationへ束ねる。"
+        ],
+        "avoidWhen": [
+          "form controlを含まない静的contentには使わない。"
+        ],
+        "alternatives": [
+          "section"
+        ]
+      },
+      "negativeExamples": [
+        {
+          "pattern": "error messageをcontrolとIDで関連付けない。",
+          "reason": "支援技術が入力エラーを特定できないため。",
+          "ruleIds": [
+            "INTERACTIVE_NAME_REQUIRED"
+          ]
+        }
+      ],
+      "requiredScenarios": [
+        "default",
+        "error",
+        "labelledby",
+        "describedby"
+      ],
+      "examples": [
+        {
+          "id": "default",
+          "description": "Form Fieldの標準例。",
+          "code": "<FormField label=\"API キー名\" required error={errors.name}>\n  <TextField placeholder=\"production-key\" />\n  <FormField.Help>用途が分かる名前を付けてください。</FormField.Help>\n</FormField>"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "div"
+        ],
+        "slots": [
+          "label",
+          "control",
+          "description",
+          "message"
+        ],
+        "attributes": [
+          "data-meridian-state"
+        ],
+        "stateModel": [
+          "data-meridian-state"
+        ],
+        "events": [],
+        "relations": [
+          "labelledby",
+          "describedby",
+          "error-message"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      }
+    },
+    {
+      "id": "validation-message",
+      "name": "Validation Message",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/validation-message.contract.json",
+      "sourceDigest": "sha256-9bd8e87486735307b3f8341f3e6b85edd450ce2e9cdb7a0e44a5df3030062066",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "description": "入力エラー・成功の通知。アイコン+テキストで色覚に依存しない。",
+      "whenToUse": [
+        "フィールド単位の検証結果"
+      ],
+      "whenNotToUse": [
+        "フォーム全体・API 起因のエラー → Alert"
+      ],
+      "alternatives": [
+        "フォーム全体・API 起因のエラー → Alert"
+      ],
+      "anatomy": [
+        {
+          "part": "root",
+          "required": true,
+          "description": "Status message boundary."
+        },
+        {
+          "part": "indicator",
+          "required": false,
+          "description": "Icon or shape that reinforces tone."
+        },
+        {
+          "part": "message",
+          "required": true,
+          "description": "Concise status and recovery guidance."
+        },
+        {
+          "part": "action",
+          "required": false,
+          "description": "Recovery, undo, or dismiss control."
+        }
+      ],
+      "variants": [
+        "error",
+        "success",
+        "warning"
+      ],
+      "states": [
+        {
+          "id": "default",
+          "description": "通常状態。意味、label、valueを省略しない。",
+          "requiredBehavior": [
+            "通常状態。意味、label、valueを省略しない。"
+          ]
+        }
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "variant",
+          "type": "\"error\" | \"success\" | \"warning\"",
+          "required": false,
+          "default": "error",
+          "description": "意味と優先度を選ぶ。"
+        }
+      ],
+      "accessibility": {
+        "requirements": [
+          "role=\"alert\" または aria-live=\"polite\" で通知する",
+          "表示専用rootを不要にtab順へ追加しない。",
+          "状態は色だけで表さずtext、icon、shapeを併用する。"
+        ],
+        "aria": [
+          "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        ],
+        "focus": [
+          "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+        ]
+      },
+      "keyboardInteractions": [],
+      "prohibitedRules": [
+        "NO_RAW_HEX_COLOR",
+        "SPACING_FROM_TOKENS_ONLY",
+        "RADIUS_FROM_TOKENS_ONLY",
+        "CONTRAST_AA_MINIMUM",
+        "STATE_NOT_COLOR_ONLY"
+      ],
+      "allowedTokenCategories": [
+        "semanticColor",
+        "spacing",
+        "radius",
+        "typography"
+      ],
+      "selectionRules": {
+        "useWhen": [
+          "field単位の検証結果と修正方法を示す。"
+        ],
+        "avoidWhen": [
+          "page全体の状態説明には使わない。"
+        ],
+        "alternatives": [
+          "alert"
+        ]
+      },
+      "negativeExamples": [
+        {
+          "pattern": "border色だけで入力エラーを示す。",
+          "reason": "状態が色だけに依存するため。",
+          "ruleIds": [
+            "STATE_NOT_COLOR_ONLY"
+          ]
+        }
+      ],
+      "requiredScenarios": [
+        "error",
+        "warning",
+        "success",
+        "describedby"
+      ],
+      "examples": [
+        {
+          "id": "default",
+          "description": "Validation Messageの標準例。",
+          "code": "<ValidationMessage tone=\"error\">\n  @ を含むメールアドレスを入力してください\n</ValidationMessage>"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "span",
+          "div"
+        ],
+        "slots": [
+          "icon",
+          "message"
+        ],
+        "attributes": [
+          "id",
+          "aria-live"
+        ],
+        "stateModel": [
+          "data-meridian-variant"
+        ],
+        "events": [],
+        "relations": [
+          "describedby-target"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      }
+    },
+    {
+      "id": "checkbox",
+      "name": "Checkbox",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/checkbox.contract.json",
+      "sourceDigest": "sha256-1709689ff5bab3533c360a492c463a810dd5df7df73a6f41682b3068bacc6934",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "description": "独立した ON/OFF、または複数選択。即時反映しない設定に使う。",
+      "whenToUse": [
+        "複数選択リスト",
+        "利用規約への同意"
+      ],
+      "whenNotToUse": [
+        "即時に反映されるトグル → Switch",
+        "排他選択 → Radio"
+      ],
+      "alternatives": [
+        "即時に反映されるトグル → Switch",
+        "排他選択 → Radio"
+      ],
+      "anatomy": [
+        {
+          "part": "root",
+          "required": true,
+          "description": "Selection control boundary."
+        },
+        {
+          "part": "value",
+          "required": true,
+          "description": "Current value or selected option."
+        },
+        {
+          "part": "indicator",
+          "required": true,
+          "description": "Selection, thumb, check, or disclosure indicator."
+        },
+        {
+          "part": "popup",
+          "required": false,
+          "description": "Option list or calendar when the pattern opens one."
+        }
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        {
+          "id": "default",
+          "description": "通常状態。意味、label、valueを省略しない。",
+          "requiredBehavior": [
+            "通常状態。意味、label、valueを省略しない。"
+          ]
+        },
+        {
+          "id": "checked",
+          "description": "選択状態をvisualとprogrammatic stateの両方で同期する。",
+          "requiredBehavior": [
+            "選択状態をvisualとprogrammatic stateの両方で同期する。"
+          ]
+        },
+        {
+          "id": "disabled",
+          "description": "操作不能である理由を周辺文脈から理解できるようにする。",
+          "requiredBehavior": [
+            "操作不能である理由を周辺文脈から理解できるようにする。"
+          ]
+        }
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "value",
+          "type": "unknown",
+          "required": false,
+          "default": null,
+          "description": "Controlled value。"
+        },
+        {
+          "name": "onChange",
+          "type": "(value) => void",
+          "required": false,
+          "default": null,
+          "description": "User操作で値が変わるときに通知する。"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "操作不能state。"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "Label"
+        },
+        {
+          "name": "checked",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Checked"
+        }
+      ],
+      "accessibility": {
+        "requirements": [
+          "Keyboardとpointerで同じ機能を実行できる。",
+          "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
+          "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        ],
+        "aria": [
+          "Native checkboxをlabelと関連付け、mixed stateを必要時だけ使う。"
+        ],
+        "focus": [
+          "focus-visibleで--focus-ringを使う。",
+          "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        ]
+      },
+      "keyboardInteractions": [
+        {
+          "key": "Space",
+          "action": "Checked stateを切り替える。"
+        }
+      ],
+      "prohibitedRules": [
+        "NO_RAW_HEX_COLOR",
+        "SPACING_FROM_TOKENS_ONLY",
+        "RADIUS_FROM_TOKENS_ONLY",
+        "CONTRAST_AA_MINIMUM",
+        "FOCUS_VISIBLE_REQUIRED",
+        "NO_POSITIVE_TABINDEX",
+        "TARGET_SIZE_MINIMUM",
+        "INTERACTIVE_NAME_REQUIRED"
+      ],
+      "allowedTokenCategories": [
+        "semanticColor",
+        "density",
+        "spacing",
+        "radius",
+        "motion"
+      ],
+      "selectionRules": {
+        "useWhen": [
+          "独立した二値確認または複数選択を行う。"
+        ],
+        "avoidWhen": [
+          "即時反映の設定や排他選択には使わない。"
+        ],
+        "alternatives": [
+          "switch",
+          "radio"
+        ]
+      },
+      "negativeExamples": [
+        {
+          "pattern": "visible labelのないcheckboxを出力する。",
+          "reason": "操作の目的を識別できないため。",
+          "ruleIds": [
+            "INTERACTIVE_NAME_REQUIRED"
+          ]
+        }
+      ],
+      "requiredScenarios": [
+        "default",
+        "checked",
+        "disabled",
+        "focus"
+      ],
+      "examples": [
+        {
+          "id": "default",
+          "description": "Checkboxの標準例。",
+          "code": "<Checkbox label=\"通知を受け取る\" />"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "input"
+        ],
+        "slots": [
+          "control",
+          "label"
+        ],
+        "attributes": [
+          "type",
+          "checked",
+          "disabled",
+          "aria-describedby"
+        ],
+        "stateModel": [
+          "native-checked",
+          "native-disabled",
+          "data-meridian-state"
+        ],
+        "events": [
+          "change"
+        ],
+        "relations": [
+          "explicit-label",
+          "describedby"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      }
+    },
+    {
+      "id": "alert",
+      "name": "Alert",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/alert.contract.json",
+      "sourceDigest": "sha256-149c310306e8bec9115ac31c77cc3cdbbb1693aa91404637d3afd461537d068c",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "description": "ページ・セクション内に埋め込む恒常的な通知。文脈に密着した情報を伝える。",
+      "whenToUse": [
+        "フォーム全体のエラー",
+        "セクションに関する注意・状態"
+      ],
+      "whenNotToUse": [
+        "一時的な操作結果 → Toast",
+        "サイト全体のお知らせ → Banner"
+      ],
+      "alternatives": [
+        "一時的な操作結果 → Toast",
+        "サイト全体のお知らせ → Banner"
+      ],
+      "anatomy": [
+        {
+          "part": "root",
+          "required": true,
+          "description": "Status message boundary."
+        },
+        {
+          "part": "indicator",
+          "required": false,
+          "description": "Icon or shape that reinforces tone."
+        },
+        {
+          "part": "message",
+          "required": true,
+          "description": "Concise status and recovery guidance."
+        },
+        {
+          "part": "action",
+          "required": false,
+          "description": "Recovery, undo, or dismiss control."
+        }
+      ],
+      "variants": [
+        "info",
+        "success",
+        "warning",
+        "danger"
+      ],
+      "states": [
+        {
+          "id": "default",
+          "description": "通常状態。意味、label、valueを省略しない。",
+          "requiredBehavior": [
+            "通常状態。意味、label、valueを省略しない。"
+          ]
+        }
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "variant",
+          "type": "\"info\" | \"success\" | \"warning\" | \"danger\"",
+          "required": false,
+          "default": "info",
+          "description": "意味と優先度を選ぶ。"
+        }
+      ],
+      "accessibility": {
+        "requirements": [
+          "表示専用rootを不要にtab順へ追加しない。",
+          "状態は色だけで表さずtext、icon、shapeを併用する。"
+        ],
+        "aria": [
+          "Urgentで自動提示される内容だけrole=\"alert\"を使う。"
+        ],
+        "focus": [
+          "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+        ]
+      },
+      "keyboardInteractions": [],
+      "prohibitedRules": [
+        "NO_RAW_HEX_COLOR",
+        "SPACING_FROM_TOKENS_ONLY",
+        "RADIUS_FROM_TOKENS_ONLY",
+        "CONTRAST_AA_MINIMUM",
+        "STATE_NOT_COLOR_ONLY"
+      ],
+      "allowedTokenCategories": [
+        "semanticColor",
+        "spacing",
+        "radius"
+      ],
+      "selectionRules": {
+        "useWhen": [
+          "pageまたはsectionの状態、影響、回復行動を示す。"
+        ],
+        "avoidWhen": [
+          "短い反復状態やfield単位errorには使わない。"
+        ],
+        "alternatives": [
+          "status-indicator",
+          "validation-message"
+        ]
+      },
+      "negativeExamples": [
+        {
+          "pattern": "任意のHTML文字列をAlert bodyへ挿入する。",
+          "reason": "Contract外DOMとinjectionを許すため。",
+          "ruleIds": [
+            "NO_RAW_HEX_COLOR"
+          ]
+        }
+      ],
+      "requiredScenarios": [
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "labelledby"
+      ],
+      "examples": [
+        {
+          "id": "default",
+          "description": "Alertの標準例。",
+          "code": "<Alert tone=\"info\" title=\"…\">\n  本文テキスト\n</Alert>"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "div",
+          "section"
+        ],
+        "slots": [
+          "title",
+          "message",
+          "actions"
+        ],
+        "attributes": [
+          "role",
+          "aria-labelledby"
+        ],
+        "stateModel": [
+          "data-meridian-variant"
+        ],
+        "events": [],
+        "relations": [
+          "labelledby",
+          "live-announcement-owned-externally"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      }
+    },
+    {
+      "id": "status-indicator",
+      "name": "Status Indicator",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/status-indicator.contract.json",
+      "sourceDigest": "sha256-25d69eee9af012c2e597776efc0269ae7d603edcb1106835b90a164639efebce",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "description": "リソースの状態を色ドット+ラベルで示す。色のみに依存しない。",
+      "whenToUse": [
+        "稼働、接続、実行など短いresource状態を反復表示するとき。"
+      ],
+      "whenNotToUse": [
+        "説明や回復actionが必要な状態にはAlertを使う。"
+      ],
+      "alternatives": [
+        "説明や回復actionが必要な状態にはAlertを使う。"
+      ],
+      "anatomy": [
+        {
+          "part": "root",
+          "required": true,
+          "description": "Status message boundary."
+        },
+        {
+          "part": "indicator",
+          "required": false,
+          "description": "Icon or shape that reinforces tone."
+        },
+        {
+          "part": "message",
+          "required": true,
+          "description": "Concise status and recovery guidance."
+        },
+        {
+          "part": "action",
+          "required": false,
+          "description": "Recovery, undo, or dismiss control."
+        }
+      ],
+      "variants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "states": [
+        {
+          "id": "default",
+          "description": "通常状態。意味、label、valueを省略しない。",
+          "requiredBehavior": [
+            "通常状態。意味、label、valueを省略しない。"
+          ]
+        }
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "variant",
+          "type": "\"success\" | \"running\" | \"warning\" | \"error\" | \"idle\"",
+          "required": false,
+          "default": "success",
+          "description": "意味と優先度を選ぶ。"
+        }
+      ],
+      "accessibility": {
+        "requirements": [
+          "表示専用rootを不要にtab順へ追加しない。",
+          "状態は色だけで表さずtext、icon、shapeを併用する。"
+        ],
+        "aria": [
+          "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        ],
+        "focus": [
+          "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+        ]
+      },
+      "keyboardInteractions": [],
+      "prohibitedRules": [
+        "NO_RAW_HEX_COLOR",
+        "SPACING_FROM_TOKENS_ONLY",
+        "RADIUS_FROM_TOKENS_ONLY",
+        "CONTRAST_AA_MINIMUM",
+        "STATE_NOT_COLOR_ONLY"
+      ],
+      "allowedTokenCategories": [
+        "semanticColor",
+        "spacing",
+        "radius"
+      ],
+      "selectionRules": {
+        "useWhen": [
+          "反復するresource状態を短く表示する。"
+        ],
+        "avoidWhen": [
+          "説明や回復actionが必要な状態には使わない。"
+        ],
+        "alternatives": [
+          "alert"
+        ]
+      },
+      "negativeExamples": [
+        {
+          "pattern": "色ドットだけでstatusを示す。",
+          "reason": "状態が色だけに依存するため。",
+          "ruleIds": [
+            "STATE_NOT_COLOR_ONLY"
+          ]
+        }
+      ],
+      "requiredScenarios": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "examples": [
+        {
+          "id": "default",
+          "description": "Status Indicatorの標準例。",
+          "code": "<StatusIndicator status=\"success\" label=\"Running\" />"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "span"
+        ],
+        "slots": [
+          "indicator",
+          "label"
+        ],
+        "attributes": [
+          "aria-label"
+        ],
+        "stateModel": [
+          "data-meridian-variant"
+        ],
+        "events": [],
+        "relations": [
+          "accessible-name"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      }
+    },
+    {
+      "id": "table",
+      "name": "Table",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/table.contract.json",
+      "sourceDigest": "sha256-b6ca0a72a8bd9cc995a8a02fa070f2362504f7ffd9a9a0813ea8e394db3579b9",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "description": "構造化データの標準表示。高密度でも読みやすい行リズムを保つ。",
+      "whenToUse": [
+        "属性を比較しながら走査する一覧"
+      ],
+      "whenNotToUse": [
+        "カード的な閲覧が主 → Card grid",
+        "編集・仮想スクロールが必要 → Data Grid"
+      ],
+      "alternatives": [
+        "カード的な閲覧が主 → Card grid",
+        "編集・仮想スクロールが必要 → Data Grid"
+      ],
+      "anatomy": [
+        {
+          "part": "root",
+          "required": true,
+          "description": "Collection container with an explicit reading order."
+        },
+        {
+          "part": "item",
+          "required": true,
+          "description": "Repeated row, event, node, message, or entry."
+        },
+        {
+          "part": "primary-content",
+          "required": true,
+          "description": "Main scannable value."
+        },
+        {
+          "part": "metadata",
+          "required": false,
+          "description": "Secondary state, time, owner, or count."
+        },
+        {
+          "part": "actions",
+          "required": false,
+          "description": "Item-level operations with independent names."
+        }
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        {
+          "id": "default",
+          "description": "通常状態。意味、label、valueを省略しない。",
+          "requiredBehavior": [
+            "通常状態。意味、label、valueを省略しない。"
+          ]
+        },
+        {
+          "id": "selected",
+          "description": "選択状態を色以外のcueでも示す。",
+          "requiredBehavior": [
+            "選択状態を色以外のcueでも示す。"
+          ]
+        },
+        {
+          "id": "loading",
+          "description": "Accessible nameを維持し、二重実行を防ぐ。",
+          "requiredBehavior": [
+            "Accessible nameを維持し、二重実行を防ぐ。"
+          ]
+        },
+        {
+          "id": "empty",
+          "description": "データがない理由と次のactionを示す。",
+          "requiredBehavior": [
+            "データがない理由と次のactionを示す。"
+          ]
+        }
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "進行中stateと二重実行防止。"
+        },
+        {
+          "name": "selectable",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Row selection"
+        }
+      ],
+      "accessibility": {
+        "requirements": [
+          "表示専用rootを不要にtab順へ追加しない。",
+          "状態は色だけで表さずtext、icon、shapeを併用する。"
+        ],
+        "aria": [
+          "Static comparisonはnative table、caption、header relationを使う。"
+        ],
+        "focus": [
+          "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+        ]
+      },
+      "keyboardInteractions": [],
+      "prohibitedRules": [
+        "NO_RAW_HEX_COLOR",
+        "SPACING_FROM_TOKENS_ONLY",
+        "RADIUS_FROM_TOKENS_ONLY",
+        "CONTRAST_AA_MINIMUM"
+      ],
+      "allowedTokenCategories": [
+        "semanticColor",
+        "density"
+      ],
+      "selectionRules": {
+        "useWhen": [
+          "複数行の属性を列方向に比較する。"
+        ],
+        "avoidWhen": [
+          "card閲覧または高度なgrid編集には使わない。"
+        ],
+        "alternatives": [
+          "list",
+          "data-grid",
+          "card"
+        ]
+      },
+      "negativeExamples": [
+        {
+          "pattern": "divだけでtable visualを再現する。",
+          "reason": "captionとheader relationを失うため。",
+          "ruleIds": [
+            "INTERACTIVE_NAME_REQUIRED"
+          ]
+        }
+      ],
+      "requiredScenarios": [
+        "default",
+        "loading",
+        "empty",
+        "caption",
+        "column-headers",
+        "mobile-reflow"
+      ],
+      "examples": [
+        {
+          "id": "default",
+          "description": "Tableの標準例。",
+          "code": "<Table\n  columns={columns}\n  data={services}\n  rowKey=\"id\"\n  selectable\n  onRowClick={openDetail}\n  empty={<EmptyState … />}\n/>"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.1.0 <1.0.0",
+        "rootElements": [
+          "table"
+        ],
+        "slots": [
+          "caption",
+          "head",
+          "body",
+          "row",
+          "cell",
+          "actions"
+        ],
+        "attributes": [
+          "aria-describedby"
+        ],
+        "stateModel": [
+          "data-meridian-state"
+        ],
+        "events": [],
+        "relations": [
+          "caption",
+          "column-headers"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "$schema": "../../../schemas/pattern-contract.schema.json",
+      "schemaVersion": "0.1.0",
+      "contractVersion": "0.1.0",
+      "id": "interactive-row-group",
+      "name": "Interactive Row Group",
+      "status": "draft",
+      "description": "反復する編集行をDesktopでは比較可能なTable、Mobileでは同じreading orderのfield groupとして提示する。",
+      "components": [
+        "table",
+        "form-field",
+        "text-field",
+        "select",
+        "validation-message",
+        "status-indicator",
+        "button"
+      ],
+      "layoutRecipes": [
+        "stack",
+        "cluster",
+        "grid",
+        "section",
+        "responsive-switch"
+      ],
+      "rules": [
+        "すべてのleaf nodeを登録済みComponentへ解決する。",
+        "DesktopとMobileで同じdata model、field relation、component identityを維持する。",
+        "行追加、削除、検証、結果通知はnative controlとlive regionで操作可能にする。"
+      ],
+      "accessibility": [
+        "Desktopはcaptionとcolumn headerを持つnative tableを使う。",
+        "Mobile reflow後もDOM order、reading order、focus orderを一致させる。",
+        "各controlのaccessible nameに行の識別情報を含める。"
+      ],
+      "source": "design/contracts/patterns/interactive-row-group.pattern.json",
+      "sourceDigest": "sha256-91f73935f41f3158f9614a573fc4f4145e2ea49edd5ef50cbfb236e100e0fd9d"
+    }
+  ]
+}

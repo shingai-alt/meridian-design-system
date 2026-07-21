@@ -1,0 +1,635 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shingai-alt.github.io/meridian-design-system/schemas/screen-spec.schema.json",
+  "title": "Meridian ScreenSpec",
+  "description": "A structured design specification for one Meridian-generated product UI screen.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "meta",
+    "context",
+    "ux",
+    "informationArchitecture",
+    "layout",
+    "components",
+    "states",
+    "accessibility",
+    "rationale",
+    "qualityChecks"
+  ],
+  "properties": {
+    "meta": {
+      "$ref": "#/$defs/meta"
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "productType",
+        "targetUsers",
+        "primaryUseCase",
+        "userIntent",
+        "constraints",
+        "locale"
+      ],
+      "properties": {
+        "productType": {
+          "type": "string",
+          "description": "The product category or template family, such as saas-dashboard, settings, analytics-dashboard, or ai-workspace.",
+          "minLength": 1
+        },
+        "targetUsers": {
+          "type": "array",
+          "description": "User roles this screen is designed for.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "primaryUseCase": {
+          "type": "string",
+          "description": "The main use case this screen must support.",
+          "minLength": 1
+        },
+        "userIntent": {
+          "type": "string",
+          "description": "The user's practical intent in plain language.",
+          "minLength": 1
+        },
+        "constraints": {
+          "type": "array",
+          "description": "Known constraints such as desktop-first, mobile-required, high-density, regulated-domain, or read-only.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "locale": {
+          "type": "string",
+          "description": "Primary locale for content and formatting.",
+          "minLength": 2
+        }
+      }
+    },
+    "ux": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primaryTask",
+        "secondaryTasks",
+        "successCriteria",
+        "userRisks",
+        "assumptions"
+      ],
+      "properties": {
+        "primaryTask": {
+          "type": "string",
+          "description": "The one task the screen must make easiest.",
+          "minLength": 1
+        },
+        "secondaryTasks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "successCriteria": {
+          "type": "array",
+          "description": "Observable criteria that indicate the screen design worked.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "userRisks": {
+          "type": "array",
+          "description": "Likely user errors, misunderstandings, or failure points.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "description": "Assumptions the AI made because the brief did not fully specify them.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "informationArchitecture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hierarchy",
+        "navigationRole",
+        "contentGroups"
+      ],
+      "properties": {
+        "hierarchy": {
+          "type": "array",
+          "description": "Information priority from highest to lowest.",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "navigationRole": {
+          "type": "string",
+          "enum": [
+            "entry",
+            "overview",
+            "detail",
+            "settings",
+            "workflow-step",
+            "modal",
+            "supporting"
+          ]
+        },
+        "contentGroups": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/contentGroup"
+          }
+        }
+      }
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "templateId",
+        "density",
+        "regions",
+        "responsiveBehavior"
+      ],
+      "properties": {
+        "templateId": {
+          "type": "string",
+          "description": "Meridian template or pattern id used as the layout starting point.",
+          "minLength": 1
+        },
+        "density": {
+          "type": "string",
+          "enum": [
+            "compact",
+            "default",
+            "comfortable"
+          ]
+        },
+        "regions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/layoutRegion"
+          }
+        },
+        "responsiveBehavior": {
+          "type": "array",
+          "description": "Viewport-specific layout changes.",
+          "items": {
+            "$ref": "#/$defs/responsiveRule"
+          }
+        }
+      }
+    },
+    "components": {
+      "type": "array",
+      "description": "Meridian components used by this screen.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/componentUse"
+      }
+    },
+    "states": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "permissionDenied"
+      ],
+      "properties": {
+        "default": {
+          "$ref": "#/$defs/screenState"
+        },
+        "loading": {
+          "$ref": "#/$defs/screenState"
+        },
+        "empty": {
+          "$ref": "#/$defs/screenState"
+        },
+        "error": {
+          "$ref": "#/$defs/screenState"
+        },
+        "permissionDenied": {
+          "$ref": "#/$defs/screenState"
+        }
+      }
+    },
+    "accessibility": {
+      "$ref": "#/$defs/accessibilityPlan"
+    },
+    "rationale": {
+      "type": "array",
+      "description": "Design decisions and their evidence.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/rationale"
+      }
+    },
+    "qualityChecks": {
+      "$ref": "#/$defs/qualityChecks"
+    }
+  },
+  "$defs": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "kind",
+        "id",
+        "title",
+        "source",
+        "status"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "0.1.0"
+        },
+        "kind": {
+          "type": "string",
+          "const": "screen"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "conversation",
+            "template",
+            "import",
+            "manual"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "candidate",
+            "approved",
+            "deprecated"
+          ]
+        }
+      }
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*$"
+    },
+    "contentGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "purpose",
+        "priority"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "critical",
+            "high",
+            "medium",
+            "low"
+          ]
+        }
+      }
+    },
+    "layoutRegion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "role",
+        "purpose",
+        "componentRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "header",
+            "sidebar",
+            "main",
+            "toolbar",
+            "panel",
+            "footer",
+            "overlay"
+          ]
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "componentRefs": {
+          "type": "array",
+          "description": "References to components[].id.",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      }
+    },
+    "responsiveRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "viewport",
+        "behavior"
+      ],
+      "properties": {
+        "viewport": {
+          "type": "string",
+          "enum": [
+            "mobile",
+            "tablet",
+            "desktop",
+            "wide"
+          ]
+        },
+        "behavior": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "componentUse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "componentId",
+        "purpose",
+        "props",
+        "meridianTokens",
+        "states",
+        "accessibilityNotes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "componentId": {
+          "type": "string",
+          "description": "Component id from the Meridian component registry.",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "props": {
+          "type": "object",
+          "description": "Renderer-neutral component properties.",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "meridianTokens": {
+          "type": "array",
+          "description": "Token names this component relies on.",
+          "items": {
+            "type": "string",
+            "pattern": "^--[a-z0-9-]+$"
+          }
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "accessibilityNotes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "screenState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "applicable",
+        "description",
+        "componentRefs",
+        "userRecovery"
+      ],
+      "properties": {
+        "applicable": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string",
+          "description": "How this state appears and behaves. If not applicable, explain why.",
+          "minLength": 1
+        },
+        "componentRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "userRecovery": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "What the user can do to proceed or recover."
+        }
+      }
+    },
+    "accessibilityPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "wcagTarget",
+        "keyboardInteractions",
+        "focusManagement",
+        "screenReaderNotes",
+        "nonColorCues"
+      ],
+      "properties": {
+        "wcagTarget": {
+          "type": "string",
+          "enum": [
+            "WCAG-2.2-A",
+            "WCAG-2.2-AA",
+            "WCAG-2.2-AAA"
+          ]
+        },
+        "keyboardInteractions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "focusManagement": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "screenReaderNotes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "nonColorCues": {
+          "type": "array",
+          "description": "How state or priority is expressed without relying on color alone.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "rationale": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "reason",
+        "evidenceType",
+        "tradeoff",
+        "references"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceType": {
+          "type": "string",
+          "enum": [
+            "user-goal",
+            "design-principle",
+            "accessibility",
+            "pattern",
+            "constraint",
+            "tradeoff"
+          ]
+        },
+        "tradeoff": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "references": {
+          "type": "array",
+          "description": "Optional references to Meridian principles, component ids, pattern ids, or rule ids.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "qualityChecks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tokenComplianceRequired",
+        "componentRegistryComplianceRequired",
+        "keyboardRequired",
+        "responsiveRequired",
+        "stateCoverageRequired",
+        "rationaleRequired",
+        "unresolvedItems"
+      ],
+      "properties": {
+        "tokenComplianceRequired": {
+          "type": "boolean",
+          "const": true
+        },
+        "componentRegistryComplianceRequired": {
+          "type": "boolean",
+          "const": true
+        },
+        "keyboardRequired": {
+          "type": "boolean",
+          "const": true
+        },
+        "responsiveRequired": {
+          "type": "boolean",
+          "const": true
+        },
+        "stateCoverageRequired": {
+          "type": "boolean",
+          "const": true
+        },
+        "rationaleRequired": {
+          "type": "boolean",
+          "const": true
+        },
+        "unresolvedItems": {
+          "type": "array",
+          "description": "Missing components, unclear requirements, or design-system gaps.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

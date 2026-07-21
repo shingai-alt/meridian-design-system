@@ -1,0 +1,287 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "screen",
+    "id": "screen_saas_dashboard",
+    "title": "SaaS Dashboard",
+    "source": "template",
+    "status": "draft"
+  },
+  "context": {
+    "productType": "saas-dashboard",
+    "targetUsers": ["founder", "operator", "customer-success-manager"],
+    "primaryUseCase": "主要KPI、異常値、対応が必要な顧客状態を短時間で確認する",
+    "userIntent": "朝の確認で、今日優先して見るべき変化と対応対象を判断したい",
+    "constraints": ["desktop-first", "high-density", "dark-mode-supported", "daily-review"],
+    "locale": "ja-JP"
+  },
+  "ux": {
+    "primaryTask": "異常値と対応対象を3分以内に判断する",
+    "secondaryTasks": ["期間を切り替える", "KPIの変化理由を確認する", "顧客一覧から詳細へ進む"],
+    "successCriteria": ["重要KPIがファーストビューで比較できる", "悪化している指標が色とテキストで分かる", "次に開くべき顧客やサービスが明確である"],
+    "userRisks": ["KPIが多すぎて優先度を判断できない", "チャートだけでは変化理由が分からない", "色だけで良否を判断してしまう"],
+    "assumptions": ["利用者は週次より日次確認を重視する", "KPIは最大4つを主要指標として扱う", "詳細分析は別画面に遷移する"]
+  },
+  "informationArchitecture": {
+    "hierarchy": ["page-title-and-period", "kpi-summary", "trend-and-activity", "service-table"],
+    "navigationRole": "overview",
+    "contentGroups": [
+      {
+        "id": "group_period_controls",
+        "title": "期間とフィルタ",
+        "purpose": "表示対象の期間と環境を切り替える",
+        "priority": "high"
+      },
+      {
+        "id": "group_kpis",
+        "title": "主要KPI",
+        "purpose": "全体の健全性を即時に判断する",
+        "priority": "critical"
+      },
+      {
+        "id": "group_trends",
+        "title": "トレンドとアクティビティ",
+        "purpose": "数値変化の文脈と直近イベントを確認する",
+        "priority": "high"
+      },
+      {
+        "id": "group_services",
+        "title": "サービス一覧",
+        "purpose": "対応が必要なサービスや顧客を特定する",
+        "priority": "medium"
+      }
+    ]
+  },
+  "layout": {
+    "templateId": "saas-dashboard",
+    "density": "default",
+    "regions": [
+      {
+        "id": "region_sidebar",
+        "role": "sidebar",
+        "purpose": "主要ナビゲーションとワークスペース切り替えを提供する",
+        "componentRefs": ["component_sidebar"]
+      },
+      {
+        "id": "region_header",
+        "role": "header",
+        "purpose": "パンくず、検索、通知、ユーザーメニューを提供する",
+        "componentRefs": ["component_top_bar"]
+      },
+      {
+        "id": "region_toolbar",
+        "role": "toolbar",
+        "purpose": "期間切り替え、フィルタ、レポート作成をまとめる",
+        "componentRefs": ["component_period_segmented", "component_filter_button", "component_report_button"]
+      },
+      {
+        "id": "region_main",
+        "role": "main",
+        "purpose": "KPI、チャート、アクティビティ、明細テーブルを表示する",
+        "componentRefs": ["component_kpi_mrr", "component_kpi_users", "component_chart", "component_activity_feed", "component_service_table"]
+      }
+    ],
+    "responsiveBehavior": [
+      {
+        "viewport": "desktop",
+        "behavior": "Sidebarを常時表示し、KPIを4列、チャートとアクティビティを2列で表示する"
+      },
+      {
+        "viewport": "tablet",
+        "behavior": "KPIを2列にし、チャートとアクティビティは縦積みにする"
+      },
+      {
+        "viewport": "mobile",
+        "behavior": "SidebarをDrawer化し、KPIとテーブル行をカード化して主要指標だけを表示する"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "component_sidebar",
+      "componentId": "sidebar",
+      "purpose": "恒常的なアプリ内移動を提供する",
+      "props": {
+        "activeItem": "dashboard"
+      },
+      "meridianTokens": ["--sidebar-w", "--bg-subtle", "--border"],
+      "states": ["default", "collapsed", "active"],
+      "accessibilityNotes": ["現在ページは aria-current で伝える", "折りたたみ時はアイコンボタンに accessible name を付ける"]
+    },
+    {
+      "id": "component_top_bar",
+      "componentId": "top-bar",
+      "purpose": "現在地、検索、通知、ユーザー操作をまとめる",
+      "props": {
+        "title": "Dashboard"
+      },
+      "meridianTokens": ["--topbar-h", "--surface", "--border"],
+      "states": ["default"],
+      "accessibilityNotes": ["検索はラベルまたは aria-label を持つ", "通知ボタンは未読数を読み上げ可能にする"]
+    },
+    {
+      "id": "component_period_segmented",
+      "componentId": "segmented-control",
+      "purpose": "7日、30日、90日の期間切り替えを提供する",
+      "props": {
+        "defaultValue": "30d"
+      },
+      "meridianTokens": ["--primary-subtle", "--primary", "--radius-sm"],
+      "states": ["default", "selected", "focus"],
+      "accessibilityNotes": ["選択状態は aria-pressed または radio pattern で伝える"]
+    },
+    {
+      "id": "component_filter_button",
+      "componentId": "button",
+      "purpose": "表示対象を絞り込む",
+      "props": {
+        "variant": "secondary",
+        "label": "フィルタ"
+      },
+      "meridianTokens": ["--button-secondary-bg", "--button-secondary-border", "--focus-ring"],
+      "states": ["default", "hover", "focus"],
+      "accessibilityNotes": ["フィルタ適用中は状態をテキストでも表示する"]
+    },
+    {
+      "id": "component_report_button",
+      "componentId": "button",
+      "purpose": "現在の条件でレポートを作成する",
+      "props": {
+        "variant": "primary",
+        "label": "レポート作成"
+      },
+      "meridianTokens": ["--primary", "--primary-fg", "--focus-ring"],
+      "states": ["default", "hover", "focus", "loading"],
+      "accessibilityNotes": ["実行中は aria-busy を使い、二重送信を防ぐ"]
+    },
+    {
+      "id": "component_kpi_mrr",
+      "componentId": "kpi-card",
+      "purpose": "MRRと前期間比を表示する",
+      "props": {
+        "label": "MRR",
+        "tone": "success"
+      },
+      "meridianTokens": ["--surface", "--border", "--success", "--success-fg"],
+      "states": ["default", "positive", "negative"],
+      "accessibilityNotes": ["増減は色だけでなく +12.4% のテキストで表す"]
+    },
+    {
+      "id": "component_kpi_users",
+      "componentId": "kpi-card",
+      "purpose": "アクティブユーザー数と変化率を表示する",
+      "props": {
+        "label": "Active users",
+        "tone": "success"
+      },
+      "meridianTokens": ["--surface", "--border", "--success", "--success-fg"],
+      "states": ["default", "positive", "negative"],
+      "accessibilityNotes": ["数値は tabular-nums 相当の表現で読みやすくする"]
+    },
+    {
+      "id": "component_chart",
+      "componentId": "analytics-chart-container",
+      "purpose": "主要KPIの推移を可視化する",
+      "props": {
+        "chartType": "line"
+      },
+      "meridianTokens": ["--surface", "--border", "--chart-fg-1", "--chart-fg-2"],
+      "states": ["default", "loading", "empty"],
+      "accessibilityNotes": ["チャートの要約をテキストで併記する", "凡例は色名だけに依存しない"]
+    },
+    {
+      "id": "component_activity_feed",
+      "componentId": "activity-feed",
+      "purpose": "KPI変化に関連する直近イベントを表示する",
+      "props": {
+        "limit": 5
+      },
+      "meridianTokens": ["--surface", "--border", "--fg-muted"],
+      "states": ["default", "empty"],
+      "accessibilityNotes": ["時刻とイベント種別をテキストで表す"]
+    },
+    {
+      "id": "component_service_table",
+      "componentId": "table",
+      "purpose": "サービス別の状態、リクエスト数、エラー率を比較する",
+      "props": {
+        "sortable": true,
+        "selectable": true
+      },
+      "meridianTokens": ["--surface", "--border-muted", "--fg"],
+      "states": ["default", "sorted", "selected", "empty"],
+      "accessibilityNotes": ["ソート状態を aria-sort で伝える", "行選択はキーボード操作に対応する"]
+    }
+  ],
+  "states": {
+    "default": {
+      "applicable": true,
+      "description": "KPI、チャート、アクティビティ、サービス一覧が揃って表示される",
+      "componentRefs": ["component_kpi_mrr", "component_kpi_users", "component_chart", "component_activity_feed", "component_service_table"],
+      "userRecovery": null
+    },
+    "loading": {
+      "applicable": true,
+      "description": "KPIとチャートはSkeleton、テーブルは行Skeletonを表示してレイアウトシフトを避ける",
+      "componentRefs": ["component_chart", "component_service_table"],
+      "userRecovery": "読み込みが長い場合は最終更新時刻を表示する"
+    },
+    "empty": {
+      "applicable": true,
+      "description": "データが無い期間では空状態と期間変更の導線を表示する",
+      "componentRefs": ["component_period_segmented", "component_service_table"],
+      "userRecovery": "期間を広げる、またはフィルタを解除する"
+    },
+    "error": {
+      "applicable": true,
+      "description": "KPI取得失敗時はAlertと再試行ボタンを表示し、取得できた古いデータがあれば最終更新時刻付きで残す",
+      "componentRefs": ["component_report_button"],
+      "userRecovery": "再試行する、または詳細ログを開く"
+    },
+    "permissionDenied": {
+      "applicable": true,
+      "description": "閲覧権限がないKPIやサービスはマスクし、必要な権限と管理者への依頼導線を表示する",
+      "componentRefs": ["component_service_table"],
+      "userRecovery": "管理者へアクセス権限を依頼する"
+    }
+  },
+  "accessibility": {
+    "wcagTarget": "WCAG-2.2-AA",
+    "keyboardInteractions": ["Tabでツールバー、KPI、テーブル操作へ移動できる", "テーブルのソートと行選択をキーボードで操作できる"],
+    "focusManagement": ["フィルタ適用後もフォーカスを失わない", "エラー発生時はAlertへフォーカスを移動しすぎず aria-live で通知する"],
+    "screenReaderNotes": ["KPIカードはラベル、値、変化率を一続きで読める構造にする", "チャートにはテキスト要約を付ける"],
+    "nonColorCues": ["増減は矢印と数値ラベルで表す", "エラー率は色だけでなく Error rate のラベルとステータステキストを併記する"]
+  },
+  "rationale": [
+    {
+      "decision": "KPIを4つに絞り、最上段に配置する",
+      "reason": "日次確認では全体の健全性を最短で判断する必要があるため",
+      "evidenceType": "user-goal",
+      "tradeoff": "詳細分析の情報量は減るが、一覧性と判断速度を優先する",
+      "references": ["DESIGN.md:Clarity over decoration", "template:saas-dashboard"]
+    },
+    {
+      "decision": "チャートとアクティビティを隣接させる",
+      "reason": "数値変化と原因候補を同じ視線内で確認できるため",
+      "evidenceType": "pattern",
+      "tradeoff": "チャート幅はやや狭くなるが、変化の文脈が追いやすい",
+      "references": ["template:analytics-dashboard"]
+    },
+    {
+      "decision": "色だけで増減や異常を表現しない",
+      "reason": "色覚差や読み上げ環境でも状態を理解できる必要があるため",
+      "evidenceType": "accessibility",
+      "tradeoff": null,
+      "references": ["WCAG-2.2-AA", "CONTRAST_AA_MINIMUM"]
+    }
+  ],
+  "qualityChecks": {
+    "tokenComplianceRequired": true,
+    "componentRegistryComplianceRequired": true,
+    "keyboardRequired": true,
+    "responsiveRequired": true,
+    "stateCoverageRequired": true,
+    "rationaleRequired": true,
+    "unresolvedItems": ["kpi-card と analytics-chart-container の正式なReact実装がまだ無い"]
+  }
+}

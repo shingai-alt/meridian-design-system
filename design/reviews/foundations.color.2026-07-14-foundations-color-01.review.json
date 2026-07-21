@@ -1,0 +1,260 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.color",
+  "cycleId": "2026-07-14-foundations-color-01",
+  "supersedesCycleId": "2026-07-13-foundations-color-02",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-14",
+  "completedAt": "2026-07-14",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "src/color-engine.js",
+    "design/semantic-tokens.json",
+    "design/token-policy.json",
+    "tokens/src/component.json",
+    "tokens/build/tokens.css",
+    "js/pages-foundations.js",
+    "index.html",
+    "components/button.md",
+    "design/contracts/components/button.contract.json",
+    "test/color-engine.test.js",
+    "test/component-specs.test.js",
+    "test/token-pipeline.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "foundations.color",
+      "summary": "Light canvasへのbrand tint、Darkのsurface階層、静的surfaceと操作controlの色分離を、主要design systemとWCAGを基準に再設計する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "accessibility-or-safety",
+      "conflicting-guidance",
+      "benchmark-needed"
+    ],
+    "questions": [
+      "成熟したdesign systemはLight canvasとbrand colorをどのように分離しているか。",
+      "Dark modeでpage、card、raised、overlayの境界と奥行きをどう表現しているか。",
+      "静的なCard surfaceとSecondary actionを同じ色roleで表現してよいか。"
+    ],
+    "evidence": [
+      {
+        "id": "carbon-neutral-layering",
+        "title": "Carbon Design System: Color usage",
+        "url": "https://carbondesignsystem.com/elements/color/usage/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-14",
+        "summary": "Neutral backgroundとlayer tokenでUIの階層を構成し、interactive colorを用途別roleへ分離している。",
+        "supportedDecisions": [
+          "neutral-first-canvas",
+          "separate-static-and-interactive-surfaces"
+        ]
+      },
+      {
+        "id": "material-surface-containers",
+        "title": "Material 3 design system in Compose",
+        "url": "https://developer.android.com/develop/ui/compose/designsystems/material3",
+        "sourceType": "platform-documentation",
+        "authority": "primary",
+        "accessedAt": "2026-07-14",
+        "summary": "Surfaceと複数のsurface container roleをtheme schemeとして明示し、layerの用途を単一背景色へ圧縮しない。",
+        "supportedDecisions": [
+          "dark-monotonic-surfaces",
+          "explicit-sunken-surface"
+        ]
+      },
+      {
+        "id": "fluent-neutral-backgrounds",
+        "title": "Fluent 2 Color tokens",
+        "url": "https://fluent2.microsoft.design/color-tokens/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-14",
+        "summary": "Neutral background、subtle background、control borderなどを機能別tokenとして公開し、brandとneutralの責務を分離している。",
+        "supportedDecisions": [
+          "neutral-first-canvas",
+          "separate-static-and-interactive-surfaces"
+        ]
+      },
+      {
+        "id": "primer-functional-backgrounds",
+        "title": "Primer: Color usage",
+        "url": "https://primer.style/product/getting-started/foundations/color-usage/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-14",
+        "summary": "Colorを装飾値ではなく機能的なforeground、background、border roleとして利用する運用を示している。",
+        "supportedDecisions": [
+          "neutral-first-canvas",
+          "separate-static-and-interactive-surfaces"
+        ]
+      },
+      {
+        "id": "atlassian-dark-elevation",
+        "title": "Atlassian Design System: Elevation",
+        "url": "https://atlassian.design/foundations/elevation",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-14",
+        "summary": "Dark themeではelevated surfaceを周囲より明るくし、surface colorとshadowを合わせて階層を伝える。",
+        "supportedDecisions": [
+          "dark-monotonic-surfaces"
+        ]
+      },
+      {
+        "id": "wcag-non-text-contrast",
+        "title": "WCAG 2.2 Understanding Non-text Contrast",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-14",
+        "summary": "Controlやstateの識別に必要なvisual informationには隣接色との3:1 contrastを求める。",
+        "supportedDecisions": [
+          "separate-static-and-interactive-surfaces",
+          "context-and-seed-validation"
+        ]
+      }
+    ],
+    "synthesis": "Neutral中心のcanvasはCarbon、Fluent、Primerで共通し、Materialもsurface roleを明示的に分けている。Darkのdepthはshadowだけでなく上層ほど明るいsurface差で示す。Meridianは汎用業務UIから消費者向けappまで扱うため、標準canvasをseed非依存のNeutralとし、brand tintは将来の明示的なappearanceとして扱う。静的surfaceと操作controlは用途別Semantic roleへ分離する。",
+    "decisionImpact": "Color engine、Semantic token、Button、入力系component、Foundation docs、generated tokenへNeutral-first canvas、7段階のDark surface hierarchy、control専用roleを反映し、全7 seedと4 contextで検証可能にした。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "neutral-first-canvas",
+      "summary": "標準のLight/Dark canvasはbrand seedから独立した低chroma Neutral paletteで構成する。",
+      "rationale": "長時間利用する業務UIと多様なbrandの双方で可読性と再利用性を保ち、brand colorを意味のあるactionやidentityへ集中させるため。"
+    },
+    {
+      "id": "dark-monotonic-surfaces",
+      "summary": "Darkではbackgroundからoverlayまで、上層のsurfaceほど段階的に明るくする。",
+      "rationale": "Darkでshadowだけに依存せず、page、Card、raised、overlayの位置関係を安定して知覚できるようにするため。"
+    },
+    {
+      "id": "separate-static-and-interactive-surfaces",
+      "summary": "Cardなどの静的surfaceと、Secondary Buttonなどの操作controlは別のSemantic roleを使う。",
+      "rationale": "同じ形と色に見えることで操作可能性が曖昧になるのを防ぎ、hover、active、boundaryを一貫して設計するため。"
+    },
+    {
+      "id": "explicit-sunken-surface",
+      "summary": "入力欄や埋め込み領域にはsurface-sunkenを設け、通常Cardとは逆方向の階層を表現する。",
+      "rationale": "Darkで入力欄をCardより明るいsurfaceへ誤配置せず、入力領域として安定した視覚的手掛かりを与えるため。"
+    },
+    {
+      "id": "context-and-seed-validation",
+      "summary": "surface階層とcontrol境界は全7 seed、Light/Dark、Standard/Highの各contextで検証する。",
+      "rationale": "既定seedだけの目視確認では、theme変更時の階層消失やcontrast不足を検出できないため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "source-wrong",
+      "description": "標準Neutral paletteがbrand seedのhueとchromaに連動し、Light canvasへ意図しないtheme tintが入っていた。",
+      "action": "Neutral paletteをseed非依存の低chroma Neutralへ変更し、seed由来の色はNeutral Variantとbrand roleへ限定した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "Darkのbackgroundとsurface差が小さく、Card、raised、overlayの階層が視認しづらかった。",
+      "action": "Dark Standard/Highのsurface lightnessを再配分し、上層ほど明るい単調な階層へ変更した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-token",
+      "description": "静的surfaceとneutral actionが同じsurface roleを共有し、sunken領域の専用roleも存在しなかった。",
+      "action": "surface-sunkenとcontrol background/borderのdefault、hover、active roleを追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "Color docsとButton contractが旧surface用途とseed tintを前提にしていた。",
+      "action": "Foundation、Button、入力系spec/contract、theme previewを新しい役割分離へ同期した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "src/color-engine.js",
+      "summary": "Neutral-first palette、Dark surface hierarchy、surface-sunken、control Semantic roleを実装。"
+    },
+    {
+      "path": "design/semantic-tokens.json",
+      "summary": "SurfaceとControlの用途、state、利用判断を機械可読metadataへ追加。"
+    },
+    {
+      "path": "tokens/src/component.json",
+      "summary": "Dark inputのbackground aliasをsurface-sunkenへ変更。"
+    },
+    {
+      "path": "index.html",
+      "summary": "Secondary ButtonをCard surfaceからcontrol専用roleへ移行。"
+    },
+    {
+      "path": "components/button.md",
+      "summary": "Secondary actionのsurface分離、state token、利用ルールを明文化。"
+    },
+    {
+      "path": "design/contracts/components/button.contract.json",
+      "summary": "Secondary Buttonのdefault、hover、active bindingをcontrol tokenへ同期。"
+    },
+    {
+      "path": "js/pages-foundations.js",
+      "summary": "Neutral-first方針、surface hierarchy、static/interactive分離、調査根拠をColorページへ追加。"
+    },
+    {
+      "path": "test/color-engine.test.js",
+      "summary": "全seedのNeutral安定性、Dark階層、control識別と3:1 boundaryを自動検証。"
+    },
+    {
+      "path": "test/component-specs.test.js",
+      "summary": "Secondary ButtonがCard surfaceを再利用しないことをcontractとCSSで検証。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/color-engine.test.js",
+      "status": "passed",
+      "notes": "16 tests passed。全7 seed、4 context、surface階層、control contrastを確認。"
+    },
+    {
+      "command": "node --test test/component-specs.test.js test/token-pipeline.test.js test/css-variables.test.js test/theme-tokens.test.js",
+      "status": "passed",
+      "notes": "29 tests passed。74 component contract、4 token bundle、CSS変数、theme modifierを確認。"
+    },
+    {
+      "command": "npm run sync:component-tokens",
+      "status": "passed",
+      "notes": "0 contracts updated、0 bindings added。spec、contract、component tokenの同期済みを確認。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-overview-for-designers-01",
+    "2026-07-13-overview-for-engineers-01",
+    "2026-07-13-tokens-theme-01"
+  ],
+  "impactedItems": [
+    "foundations.elevation",
+    "tokens.overview",
+    "tokens.color",
+    "tokens.component",
+    "tokens.theme",
+    "components.button",
+    "components.card",
+    "components.text-field",
+    "components.textarea",
+    "components.search-field",
+    "components.input-group",
+    "components.prompt-input"
+  ],
+  "nextRecommendedItems": [
+    "foundations.elevation",
+    "tokens.color",
+    "components.button"
+  ]
+}

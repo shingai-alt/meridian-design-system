@@ -3,39 +3,70 @@
 const COMPONENTS=[];
 const CMAP={};
 function def(c){
+  const spec=typeof COMPONENT_CONTRACTS!=='undefined'?COMPONENT_CONTRACTS[c.id]:null;
+  if(spec){
+    c.when=spec.intent.whenToUse;
+    c.notWhen=spec.intent.whenNotToUse;
+    c.anatomy=spec.anatomy.map(part=>[part.part,`${part.required?'Required':'Optional'} — ${part.description}`]);
+    if(c.variants||spec.variants.some(variant=>variant!=='default'))c.variants=spec.variants;
+    if(c.sizes||spec.sizes.length)c.sizes=spec.sizes;
+    c.states=spec.states.map(state=>state.id);
+    c.props=spec.props;
+    c.tokens=[...new Set(Object.values(spec.tokenRefs).flat())];
+    c.a11y=[...new Set([...spec.accessibility.requirements,...spec.accessibility.aria,...spec.accessibility.focus])];
+    c.keys=spec.keyboardInteractions.map(item=>[item.key,item.action]);
+    c.usageGuidance=spec.usagePatterns;
+    c.responsiveBehavior=Object.entries(spec.responsiveBehavior).map(([mode,value])=>[
+      mode[0].toUpperCase()+mode.slice(1),
+      `${value.summary} ${value.rules.join(' ')} Avoid: ${value.avoid.join(' ')}`
+    ]);
+    c.openQuestions=spec.openQuestions;
+  }
   c.states=c.states||['default'];
-  c.tokens=c.tokens||['--surface','--border','--foreground'];
-  c.a11y=c.a11y||['ロールと accessible name を必ず与える','フォーカス可視化は focus-ring トークンで統一する'];
-  c.keys=c.keys||[['Tab','フォーカス移動']];
+  c.tokens=c.tokens||['--surface','--border','--fg'];
+  c.a11y=c.a11y||[];
+  c.keys=c.keys||[];
   c.related=c.related||[];
   c.code=c.code||(p=>`<${c.name.replace(/\s/g,'')} />`);
   COMPONENTS.push(c);CMAP[c.id]=c;
 }
 
 /* ---- Core ---- */
-def({id:'button',name:'Button',group:'Core',desc:'アクションを実行するための基本コントロール。優先度に応じて 8 つのバリアントを持つ。',
+def({id:'button',name:'Button',group:'Core',desc:'ユーザーが明確なアクションを実行するための基本コントロール。操作の重要度と危険度を variant で示す。',
  variants:['primary','secondary','tertiary','ghost','outline','danger','success','link'],
  sizes:['xs','sm','md','lg','xl'],states:['default','hover','active','focus','disabled','loading'],
  flags:[['leadingIcon','Leading icon'],['trailingIcon','Trailing icon'],['iconOnly','Icon only'],['full','Full width']],
  texts:[['label','Label','Create project']],
- when:['ページ内の明確なアクション(作成・保存・送信)','フォームの送信・確定','破壊的操作の実行(Danger)'],
- notWhen:['ページ遷移だけが目的の場合 → Link を使う','複数の同格な選択肢の切り替え → Segmented Control','テーブル行内の低優先アクション → Ghost / Icon Button'],
- usage:['Primary は 1 画面に原則 1 つ。主要アクションの視線誘導を守る。','Danger は削除・取り消し不能な操作に限定し、確認ダイアログと併用する。','Ghost はツールバーや行内の低優先アクションに使う。','Link はナビゲーションや「詳細を見る」など軽い操作に使う。'],
- anatomy:[['1','Container — button-primary-bg / radius-sm'],['2','Label — font-weight 550'],['3','Leading icon (optional)'],['4','Loading spinner — label を透明化して重ねる']],
- tokens:['--button-primary-bg','--button-primary-bg-hover','--button-primary-bg-active','--button-primary-fg','--button-secondary-bg','--button-secondary-border','--radius-sm','--ctl-md','--focus-ring'],
- a11y:['<button> 要素を使い、role の付与を不要にする','Icon only の場合は aria-label を必須にする','Loading 中は aria-busy="true" を設定し、二重送信を防ぐ','Disabled ではなく aria-disabled を使うと、フォーカス到達と理由の説明が可能'],
+ when:['フォーム送信・設定保存・リソース作成など、状態を変更する明確な操作','ダイアログ内の確定・キャンセル・破壊的操作','テーブル行やツールバー内の補助操作'],
+ notWhen:['ページ遷移だけが目的の場合 → Link を使う','表示モード切り替え → Segmented Control','ON/OFF 設定 → Switch','複数選択 → Checkbox、排他選択 → Radio','アイコンだけで意味が明確な低優先操作 → Icon Button'],
+ usage:['Primary は 1 つの意思決定文脈に原則 1 つ。','Danger は削除・取り消し不能・権限剥奪などの最終確認に限定する。','Ghost はキャンセル、閉じる、ツールバー、行内操作に使う。','Link は軽い参照や補助導線に限定し、データ変更には使わない。','Loading 中は accessible name を維持し、二重送信を防ぐ。'],
+ anatomy:[['1','Root — native button element'],['2','Label — 操作結果を予測できる文言'],['3','Leading icon (optional) — 意味を補強する'],['4','Trailing icon (optional) — 展開・遷移を補足する'],['5','Loading spinner — aria-hidden で重ね、label は保持する']],
+ tokens:['--primary','--primary-hover','--primary-active','--primary-subtle','--primary-muted','--primary-fg','--surface','--surface-muted','--fg','--fg-disabled','--border','--border-muted','--border-strong','--danger','--danger-on-solid','--success','--success-on-solid','--disabled','--focus-ring','--radius-sm','--ctl-md','--sp-2','--dur-fast'],
+ a11y:['<button> 要素を使い、role の付与を不要にする','Icon only の場合は aria-label を必須にする','Loading 中は aria-busy="true" を設定し、二重送信を防ぐ','色だけで danger / success の意味を伝えない','Disabled ではなく aria-disabled を使うと、フォーカス到達と理由の説明が可能'],
  keys:[['Enter / Space','アクションを実行'],['Tab','次のコントロールへ']],
  dos:[[()=>btn({label:'プロジェクトを作成'})+' '+btn({label:'キャンセル',variant:'ghost'}),'Primary は 1 つ。補助アクションは Ghost に落とす。']],
  donts:[[()=>btn({label:'作成'})+' '+btn({label:'保存'})+' '+btn({label:'送信'}),'Primary の乱用。どれが主要アクションか判別できない。']],
+ usagePatterns:[
+  ['Form footer',()=>btn({label:'キャンセル',variant:'ghost'})+' '+btn({label:'変更を保存',variant:'primary'}),'Primary action は末尾に置き、Cancel / discard は Ghost または Secondary にする。'],
+  ['Dialog footer',()=>btn({label:'キャンセル',variant:'ghost'})+' '+btn({label:'削除する',variant:'danger'}),'破壊的な確定は Danger にし、本文で影響を説明する。'],
+  ['Toolbar',()=>btn({label:'フィルタ',variant:'secondary',size:'sm',leadingIcon:true})+' '+btn({label:'コピー',variant:'ghost',size:'sm'}),'主要作業の起点だけを強くし、補助操作は Ghost / Icon Button に落とす。'],
+  ['Table row',()=>btn({label:'詳細',variant:'link',size:'xs'})+' '+btn({label:'その他',variant:'ghost',size:'xs'}),'行内操作は軽くし、破壊的操作は直接置かず確認へ逃がす。'],
+  ['Mobile CTA',()=>`<div style="width:220px">${btn({label:'続行',variant:'primary',size:'xl',full:true})}</div>`,'モバイルの主要 CTA は full width にできるが、複数ボタンを横に詰めない。']
+ ],
+ responsiveBehavior:[
+  ['Desktop','md を標準にし、Form footer / Dialog footer / Toolbar では inline 配置を基本にする。Table row action は xs または sm を使う。'],
+  ['Mobile','同じ Button を使い、主要 CTA は full width、lg / xl、縦積みなどの layout pattern で最適化する。'],
+  ['Touch','操作targetは24px minimum、主要操作は原則44px以上にし、hoverに意味を依存せず、loading中の二重実行を防ぐ。']
+ ],
  related:['icon-button','link','segmented-control'],
  render:p=>btn(p),
- code:p=>`<Button\n  variant="${p.variant||'primary'}"\n  size="${p.size||'md'}"${p.disabled||p.state==='disabled'?'\n  disabled':''}${p.loading||p.state==='loading'?'\n  loading':''}${p.full?'\n  fullWidth':''}${p.iconOnly?'\n  iconOnly aria-label="追加"':''}\n>\n  ${p.iconOnly?'<PlusIcon />':esc(p.label||'Create project')}\n</Button>`});
+ code:p=>`<Button\n  variant="${p.variant||'primary'}"\n  size="${p.size||'md'}"${p.disabled||p.state==='disabled'?'\n  disabled':''}${p.loading||p.state==='loading'?'\n  loading aria-busy="true"':''}${p.full?'\n  fullWidth':''}${p.iconOnly?'\n  iconOnly aria-label="追加"':''}\n>\n  ${p.iconOnly?'<PlusIcon aria-hidden="true" />':esc(p.label||'Create project')}\n</Button>`});
 
 def({id:'icon-button',name:'Icon Button',group:'Core',desc:'アイコンのみのコンパクトなアクション。ツールバーや行内操作に使う。',
  variants:['ghost','secondary','primary'],sizes:['xs','sm','md','lg'],states:['default','hover','disabled'],
  when:['ツールバー・カードヘッダーの補助操作','スペースが限られたテーブル行内'],
  notWhen:['意味がアイコンだけでは伝わらない主要アクション → ラベル付き Button'],
- usage:['必ず aria-label とツールチップを併用する。','タッチ環境ではヒット領域を 40px 以上確保する(Comfortable 密度)。'],
+ usage:['必ず aria-label とツールチップを併用する。','操作targetは24px minimum、touch中心では原則44px以上のhit areaを確保する。'],
  a11y:['aria-label を必須にする','ツールチップはフォーカス時にも表示する'],related:['button','tooltip'],
  render:p=>btn({...p,iconOnly:true,variant:p.variant||'ghost'}),
  code:p=>`<IconButton variant="${p.variant||'ghost'}" size="${p.size||'md'}" aria-label="追加">\n  <PlusIcon />\n</IconButton>`});
@@ -252,7 +283,7 @@ def({id:'command-menu',name:'Command Menu',group:'Navigation',desc:'⌘K で開�
 def({id:'navigation-item',name:'Navigation Item',group:'Navigation',desc:'Sidebar 内の 1 項目。アイコン・ラベル・バッジ・ネストを持つ。',
  states:['default','hover','active'],
  usage:['アクティブ状態は aria-current="page" で表す。','バッジは未読・件数など動的な情報に限る。'],
- render:p=>`<div style="width:220px;display:flex;flex-direction:column;gap:2px"><div class="tsb-item ${p.state==='active'?'on':''} ${simCls(p.state)}">${I.folder} プロジェクト<span class="nbadge" style="margin-left:auto;font-size:9.5px;background:var(--primary-subtle);color:var(--primary);padding:0 6px;border-radius:var(--radius-full)">12</span></div><div class="tsb-item">${I.users} メンバー</div></div>`,
+ render:p=>`<nav aria-label="セクション" style="width:220px;display:flex;flex-direction:column;gap:2px"><a href="#/projects" class="tsb-item ${p.state==='active'?'on':''} ${simCls(p.state)}" ${p.state==='active'?'aria-current="page"':''}>${I.folder} プロジェクト<span class="nbadge" style="margin-left:auto;font-size:9.5px;background:var(--primary-subtle);color:var(--primary);padding:0 6px;border-radius:var(--radius-full)">12</span></a><a href="#/members" class="tsb-item">${I.users} メンバー</a></nav>`,
  code:()=>`<Sidebar.Item icon={<FolderIcon />} badge={12} active>\n  プロジェクト\n</Sidebar.Item>`,related:['sidebar']});
 
 def({id:'product-switcher',name:'Product Switcher',group:'Navigation',desc:'組織内の複数プロダクト・ワークスペースを切り替えるメニュー。',
@@ -335,7 +366,7 @@ def({id:'list',name:'List',group:'Data Display',desc:'単一軸で走査する�
 def({id:'card',name:'Card',group:'Data Display',desc:'関連情報を 1 つの面にまとめる基本コンテナ。',
  states:['default','hover'],
  usage:['カードの入れ子は 1 段まで。深い階層は線と背景で表現する。','padding は card-padding トークンで density に連動させる。','クリック可能なカードは hover でボーダーを強調し、影は控えめに。'],
- tokens:['--surface','--border','--radius-lg','--card-pad','--shadow-sm'],
+ tokens:['--surface','--border','--radius-md','--card-pad'],
  render:p=>`<div class="cardc ${p.state==='hover'?'hover sim-hover':''}" style="width:280px"><div class="rowflex" style="justify-content:space-between;margin-bottom:8px"><b style="font-size:var(--text-label)">デプロイ設定</b>${badge({label:'Production',tone:'primary'})}</div><p style="font-size:var(--text-small);color:var(--fg-muted);margin-bottom:12px">main ブランチへの push で自動的にデプロイされます。</p>${btn({label:'設定を編集',variant:'secondary',size:'sm'})}</div>`,
  code:()=>`<Card>\n  <Card.Header title="デプロイ設定" badge={<Badge tone="primary">Production</Badge>} />\n  <Card.Body>…</Card.Body>\n</Card>`,related:['stat-card','kpi-card','panel']});
 

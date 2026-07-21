@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/content-guidelines.schema.json",
+  "title": "Meridian Content Guidelines",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "locale", "voice", "rules", "messagePatterns", "terms", "qualityGates"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "type": "string", "minLength": 1 },
+    "locale": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["default", "fallback", "policy"],
+      "properties": {
+        "default": { "const": "ja-JP" },
+        "fallback": { "const": "en" },
+        "policy": { "type": "string", "minLength": 1 }
+      }
+    },
+    "voice": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "attribute", "means", "avoid"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "attribute": { "type": "string", "minLength": 1 },
+          "means": { "type": "string", "minLength": 1 },
+          "avoid": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "category", "appliesTo", "rule", "rationale", "do", "dont"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "category": { "enum": ["voice", "actions", "states", "forms", "format", "localization", "accessibility", "ai"] },
+          "appliesTo": { "type": "string", "minLength": 1 },
+          "rule": { "type": "string", "minLength": 1 },
+          "rationale": { "type": "string", "minLength": 1 },
+          "do": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "dont": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "messagePatterns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "requiredParts", "example", "avoid"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "requiredParts": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "example": { "type": "string", "minLength": 1 },
+          "avoid": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "terms": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["concept", "ja", "en", "avoid"],
+        "properties": {
+          "concept": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "ja": { "type": "string", "minLength": 1 },
+          "en": { "type": "string", "minLength": 1 },
+          "avoid": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "qualityGates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "checks"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "checks": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    }
+  }
+}

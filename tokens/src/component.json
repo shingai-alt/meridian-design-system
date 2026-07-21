@@ -1,0 +1,95 @@
+{
+  "$description": "Policy gateを通過した公開Component token。各tokenはSemantic tokenを既定値として参照し、独立変更が必要な箇所だけを公開する。",
+  "button": {
+    "primary": {
+      "background": {
+        "default": {
+          "$type": "color",
+          "$value": "{color.semantic.primary}",
+          "$extensions": { "com.meridian": { "cssVariable": "--button-primary-bg", "trigger": "public-component-api", "reason": "Buttonの主要action面をFigmaと将来のReact packageで安定したcustomization APIとして公開する。" } }
+        },
+        "hover": {
+          "$type": "color",
+          "$value": "{color.semantic.primary-hover}",
+          "$extensions": { "com.meridian": { "cssVariable": "--button-primary-bg-hover", "trigger": "component-anatomy", "reason": "Buttonのinteractive state一式をcomponent境界で固定する。" } }
+        },
+        "active": {
+          "$type": "color",
+          "$value": "{color.semantic.primary-active}",
+          "$extensions": { "com.meridian": { "cssVariable": "--button-primary-bg-active", "trigger": "component-anatomy", "reason": "Buttonのinteractive state一式をcomponent境界で固定する。" } }
+        }
+      },
+      "foreground": {
+        "default": {
+          "$type": "color",
+          "$value": "{color.semantic.primary-foreground}",
+          "$extensions": { "com.meridian": { "cssVariable": "--button-primary-fg", "trigger": "public-component-api", "reason": "主要action面とのcontrast pairをButtonの公開APIとして保持する。" } }
+        }
+      }
+    }
+  },
+  "input": {
+    "background": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.semantic.surface}",
+        "$extensions": { "com.meridian": { "cssVariable": "--input-bg", "trigger": "semantic-divergence", "reason": "Dark themeでは入力面を周囲から識別するためsurface-sunkenへ切り替える。", "modes": { "dark": "{color.semantic.surface-sunken}" } } }
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.semantic.border}",
+        "$extensions": { "com.meridian": { "cssVariable": "--input-border", "trigger": "semantic-divergence", "reason": "High contrastでは入力境界だけをborder-strongへ強める。", "modes": { "high": "{color.semantic.border-strong}" } } }
+      },
+      "focus": {
+        "$type": "color",
+        "$value": "{color.semantic.primary}",
+        "$extensions": { "com.meridian": { "cssVariable": "--input-border-focus", "trigger": "component-anatomy", "reason": "Inputのfocus border slotをcomponent contractで固定する。" } }
+      }
+    },
+    "placeholder": {
+      "$type": "color",
+      "$value": "{color.semantic.foreground-subtle}",
+      "$extensions": { "com.meridian": { "cssVariable": "--input-placeholder", "trigger": "component-anatomy", "reason": "Input固有のplaceholder anatomyへ安定してbindingする。" } }
+    }
+  },
+  "table": {
+    "row": {
+      "background": {
+        "hover": {
+          "$type": "color",
+          "$value": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.028, "hex": "#000000" },
+          "$extensions": { "com.meridian": { "cssVariable": "--table-row-hover", "trigger": "intrinsic-component-value", "reason": "大量行で反復するTable hoverはsurface tokenより弱い固有濃度を必要とする。", "modes": { "dark": { "colorSpace": "srgb", "components": [1, 1, 1], "alpha": 0.035, "hex": "#ffffff" } } } }
+        }
+      }
+    }
+  },
+  "sidebar": {
+    "background": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.semantic.background-subtle}",
+        "$extensions": { "com.meridian": { "cssVariable": "--sidebar-bg", "trigger": "semantic-divergence", "reason": "Dark themeでは常設navigationをcanvasへ統合し、Lightではsubtle面として区別する。", "modes": { "dark": "{color.semantic.background}" } } }
+      }
+    },
+    "item": {
+      "background": {
+        "active": {
+          "$type": "color",
+          "$value": "{color.semantic.primary-subtle}",
+          "$extensions": { "com.meridian": { "cssVariable": "--sidebar-item-active-bg", "trigger": "component-anatomy", "reason": "Sidebar itemのcurrent state slotをcomponent contractで固定する。" } }
+        }
+      }
+    }
+  },
+  "tooltip": {
+    "background": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.semantic.surface-inverse}",
+        "$extensions": { "com.meridian": { "cssVariable": "--tooltip-bg", "trigger": "component-anatomy", "reason": "Tooltipのinverse surface anatomyをcomponent境界で固定する。" } }
+      }
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.color",
+  "cycleId": "2026-07-13-foundations-color-02",
+  "supersedesCycleId": "2026-07-13-foundations-color-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "src/color-engine.js",
+    "design/semantic-tokens.json",
+    "design/token-policy.json",
+    "test/color-engine.test.js",
+    "js/pages-foundations.js",
+    "design/reviews/overview.architecture.review.json",
+    "design/reviews/overview.for-designers.2026-07-13-overview-for-designers-01.review.json",
+    "design/reviews/overview.for-engineers.2026-07-13-overview-for-engineers-01.review.json",
+    "design/reviews/tokens.theme.2026-07-13-tokens-theme-01.review.json"
+  ],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "foundations.color",
+      "summary": "Colorの現行判断を後続cycleのmodifier、bundle、component実装へ照合するfollow-up確認。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "影響元cycleで該当standardの一次資料調査が完了しており、このfollow-upでは新しい外部standard解釈や設計patternを導入せず、確定済み判断との整合だけを実データとtestで確認するため。"
+  },
+  "decisions": [
+    {
+      "id": "four-context-role-stability",
+      "summary": "Light / Dark × Standard / Highの4 contextでもColorのSemantic roleと用途を変えない。",
+      "rationale": "Theme/Contrastは値を解決するmodifierであり、Color foundationのrole ownerを変えないため。"
+    },
+    {
+      "id": "contrast-validation",
+      "summary": "主要text/solid pairと実際に重なるforeground/background pairをcontextごとに検証する。",
+      "rationale": "自動step探索だけを全組み合わせの保証として扱わない既存方針を維持するため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "no-change",
+      "description": "Theme cycleの4 contextと解決順は、ColorのOKLCH生成、Semantic role、pair別contrast検証と矛盾しない。",
+      "action": "既存仕様本文を維持し、影響cycleをacknowledgedImpactsへ記録する。",
+      "status": "not-applicable"
+    }
+  ],
+  "changes": [
+    {
+      "path": "design/reviews/foundations.color.2026-07-13-foundations-color-02.review.json",
+      "summary": "後続cycleの影響確認、判断、検証、acknowledgementを記録。"
+    },
+    {
+      "path": "design/system-registry.json",
+      "summary": "実際に確認した生成処理とtestをsource evidenceへ追加し、最新reviewを接続。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/color-engine.test.js test/theme-tokens.test.js",
+      "status": "passed",
+      "notes": "4 contextの主要pair、High 7:1目標、on-solid、modifier分離が成功。"
+    },
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "Schema、registry、generated artifacts、JS syntax、105 testsが成功した状態でfollow-upを作成。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-overview-architecture-bootstrap",
+    "2026-07-13-overview-for-designers-01",
+    "2026-07-13-overview-for-engineers-01",
+    "2026-07-13-tokens-theme-01"
+  ],
+  "impactedItems": [],
+  "nextRecommendedItems": [
+    "foundations.elevation"
+  ]
+}

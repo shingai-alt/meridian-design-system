@@ -1,0 +1,207 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "foundations.typography",
+  "cycleId": "2026-07-13-foundations-typography-01",
+  "supersedesCycleId": null,
+  "reviewType": "full",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "tokens/src/typography.json",
+    "tokens/src/layout.json",
+    "tokens/src/density.json",
+    "tokens/build/tokens.css",
+    "js/generated/typography-token-meta.js",
+    "js/pages-foundations.js",
+    "scripts/build-tokens.mjs",
+    "scripts/build-design-md.mjs",
+    "test/typography-tokens.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "foundations.typography",
+      "summary": "Typography role、UI密度、長文可読性、PC/SPとnative platformへのmapping、resizeとtext spacing耐性を確認する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "accessibility-or-safety",
+      "new-pattern-or-api",
+      "cross-platform-behavior",
+      "conflicting-guidance",
+      "benchmark-needed"
+    ],
+    "questions": [
+      "高密度な業務UIの本文と長文contentを同じfont sizeで扱うべきか。",
+      "PCとSPでtypography componentやroleを分ける必要があるか。",
+      "zoom、text resize、user spacing overrideへどのような利用規則が必要か。"
+    ],
+    "evidence": [
+      {
+        "id": "uswds-typography",
+        "title": "U.S. Web Design System Typography",
+        "url": "https://designsystem.digital.gov/components/typography/",
+        "sourceType": "official-design-system",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "running textの基準として16pxを推奨し、Latinのline lengthを45から90文字、長文の目標を約66文字としている。",
+        "supportedDecisions": [
+          "separate-reading-and-ui-body",
+          "bounded-reading-measure"
+        ]
+      },
+      {
+        "id": "wcag-resize-text",
+        "title": "WCAG 2.2 Understanding Resize Text",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/resize-text",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "assistive technologyなしの200% text resizeでもcontentと機能を保持する要件を説明している。",
+        "supportedDecisions": [
+          "resilient-type-layout"
+        ]
+      },
+      {
+        "id": "wcag-text-spacing",
+        "title": "WCAG 2.2 Understanding Text Spacing",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/text-spacing",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "利用者がline height、paragraph、letter、word spacingを増やしてもcontentや機能を失わない基準を示している。",
+        "supportedDecisions": [
+          "resilient-type-layout",
+          "zero-default-tracking"
+        ]
+      },
+      {
+        "id": "wcag-visual-presentation",
+        "title": "WCAG 2.2 Understanding Visual Presentation",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "長文のline length、非両端揃え、lineとparagraph spacingを利用者が調整できる基準を示している。",
+        "supportedDecisions": [
+          "bounded-reading-measure"
+        ]
+      },
+      {
+        "id": "apple-hig-typography",
+        "title": "Apple Human Interface Guidelines Typography",
+        "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
+        "sourceType": "platform-documentation",
+        "authority": "primary",
+        "accessedAt": "2026-07-13",
+        "summary": "system text styleとDynamic Typeを利用し、拡大時のtruncation回避やiconとのscaleを考慮する指針を示している。",
+        "supportedDecisions": [
+          "shared-semantic-roles"
+        ]
+      }
+    ],
+    "synthesis": "長文可読性の基準と高密度UIの必要性を別用途として扱い、ReadingとBodyを分離した。Responsive差はroleを分岐せずlayoutとplatform mappingで吸収し、WCAGのresize・spacing overrideをcomponent検証へ引き継ぐ。",
+    "decisionImpact": "17 roleの正本JSONを新設し、全roleをrem・zero trackingで生成した。Readingを16px相当で固定し、UI densityだけを可変にした。PC/SP共通契約、line length、wrap、truncation、200% resize、native mappingの利用規則を追加した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "separate-reading-and-ui-body",
+      "summary": "長文はReading 1rem/1.65、短い業務UI本文はBody 0.875rem/1.55を基準にする。",
+      "rationale": "contentの連続読解とscan中心の高密度UIでは可読性と情報量の要件が異なるため。"
+    },
+    {
+      "id": "shared-semantic-roles",
+      "summary": "PCとSPで別のtype componentを作らず、同じsemantic roleをlayoutとplatform text styleへmapする。",
+      "rationale": "viewportを意味の分岐条件にせず、contractと読み上げ構造を一貫させるため。"
+    },
+    {
+      "id": "bounded-reading-measure",
+      "summary": "長文の目安をLatin 45から90文字で目標66、日本語25から40文字とする。",
+      "rationale": "広いviewportでも視線移動を過度に長くせず、長文contentの読解負荷を抑えるため。"
+    },
+    {
+      "id": "resilient-type-layout",
+      "summary": "200% text resizeとWCAG text spacing overrideでclip、overlap、機能損失を起こさないことをcomponent検証条件にする。",
+      "rationale": "token値が適切でも固定高や省略処理によって利用不能になるため。"
+    },
+    {
+      "id": "zero-default-tracking",
+      "summary": "全Typography roleのletter spacingを0とし、装飾目的のtrackingをroleへ含めない。",
+      "rationale": "日本語とLatinの混在、利用者override、compact controlで安定した折返しを保つため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "missing-token",
+      "description": "docsには--type-*が表示されていたが、tokens.cssに対応するCSS custom propertyが存在しなかった。",
+      "action": "tokens/src/typography.jsonを正本にし、shorthandとproperty tokenをbuild-tokensから生成した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "source-wrong",
+      "description": "旧type scaleはhardcoded pxと負のletter spacingを含み、長文と短いUI本文の境界がなかった。",
+      "action": "17 roleをremとzero trackingへ変更し、Reading roleを追加した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "docs-stale",
+      "description": "PC/SP、zoom、text spacing、wrap/truncation、native platform mappingの判断基準がなかった。",
+      "action": "responsive and accessibility規則と一次資料をTypography Foundationへ追加した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    {
+      "path": "tokens/src/typography.json",
+      "summary": "17 semantic typography roleのDTCG形式正本を追加した。"
+    },
+    {
+      "path": "scripts/build-tokens.mjs",
+      "summary": "Typography CSS custom propertiesとbrowser用metadataを生成・drift checkする処理を追加した。"
+    },
+    {
+      "path": "js/pages-foundations.js",
+      "summary": "Typographyのrole選択、density、responsive、accessibility、standards evidenceを更新した。"
+    },
+    {
+      "path": "scripts/build-design-md.mjs",
+      "summary": "AI向けDESIGN.mdへTypography role表と選択原則を生成するようにした。"
+    },
+    {
+      "path": "test/typography-tokens.test.js",
+      "summary": "正本JSON、generated metadata、CSSの一意な同期とReading invariantを検証した。"
+    }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/typography-tokens.test.js",
+      "status": "passed",
+      "notes": "2 tests passed。17 roleのmetadata/CSS coverage、zero tracking、Reading invariantを確認した。"
+    },
+    {
+      "command": "npm run build:tokens && npm run design:build",
+      "status": "passed",
+      "notes": "tokens.css、typography metadata、DESIGN.mdを正本から再生成した。"
+    },
+    {
+      "command": "npm run check:js",
+      "status": "passed",
+      "notes": "browser docsを含む28 JavaScript filesの構文を確認した。"
+    }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [],
+  "impactedItems": [
+    "foundations.accessibility",
+    "tokens.overview",
+    "tokens.typography",
+    "components.button"
+  ],
+  "nextRecommendedItems": [
+    "foundations.spacing"
+  ]
+}

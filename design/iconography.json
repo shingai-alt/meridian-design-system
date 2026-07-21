@@ -1,0 +1,62 @@
+{
+  "$schema": "../schemas/iconography.schema.json",
+  "schemaVersion": "0.1.0",
+  "implementation": "js/utils.js#ICON_SVG",
+  "coordinateSystem": {
+    "viewBox": "0 0 24 24",
+    "strokeWidth": 2,
+    "smallStrokeWidth": 1.5,
+    "lineCap": "round",
+    "lineJoin": "round",
+    "color": "currentColor"
+  },
+  "sizes": [
+    { "id": "xs", "value": 12, "usage": "chevron、inline status、dense metadata" },
+    { "id": "sm", "value": 14, "usage": "small button、table、compact control" },
+    { "id": "md", "value": 16, "usage": "default button、navigation、form control" },
+    { "id": "lg", "value": 20, "usage": "empty stateとsection marker" },
+    { "id": "xl", "value": 24, "usage": "large empty state。単独装飾には使わない" }
+  ],
+  "accessibility": {
+    "svgDefaults": "Reusable SVG glyphはaria-hidden=true、focusable=falseとし、単独focus targetにしない。",
+    "iconOnlyControl": "Accessible nameはButton/Link側のaria-labelまたはaria-labelledbyが所有し、Tooltipを補足として併用する。",
+    "informative": "Iconがvisible textにない情報を伝える場合は、近接textまたはprogrammatic text alternativeで同じ意味を提供する。",
+    "decorative": "Visible labelと意味が重複するIconはaccessibility treeから除外する。",
+    "contrast": "理解またはcontrol stateの識別に必要なIconは隣接色と3:1以上を満たす。"
+  },
+  "icons": [
+    { "id": "search", "canonicalName": "search", "label": "検索", "aliases": ["find", "lookup"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "検索を開始または検索fieldを示す" },
+    { "id": "chevD", "canonicalName": "chevron-down", "label": "下向きシェブロン", "aliases": ["expand", "open"], "style": "stroke", "defaultSize": "xs", "directionality": "neutral", "meaning": "下方向の展開またはmenu open" },
+    { "id": "chevR", "canonicalName": "chevron-right", "label": "右向きシェブロン", "aliases": ["next", "drill-in"], "style": "stroke", "defaultSize": "xs", "directionality": "mirror-in-rtl", "meaning": "次階層または進行方向" },
+    { "id": "sun", "canonicalName": "sun", "label": "ライトテーマ", "aliases": ["light", "day"], "style": "stroke", "defaultSize": "md", "directionality": "neutral", "meaning": "Light theme" },
+    { "id": "moon", "canonicalName": "moon", "label": "ダークテーマ", "aliases": ["dark", "night"], "style": "stroke", "defaultSize": "md", "directionality": "neutral", "meaning": "Dark theme" },
+    { "id": "contrast", "canonicalName": "contrast", "label": "ハイコントラスト", "aliases": ["high-contrast", "theme"], "style": "mixed", "defaultSize": "md", "directionality": "neutral", "meaning": "High Contrast theme" },
+    { "id": "density", "canonicalName": "density", "label": "密度", "aliases": ["spacing", "rows"], "style": "stroke", "defaultSize": "md", "directionality": "neutral", "meaning": "UI density selector" },
+    { "id": "code", "canonicalName": "code", "label": "コード", "aliases": ["source", "developer"], "style": "stroke", "defaultSize": "md", "directionality": "neutral", "meaning": "Source codeまたはdeveloper view" },
+    { "id": "menu", "canonicalName": "menu", "label": "メニュー", "aliases": ["navigation", "hamburger"], "style": "stroke", "defaultSize": "md", "directionality": "neutral", "meaning": "Navigation menuを開く" },
+    { "id": "copy", "canonicalName": "copy", "label": "コピー", "aliases": ["duplicate", "clipboard"], "style": "stroke", "defaultSize": "xs", "directionality": "neutral", "meaning": "内容をclipboardへコピー" },
+    { "id": "check", "canonicalName": "check", "label": "完了", "aliases": ["done", "selected"], "style": "stroke", "defaultSize": "xs", "directionality": "neutral", "meaning": "完了、選択、肯定" },
+    { "id": "x", "canonicalName": "x", "label": "閉じる", "aliases": ["close", "remove"], "style": "stroke", "defaultSize": "xs", "directionality": "neutral", "meaning": "Surfaceを閉じるまたは一時itemを除く。削除には使わない" },
+    { "id": "plus", "canonicalName": "plus", "label": "追加", "aliases": ["add", "create"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "Itemを追加または作成" },
+    { "id": "info", "canonicalName": "info", "label": "情報", "aliases": ["help", "details"], "style": "stroke", "defaultSize": "md", "directionality": "neutral", "meaning": "Informational status" },
+    { "id": "warn", "canonicalName": "warning", "label": "警告", "aliases": ["caution", "attention"], "style": "stroke", "defaultSize": "md", "directionality": "neutral", "meaning": "Warning status" },
+    { "id": "ok", "canonicalName": "success-circle", "label": "成功", "aliases": ["success", "complete"], "style": "stroke", "defaultSize": "md", "directionality": "neutral", "meaning": "Successful result" },
+    { "id": "err", "canonicalName": "error-circle", "label": "エラー", "aliases": ["error", "failure"], "style": "stroke", "defaultSize": "md", "directionality": "neutral", "meaning": "Error or failed result" },
+    { "id": "spark", "canonicalName": "sparkle", "label": "AI", "aliases": ["ai", "generate"], "style": "solid", "defaultSize": "sm", "directionality": "neutral", "meaning": "AI-originated action or content" },
+    { "id": "folder", "canonicalName": "folder", "label": "フォルダ", "aliases": ["directory", "group"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "Directory or content group" },
+    { "id": "file", "canonicalName": "file", "label": "ファイル", "aliases": ["document", "page"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "File or document" },
+    { "id": "send", "canonicalName": "arrow-up", "label": "送信", "aliases": ["submit", "send"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "Prompt or messageを送信" },
+    { "id": "clip", "canonicalName": "paperclip", "label": "添付", "aliases": ["attach", "attachment"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "Fileを添付" },
+    { "id": "bell", "canonicalName": "bell", "label": "通知", "aliases": ["notification", "alerts"], "style": "stroke", "defaultSize": "md", "directionality": "neutral", "meaning": "Notifications" },
+    { "id": "github", "canonicalName": "github", "label": "GitHub", "aliases": ["repository", "source"], "style": "brand", "defaultSize": "md", "directionality": "brand-fixed", "meaning": "GitHub brand destination" },
+    { "id": "arrowR", "canonicalName": "arrow-right", "label": "次へ", "aliases": ["forward", "continue"], "style": "stroke", "defaultSize": "sm", "directionality": "mirror-in-rtl", "meaning": "次のstepまたはdestination" },
+    { "id": "dots", "canonicalName": "ellipsis", "label": "その他", "aliases": ["more", "overflow"], "style": "solid", "defaultSize": "sm", "directionality": "neutral", "meaning": "Overflow actions menu" },
+    { "id": "cal", "canonicalName": "calendar", "label": "日付", "aliases": ["date", "schedule"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "Date or calendar picker" },
+    { "id": "filter", "canonicalName": "filter", "label": "絞り込み", "aliases": ["refine", "funnel"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "Filter conditions" },
+    { "id": "refresh", "canonicalName": "refresh", "label": "更新", "aliases": ["reload", "retry"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "Dataを再取得または再試行" },
+    { "id": "cmd", "canonicalName": "command", "label": "コマンド", "aliases": ["shortcut", "command-key"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "Command menu or command key" },
+    { "id": "zap", "canonicalName": "bolt", "label": "実行", "aliases": ["run", "automation"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "Fast action、run、automation" },
+    { "id": "users", "canonicalName": "users", "label": "メンバー", "aliases": ["team", "people"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "People、member、team" },
+    { "id": "gear", "canonicalName": "settings", "label": "設定", "aliases": ["preferences", "configuration"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "Settings or configuration" }
+  ]
+}

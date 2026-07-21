@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/token-policy.schema.json",
+  "title": "Meridian Token Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "namingVersion",
+    "inputs",
+    "layers",
+    "modifiers",
+    "componentTokenDecision",
+    "bindingRules",
+    "naming",
+    "invariants"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "type": "string" },
+    "namingVersion": { "type": "string" },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "description", "tokenLayer"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "kind": { "enum": ["generator-input", "configuration"] },
+          "description": { "type": "string", "minLength": 1 },
+          "tokenLayer": { "const": false }
+        }
+      }
+    },
+    "layers": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "order", "description", "allowedReferences", "directConsumers"],
+        "properties": {
+          "id": { "enum": ["reference", "semantic", "component"] },
+          "order": { "type": "integer" },
+          "description": { "type": "string", "minLength": 1 },
+          "allowedReferences": { "type": "array", "items": { "type": "string" } },
+          "directConsumers": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "modifiers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "contexts", "default", "owns", "mustNotOwn"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "contexts": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+          "default": { "type": "string" },
+          "owns": { "type": "array", "items": { "type": "string" } },
+          "mustNotOwn": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "componentTokenDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiredWhen", "directSemanticWhen", "prohibitedReasons"],
+      "properties": {
+        "requiredWhen": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/decisionTrigger" }
+        },
+        "directSemanticWhen": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "prohibitedReasons": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/decisionTrigger" }
+        }
+      }
+    },
+    "bindingRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiredFields", "coverage", "scopes", "legacyCssVariables"],
+      "properties": {
+        "requiredFields": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["draftAllowed", "stableRequired"],
+          "properties": {
+            "draftAllowed": { "type": "array", "items": { "type": "string" } },
+            "stableRequired": { "type": "string" }
+          }
+        },
+        "scopes": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/scopeRule" }
+        },
+        "legacyCssVariables": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["allowed", "untilContractSchemaVersion", "migrationTarget"],
+          "properties": {
+            "allowed": { "type": "boolean" },
+            "untilContractSchemaVersion": { "type": "string" },
+            "migrationTarget": { "type": "string" }
+          }
+        }
+      }
+    },
+    "naming": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonicalSeparator", "reference", "semantic", "component", "cssOutput"],
+      "properties": {
+        "canonicalSeparator": { "type": "string" },
+        "reference": { "type": "string" },
+        "semantic": { "type": "string" },
+        "component": { "type": "string" },
+        "cssOutput": { "type": "string" }
+      }
+    },
+    "invariants": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+  },
+  "$defs": {
+    "decisionTrigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "scopeRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description", "requiresTrigger", "requiresAlias"],
+      "properties": {
+        "description": { "type": "string" },
+        "requiresTrigger": { "type": "boolean" },
+        "requiresAlias": { "type": "boolean" },
+        "allowedLiterals": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

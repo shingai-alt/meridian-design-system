@@ -1,11 +1,48 @@
 {
-  "none": { "$value": "0px", "$type": "dimension" },
-  "2xs": { "$value": "2px", "$type": "dimension" },
-  "xs": { "$value": "4px", "$type": "dimension" },
-  "sm": { "$value": "6px", "$type": "dimension" },
-  "md": { "$value": "8px", "$type": "dimension" },
-  "lg": { "$value": "10px", "$type": "dimension" },
-  "xl": { "$value": "12px", "$type": "dimension" },
-  "2xl": { "$value": "16px", "$type": "dimension" },
-  "full": { "$value": "999px", "$type": "dimension" }
+  "$type": "dimension",
+  "none": {
+    "$description": "直線edgeまたは隣接面の連結。",
+    "$value": { "value": 0, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "table cell、divider、connected edge" } }
+  },
+  "2xs": {
+    "$description": "code chipや極小indicator。",
+    "$value": { "value": 2, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "code、focus clipping補助" } }
+  },
+  "xs": {
+    "$description": "小型controlとtable内highlight。",
+    "$value": { "value": 4, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "xs control、table row state" } }
+  },
+  "sm": {
+    "$description": "標準controlのshape。",
+    "$value": { "value": 6, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "button、input、navigation item" } }
+  },
+  "md": {
+    "$description": "静的なcontainerとcardの上限。",
+    "$value": { "value": 8, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "card、panel、tile、framed tool" } }
+  },
+  "lg": {
+    "$description": "小さなfloating surface。",
+    "$value": { "value": 10, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "menu、popover、tooltip surface" } }
+  },
+  "xl": {
+    "$description": "Dialogと大きなinput surface。",
+    "$value": { "value": 12, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "dialog、command menu、prompt input" } }
+  },
+  "2xl": {
+    "$description": "独立したhero mediaまたはlarge showcase。",
+    "$value": { "value": 16, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "hero mediaのみ" } }
+  },
+  "full": {
+    "$description": "円形またはcontent長に依存するpill。",
+    "$value": { "value": 999, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "avatar、status dot、badge pill" } }
+  }
 }

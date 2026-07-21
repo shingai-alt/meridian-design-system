@@ -107,8 +107,11 @@ function buildPalettes(seed){
   const primary=makeScale(s.h, clamp(s.c,0.09,0.32));
   const secondary=makeScale(s.h, clamp(s.c*.32,0.02,0.10));
   const accent=makeScale((s.h+42)%360, clamp(s.c*.95,0.10,0.28));
-  const neutral=makeNeutral(s.h, clamp(s.c*.045,0.006,0.018));
-  const neutralVariant=makeNeutral(s.h, clamp(s.c*.09,0.014,0.036));
+  /* Product surfaces must remain calm and predictable when the brand seed changes.
+   * Keep the default neutral family seed-independent; tonal brand expression belongs
+   * to primary-subtle and the explicitly tinted neutral-variant family. */
+  const neutral=makeNeutral(260,0.004);
+  const neutralVariant=makeNeutral(s.h,clamp(s.c*.06,0.012,0.024));
   /* ステータス色はユーザー入力に依存しない固定値。HSL色相をそのままOKLCH色相として
    * 流用すると見た目の色味がずれる(例: HSL 4°の赤 ≠ OKLCH 4°の赤)ため、
    * OKLCH上で見た目通りの色相(green≈150 / amber≈75 / red≈27 / blue≈255)に定義し直した。 */
@@ -125,68 +128,61 @@ function roleSteps(scale,bg,preferred,target,dir){
   const at=off=>scale[STEPS[clamp(i+off*dir,0,STEPS.length-1)]];
   return{base:at(0),hover:at(1),active:at(2)};
 }
-function buildSemantics(P,theme){
+function buildSemantics(P,theme,contrastMode='standard'){
+  if(!['light','dark'].includes(theme))throw new Error(`Unknown theme: ${theme}`);
+  if(!['standard','high'].includes(contrastMode))throw new Error(`Unknown contrast mode: ${contrastMode}`);
   const n=P.neutral, ac=P.accent;
   const pr=P.primary, sc=P.secondary;
+  const high=contrastMode==='high';
   let T;
   if(theme==='light'){
-    const bg=n[25];
-    const prR=roleSteps(pr,bg,600,4.5,1), scR=roleSteps(sc,bg,600,4.5,1), acR=roleSteps(ac,bg,600,4.5,1);
+    const bg=high?'#ffffff':n[25];
+    const target=high?7:4.5;
+    const preferred=high?700:600;
+    const prR=roleSteps(pr,bg,preferred,target,1), scR=roleSteps(sc,bg,preferred,target,1), acR=roleSteps(ac,bg,preferred,target,1);
     T={
-    'background':bg,'background-subtle':n[50],'surface':n[0],'surface-muted':n[50],
-    'surface-raised':n[0],'surface-overlay':n[0],'surface-inverse':n[900],
-    'foreground':n[900],'foreground-muted':n[600],'foreground-subtle':n[500],'foreground-disabled':n[400],
-    'border':n[200],'border-muted':mix(n[100],n[200],.45),'border-strong':n[300],
+    'background':bg,'background-subtle':n[50],'surface':n[0],'surface-muted':n[50],'surface-sunken':n[100],
+    'surface-raised':n[0],'surface-overlay':n[0],'surface-inverse':high?'#000000':n[900],
+    'control-background':high?n[0]:n[50],'control-background-hover':high?n[50]:n[100],'control-background-active':high?n[100]:n[200],
+    'control-border':high?'#0a0a0f':n[500],'control-border-hover':high?'#0a0a0f':n[700],
+    'foreground':high?'#0a0a0f':n[900],'foreground-muted':high?n[800]:n[600],'foreground-subtle':high?n[700]:n[500],'foreground-disabled':high?n[500]:n[400],
+    'border':high?n[500]:n[200],'border-muted':high?n[300]:mix(n[100],n[200],.45),'border-strong':high?n[800]:n[300],
     'primary':prR.base,'primary-hover':prR.hover,'primary-active':prR.active,'primary-subtle':pr[50],'primary-muted':pr[100],'primary-foreground':onColor(prR.base),
     'secondary':scR.base,'secondary-hover':scR.hover,'secondary-active':scR.active,'secondary-on-solid':onColor(scR.base),
     'accent':acR.base,'accent-hover':acR.hover,'accent-active':acR.active,'accent-on-solid':onColor(acR.base),
-    'success':P.success[600],'success-subtle':P.success[50],'success-foreground':P.success[700],'success-on-solid':onColor(P.success[600]),
-    'warning':P.warning[500],'warning-subtle':P.warning[50],'warning-foreground':P.warning[700],'warning-on-solid':onColor(P.warning[500]),
-    'danger':P.danger[600],'danger-subtle':P.danger[50],'danger-foreground':P.danger[700],'danger-on-solid':onColor(P.danger[600]),
-    'info':P.info[600],'info-subtle':P.info[50],'info-foreground':P.info[700],'info-on-solid':onColor(P.info[600]),
-    'focus-ring':pr[500],'selection':pr[100],'highlight':P.warning[100],'disabled':n[300],
-    'overlay':alpha(n[950],.5),'scrim':alpha(n[950],.4)
-  }}
-  else if(theme==='dark'){
-    /* サーフェス色はneutralの色相・チャコマを保ったまま明度だけ変える。
-     * n[950]等のOKLCH値を取り出して低L側で再合成する。 */
-    const n950=hexToOklch(n[950]), n900=hexToOklch(n[900]), n800=hexToOklch(n[800]), n700=hexToOklch(n[700]);
-    const bg=oklchToHex(9,n950.c,n950.h);
-    const prR=roleSteps(pr,bg,400,4.5,-1), scR=roleSteps(sc,bg,400,4.5,-1), acR=roleSteps(ac,bg,400,4.5,-1);
-    T={
-    'background':bg,'background-subtle':oklchToHex(11.5,n950.c,n950.h),
-    'surface':oklchToHex(13,n900.c,n900.h),'surface-muted':oklchToHex(16.5,n900.c,n900.h),
-    'surface-raised':oklchToHex(15.5,n900.c,n900.h),'surface-overlay':oklchToHex(17,n900.c,n900.h),'surface-inverse':n[50],
-    'foreground':n[50],'foreground-muted':n[400],'foreground-subtle':n[500],'foreground-disabled':n[600],
-    'border':oklchToHex(22,n800.c,n800.h),'border-muted':oklchToHex(18,n800.c,n800.h),'border-strong':oklchToHex(30,n700.c,n700.h),
-    'primary':prR.base,'primary-hover':prR.hover,'primary-active':prR.active,'primary-subtle':mix(pr[900],'#000000',.35),'primary-muted':pr[900],'primary-foreground':onColor(prR.base),
-    'secondary':scR.base,'secondary-hover':scR.hover,'secondary-active':scR.active,'secondary-on-solid':onColor(scR.base),
-    'accent':acR.base,'accent-hover':acR.hover,'accent-active':acR.active,'accent-on-solid':onColor(acR.base),
-    'success':P.success[500],'success-subtle':mix(P.success[900],'#000',.45),'success-foreground':P.success[400],'success-on-solid':onColor(P.success[500]),
-    'warning':P.warning[500],'warning-subtle':mix(P.warning[900],'#000',.45),'warning-foreground':P.warning[400],'warning-on-solid':onColor(P.warning[500]),
-    'danger':P.danger[500],'danger-subtle':mix(P.danger[900],'#000',.45),'danger-foreground':P.danger[400],'danger-on-solid':onColor(P.danger[500]),
-    'info':P.info[500],'info-subtle':mix(P.info[900],'#000',.45),'info-foreground':P.info[400],'info-on-solid':onColor(P.info[500]),
-    'focus-ring':prR.base,'selection':alpha(pr[500],.32),'highlight':alpha(P.warning[500],.25),'disabled':n[700],
-    'overlay':alpha('#000000',.6),'scrim':alpha('#000000',.55)
+    'success':P.success[high?700:600],'success-subtle':P.success[50],'success-foreground':P.success[high?800:700],'success-on-solid':onColor(P.success[high?700:600]),
+    'warning':P.warning[high?600:500],'warning-subtle':P.warning[50],'warning-foreground':P.warning[high?800:700],'warning-on-solid':onColor(P.warning[high?600:500]),
+    'danger':P.danger[high?700:600],'danger-subtle':P.danger[50],'danger-foreground':P.danger[high?800:700],'danger-on-solid':onColor(P.danger[high?700:600]),
+    'info':P.info[high?700:600],'info-subtle':P.info[50],'info-foreground':P.info[high?800:700],'info-on-solid':onColor(P.info[high?700:600]),
+    'focus-ring':high?'#0a0a0f':pr[500],'selection':pr[100],'highlight':P.warning[100],'disabled':n[high?400:300],
+    'overlay':alpha(n[950],high?.6:.5),'scrim':alpha(n[950],high?.5:.4)
   }}
   else {
-    /* high contrast: 通常のAA(4.5:1)より厳しいAAA相当(7:1)を目標にステップを選ぶ */
-    const bg='#ffffff';
-    const prR=roleSteps(pr,bg,700,7,1), scR=roleSteps(sc,bg,700,7,1), acR=roleSteps(ac,bg,700,7,1);
+    const n950=hexToOklch(n[950]);
+    const darkSurface=(standard,enhanced)=>oklchToHex(high?enhanced:standard,n950.c,n950.h);
+    const bg=high?'#000000':darkSurface(18,0);
+    const target=high?7:4.5;
+    const preferred=high?300:400;
+    const prR=roleSteps(pr,bg,preferred,target,-1), scR=roleSteps(sc,bg,preferred,target,-1), acR=roleSteps(ac,bg,preferred,target,-1);
+    const statusStep=high?400:500;
+    const statusFgStep=high?200:400;
     T={
-    'background':bg,'background-subtle':n[50],'surface':'#ffffff','surface-muted':n[50],
-    'surface-raised':'#ffffff','surface-overlay':'#ffffff','surface-inverse':'#000000',
-    'foreground':'#0a0a0f','foreground-muted':n[800],'foreground-subtle':n[700],'foreground-disabled':n[500],
-    'border':n[500],'border-muted':n[300],'border-strong':n[800],
-    'primary':prR.base,'primary-hover':prR.hover,'primary-active':prR.active,'primary-subtle':pr[50],'primary-muted':pr[100],'primary-foreground':onColor(prR.base),
+    'background':bg,'background-subtle':darkSurface(21,10),
+    'surface':darkSurface(24,16),'surface-muted':darkSurface(27,22),'surface-sunken':darkSurface(20,8),
+    'surface-raised':darkSurface(30,28),'surface-overlay':darkSurface(34,34),'surface-inverse':high?'#ffffff':n[50],
+    'control-background':darkSurface(28,18),'control-background-hover':darkSurface(34,25),'control-background-active':darkSurface(38,32),
+    'control-border':high?'#ffffff':darkSurface(56,70),'control-border-hover':high?'#ffffff':darkSurface(64,82),
+    'foreground':high?'#ffffff':n[50],'foreground-muted':high?n[200]:n[400],'foreground-subtle':high?n[300]:n[500],'foreground-disabled':high?n[500]:n[600],
+    'border':high?n[400]:darkSurface(42,58),'border-muted':high?n[600]:darkSurface(34,42),'border-strong':high?n[100]:darkSurface(54,72),
+    'primary':prR.base,'primary-hover':prR.hover,'primary-active':prR.active,'primary-subtle':mix(pr[900],'#000000',high?.2:.35),'primary-muted':high?pr[800]:pr[900],'primary-foreground':onColor(prR.base),
     'secondary':scR.base,'secondary-hover':scR.hover,'secondary-active':scR.active,'secondary-on-solid':onColor(scR.base),
     'accent':acR.base,'accent-hover':acR.hover,'accent-active':acR.active,'accent-on-solid':onColor(acR.base),
-    'success':P.success[700],'success-subtle':P.success[50],'success-foreground':P.success[800],'success-on-solid':onColor(P.success[700]),
-    'warning':P.warning[600],'warning-subtle':P.warning[50],'warning-foreground':P.warning[800],'warning-on-solid':onColor(P.warning[600]),
-    'danger':P.danger[700],'danger-subtle':P.danger[50],'danger-foreground':P.danger[800],'danger-on-solid':onColor(P.danger[700]),
-    'info':P.info[700],'info-subtle':P.info[50],'info-foreground':P.info[800],'info-on-solid':onColor(P.info[700]),
-    'focus-ring':'#0a0a0f','selection':pr[100],'highlight':P.warning[100],'disabled':n[400],
-    'overlay':alpha('#000000',.6),'scrim':alpha('#000000',.5)
+    'success':P.success[statusStep],'success-subtle':mix(P.success[900],'#000',high?.6:.45),'success-foreground':P.success[statusFgStep],'success-on-solid':onColor(P.success[statusStep]),
+    'warning':P.warning[statusStep],'warning-subtle':mix(P.warning[900],'#000',high?.6:.45),'warning-foreground':P.warning[statusFgStep],'warning-on-solid':onColor(P.warning[statusStep]),
+    'danger':P.danger[statusStep],'danger-subtle':mix(P.danger[900],'#000',high?.6:.45),'danger-foreground':P.danger[statusFgStep],'danger-on-solid':onColor(P.danger[statusStep]),
+    'info':P.info[statusStep],'info-subtle':mix(P.info[900],'#000',high?.6:.45),'info-foreground':P.info[statusFgStep],'info-on-solid':onColor(P.info[statusStep]),
+    'focus-ring':prR.base,'selection':alpha(pr[high?400:500],high?.45:.32),'highlight':alpha(P.warning[high?400:500],high?.35:.25),'disabled':n[700],
+    'overlay':alpha('#000000',high?.7:.6),'scrim':alpha('#000000',high?.65:.55)
   }}
   return T;
 }

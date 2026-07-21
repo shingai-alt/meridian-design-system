@@ -1,0 +1,60 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "overview.getting-started",
+  "cycleId": "2026-07-13-overview-getting-started-bootstrap",
+  "supersedesCycleId": null,
+  "reviewType": "bootstrap",
+  "status": "complete",
+  "startedAt": "2026-07-13",
+  "completedAt": "2026-07-13",
+  "reviewedSources": ["design/research-policy.json", "README.md", "packages/react/package.json", "packages/react/src/index.ts", "docs/components/spec-workflow.md", "js/pages-overview.js"],
+  "research": {
+    "status": "not-required",
+    "scope": {
+      "itemId": "overview.getting-started",
+      "summary": "Getting Startedの導入手順、repository構成、現在提供している成果物の説明を確認する。"
+    },
+    "triggers": [],
+    "questions": [],
+    "evidence": [],
+    "synthesis": "",
+    "decisionImpact": "",
+    "notRequiredReason": "現在のrepositoryで実行可能な導入手順とReact packageの実装状況を内部sourceから確認するcycleであり、外部APIや推奨toolchainを新規選定していない。"
+  },
+  "decisions": [
+    {
+      "id": "current-state-first",
+      "summary": "Getting Startedはinstall guideではなく、現在利用できる入口を示す。",
+      "rationale": "React packageとFigma libraryは未提供であり、将来APIを最初の手順にすると誤解を生むため。"
+    },
+    {
+      "id": "audience-paths",
+      "summary": "Designer、Engineer、Contributor / AI agentごとに開始点を分ける。",
+      "rationale": "HTML docs、token、spec workflowの利用目的が異なるため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "docs-stale",
+      "description": "未提供のReact packageとFigma libraryが利用可能に見える説明だった。",
+      "action": "現在利用できるものと準備中のものを分離した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    { "path": "js/pages-overview.js", "summary": "Getting Startedを現在状態に基づくaudience別導線へ更新。" }
+  ],
+  "validations": [
+    { "command": "node --check js/pages-overview.js", "status": "passed", "notes": "JavaScript syntax verified." },
+    { "command": "npm test", "status": "passed", "notes": "Existing unit tests passed." },
+    { "command": "visual review", "status": "not-run", "notes": "file URLのbrowser automation制限により自動再読み込みは未実施。" }
+  ],
+  "openQuestions": [],
+  "acknowledgedImpacts": [
+    "2026-07-13-overview-introduction-bootstrap",
+    "2026-07-13-overview-principles-bootstrap"
+  ],
+  "impactedItems": ["overview.architecture", "overview.for-designers", "overview.for-engineers"],
+  "nextRecommendedItems": ["overview.architecture"]
+}

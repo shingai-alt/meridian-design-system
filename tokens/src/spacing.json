@@ -1,18 +1,83 @@
 {
-  "0": { "$value": "0px", "$type": "dimension" },
-  "05": { "$value": "2px", "$type": "dimension" },
-  "1": { "$value": "4px", "$type": "dimension" },
-  "15": { "$value": "6px", "$type": "dimension" },
-  "2": { "$value": "8px", "$type": "dimension" },
-  "25": { "$value": "10px", "$type": "dimension" },
-  "3": { "$value": "12px", "$type": "dimension" },
-  "4": { "$value": "16px", "$type": "dimension" },
-  "5": { "$value": "20px", "$type": "dimension" },
-  "6": { "$value": "24px", "$type": "dimension" },
-  "8": { "$value": "32px", "$type": "dimension" },
-  "10": { "$value": "40px", "$type": "dimension" },
-  "12": { "$value": "48px", "$type": "dimension" },
-  "16": { "$value": "64px", "$type": "dimension" },
-  "20": { "$value": "80px", "$type": "dimension" },
-  "24": { "$value": "96px", "$type": "dimension" }
+  "$type": "dimension",
+  "0": {
+    "$description": "余白を明示的に取り除く。",
+    "$value": { "value": 0, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "resetとedge alignment" } }
+  },
+  "05": {
+    "$description": "borderやiconの光学調整に限るhalf step。",
+    "$value": { "value": 2, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "optical adjustmentのみ" } }
+  },
+  "1": {
+    "$description": "密接した要素の最小gap。",
+    "$value": { "value": 4, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "icon内部・密接したmetadata" } }
+  },
+  "15": {
+    "$description": "compact UIの補助step。",
+    "$value": { "value": 6, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "compact controlの内部gap" } }
+  },
+  "2": {
+    "$description": "関連するcontrolやinline要素の標準gap。",
+    "$value": { "value": 8, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "inline group・iconとlabel" } }
+  },
+  "25": {
+    "$description": "compact componentのpadding補助step。",
+    "$value": { "value": 10, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "compact control padding" } }
+  },
+  "3": {
+    "$description": "小groupとcompact containerの標準gap。",
+    "$value": { "value": 12, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "small group・compact card" } }
+  },
+  "4": {
+    "$description": "component内paddingとform field間の標準値。",
+    "$value": { "value": 16, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "component padding・form gap" } }
+  },
+  "5": {
+    "$description": "comfortable componentのpadding。",
+    "$value": { "value": 20, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "comfortable container" } }
+  },
+  "6": {
+    "$description": "page gutterと大きなcomponent group。",
+    "$value": { "value": 24, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "page padding・large group" } }
+  },
+  "8": {
+    "$description": "section内の大きな区切り。",
+    "$value": { "value": 32, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "section gap" } }
+  },
+  "10": {
+    "$description": "独立したcontent block間の余白。",
+    "$value": { "value": 40, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "content block separation" } }
+  },
+  "12": {
+    "$description": "page section間の余白。",
+    "$value": { "value": 48, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "page section" } }
+  },
+  "16": {
+    "$description": "大きなpage region間の余白。",
+    "$value": { "value": 64, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "major region" } }
+  },
+  "20": {
+    "$description": "広いviewportのmajor region間隔。",
+    "$value": { "value": 80, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "wide layout region" } }
+  },
+  "24": {
+    "$description": "独立したheroまたはlarge empty region。",
+    "$value": { "value": 96, "unit": "px" },
+    "$extensions": { "com.meridian": { "usage": "large regionのみ" } }
+  }
 }
