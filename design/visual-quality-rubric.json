@@ -1,0 +1,18 @@
+{
+  "$schema": "../schemas/visual-quality-rubric.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "meridian-product-ui-v1",
+  "scale": { "minimum": 1, "maximum": 5 },
+  "criteria": [
+    { "id": "task-clarity", "label": "Task clarity", "weight": 16, "question": "最初の5秒で目的と次の操作が分かるか。", "anchors": { "1": "目的または次の操作を特定できない。", "3": "理解できるが補助情報との競合がある。", "5": "目的、対象、次の操作が即座に分かる。" } },
+    { "id": "information-hierarchy", "label": "Information hierarchy", "weight": 16, "question": "主要情報と補助情報の視覚的強度が意図に合うか。", "anchors": { "1": "ほぼすべてが同じ強度に見える。", "3": "主要領域は分かるが競合要素が残る。", "5": "タスク、文脈、補足の順序が明確である。" } },
+    { "id": "visual-grouping", "label": "Visual grouping", "weight": 12, "question": "関係する情報が近接・整列・包含で理解できるか。", "anchors": { "1": "関係性をラベルから推測する必要がある。", "3": "主要groupは分かるが境界が過剰または曖昧。", "5": "装飾に依存せず関係性が読み取れる。" } },
+    { "id": "density-rhythm", "label": "Density and rhythm", "weight": 10, "question": "情報量、余白、反復間隔がタスクに適しているか。", "anchors": { "1": "過密または疎で走査しにくい。", "3": "利用可能だが局所的な詰まりや間延びがある。", "5": "反復と区切りに一貫したリズムがある。" } },
+    { "id": "layout-balance", "label": "Layout balance", "weight": 10, "question": "画面幅と空間配分が内容の重要度に合うか。", "anchors": { "1": "空白または要素が一方へ偏る。", "3": "成立するが幅の使い方に改善余地がある。", "5": "主要作業と文脈情報が自然に均衡する。" } },
+    { "id": "action-prominence", "label": "Action prominence", "weight": 14, "question": "Primary actionが見つかり、競合や誤解がないか。", "anchors": { "1": "次の操作が不明または複数が競合する。", "3": "Primaryは分かるが補助操作との差が弱い。", "5": "Primaryが明確で、補助操作は適切に後退する。" } },
+    { "id": "content-clarity", "label": "Content clarity", "weight": 8, "question": "文言が判断と修正を具体的に助けるか。", "anchors": { "1": "抽象的で行動へ結び付かない。", "3": "意味は通るが冗長または不足がある。", "5": "短く具体的で結果と次の行動が分かる。" } },
+    { "id": "responsive-quality", "label": "Responsive quality", "weight": 8, "question": "狭い幅でも優先順位とreading orderを保つか。", "anchors": { "1": "主要操作または情報関係が崩れる。", "3": "利用可能だがDesktopの縮小に見える。", "5": "同じ意味を保ちながら幅に適した構成へ変わる。" } },
+    { "id": "meridian-identity", "label": "Meridian identity", "weight": 6, "question": "装飾過多でなく、Meridian固有の静かな精度を感じるか。", "anchors": { "1": "汎用的または不整合な印象。", "3": "Tokenは一貫するが固有性が弱い。", "5": "整列、比例、抑制された強調に一貫した個性がある。" } }
+  ],
+  "decisionPolicy": { "minimumWeightedScore": 76, "maximumMajorFindings": 0, "humanComparisonRequired": true }
+}

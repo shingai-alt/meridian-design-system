@@ -1,0 +1,163 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "team-invitation.component-composition",
+  "conceptId": "phase2_team_invitation",
+  "translationPackDigest": "sha256-0183e37d772d938042a98063426412505dce847213b3648225dab190d1ecbd8b",
+  "patterns": ["interactive-row-group"],
+  "nodes": [
+    {
+      "component": "table",
+      "instanceId": "invite-row-group",
+      "props": { "loading": false, "selectable": false },
+      "allowedVariants": ["default"],
+      "allowedStates": ["default", "loading", "empty"],
+      "contentRef": "prototype.invitation-rows",
+      "decisionRef": "decision.invitation-row-group"
+    },
+    {
+      "component": "form-field",
+      "instanceId": "invite-email-field",
+      "repeat": "scenario.rows",
+      "props": {},
+      "allowedVariants": ["default"],
+      "allowedStates": ["default", "error"],
+      "contentRef": "row.email",
+      "decisionRef": "decision.form-field"
+    },
+    {
+      "component": "text-field",
+      "instanceId": "invite-email-input",
+      "repeat": "scenario.rows",
+      "props": { "size": "md", "disabled": false },
+      "allowedVariants": ["default"],
+      "allowedStates": ["default", "error", "disabled", "readonly"],
+      "contentRef": "row.email",
+      "decisionRef": "decision.email-field"
+    },
+    {
+      "component": "form-field",
+      "instanceId": "invite-role-field",
+      "repeat": "scenario.rows",
+      "props": {},
+      "allowedVariants": ["default"],
+      "allowedStates": ["default", "error"],
+      "contentRef": "row.role",
+      "decisionRef": "decision.form-field"
+    },
+    {
+      "component": "select",
+      "instanceId": "invite-role-select",
+      "repeat": "scenario.rows",
+      "props": { "size": "md", "disabled": false },
+      "allowedVariants": ["default"],
+      "allowedStates": ["default", "error", "disabled"],
+      "contentRef": "row.role",
+      "decisionRef": "decision.role-select"
+    },
+    {
+      "component": "validation-message",
+      "instanceId": "invite-validation-message",
+      "repeat": "scenario.rows",
+      "props": { "variant": "error" },
+      "allowedVariants": ["error", "warning", "success"],
+      "allowedStates": ["default"],
+      "contentRef": "row.validation",
+      "decisionRef": "decision.validation-message"
+    },
+    {
+      "component": "status-indicator",
+      "instanceId": "invite-row-status",
+      "repeat": "scenario.rows",
+      "props": { "variant": "idle" },
+      "allowedVariants": ["success", "running", "warning", "error", "idle"],
+      "allowedStates": ["default"],
+      "contentRef": "row.status",
+      "decisionRef": "decision.row-status"
+    },
+    {
+      "component": "alert",
+      "instanceId": "invite-page-alert",
+      "props": { "variant": "warning" },
+      "allowedVariants": ["info", "success", "warning", "danger"],
+      "allowedStates": ["default"],
+      "contentRef": "prototype.state-message",
+      "decisionRef": "decision.page-alert"
+    },
+    {
+      "component": "checkbox",
+      "instanceId": "owner-confirmation",
+      "props": { "checked": false, "disabled": false, "label": "付与される権限と影響を理解しました" },
+      "allowedVariants": ["default"],
+      "allowedStates": ["default", "checked", "disabled"],
+      "contentRef": "prototype.owner-confirmation",
+      "decisionRef": "decision.owner-confirmation"
+    },
+    {
+      "component": "button",
+      "instanceId": "invite-action",
+      "repeat": "prototype.actions",
+      "props": { "variant": "primary", "size": "md", "loading": false, "disabled": false, "fullWidth": false },
+      "allowedVariants": ["primary", "secondary", "ghost"],
+      "allowedStates": ["default", "disabled", "loading"],
+      "contentRef": "prototype.action-label",
+      "decisionRef": "decision.invite-action"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision.form-field",
+      "component": "form-field",
+      "reason": "各行のlabel、control、validation messageを明示的なID relationで束ねるため。",
+      "sourceRefs": ["component.form-field.accessibility", "phase1_team_invitation"]
+    },
+    {
+      "id": "decision.invitation-row-group",
+      "component": "table",
+      "reason": "複数宛先のEmail、Role、Statusを列方向に比較しながら編集するため。",
+      "sourceRefs": ["component.table.intent", "phase1_team_invitation"]
+    },
+    {
+      "id": "decision.email-field",
+      "component": "text-field",
+      "reason": "短いEmail文字列の入力と行単位error associationが必要なため。",
+      "sourceRefs": ["component.text-field.intent", "phase1_team_invitation"]
+    },
+    {
+      "id": "decision.role-select",
+      "component": "select",
+      "reason": "Owner、Admin、Member、Viewerの有限な単一選択であるため。",
+      "sourceRefs": ["component.select.intent", "phase1_team_invitation"]
+    },
+    {
+      "id": "decision.validation-message",
+      "component": "validation-message",
+      "reason": "入力行の問題と修正方法をcontrolへ関連付けて示すため。",
+      "sourceRefs": ["component.validation-message.accessibility", "phase1_team_invitation"]
+    },
+    {
+      "id": "decision.row-status",
+      "component": "status-indicator",
+      "reason": "Pending、送信済み、失敗を反復行内で短く非色依存に示すため。",
+      "sourceRefs": ["component.status-indicator.intent", "phase1_team_invitation"]
+    },
+    {
+      "id": "decision.page-alert",
+      "component": "alert",
+      "reason": "Seat不足、Owner権限、送信結果を説明と回復行動を含めて示すため。",
+      "sourceRefs": ["component.alert.intent", "phase1_team_invitation"]
+    },
+    {
+      "id": "decision.owner-confirmation",
+      "component": "checkbox",
+      "reason": "Ownerを含む場合だけ明示的な二値確認を要求するため。",
+      "sourceRefs": ["component.checkbox.intent", "phase1_team_invitation"]
+    },
+    {
+      "id": "decision.invite-action",
+      "component": "button",
+      "reason": "招待送信は画面の最終確定actionであり、同じ意思決定文脈のprimaryは1件だけにするため。",
+      "sourceRefs": ["component.button.selection.primary", "phase1_team_invitation"]
+    }
+  ],
+  "exceptions": []
+}

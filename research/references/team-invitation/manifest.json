@@ -1,0 +1,151 @@
+{
+  "$schema": "../../../schemas/reference-retrieval.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "team-invitation-reference-set",
+  "conceptId": "phase2_team_invitation",
+  "sourcePackageId": "phase1_team_invitation",
+  "taskQueries": [
+    "invite multiple workspace members with roles",
+    "manage pending invitations and seat limits",
+    "review high privilege invitations before sending",
+    "recover from partial batch invitation failure"
+  ],
+  "references": [
+    {
+      "id": "github-invite-docs",
+      "analogyType": "direct",
+      "product": "GitHub Organizations",
+      "task": "組織へユーザーを招待しRoleとSeat条件を扱う",
+      "state": "招待前からPending管理まで",
+      "sourceType": "official-documentation",
+      "url": "https://docs.github.com/en/organizations/managing-membership-in-your-organization/inviting-users-to-join-your-organization",
+      "accessedAt": "2026-07-14",
+      "capture": {
+        "path": "research/references/team-invitation/screenshots/github-invite-docs.desktop.png",
+        "digest": "sha256-48105985fbbd577e9f41a0ac6bb5e7e292acae22a6109a3db4afbeadaf896ce4",
+        "width": 1280,
+        "height": 720,
+        "viewport": "desktop",
+        "locale": "en-US",
+        "containsPersonalData": false
+      },
+      "observations": [
+        "招待の実行主体、Role、license条件、7日間の有効期限が同じタスク文脈で説明される。",
+        "取得画像は公式ドキュメントの証拠であり、認証後のプロダクトUIそのものではない。"
+      ],
+      "usage": "behavior-evidence"
+    },
+    {
+      "id": "slack-invite-docs",
+      "analogyType": "direct",
+      "product": "Slack",
+      "task": "Workspaceへメンバーを招待する",
+      "state": "招待作成とPending invitation",
+      "sourceType": "official-documentation",
+      "url": "https://slack.com/help/articles/201330256-Invite-new-members-to-your-workspace",
+      "accessedAt": "2026-07-14",
+      "capture": {
+        "path": "research/references/team-invitation/screenshots/slack-invite-docs.desktop.png",
+        "digest": "sha256-61a8411f6f8eb1f5775742cdefd71b57a8789869fd3354a814d7f88ba71588f8",
+        "width": 1280,
+        "height": 720,
+        "viewport": "desktop",
+        "locale": "en-US",
+        "containsPersonalData": false
+      },
+      "observations": [
+        "招待操作と、招待可能な権限・方法の条件が近接して説明される。",
+        "Pendingは参加済みメンバーとは別の管理状態として扱われる。"
+      ],
+      "usage": "behavior-evidence"
+    },
+    {
+      "id": "notion-member-docs",
+      "analogyType": "direct",
+      "product": "Notion",
+      "task": "Memberを追加しWorkspace roleを設定する",
+      "state": "Email入力、Role選択、Pending管理",
+      "sourceType": "official-documentation",
+      "url": "https://www.notion.com/ja/help/add-members-admins-guests-and-groups",
+      "accessedAt": "2026-07-14",
+      "capture": {
+        "path": "research/references/team-invitation/screenshots/notion-members-docs.desktop.png",
+        "digest": "sha256-8cf63cf4f32c78c2d0212fc84ba7b187f34b0ada4f180e98f903b5c818a47d17",
+        "width": 1280,
+        "height": 720,
+        "viewport": "desktop",
+        "locale": "ja-JP",
+        "containsPersonalData": false
+      },
+      "observations": [
+        "宛先入力とWorkspace role選択を一つの招待判断として扱う。",
+        "Ownerなど影響の大きいRoleは名称だけでなく権限の意味を説明する必要がある。"
+      ],
+      "usage": "behavior-evidence"
+    },
+    {
+      "id": "atlassian-user-invite",
+      "analogyType": "direct",
+      "product": "Atlassian Administration",
+      "task": "Organizationへユーザーを招待しProduct accessを付与する",
+      "state": "招待前のaccess判断",
+      "sourceType": "official-documentation",
+      "url": "https://support.atlassian.com/user-management/docs/invite-a-user/",
+      "accessedAt": "2026-07-14",
+      "capture": null,
+      "observations": [
+        "ユーザー追加とaccess付与は、送信前に結果を理解すべき一続きの判断である。",
+        "管理者向けの招待では宛先数より権限影響の可視化が重要になる。"
+      ],
+      "usage": "behavior-evidence"
+    },
+    {
+      "id": "govuk-task-patterns",
+      "analogyType": "adjacent",
+      "product": "GOV.UK Design System",
+      "task": "複雑な入力タスクを質問単位に構造化する",
+      "state": "入力、検証、確認",
+      "sourceType": "official-design-system",
+      "url": "https://design-system.service.gov.uk/patterns/question-pages/",
+      "accessedAt": "2026-07-14",
+      "capture": null,
+      "observations": [
+        "必要な文脈は判断点に置き、主要タスクと無関係な情報を同じ視覚強度で競合させない。",
+        "Errorはユーザーの入力を保持したまま、修正対象と回復方法を具体的に示す。"
+      ],
+      "usage": "both"
+    },
+    {
+      "id": "wcag-error-identification",
+      "analogyType": "adjacent",
+      "product": "W3C WCAG 2.2",
+      "task": "フォームエラーを識別し関連付ける",
+      "state": "Validation errorと回復",
+      "sourceType": "official-standard",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/error-identification.html",
+      "accessedAt": "2026-07-14",
+      "capture": null,
+      "observations": [
+        "エラーの存在だけでなく、どの入力が誤っているかをテキストで識別する。",
+        "Batch処理では行単位の状態と全体状態を両方認識できる必要がある。"
+      ],
+      "usage": "behavior-evidence"
+    },
+    {
+      "id": "stitch-diverge-converge",
+      "analogyType": "distant",
+      "product": "Google Stitch",
+      "task": "意図と参照を使って複数UI案を発散し比較する",
+      "state": "生成前のDesign direction探索",
+      "sourceType": "official-product",
+      "url": "https://stitch.withgoogle.com/",
+      "accessedAt": "2026-07-14",
+      "capture": null,
+      "observations": [
+        "見た目のバリエーションではなく、目的、感情、参照例を入力すると方向性の差を作りやすい。",
+        "複数案は同じ構造の装飾違いではなく、異なるタスクモデルを比較できる形にする。"
+      ],
+      "usage": "visual-inspiration"
+    }
+  ]
+}

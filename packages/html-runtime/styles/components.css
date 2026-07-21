@@ -1,0 +1,56 @@
+.mrd-button,
+.mrd-text-field,
+.mrd-select {
+  min-height: var(--ctl-md);
+}
+
+.mrd-button,
+.mrd-checkbox input {
+  min-width: var(--ctl-xs);
+  min-height: var(--ctl-xs);
+}
+
+.mrd-form-field {
+  display: grid;
+  gap: var(--sp-1);
+}
+
+.mrd-form-field__label {
+  font-size: var(--text-label);
+}
+
+.mrd-validation-message {
+  display: flex;
+  gap: var(--sp-1);
+  align-items: start;
+}
+
+.mrd-status-indicator {
+  display: inline-flex;
+  gap: var(--sp-1);
+  align-items: center;
+}
+
+.mrd-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mrd-table th,
+.mrd-table td {
+  padding: var(--cell-y) var(--sp-2);
+  border-top: 1px solid var(--border-muted);
+  text-align: left;
+  vertical-align: top;
+}
+
+.mrd-table thead th {
+  border-top: 0;
+  color: var(--fg-muted);
+  font-size: var(--text-label);
+}
+
+:focus {
+  scroll-margin-top: calc(var(--ctl-lg) + var(--sp-5));
+  scroll-margin-bottom: var(--ctl-xl);
+}

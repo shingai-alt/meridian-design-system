@@ -1,0 +1,83 @@
+{
+  "$schema": "../../schemas/design-principles-pack.schema.json",
+  "schemaVersion": "0.1.0",
+  "id": "team-invitation-screen-principles",
+  "conceptId": "phase2_team_invitation",
+  "referenceManifestRef": "research/references/team-invitation/manifest.json",
+  "principles": [
+    {
+      "id": "decision-point-constraints",
+      "observation": "実在サービスはRole、Seat、招待権限などの制約を招待判断の文脈で説明している。",
+      "principle": "制約は独立したダッシュボードにせず、その制約が判断を変える場所で提示する。",
+      "condition": "Seat残数またはRole権限が送信可否を変える場合。",
+      "application": "残り送信可能数をeditor直前または隣接asideに置き、超過時は該当行と全体alertを関連付ける。",
+      "confidence": "high",
+      "evidenceRefs": ["github-invite-docs", "slack-invite-docs", "atlassian-user-invite"]
+    },
+    {
+      "id": "concrete-action-outcome",
+      "observation": "招待は即時参加ではなく、期限やPending状態を伴う非同期処理である。",
+      "principle": "Primary actionは操作名だけでなく、対象数と次に起きる状態を予測可能にする。",
+      "condition": "複数宛先をまとめて送信または確認する場合。",
+      "application": "「3人の招待を確認」のように対象数を含め、送信後はPendingになることを確認段階で説明する。",
+      "confidence": "high",
+      "evidenceRefs": ["github-invite-docs", "slack-invite-docs", "notion-member-docs"]
+    },
+    {
+      "id": "row-level-recovery",
+      "observation": "Batch入力では失敗対象を特定できなければ、成功した入力までやり直すことになる。",
+      "principle": "問題は行単位で特定し、修正可能な入力と回復方法をその場に残す。",
+      "condition": "複数宛先のvalidationまたは一部送信失敗が発生する場合。",
+      "application": "Error summaryから行errorへ移動可能にし、成功行は確定、失敗行だけをdraftとして保持する。",
+      "confidence": "high",
+      "evidenceRefs": ["wcag-error-identification", "govuk-task-patterns"]
+    },
+    {
+      "id": "separate-context-from-task",
+      "observation": "SeatやWorkspace情報は必要だが、入力行と同じ反復・surface強度で並べると主作業と競合する。",
+      "principle": "操作対象と参照文脈は視覚的な役割を分け、主作業の読み順を崩さない。",
+      "condition": "複数のcapacity値を参照しながら入力する場合。",
+      "application": "入力をmain columnに、変化頻度の低いcapacityを短いstripまたはasideのdefinition listにまとめる。",
+      "confidence": "medium",
+      "evidenceRefs": ["govuk-task-patterns", "stitch-diverge-converge"]
+    },
+    {
+      "id": "progressive-risk",
+      "observation": "通常Roleと高権限Roleでは誤操作の影響が異なる。",
+      "principle": "全操作を重くせず、影響の大きい選択が含まれる時だけ確認の強度を上げる。",
+      "condition": "Ownerまたは同等の高権限Roleを招待する場合。",
+      "application": "通常招待は短い確認、高権限招待は権限説明と明示checkboxを追加する。",
+      "confidence": "high",
+      "evidenceRefs": ["notion-member-docs", "atlassian-user-invite", "github-invite-docs"]
+    },
+    {
+      "id": "preserve-successful-work",
+      "observation": "招待は宛先ごとに結果が異なり、Pendingも参加済みとは別状態になる。",
+      "principle": "部分失敗後に成功済みの作業を巻き戻さず、未完了だけを次の操作対象にする。",
+      "condition": "Batch送信が部分成功し得る場合。",
+      "application": "成功行をstatus表示へ変換し、失敗行の値とRoleを保持して再送可能にする。",
+      "confidence": "high",
+      "evidenceRefs": ["slack-invite-docs", "wcag-error-identification"]
+    }
+  ],
+  "antiPatterns": [
+    {
+      "id": "equal-card-context-competition",
+      "pattern": "Seat数値を同じ大きさのカードへ分割し、入力editorと同じ視覚強度で先に並べる。",
+      "reason": "主作業の開始位置を下げ、参照情報を操作対象のように見せる。",
+      "evidenceRefs": ["govuk-task-patterns", "stitch-diverge-converge"]
+    },
+    {
+      "id": "hidden-permission-impact",
+      "pattern": "Role名だけを選ばせ、送信前に高権限の影響を説明しない。",
+      "reason": "管理者が不可逆または高影響な変更を認識できない。",
+      "evidenceRefs": ["notion-member-docs", "atlassian-user-invite"]
+    },
+    {
+      "id": "batch-reset-on-partial-failure",
+      "pattern": "一件の失敗で全行を入力状態へ戻す、または成功済み宛先も再送対象にする。",
+      "reason": "作業を失わせ、重複招待の危険を増やす。",
+      "evidenceRefs": ["slack-invite-docs", "wcag-error-identification"]
+    }
+  ]
+}

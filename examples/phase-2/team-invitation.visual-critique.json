@@ -1,0 +1,103 @@
+{
+  "$schema": "../../schemas/visual-critique.schema.json",
+  "schemaVersion": "0.1.0",
+  "conceptId": "phase2_team_invitation",
+  "rubricId": "meridian-product-ui-v1",
+  "captureManifestRef": "examples/generated/visual-review/manifest.json",
+  "reviewer": { "kind": "multimodal-ai", "name": "Codex screenshot-grounded review" },
+  "reviewedAt": "2026-07-14",
+  "candidateReviews": [
+    {
+      "candidateId": "baseline",
+      "evidence": [
+        { "viewport": "desktop", "path": "examples/generated/visual-review/baseline.desktop.png", "digest": "sha256-fdbf1bb2a8227ac42009ec3d2f65d40f12887174c36c8abe357e78b95c9ed529" },
+        { "viewport": "mobile", "path": "examples/generated/visual-review/baseline.mobile.png", "digest": "sha256-b9dd50cf169b99068e7e5bb2f39d1b9c705d17320ff647d65acbecaf434c86d1" }
+      ],
+      "rubricScores": [
+        { "criterion": "task-clarity", "score": 3, "rationale": "招待目的は明確だが、4枚のSeatカードが入力より先に強く現れる。" },
+        { "criterion": "information-hierarchy", "score": 2, "rationale": "同じ形の4カードとeditor surfaceが競合し、主従が弱い。" },
+        { "criterion": "visual-grouping", "score": 3, "rationale": "各領域は区切られるが、数値が意味ではなくカード単位に分断される。" },
+        { "criterion": "density-rhythm", "score": 3, "rationale": "Desktopは整うが、Mobileでは数値カードが縦方向の開始を遅らせる。" },
+        { "criterion": "layout-balance", "score": 3, "rationale": "Desktopは安定する一方、上段とeditorの重量が均等すぎる。" },
+        { "criterion": "action-prominence", "score": 3, "rationale": "Primaryは識別できるが、長いMobile editorの最下部まで見えない。" },
+        { "criterion": "content-clarity", "score": 4, "rationale": "宛先、Role、Seat、対象数の文言は具体的である。" },
+        { "criterion": "responsive-quality", "score": 3, "rationale": "操作可能だが、Mobileで4カードが大きな前置きになる。" },
+        { "criterion": "meridian-identity", "score": 2, "rationale": "Tokenは一貫するが、汎用カードダッシュボードの印象が強い。" }
+      ],
+      "findings": [
+        { "criterion": "information-hierarchy", "severity": "major", "region": "seat-summary", "finding": "4つのcapacity値が独立カードとなり、招待editorと同等の視覚的優先度を持つ。" },
+        { "criterion": "responsive-quality", "severity": "minor", "region": "mobile-seat-summary", "finding": "Mobileでtask開始前に2行のカードgridを通過する必要がある。" }
+      ],
+      "summary": "機能は理解できるが、参照情報をカード化したため主作業の焦点が弱く、最もテンプレート的に見える。"
+    },
+    {
+      "candidateId": "task-focus",
+      "evidence": [
+        { "viewport": "desktop", "path": "examples/generated/visual-review/task-focus.desktop.png", "digest": "sha256-88bdd2df9858ed6cb80a7c16975a7656d887ea56d9bc86b6d02d9c12aacfc050" },
+        { "viewport": "mobile", "path": "examples/generated/visual-review/task-focus.mobile.png", "digest": "sha256-316b87f2ff6e860987e40b1d40721c1473a32ba9e811484fe8fc1118d2bbe65c" }
+      ],
+      "rubricScores": [
+        { "criterion": "task-clarity", "score": 4, "rationale": "headingからcapacity strip、editorへ短い読み順が成立する。" },
+        { "criterion": "information-hierarchy", "score": 4, "rationale": "capacityを低いsurfaceへまとめ、editorを主役にできている。" },
+        { "criterion": "visual-grouping", "score": 4, "rationale": "入力行と補助情報が少ないsurfaceで明確に分かれる。" },
+        { "criterion": "density-rhythm", "score": 4, "rationale": "DesktopとMobileの反復間隔が安定し、過剰な前置きがない。" },
+        { "criterion": "layout-balance", "score": 4, "rationale": "Desktopはeditorへ十分な幅を与え、余白も意図的に見える。" },
+        { "criterion": "action-prominence", "score": 4, "rationale": "Primaryは作業終端に明確だが、長いbatchでは画面外へ離れる。" },
+        { "criterion": "content-clarity", "score": 4, "rationale": "送信可能数と確認対象数が短く具体的に示される。" },
+        { "criterion": "responsive-quality", "score": 4, "rationale": "Mobileでもcapacityを2列の短いstripに保ち、editorへ自然に続く。" },
+        { "criterion": "meridian-identity", "score": 3, "rationale": "抑制と整列は良いが、固有のproduct characterはまだ弱い。" }
+      ],
+      "findings": [
+        { "criterion": "action-prominence", "severity": "minor", "region": "page-actions", "finding": "10行時には確認Actionが入力開始位置から大きく離れるため、進行状態の補助が必要になる。" },
+        { "criterion": "meridian-identity", "severity": "minor", "region": "overall", "finding": "精密だが汎用管理画面の語彙に留まり、Meridian固有の情報表現は十分でない。" }
+      ],
+      "summary": "4案中で主作業への焦点とresponsiveな密度が最も良い。現時点の推奨だが、長いbatchとproduct characterは改善余地がある。"
+    },
+    {
+      "candidateId": "context-aside",
+      "evidence": [
+        { "viewport": "desktop", "path": "examples/generated/visual-review/context-aside.desktop.png", "digest": "sha256-26574657dddcf88b6025c0c8d2618c613141635113237e7047a7386302185848" },
+        { "viewport": "mobile", "path": "examples/generated/visual-review/context-aside.mobile.png", "digest": "sha256-2156418f817196a845cf24d674bd7d1d89138523bb6a31f54bc95d73cd7bb712" }
+      ],
+      "rubricScores": [
+        { "criterion": "task-clarity", "score": 4, "rationale": "main editorは明確だが、DesktopではSeat asideにも視線が分散する。" },
+        { "criterion": "information-hierarchy", "score": 4, "rationale": "操作と参照文脈をcolumnで分離できている。" },
+        { "criterion": "visual-grouping", "score": 4, "rationale": "Seatを一つのdefinition surfaceへ統合した点は明快である。" },
+        { "criterion": "density-rhythm", "score": 3, "rationale": "Desktop mainの列幅が狭く、行内controlが詰まって見える。" },
+        { "criterion": "layout-balance", "score": 3, "rationale": "asideの情報量に対して専有幅が大きく、右側が早く終わる。" },
+        { "criterion": "action-prominence", "score": 4, "rationale": "Primaryはmain columnに属するがeditor cardとの整列がやや曖昧である。" },
+        { "criterion": "content-clarity", "score": 4, "rationale": "Seat関係を一箇所で比較できる。" },
+        { "criterion": "responsive-quality", "score": 3, "rationale": "Mobileでasideは上に戻るが、独立cardとして再び大きな前置きになる。" },
+        { "criterion": "meridian-identity", "score": 3, "rationale": "静かなsurfaceは一貫するが、一般的なsettings layoutとの差は小さい。" }
+      ],
+      "findings": [
+        { "criterion": "layout-balance", "severity": "major", "region": "desktop-context-aside", "finding": "短い4値のためにasideを常設し、main editorのcontrol幅を犠牲にしている。" },
+        { "criterion": "responsive-quality", "severity": "minor", "region": "mobile-seat-summary", "finding": "Mobileでは文脈分離の利点が消え、大きなsummary cardがtask前に残る。" }
+      ],
+      "summary": "参照情報の分離は論理的だが、現状の情報量ではasideが過剰で、DesktopとMobileの双方で空間効率を損なう。"
+    },
+    {
+      "candidateId": "guided-flow",
+      "evidence": [
+        { "viewport": "desktop", "path": "examples/generated/visual-review/guided-flow.desktop.png", "digest": "sha256-37d29e24682c59cbde32347630fdcc4eb3a32d2b6e5a2db42f149548a60eca88" },
+        { "viewport": "mobile", "path": "examples/generated/visual-review/guided-flow.mobile.png", "digest": "sha256-b131f3a30573ae0d217dcc55cf444023842acc8887547803a2b3a4f6d431deeb" }
+      ],
+      "rubricScores": [
+        { "criterion": "task-clarity", "score": 4, "rationale": "現在stepは理解できるが、単純な入力に対してflowが追加概念になる。" },
+        { "criterion": "information-hierarchy", "score": 3, "rationale": "heading、step、capacity、editorの4層が連続し、焦点が分散する。" },
+        { "criterion": "visual-grouping", "score": 4, "rationale": "stepとeditorは明確に分離され、行groupも安定する。" },
+        { "criterion": "density-rhythm", "score": 2, "rationale": "DesktopとMobileの両方で入力開始前のvertical stackが長い。" },
+        { "criterion": "layout-balance", "score": 3, "rationale": "中央columnは安定するが、上部情報が横幅いっぱいに積層する。" },
+        { "criterion": "action-prominence", "score": 4, "rationale": "確認Actionを現在stepの完了として理解できる。" },
+        { "criterion": "content-clarity", "score": 4, "rationale": "入力、確認、結果という予測は明確である。" },
+        { "criterion": "responsive-quality", "score": 3, "rationale": "崩れないが、Mobileではstepとcapacityが画面の多くを占める。" },
+        { "criterion": "meridian-identity", "score": 3, "rationale": "一貫性はあるが、stepperを足した典型的wizardの印象が残る。" }
+      ],
+      "findings": [
+        { "criterion": "density-rhythm", "severity": "major", "region": "pre-editor-stack", "finding": "現在のprimary pathに新しい判断を追加しないstepperが、入力開始位置を大きく下げている。" },
+        { "criterion": "meridian-identity", "severity": "minor", "region": "flow-steps", "finding": "一般的な3-step wizard表現であり、リスクに応じて段階化するという戦略が視覚に反映されていない。" }
+      ],
+      "summary": "高リスク状態には有効な戦略だが、通常のprimary pathへ常設したため過剰設計になっている。条件付きvariantとして残すのが妥当。"
+    }
+  ]
+}

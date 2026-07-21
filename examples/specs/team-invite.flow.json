@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "flow",
+    "id": "flow_team_invite",
+    "title": "Team Invite Flow",
+    "source": "template",
+    "status": "draft"
+  },
+  "goal": {
+    "userGoal": "管理者が新しいメンバーを適切なロールで招待し、招待状況を確認できる",
+    "businessGoal": "チーム導入時のセットアップ完了率を上げ、権限設定ミスを減らす",
+    "completionCriteria": ["招待メールが送信される", "招待中メンバーが一覧に表示される", "ロールと権限の影響がユーザーに理解されている"]
+  },
+  "actors": [
+    {
+      "role": "workspace-admin",
+      "permissions": ["member:read", "member:invite", "role:assign"],
+      "needs": ["メールアドレスを入力したい", "ロールの違いを確認したい", "送信前に内容を確認したい"]
+    },
+    {
+      "role": "invited-member",
+      "permissions": ["invite:accept"],
+      "needs": ["招待元と参加先を理解したい", "自分の権限を把握したい"]
+    },
+    {
+      "role": "viewer",
+      "permissions": ["member:read"],
+      "needs": ["メンバー一覧を閲覧したい", "招待操作ができない理由を知りたい"]
+    }
+  ],
+  "screens": [
+    {
+      "screenId": "screen_team_members",
+      "screenSpecRef": "examples/specs/team-members.screen.json",
+      "entryCondition": "管理者がメンバー管理を開く",
+      "exitCondition": "招待ボタンを押す、またはメンバー詳細へ進む",
+      "purpose": "既存メンバーと招待中メンバーを確認する"
+    },
+    {
+      "screenId": "screen_invite_member_dialog",
+      "screenSpecRef": "examples/specs/invite-member-dialog.screen.json",
+      "entryCondition": "管理者がメンバーを招待する操作を開始する",
+      "exitCondition": "メール、ロール、任意メッセージを入力して確認へ進む",
+      "purpose": "招待に必要な情報を入力する"
+    },
+    {
+      "screenId": "screen_invite_review",
+      "screenSpecRef": "examples/specs/invite-review.screen.json",
+      "entryCondition": "招待情報の入力が完了している",
+      "exitCondition": "送信する、または入力画面へ戻る",
+      "purpose": "送信前に招待先とロールの影響を確認する"
+    },
+    {
+      "screenId": "screen_invite_success",
+      "screenSpecRef": "examples/specs/invite-success.screen.json",
+      "entryCondition": "招待メール送信が成功する",
+      "exitCondition": "メンバー一覧へ戻る、または追加で招待する",
+      "purpose": "送信完了と次の行動を示す"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "transition_open_invite",
+      "from": "screen_team_members",
+      "to": "screen_invite_member_dialog",
+      "trigger": "user-action",
+      "userAction": "メンバーを招待ボタンを押す",
+      "systemResponse": "招待Dialogを開き、メールアドレス入力へフォーカスする",
+      "failureModes": ["権限が無い場合はpermission deniedを表示する"]
+    },
+    {
+      "id": "transition_review_invite",
+      "from": "screen_invite_member_dialog",
+      "to": "screen_invite_review",
+      "trigger": "user-action",
+      "userAction": "確認へ進むボタンを押す",
+      "systemResponse": "入力値を検証し、招待内容の確認画面を表示する",
+      "failureModes": ["メール形式が不正", "同じメールが既に招待済み", "選択ロールを割り当てる権限が無い"]
+    },
+    {
+      "id": "transition_send_invite",
+      "from": "screen_invite_review",
+      "to": "screen_invite_success",
+      "trigger": "user-action",
+      "userAction": "招待を送信ボタンを押す",
+      "systemResponse": "送信中状態を表示し、成功後に完了画面へ進む",
+      "failureModes": ["メール送信失敗", "ネットワークエラー", "招待上限に達している"]
+    },
+    {
+      "id": "transition_back_to_members",
+      "from": "screen_invite_success",
+      "to": "screen_team_members",
+      "trigger": "user-action",
+      "userAction": "メンバー一覧へ戻る",
+      "systemResponse": "招待中メンバーを含む一覧を更新する",
+      "failureModes": ["一覧更新失敗時は送信完了を維持し、再読み込みを促す"]
+    }
+  ],
+  "prototype": {
+    "startScreen": "screen_team_members",
+    "happyPath": ["screen_team_members", "screen_invite_member_dialog", "screen_invite_review", "screen_invite_success", "screen_team_members"],
+    "alternatePaths": [
+      ["screen_team_members", "screen_invite_member_dialog", "screen_team_members"],
+      ["screen_team_members", "screen_invite_member_dialog", "screen_invite_review", "screen_invite_member_dialog"]
+    ],
+    "edgeCases": ["既に招待済みのメールを入力する", "Viewerが招待ボタンを押そうとする", "送信後に一覧更新だけ失敗する", "複数メールの一部だけが不正"]
+  },
+  "stateModel": {
+    "globalStates": [
+      {
+        "id": "state_dirty_invite_form",
+        "description": "招待Dialogに未送信の入力内容がある",
+        "affectedScreens": ["screen_invite_member_dialog", "screen_invite_review"]
+      },
+      {
+        "id": "state_sending_invite",
+        "description": "招待メールを送信中で、二重送信を防ぐ",
+        "affectedScreens": ["screen_invite_review"]
+      },
+      {
+        "id": "state_invite_sent",
+        "description": "招待メールは送信済みで、一覧に反映待ちまたは反映済み",
+        "affectedScreens": ["screen_invite_success", "screen_team_members"]
+      }
+    ],
+    "dataDependencies": ["current-user-permissions", "workspace-roles", "member-list", "pending-invites", "invite-limit"],
+    "permissions": [
+      {
+        "role": "workspace-admin",
+        "allowedActions": ["open-invite-dialog", "assign-editor", "assign-viewer", "send-invite"],
+        "blockedActions": ["assign-owner"],
+        "fallbackExperience": "Owner権限が必要なロールは説明付きでdisabledにする"
+      },
+      {
+        "role": "viewer",
+        "allowedActions": ["view-members"],
+        "blockedActions": ["open-invite-dialog", "send-invite"],
+        "fallbackExperience": "招待ボタンを表示しないか、権限不足の説明を表示する"
+      }
+    ],
+    "failureModes": [
+      {
+        "id": "failure_duplicate_invite",
+        "description": "既に招待中または参加済みのメールアドレスが入力される",
+        "recovery": "該当ユーザーの現在状態を表示し、一覧で確認できる導線を出す"
+      },
+      {
+        "id": "failure_send_invite",
+        "description": "招待メールの送信に失敗する",
+        "recovery": "入力内容を維持し、再試行とキャンセルを提供する"
+      },
+      {
+        "id": "failure_permission_denied",
+        "description": "招待に必要な権限が無い",
+        "recovery": "必要な権限と管理者への依頼方法を表示する"
+      }
+    ]
+  },
+  "rationale": [
+    {
+      "decision": "入力と確認を分ける",
+      "reason": "ロール選択の影響を送信前に確認でき、権限ミスを減らせるため",
+      "evidenceType": "user-goal",
+      "affectedScreens": ["screen_invite_member_dialog", "screen_invite_review"],
+      "tradeoff": "ステップは1つ増えるが、招待ミスのリスクを下げる",
+      "references": ["WCAG-2.2:Error Prevention", "DESIGN.md:Accessible precision"]
+    },
+    {
+      "decision": "送信成功後は一覧へ戻る導線と追加招待を両方出す",
+      "reason": "単発招待と複数人招待のどちらの作業にも対応するため",
+      "evidenceType": "pattern",
+      "affectedScreens": ["screen_invite_success"],
+      "tradeoff": "CTAが2つになるため、Primaryは一覧へ戻るに限定する",
+      "references": ["component:button", "component:empty-state"]
+    },
+    {
+      "decision": "権限不足は操作後だけでなく開始前にも示す",
+      "reason": "ユーザーが無駄な入力を始める前に制約を理解できるため",
+      "evidenceType": "accessibility",
+      "affectedScreens": ["screen_team_members", "screen_invite_member_dialog"],
+      "tradeoff": null,
+      "references": ["WCAG-2.2:Understandable"]
+    }
+  ],
+  "validation": {
+    "tasksToTest": ["AdminがEditorを1名招待できる", "招待済みメールのエラーを理解できる", "Viewerが招待できない理由を理解できる"],
+    "accessibilityChecks": ["Dialogをキーボードだけで完了できる", "送信中と送信完了が読み上げられる", "エラーがフィールドに関連付いている"],
+    "usabilityQuestions": ["ロールの違いは送信前に理解できるか", "送信後に次の行動が分かるか", "複数メール入力時のエラー箇所が分かるか"],
+    "designSystemChecks": ["Button、Dialog、Text Field、Select、Validation MessageをMeridian component idで参照する", "状態表現にsemantic tokenを使う", "破壊的または不可逆操作が無いことを確認する"]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "0.1.0",
+  "conceptId": "phase2_team_invitation",
+  "registryDigest": "sha256-0183e37d772d938042a98063426412505dce847213b3648225dab190d1ecbd8b",
+  "strategiesRef": "examples/phase-2/team-invitation.design-strategies.json",
+  "strategies": [
+    {
+      "strategyId": "direct-batch-editor",
+      "status": "grounded",
+      "resolvedComponents": [
+        "form-field",
+        "text-field",
+        "select",
+        "validation-message",
+        "table",
+        "status-indicator",
+        "alert",
+        "button"
+      ],
+      "missingComponents": []
+    },
+    {
+      "strategyId": "context-supported-editor",
+      "status": "grounded",
+      "resolvedComponents": [
+        "form-field",
+        "text-field",
+        "select",
+        "checkbox",
+        "validation-message",
+        "table",
+        "alert",
+        "button"
+      ],
+      "missingComponents": []
+    },
+    {
+      "strategyId": "staged-risk-review",
+      "status": "grounded",
+      "resolvedComponents": [
+        "form-field",
+        "text-field",
+        "select",
+        "checkbox",
+        "validation-message",
+        "table",
+        "status-indicator",
+        "alert",
+        "button"
+      ],
+      "missingComponents": []
+    }
+  ]
+}
