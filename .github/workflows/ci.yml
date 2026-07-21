@@ -6,24 +6,12 @@ on:
   pull_request:
 
 jobs:
-  check-tokens:
+  check-system:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Rebuild tokens/build/tokens.css and fail on drift
-        run: npm run check:tokens
-      - name: Rebuild DESIGN.md and fail on drift
-        run: npm run design:check
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Run unit tests (color engine)
-        run: npm test
+      - name: Validate system sources, generated files, and tests
+        run: npm run check:system

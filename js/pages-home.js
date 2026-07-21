@@ -19,7 +19,7 @@ ${SEED_PRESETS.map(s=>`<button class="seeddot" style="background:${s.hex};width:
 </div>
 </div>
 <div class="hero-demo">
-<div class="hd-bar"><i></i><i></i><i></i><span>meridian — theme: ${STATE.theme} · density: ${STATE.density} · seed: ${STATE.seed}</span></div>
+<div class="hd-bar"><i></i><i></i><i></i><span>meridian — theme: ${STATE.theme} · contrast: ${STATE.contrast} · density: ${STATE.density} · seed: ${STATE.seed}</span></div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);padding:var(--sp-4)">
 <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
 ${kpiEl({label:'API リクエスト',value:'1.24M',delta:'+12.4%'})}
@@ -37,7 +37,7 @@ ${usageMeterEl({value:72})}
 </div></section>
 
 <section class="home-sec">
-<h2>Seed → Primitive → Semantic → Component</h2>
+<h2>Seed input → Reference → Semantic → Component</h2>
 <p class="sub">Seed を変えるだけで、この画面のすべて — パレット・トークン・コンポーネント・テンプレート — が再生成されます。</p>
 <div class="panel pad" style="overflow-x:auto">
 <div class="pal"><span class="nm">primary</span>${STEPS.map(s=>`<button class="cell" style="background:${P.primary[s]}" data-copy="${P.primary[s]}"><span style="color:${L_MAP[s]>60?'rgba(0,0,0,.5)':'rgba(255,255,255,.8)'}">${s}</span></button>`).join('')}</div>
@@ -48,16 +48,16 @@ ${usageMeterEl({value:72})}
 
 <section class="home-sec" style="padding-top:0">
 <h2>Themes & Density</h2>
-<p class="sub">Light / Dark / High contrast と Compact / Default / Comfortable は直交する軸として設計されています。</p>
-<div class="grid3">
-${['light','dark','hc'].map(th=>{const t=buildSemantics(P,th);return `<button class="comp-tile" data-settheme="${th}" style="text-align:left;cursor:pointer">
+<p class="sub">Light / Dark、Standard / High contrast、Compact / Default / Comfortable は独立して選べる軸です。</p>
+<div class="comp-grid">
+${[['light','standard','Light / Standard'],['dark','standard','Dark / Standard'],['light','high','Light / High'],['dark','high','Dark / High']].map(([th,ct,label])=>{const t=buildSemantics(P,th,ct);return `<button class="comp-tile" data-settheme="${th}" data-setcontrast="${ct}" style="text-align:left;cursor:pointer">
 <div class="pv" style="background:${t.background};border-bottom:1px solid ${t.border};flex-direction:column;gap:8px;align-items:stretch;padding:16px">
 <div style="background:${t.surface};border:1px solid ${t.border};border-radius:var(--radius-md);padding:10px">
 <div style="color:${t.foreground};font-size:12px;font-weight:600">Deploy service</div>
 <div style="color:${t['foreground-muted']};font-size:11px;margin:2px 0 8px">main → production</div>
 <span style="background:${t.primary};color:${t['primary-foreground']};font-size:11px;font-weight:550;padding:3px 10px;border-radius:var(--radius-sm)">Deploy</span>
 </div></div>
-<div class="nm">${th==='light'?'Light':th==='dark'?'Dark':'High contrast'}<span>${STATE.theme===th?'現在のテーマ':'クリックで切替'}</span></div></button>`}).join('')}
+<div class="nm">${label}<span>${STATE.theme===th&&STATE.contrast===ct?'現在のcontext':'クリックで切替'}</span></div></button>`}).join('')}
 </div>
 <div class="rowflex" style="margin-top:var(--sp-4);gap:var(--sp-2)">
 <span style="font-size:var(--text-small);color:var(--fg-subtle)">Density:</span>
@@ -99,4 +99,3 @@ ${[['saas-dashboard','SaaS Dashboard','KPI・チャート・テーブルの標�
 </div>
 </section>
 <footer class="foot"><div class="in"><span><b style="color:var(--fg)">Meridian</b> — Calm precision for product interfaces</span><span>v2.4.1 · WCAG 2.2 AA · MIT License</span></div></footer>`});
-

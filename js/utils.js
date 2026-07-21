@@ -3,7 +3,7 @@
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const I={
+const ICON_SVG={
   search:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
   chevD:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
   chevR:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>',
@@ -38,13 +38,25 @@ const I={
   users:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 15.5a5.5 5.5 0 0 1 5.5 4.5"/></svg>',
   gear:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5h.1a1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5 1h.2a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1Z"/></svg>'
 };
+const ICON_META_BY_ID=Object.fromEntries(ICON_META.map(icon=>[icon.id,icon]));
+const I=Object.fromEntries(Object.entries(ICON_SVG).map(([id,svg])=>{
+  const icon=ICON_META_BY_ID[id],size=ICON_SIZES[icon.defaultSize].value;
+  return [id,svg
+    .replace('<svg ',`<svg data-icon="${id}" data-directionality="${icon.directionality}" aria-hidden="true" focusable="false" `)
+    .replace(/width="[^"]+"/,`width="${size}"`)
+    .replace(/height="[^"]+"/,`height="${size}"`)];
+}));
 
 /* OKLCH色エンジン(buildPalettes/buildSemantics/buildCharts等)は
  * src/color-engine.js に切り出し済み。DOM非依存の純粋関数なので、
  * Node上で単体テストできる(test/color-engine.test.js)。 */
 
+const STORED_THEME=localStorage.getItem('mrd.theme');
+const STORED_CONTRAST=localStorage.getItem('mrd.contrast');
+const LEGACY_HC=STORED_THEME==='hc';
 const STATE={
-  theme: localStorage.getItem('mrd.theme')||'light',
+  theme:['light','dark'].includes(STORED_THEME)?STORED_THEME:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'),
+  contrast:LEGACY_HC?'high':['standard','high'].includes(STORED_CONTRAST)?STORED_CONTRAST:(matchMedia('(prefers-contrast: more)').matches?'high':'standard'),
   density: localStorage.getItem('mrd.density')||'default',
   seed: localStorage.getItem('mrd.seed')||'#5B5BD6',
   route: null, navOpen:false
@@ -53,10 +65,11 @@ let PALETTES={}, SEM={}, CHART=[];
 
 function applyTheme(){
   const P=buildPalettes(STATE.seed);PALETTES=P;
-  const T=buildSemantics(P,STATE.theme);SEM=T;
+  const T=buildSemantics(P,STATE.theme,STATE.contrast);SEM=T;
   CHART=buildCharts(STATE.seed,STATE.theme);
+  const context=`${STATE.theme}-${STATE.contrast}`;
   const r=document.documentElement, st=r.style;
-  r.dataset.theme=STATE.theme; r.dataset.density=STATE.density;
+  r.dataset.theme=STATE.theme; r.dataset.contrast=STATE.contrast; r.dataset.density=STATE.density;
   for(const[k,v]of Object.entries(T)){
     const short=k.replace('foreground','fg').replace('background','bg');
     st.setProperty('--'+short,v);
@@ -64,75 +77,40 @@ function applyTheme(){
   st.setProperty('--fg',T.foreground);st.setProperty('--bg',T.background);
   // primitives
   for(const[name,scale]of Object.entries(P)){for(const[step,hex]of Object.entries(scale)){st.setProperty(`--${name==='neutralVariant'?'neutral-variant':name}-${step}`,hex)}}
-  // component tokens
-  const comp={
-    'button-primary-bg':T.primary,'button-primary-bg-hover':T['primary-hover'],'button-primary-bg-active':T['primary-active'],'button-primary-fg':T['primary-foreground'],
-    'button-secondary-bg':T.surface,'button-secondary-border':T.border,
-    'input-bg':STATE.theme==='dark'?T['surface-muted']:T.surface,'input-border':STATE.theme==='hc'?T['border-strong']:T.border,'input-border-focus':T.primary,'input-placeholder':T['foreground-subtle'],
-    'table-row-hover':STATE.theme==='dark'?alpha('#ffffff',.035):alpha('#000000',.028),
-    'sidebar-bg':STATE.theme==='dark'?T.background:T['background-subtle'],
-    'sidebar-item-active-bg':T['primary-subtle'],
-    'tooltip-bg':T['surface-inverse'],'dialog-bg':T['surface-overlay'],
-    'code-bg':STATE.theme==='dark'?(n950=>oklchToHex(7.5,n950.c,n950.h))(hexToOklch(P.neutral[950])):P.neutral[25]
-  };
-  for(const[k,v]of Object.entries(comp))st.setProperty('--'+k,v);
+  // Public component tokens are generated from tokens/src/component.json.
+  for(const token of TOKEN_CATALOG.componentTokens){
+    const source=token.aliases[context];
+    const alias=typeof source==='string'&&/^\{color\.semantic\.([^}]+)\}$/.exec(source);
+    st.setProperty(token.cssVariable,alias?T[alias[1]]:token.values[context]);
+  }
+  // Documentation code surfaces are private implementation values, not public tokens.
+  const codeBg=STATE.theme==='dark'?(n950=>oklchToHex(16,n950.c,n950.h))(hexToOklch(P.neutral[950])):P.neutral[25];
+  st.setProperty('--code-bg',codeBg);
   st.setProperty('--primary-fg',T['primary-foreground']);
   st.setProperty('--success-fg',T['success-foreground']);st.setProperty('--warning-fg',T['warning-foreground']);
   st.setProperty('--danger-fg',T['danger-foreground']);st.setProperty('--info-fg',T['info-foreground']);
   // code syntax
   if(STATE.theme==='dark'){st.setProperty('--code-k',P.accent[300]);st.setProperty('--code-s',P.success[400]);st.setProperty('--code-f',P.primary[300]);st.setProperty('--code-n',P.warning[400])}
   else{st.setProperty('--code-k',P.accent[700]);st.setProperty('--code-s',P.success[700]);st.setProperty('--code-f',P.primary[700]);st.setProperty('--code-n',P.warning[700])}
-  // shadows
-  if(STATE.theme==='dark'){
-    st.setProperty('--shadow-xs','0 1px 2px rgba(0,0,0,.4)');
-    st.setProperty('--shadow-sm','0 1px 3px rgba(0,0,0,.5)');
-    st.setProperty('--shadow-md','0 4px 10px -2px rgba(0,0,0,.55)');
-    st.setProperty('--shadow-lg','0 8px 24px -6px rgba(0,0,0,.6)');
-    st.setProperty('--shadow-overlay','0 16px 48px -8px rgba(0,0,0,.7)');
-  }else{
-    const sc=alpha(P.neutral[950],.07),sc2=alpha(P.neutral[950],.05);
-    st.setProperty('--shadow-xs',`0 1px 2px ${sc2}`);
-    st.setProperty('--shadow-sm',`0 1px 2px ${sc2},0 2px 6px -1px ${sc}`);
-    st.setProperty('--shadow-md',`0 2px 4px ${sc2},0 6px 16px -4px ${sc}`);
-    st.setProperty('--shadow-lg',`0 4px 8px ${sc2},0 12px 32px -8px ${alpha(P.neutral[950],.12)}`);
-    st.setProperty('--shadow-overlay',`0 8px 16px ${sc2},0 24px 56px -12px ${alpha(P.neutral[950],.2)}`);
-  }
+  // Shadow geometry is generated from tokens/src/shadow.json; themes only change its color modes.
+  for(const[k,v]of Object.entries(SHADOW_THEME_COLORS[STATE.theme]))st.setProperty('--shadow-color-'+k,v);
   for(let i=0;i<6;i++)st.setProperty('--chart-'+(i+1),CHART[i]);
   const CHART_FG=chartForegrounds(CHART);
   for(let i=0;i<6;i++)st.setProperty('--chart-fg-'+(i+1),CHART_FG[i]);
-  st.setProperty('--focus-w',STATE.theme==='hc'?'3px':'2px');
-  localStorage.setItem('mrd.theme',STATE.theme);localStorage.setItem('mrd.density',STATE.density);localStorage.setItem('mrd.seed',STATE.seed);
+  st.setProperty('--focus-w',STATE.contrast==='high'?'3px':'2px');
+  localStorage.setItem('mrd.theme',STATE.theme);localStorage.setItem('mrd.contrast',STATE.contrast);localStorage.setItem('mrd.density',STATE.density);localStorage.setItem('mrd.seed',STATE.seed);
   document.dispatchEvent(new CustomEvent('mrd:theme'));
 }
 
-/* semantic token metadata for docs */
-const SEM_META=[
- ['background','ページ全体の最下層','アプリ背景'],['background-subtle','背景の一段上','セクション背景・サイドバー'],
- ['surface','カード・パネルの面','Card / Panel / Input'],['surface-muted','控えめな面','Table header / Well'],
- ['surface-raised','浮いた面','Dropdown / Hover card'],['surface-overlay','オーバーレイ面','Dialog / Popover'],
- ['surface-inverse','反転面','Tooltip'],
- ['foreground','主要テキスト','見出し・本文'],['foreground-muted','補助テキスト','説明文・ラベル'],
- ['foreground-subtle','弱いテキスト','placeholder・メタ情報'],['foreground-disabled','無効テキスト','Disabled状態'],
- ['border','標準の境界線','Card / Input / Divider'],['border-muted','弱い境界線','Table row / List'],
- ['border-strong','強い境界線','Hover / 強調'],
- ['primary','ブランド主要色','Primary button / Active'],['primary-hover','Primary hover','Button hover'],
- ['primary-active','Primary active','Button pressed'],['primary-subtle','Primary の淡い面','Selected bg / Tertiary btn'],
- ['primary-muted','Primary の中間面','Avatar bg / Chip'],['primary-foreground','Primary 上のテキスト','Button label'],
- ['secondary','第二の色相','補助的なUI'],['accent','アクセント色','グラフ・強調点'],
- ['success','成功','完了・正常'],['success-subtle','成功の淡い面','Alert / Badge bg'],['success-foreground','成功テキスト','Badge / Alert text'],
- ['warning','警告','注意喚起'],['warning-subtle','警告の淡い面','Banner bg'],['warning-foreground','警告テキスト','Banner text'],
- ['danger','危険・破壊的','削除・エラー'],['danger-subtle','危険の淡い面','Error alert bg'],['danger-foreground','危険テキスト','Error text'],
- ['info','情報','ヒント・通知'],['info-subtle','情報の淡い面','Info alert bg'],['info-foreground','情報テキスト','Info text'],
- ['focus-ring','フォーカスリング','キーボードフォーカス'],['selection','テキスト選択','::selection'],
- ['highlight','ハイライト','検索一致など'],['disabled','無効UI面','Disabled control'],
- ['overlay','汎用オーバーレイ','画像上の暗幕'],['scrim','モーダル背景','Dialog scrim']
-];
-
 /* copy + toast */
 function copyText(t,btn){navigator.clipboard.writeText(t).then(()=>{if(btn){const o=btn.innerHTML;btn.classList.add('ok');btn.innerHTML=I.check+' Copied';setTimeout(()=>{btn.classList.remove('ok');btn.innerHTML=o},1200)}else toast('コピーしました',t)})}
-function toast(title,sub,tone){const r=$('#toast-root');const el=document.createElement('div');el.className='toastc';
+function toast(title,sub,tone){const r=$('#toast-root');const el=document.createElement('div');el.className='toastc';el.setAttribute('role',tone==='danger'?'alert':'status');
   el.innerHTML=`<span class="ic" style="color:var(--${tone==='danger'?'danger':tone==='success'?'success':'info'})">${tone==='danger'?I.err:tone==='success'?I.ok:I.info}</span><div style="flex:1;min-width:0"><b>${esc(title)}</b>${sub?`<span class="sub">${esc(sub)}</span>`:''}</div><button class="tb-btn" aria-label="閉じる" onclick="this.closest('.toastc').remove()">${I.x}</button>`;
-  r.appendChild(el);setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(()=>el.remove(),300)},4000)}
+  r.appendChild(el);setTimeout(()=>{
+    el.style.transition='opacity var(--dur-slow) var(--ease-exit)';
+    el.addEventListener('transitionend',()=>el.remove(),{once:true});
+    el.style.opacity='0';
+  },4000)}
 document.addEventListener('click',e=>{
   const cp=e.target.closest('[data-copy]');if(cp){copyText(cp.dataset.copy,cp.classList.contains('cp')?cp:null);return}
 });
