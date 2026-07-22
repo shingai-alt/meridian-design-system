@@ -1,281 +1,141 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready",
+    "policyVersion": "0.1.0",
+    "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/project-card.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/project-card.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "accessibility.aria", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "negativeExamples", "design/reviews/components.project-card.2026-07-22-components-project-card-02.review.json"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["tokenBindings", "tokenRefs", "index.html#projectc"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/project-card.md#responsive-viewport-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#project-card", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.project-card.2026-07-22-components-project-card-02.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": ["React実装", "router and independent-action interaction tests", "visual regression baseline"]
+  },
   "id": "project-card",
   "name": "Project Card",
   "status": "draft",
   "category": "saas",
-  "description": "プロジェクト一覧のカード表示。進捗・メンバー・更新時刻を要約する。",
-  "source": {
-    "humanDoc": "components/project-card.md",
-    "registry": "js/components-registry.js#project-card"
-  },
+  "description": "1つのprojectのstatus、完了率、member、更新時刻を要約し詳細へ移動するCard composition。",
+  "source": { "humanDoc": "components/project-card.md", "registry": "js/components-registry.js#project-card" },
   "intent": {
-    "whenToUse": [
-      "projectの状態、member、更新時刻をgridで比較するとき。"
-    ],
-    "whenNotToUse": [
-      "列ごとの精密比較にはTableを使う。"
-    ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "whenToUse": ["複数projectをcard gridで走査し、要約から1つのproject詳細へ移動するとき。", "Project名、status、完了率、member、更新時刻が一覧での選択判断に必要なとき。"],
+    "whenNotToUse": ["列ごとの精密比較、sort、bulk selectionが主目的ならTableまたはData Gridを使う。", "Destinationを持たない静的な情報groupにはCardを使う。", "1件のproject詳細、編集form、複数stepの操作は専用pageを使う。"],
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "root",
-      "required": true,
-      "description": "Bounded information or task container."
-    },
-    {
-      "part": "header",
-      "required": false,
-      "description": "Title, summary, and context controls."
-    },
-    {
-      "part": "content",
-      "required": true,
-      "description": "Primary values or composed components."
-    },
-    {
-      "part": "footer",
-      "required": false,
-      "description": "Secondary metadata or actions."
-    }
+    { "part": "root", "required": true, "description": "aria-labelledbyでproject headingへ関連付くarticle。" },
+    { "part": "heading", "required": true, "description": "Project名を含む短いheading。" },
+    { "part": "primary-link", "required": true, "description": "Project詳細へ移動するnative Link。" },
+    { "part": "status", "required": true, "description": "Text labelを持つBadge。" },
+    { "part": "description", "required": true, "description": "Projectの目的を示す1–2行のsummary。" },
+    { "part": "progress", "required": true, "description": "可視percentとnamed progressbar。" },
+    { "part": "members", "required": true, "description": "Member名と残数を伝えるsummary。" },
+    { "part": "updated-time", "required": true, "description": "可視相対時刻とmachine-readable datetime。" },
+    { "part": "actions", "required": false, "description": "Primary Linkの外に置く独立action。" }
   ],
-  "variants": {
-    "default": {
-      "intent": "標準文脈。",
-      "tokenRefs": {},
-      "states": {}
-    }
-  },
+  "variants": { "default": { "intent": "Project一覧の標準summary。", "tokenRefs": {}, "states": {} } },
   "sizes": {},
   "states": [
-    {
-      "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
-      "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
-      ]
-    }
+    { "id": "default", "description": "通常のsummaryと明示的focus targetを表示する。", "requiredBehavior": ["Primary Linkと任意actionを常時発見可能にする", "Status、progress、members、timeをtextでも示す"] },
+    { "id": "hover", "description": "Pointer hoverの補助状態。", "requiredBehavior": ["Borderを強める", "情報やactionをhoverだけで出現させない", "Pointer activationはPrimary Linkまたはactionへ帰属させる"] },
+    { "id": "focus-visible", "description": "Primary Linkがkeyboard focusを持つ状態。", "requiredBehavior": ["Card surface全体へfocus ringを表示する", "Action focus ringを上書きしない", "Focusでlayoutを変えない"] }
   ],
   "props": [
-    {
-      "name": "children",
-      "type": "ReactNode",
-      "required": true,
-      "default": null,
-      "description": "Componentの主要content。"
-    }
+    { "name": "project", "type": "ProjectCardProject", "required": true, "default": null, "description": "ID、name、description、status、progress、members、updatedAt、updatedLabelを持つsummary data。" },
+    { "name": "href", "type": "string", "required": true, "default": null, "description": "Primary native Linkの非空destination。" },
+    { "name": "actions", "type": "ReactElement", "required": false, "default": null, "description": "Link外へ置く1つのfocusable actionまたはMenu composition。" },
+    { "name": "ref", "type": "ForwardedRef<HTMLElement>", "required": false, "default": null, "description": "Root articleへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--border",
-      "--fg",
-      "--fg-muted",
-      "--fg-subtle",
-      "--surface"
-    ],
-    "density": [
-      "--card-pad"
-    ],
-    "spacing": [
-      "--sp-4"
-    ],
-    "radius": [
-      "--radius-md"
-    ],
-    "typography": [
-      "--text-micro",
-      "--text-small"
-    ]
+    "semanticColor": ["--surface", "--surface-muted", "--border", "--border-muted", "--border-strong", "--fg", "--fg-muted", "--fg-subtle", "--primary", "--focus-ring"],
+    "density": ["--card-pad"],
+    "spacing": ["--sp-1", "--sp-2", "--sp-3", "--sp-4"],
+    "radius": ["--radius-md", "--radius-full"],
+    "typography": ["--text-body", "--text-label", "--text-small", "--text-micro"],
+    "motion": ["--dur-fast", "--dur-slow", "--ease-standard"]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.surface.value",
-        "source": "--surface",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Project Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Project Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Project Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-muted.value",
-        "source": "--fg-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Project Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.card-pad.value",
-        "source": "--card-pad",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Project Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sp-4.value",
-        "source": "--sp-4",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Project Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.radius-md.value",
-        "source": "--radius-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Project Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-subtle.value",
-        "source": "--fg-subtle",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Project CardのHTML showcaseで実際に参照する公開token。"
-      },
-      {
-        "slot": "token.text-micro.value",
-        "source": "--text-micro",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Project CardのHTML showcaseで実際に参照する公開token。"
-      },
-      {
-        "slot": "token.text-small.value",
-        "source": "--text-small",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Project CardのHTML showcaseで実際に参照する公開token。"
-      }
+      { "slot": "surface.background", "source": "--surface", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Card surfaceをpage背景から分離する。" },
+      { "slot": "surface.border", "source": "--border", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Default surface edge。" },
+      { "slot": "surface.hover-border", "source": "--border-strong", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Hoverを補助的に示す。" },
+      { "slot": "surface.focus", "source": "--focus-ring", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Primary Linkのfocus-visibleをCard全体へ投影する。" },
+      { "slot": "surface.padding", "source": "--card-pad", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Card paddingをdensityへ同期する。" },
+      { "slot": "surface.radius", "source": "--radius-md", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Static card surfaceのshape policy。" },
+      { "slot": "heading.foreground", "source": "--fg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Project nameと主要情報のforeground。" },
+      { "slot": "description.foreground", "source": "--fg-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Descriptionをheadingより弱くする。" },
+      { "slot": "metadata.foreground", "source": "--fg-subtle", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Updated timeと補助metadata。" },
+      { "slot": "progress.track", "source": "--surface-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Completion trackをsurfaceから分離する。" },
+      { "slot": "progress.border", "source": "--border-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Track edgeを非色依存で示す。" },
+      { "slot": "progress.indicator", "source": "--primary", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Current completion valueを示す。" },
+      { "slot": "progress.radius", "source": "--radius-full", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Progress track shapeを継承する。" },
+      { "slot": "header.gap", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Heading、status、actionを分離する。" },
+      { "slot": "section.gap", "source": "--sp-3", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Description、progress、footerを分離する。" },
+      { "slot": "compact.gap", "source": "--sp-1", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Labelとpercentなど密接な情報を分離する。" },
+      { "slot": "footer.gap", "source": "--sp-4", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Membersとupdated timeを分離する。" },
+      { "slot": "heading.type", "source": "--text-body", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Project名のheading scale。" },
+      { "slot": "status.type", "source": "--text-label", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Status childとcontrol labelのscale。" },
+      { "slot": "description.type", "source": "--text-small", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Short summaryのscale。" },
+      { "slot": "metadata.type", "source": "--text-micro", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Updated timeとcompletion metadata。" },
+      { "slot": "interaction.duration", "source": "--dur-fast", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Borderとfocus response。" },
+      { "slot": "progress.duration", "source": "--dur-slow", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Completion indicator change。" },
+      { "slot": "interaction.easing", "source": "--ease-standard", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Cardとprogressの標準curve。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.project-card"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
-    "requirements": [
-      "表示専用rootを不要にtab順へ追加しない。",
-      "状態は色だけで表さずtext、icon、shapeを併用する。"
-    ],
-    "aria": [
-      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
-    ],
-    "focus": [
-      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
-    ]
+    "requirements": ["Root articleをheadingで命名し、root自体はfocusableにしない。", "Primary destinationはdescriptive nameを持つnative Linkにする。", "Status、progress、members、updated timeを色やshapeだけに依存せずtextでも示す。", "全targetは24px minimum、主要touch targetは44px以上推奨とする。"],
+    "aria": ["articleはaria-labelledbyでheadingへ関連付ける。", "Progressはvisible labelとaria-valuenow/min/maxを持つ。", "ActionsはProject名と目的を含むaccessible nameを所有する。"],
+    "focus": ["Tab順はPrimary Linkと任意actionsだけにする。", "Primary Link focusをCard surface全体のfocus ringで示す。", "Actionsのfocus indicatorをstretched Link layerで隠さない。"]
   },
-  "keyboardInteractions": [],
+  "keyboardInteractions": [
+    { "key": "Enter", "action": "FocusされたPrimary Linkのdestinationへ移動する。" },
+    { "key": "Tab / Shift+Tab", "action": "Primary Linkと任意actionsをdocument順に移動する。" }
+  ],
   "usagePatterns": [
-    {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "projectの状態、member、更新時刻をgridで比較するとき。",
-      "recommended": [
-        "カード全体をクリック可能にしつつ、メニューは独立した操作にする。"
-      ],
-      "avoid": [
-        "列ごとの精密比較にはTableを使う。"
-      ]
-    }
+    { "id": "linked-summary", "title": "Linked project summary", "description": "Project gridから詳細へ移動する要約。", "recommended": ["Heading native Linkをprimary destinationにする", "ActionはLink外のsiblingにする", "Progressとstatusをtextでも示す"], "avoid": ["Root click handler", "Link内のButton", "Hover-only action"] }
   ],
   "responsiveBehavior": {
-    "desktop": {
-      "summary": "DesktopでのProject Card。",
-      "rules": [
-        "Gridまたはsectionのreading orderに沿って配置し、同種itemの寸法を揃える。",
-        "面の入れ子を増やさない。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
-    },
-    "mobile": {
-      "summary": "MobileでのProject Card。",
-      "rules": [
-        "1列へreflowし、heading、content、actionの順序を保つ。",
-        "Actionが複数ある場合は縦積みまたはmenuへ整理する。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
-    },
-    "touch": {
-      "summary": "Touch入力でのProject Card。",
-      "rules": [
-        "表示専用rootをtab順へ追加しない。",
-        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
-    }
+    "desktop": { "summary": "Available widthに応じたgrid内で同種Cardを揃える。", "rules": ["Card自身に固定260px幅を持たせない", "Heading/status/actionsを上部、members/timeを下部に保つ", "Grid reading orderとDOM orderを一致させる"], "avoid": ["Hoverだけでactionsを表示する", "Card surfaceを入れ子にする"] },
+    "mobile": { "summary": "同じarticle/link/action semanticsで1 columnへreflowする。", "rules": ["Nameとdescriptionをwrapする", "Members/timeは必要なら複数行にする", "Horizontal scrollを発生させない"], "avoid": ["PC用とSP用にcomponentを分ける", "Metadataを無言で削除する"] },
+    "touch": { "summary": "Primary Linkとactionsを独立したpointer targetとして操作する。", "rules": ["Primary Link hit areaをsurfaceへ拡張してもfocus targetは1つに保つ", "Actionsは24px minimum、主要targetは44px以上推奨", "Hit areaを重ねない"], "avoid": ["Nested actionをLink内へ入れる", "Gestureだけでactionを提供する"] }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM"
+  "rules": ["NO_RAW_HEX_COLOR", "SPACING_FROM_TOKENS_ONLY", "RADIUS_FROM_TOKENS_ONLY", "CONTRAST_AA_MINIMUM", "FOCUS_VISIBLE_REQUIRED", "NO_POSITIVE_TABINDEX", "TARGET_SIZE_MINIMUM", "INTERACTIVE_NAME_REQUIRED"],
+  "qualityChecks": ["Project Card / Card / Table / dedicated pageの選択境界が明確", "API、native DOM、stretched Link layeringが確定", "全visual slotが公開tokenまたはchild componentへ結線", "Default / Hover / Focus-visibleとdata edge casesを検証", "Light / Dark × Standard / High、3 density、Desktop / Mobileで確認"],
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["article"],
+    "slots": ["root", "heading", "primary-link", "status", "description", "progress", "members", "updated-time", "actions"],
+    "attributes": ["aria-labelledby", "href", "datetime", "role", "aria-valuemin", "aria-valuemax", "aria-valuenow", "aria-label", "data-state", "data-project-id", "data-*"],
+    "stateModel": ["native link focus state", "pointer hover", "project summary data", "data-state"],
+    "events": ["click", "focus", "blur", "pointerenter", "pointerleave"],
+    "relations": ["article-heading", "heading-primary-link", "descriptive-link-name", "independent-sibling-actions", "named-progress-value", "machine-readable-time", "stretched-link-layering"],
+    "provenance": ["component", "instance", "state", "scenario", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["複数projectをcard gridで走査し、summaryから1つの詳細destinationへ移動する。"],
+    "avoidWhen": ["精密比較、bulk操作、destinationなしの静的group、1件の詳細編集が主目的である。"],
+    "alternatives": ["Card", "Table", "Data Grid", "dedicated project page"]
+  },
+  "negativeExamples": [
+    { "pattern": "Root divへonClick、role=link、tabIndex=0を付ける。", "reason": "Native Linkのnavigation、context menu、keyboard semanticsを再実装するため。", "ruleIds": ["FOCUS_VISIBLE_REQUIRED", "NO_POSITIVE_TABINDEX"] },
+    { "pattern": "Card全体を包むLink内へButtonまたは別Linkを入れる。", "reason": "Anchor content modelが禁じるinteractive descendantとなりfocus/activationが競合するため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "Primary Linkとactionsのpointer hit areaを重ねる。", "reason": "同じ座標のactivation結果が不明確になるため。", "ruleIds": ["TARGET_SIZE_MINIMUM"] },
+    { "pattern": "Hover時だけactionsまたはfull titleを表示する。", "reason": "Keyboard、touch、screen magnificationで機能または情報を発見できないため。", "ruleIds": ["FOCUS_VISIBLE_REQUIRED"] },
+    { "pattern": "Project名を含まない『メニュー』だけをaction nameにする。", "reason": "Cardが反復されると対象を識別できないため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "Progressをbarだけ、statusを色だけ、membersを無名avatarだけで表す。", "reason": "非視覚・非色覚経路でsummary valueを理解できないため。", "ruleIds": ["CONTRAST_AA_MINIMUM", "INTERACTIVE_NAME_REQUIRED"] }
   ],
-  "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
-  ],
+  "requiredScenarios": ["default", "hover", "focus-visible", "with-actions", "no-actions", "zero-progress", "complete", "many-members", "long-content", "narrow-viewport"],
   "examples": [
-    {
-      "id": "default",
-      "description": "Project Cardの標準例。",
-      "code": "<ProjectCard project={p} onOpen={open} />"
-    }
+    { "id": "with-actions", "description": "Heading Linkと独立actionsを持つproject summary。", "code": "<ProjectCard project={project} href={`/projects/${project.id}`} actions={<ProjectActions project={project} />} />" }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "openQuestions": []
 }

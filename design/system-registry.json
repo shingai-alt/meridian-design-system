@@ -2008,7 +2008,13 @@
           "order": 71,
           "route": "components/project-card",
           "dependsOn": [
-            "tokens.json-tokens"
+            "tokens.json-tokens",
+            "components.card",
+            "components.link",
+            "components.badge",
+            "components.avatar",
+            "components.progress",
+            "components.icon-button"
           ],
           "sources": [
             "components/project-card.md",
@@ -2020,7 +2026,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.project-card.2026-07-13-components-project-card-01.review.json"
+          "reviewRecord": "design/reviews/components.project-card.2026-07-22-components-project-card-02.review.json"
         },
         {
           "id": "components.issue-row",

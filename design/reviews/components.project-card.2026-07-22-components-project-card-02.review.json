@@ -1,0 +1,81 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.project-card",
+  "cycleId": "2026-07-22-components-project-card-02",
+  "supersedesCycleId": "2026-07-13-components-project-card-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-22",
+  "completedAt": "2026-07-22",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/implementation-readiness.json",
+    "components/project-card.md",
+    "design/contracts/components/project-card.contract.json",
+    "components/card.md",
+    "design/contracts/components/card.contract.json",
+    "components/link.md",
+    "design/contracts/components/link.contract.json",
+    "components/icon-button.md",
+    "design/contracts/components/icon-button.contract.json",
+    "components/progress.md",
+    "design/contracts/components/progress.contract.json",
+    "js/components-registry.js",
+    "js/ui-builders.js",
+    "index.html",
+    "test/component-specs.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": { "itemId": "components.project-card", "summary": "Card surface全体のpointer activation、native heading Link、独立actions、focus appearance、named progress、responsive gridの実装前Contractを確定する。" },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior"],
+    "questions": ["Card全体のpointer targetと独立actionをvalid HTMLでどう両立するか。", "Project CardのTab順とfocus appearanceをどこへ置くか。", "Status、progress、members、updated timeをどのsemanticで固定するか。"],
+    "evidence": [
+      { "id": "html-anchor", "title": "HTML Standard: The a element", "url": "https://html.spec.whatwg.org/dev/text-level-semantics.html#the-a-element", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "href付きaはhyperlinkであり、interactive content、別a、tabindex付きdescendantを含められないと定義する。", "supportedDecisions": ["native-heading-link", "independent-actions"] },
+      { "id": "wai-link-pattern", "title": "WAI-ARIA APG: Link Pattern", "url": "https://www.w3.org/WAI/ARIA/apg/patterns/link/", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Destination navigationにはnative a[href]を優先し、Enterとbrowser link behaviorをplatformへ委譲する。", "supportedDecisions": ["native-heading-link"] },
+      { "id": "wcag-link-purpose", "title": "WCAG 2.2 Understanding 2.4.9: Link Purpose", "url": "https://www.w3.org/WAI/WCAG22/Understanding/link-purpose-link-only", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Link text単独でもdestination purposeを理解できるdescriptive nameを推奨する。", "supportedDecisions": ["descriptive-names"] },
+      { "id": "wcag-focus-appearance", "title": "WCAG 2.2 Understanding 2.4.13: Focus Appearance", "url": "https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance.html", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Keyboard focus indicatorの面積、contrast、非遮蔽を評価する根拠を示す。", "supportedDecisions": ["surface-focus"] },
+      { "id": "wcag-target-size", "title": "WCAG 2.2 Understanding 2.5.8: Target Size Minimum", "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Pointer targetの24 CSS px minimumとspacing exceptionを定義する。", "supportedDecisions": ["stretched-link-target", "independent-actions"] }
+    ],
+    "synthesis": "Root custom controlを廃止し、article内のdescriptive native heading Linkをprimary destination、actionを独立siblingとする。Pointer hit areaだけをCSSでsurfaceへ拡張し、focus、progress、time、member summaryをsemantic textへ接続した。",
+    "decisionImpact": "Contract 0.2.0、React API Freeze、native Showcase、Default/Hover/Focus-visible、data edge scenarios、complete token bindingsを確定した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    { "id": "selection-boundary", "summary": "Project gridのlinked summaryへ限定し、static Card、Table/Data Grid、detail pageと分離する。", "rationale": "Comparison densityとdestination ownershipを混同しないため。" },
+    { "id": "native-heading-link", "summary": "Rootをarticle、Project名をheading内native a[href]へ固定する。", "rationale": "Navigation、keyboard、context menu、accessible nameをplatformへ委譲するため。" },
+    { "id": "independent-actions", "summary": "ActionsをLink外のsiblingへ置き、stretched Linkより上位layerで独立させる。", "rationale": "Interactive descendantを避け、navigationとaction activationを分離するため。" },
+    { "id": "descriptive-names", "summary": "LinkはProject名、actionはProject名と目的を含むaccessible nameを持つ。", "rationale": "反復Cardをlinks/actions listから識別できるようにするため。" },
+    { "id": "surface-focus", "summary": "Primary Link focus-visibleをCard surface全体のringとして表示する。", "rationale": "拡張pointer targetとkeyboard focus位置を視覚的に一致させるため。" },
+    { "id": "stretched-link-target", "summary": "Pseudo-elementでPrimary Linkのpointer areaをsurfaceへ拡張するがfocus targetは増やさない。", "rationale": "大きなtouch targetと簡潔なTab順を両立するため。" },
+    { "id": "semantic-summary", "summary": "Status text、named progressbar、member summary、time datetimeを必須にする。", "rationale": "Color、bar、avatar、relative textだけに情報を閉じないため。" },
+    { "id": "complete-token-binding", "summary": "Surface、focus、progress、regions、type、motionの全slotを公開tokenへ結線する。", "rationale": "React実装時のvisual decisionを残さないため。" }
+  ],
+  "differences": [
+    { "classification": "cross-layer-conflict", "description": "旧仕様はCard全体clickと独立menuを要求したが、Showcaseにはprimary Linkがなくrootもinteractiveではなかった。", "action": "Article、heading Link、stretched pointer layer、sibling actionへ構造を確定した。", "status": "resolved" },
+    { "classification": "implementation-stale", "description": "旧Showcaseはgeneric『メニュー』、decorative progress、無名の+3 avatar、固定260px幅を使っていた。", "action": "Project固有action name、named progressbar、member summary、machine-readable time、fluid rootへ更新した。", "status": "resolved" },
+    { "classification": "missing-contract", "description": "Project data shape、href、actions、ref、native DOM、Hover/Focus-visible、edge scenariosが未確定だった。", "action": "React API Freeze、runtime、required scenariosへ固定した。", "status": "resolved" },
+    { "classification": "missing-token", "description": "Focus surface、hover border、progress track/value、region spacing、motionのbindingが未確定だった。", "action": "既存semantic tokenへ全slotを結線し新規component tokenを追加しなかった。", "status": "resolved" }
+  ],
+  "changes": [
+    { "path": "components/project-card.md", "summary": "Selection boundary、native composition、API、semantic summary、responsive rulesを確定。" },
+    { "path": "design/contracts/components/project-card.contract.json", "summary": "Contract 0.2.0、readiness、runtime、complete bindings、negative examplesを追加。" },
+    { "path": "js/ui-builders.js", "summary": "Article、heading Link、independent action、progressbar、member/time semanticsを持つShowcaseへ更新。" },
+    { "path": "js/components-registry.js", "summary": "Usage、sample API、related compositionを確定Contractへ同期。" },
+    { "path": "index.html", "summary": "Fluid layout、stretched Link、surface focus、responsive footerをtokenized CSSへ追加。" },
+    { "path": "test/component-specs.test.js", "summary": "Native DOM、API、state、edge data、layeringの回帰testを追加。" },
+    { "path": "design/system-registry.json", "summary": "Composition dependenciesと最新review cycleを台帳へ接続。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js", "status": "passed", "notes": "26件が通過し、Contract、native Link/action separation、semantic summary、state/data scenariosを確認した。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "1280x720でarticle / heading Link / sibling actionを確認し、Cardとpageの横溢れなし、action 32x28px、surface focus ring 2pxを実測した。390x844のsame-origin viewportではmobile navigationと同じsemantic contentへのreflowを確認した。Density default / comfortable / compactのaction高は28 / 32 / 26px、light/dark x standard/highの4条件で横溢れなし。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、review cycles、generated artifacts、12/74 implementation-ready gateを含む全158テストが通過した。" }
+  ],
+  "openQuestions": [
+    { "question": "React実装、router/action integration tests、visual regressionを完了しstableへ昇格する。", "owner": "components.project-card", "exitCriteria": "Native navigation/context menu、independent action、focus/target、edge data、全context baselineがCIで通ること。" }
+  ],
+  "acknowledgedImpacts": [],
+  "impactedItems": [],
+  "nextRecommendedItems": ["components.issue-row"]
+}

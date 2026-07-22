@@ -338,6 +338,16 @@ input[type="range"].sliderc::-webkit-slider-thumb{appearance:none;width:14px;hei
 /* cards */
 .cardc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--card-pad);transition:border-color var(--dur-fast) var(--ease-standard),box-shadow var(--dur-fast) var(--ease-standard)}
 .cardc.hover:hover{border-color:var(--border-strong)}
+.projectc-demo{inline-size:min(100%,360px);min-inline-size:0}
+.projectc{position:relative;display:flex;min-inline-size:0;inline-size:100%;flex-direction:column;gap:var(--sp-3)}
+.projectc:hover,.projectc[data-state="hover"]{border-color:var(--border-strong)}
+.projectc:has(.projectc-link:focus-visible),.projectc[data-state="focus-visible"]{box-shadow:0 0 0 2px var(--focus-ring)}
+.projectc-header{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:start;gap:var(--sp-2)}
+.projectc-header h3{min-inline-size:0;margin:0;font-size:var(--text-body);line-height:1.35}.projectc-link{color:var(--fg);font-weight:650;text-decoration:none}.projectc-link::after{content:"";position:absolute;inset:0;border-radius:var(--radius-md)}.projectc-link:focus-visible{outline:none}
+.projectc-actions{position:relative;z-index:1}.projectc-description{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;color:var(--fg-muted);font-size:var(--text-small)}
+.projectc-progress-heading{display:flex;justify-content:space-between;gap:var(--sp-2);color:var(--fg-muted);font-size:var(--text-micro)}.projectc-progress-heading b{color:var(--fg);font-variant-numeric:tabular-nums}
+.projectc-footer{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);margin-block-start:auto}.projectc-footer time{color:var(--fg-subtle);font-size:var(--text-micro)}.projectc-members{min-inline-size:0}
+@media(max-width:520px){.projectc-demo{inline-size:100%}.projectc-header{grid-template-columns:minmax(0,1fr) auto}.projectc-header .badge{grid-row:2}.projectc-actions{grid-column:2;grid-row:1}.projectc-footer{align-items:flex-start;flex-direction:column;gap:var(--sp-2)}}
 .kpi .lbl{font-size:var(--text-small);color:var(--fg-muted);font-weight:500;display:flex;align-items:center;gap:6px}
 .kpi .val{font-size:24px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:var(--sp-1) 0}
 .kpi .delta{font-size:var(--text-small);display:inline-flex;align-items:center;gap:3px;font-weight:550}

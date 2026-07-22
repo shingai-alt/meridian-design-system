@@ -8237,10 +8237,13 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "projectの状態、member、更新時刻をgridで比較するとき。"
+        "複数projectをcard gridで走査し、要約から1つのproject詳細へ移動するとき。",
+        "Project名、status、完了率、member、更新時刻が一覧での選択判断に必要なとき。"
       ],
       "whenNotToUse": [
-        "列ごとの精密比較にはTableを使う。"
+        "列ごとの精密比較、sort、bulk selectionが主目的ならTableまたはData Gridを使う。",
+        "Destinationを持たない静的な情報groupにはCardを使う。",
+        "1件のproject詳細、編集form、複数stepの操作は専用pageを使う。"
       ],
       "principles": [
         1,
@@ -8254,22 +8257,47 @@ const COMPONENT_CONTRACTS={
       {
         "part": "root",
         "required": true,
-        "description": "Bounded information or task container."
+        "description": "aria-labelledbyでproject headingへ関連付くarticle。"
       },
       {
-        "part": "header",
-        "required": false,
-        "description": "Title, summary, and context controls."
-      },
-      {
-        "part": "content",
+        "part": "heading",
         "required": true,
-        "description": "Primary values or composed components."
+        "description": "Project名を含む短いheading。"
       },
       {
-        "part": "footer",
+        "part": "primary-link",
+        "required": true,
+        "description": "Project詳細へ移動するnative Link。"
+      },
+      {
+        "part": "status",
+        "required": true,
+        "description": "Text labelを持つBadge。"
+      },
+      {
+        "part": "description",
+        "required": true,
+        "description": "Projectの目的を示す1–2行のsummary。"
+      },
+      {
+        "part": "progress",
+        "required": true,
+        "description": "可視percentとnamed progressbar。"
+      },
+      {
+        "part": "members",
+        "required": true,
+        "description": "Member名と残数を伝えるsummary。"
+      },
+      {
+        "part": "updated-time",
+        "required": true,
+        "description": "可視相対時刻とmachine-readable datetime。"
+      },
+      {
+        "part": "actions",
         "required": false,
-        "description": "Secondary metadata or actions."
+        "description": "Primary Linkの外に置く独立action。"
       }
     ],
     "variants": [
@@ -8279,104 +8307,183 @@ const COMPONENT_CONTRACTS={
     "states": [
       {
         "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "description": "通常のsummaryと明示的focus targetを表示する。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "Primary Linkと任意actionを常時発見可能にする",
+          "Status、progress、members、timeをtextでも示す"
+        ]
+      },
+      {
+        "id": "hover",
+        "description": "Pointer hoverの補助状態。",
+        "requiredBehavior": [
+          "Borderを強める",
+          "情報やactionをhoverだけで出現させない",
+          "Pointer activationはPrimary Linkまたはactionへ帰属させる"
+        ]
+      },
+      {
+        "id": "focus-visible",
+        "description": "Primary Linkがkeyboard focusを持つ状態。",
+        "requiredBehavior": [
+          "Card surface全体へfocus ringを表示する",
+          "Action focus ringを上書きしない",
+          "Focusでlayoutを変えない"
         ]
       }
     ],
     "props": [
       {
-        "name": "children",
-        "type": "ReactNode",
+        "name": "project",
+        "type": "ProjectCardProject",
         "required": true,
         "default": null,
-        "description": "Componentの主要content。"
+        "description": "ID、name、description、status、progress、members、updatedAt、updatedLabelを持つsummary data。"
+      },
+      {
+        "name": "href",
+        "type": "string",
+        "required": true,
+        "default": null,
+        "description": "Primary native Linkの非空destination。"
+      },
+      {
+        "name": "actions",
+        "type": "ReactElement",
+        "required": false,
+        "default": null,
+        "description": "Link外へ置く1つのfocusable actionまたはMenu composition。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLElement>",
+        "required": false,
+        "default": null,
+        "description": "Root articleへforwardするref。"
       }
     ],
     "tokenRefs": {
       "semanticColor": [
+        "--surface",
+        "--surface-muted",
         "--border",
+        "--border-muted",
+        "--border-strong",
         "--fg",
         "--fg-muted",
         "--fg-subtle",
-        "--surface"
+        "--primary",
+        "--focus-ring"
       ],
       "density": [
         "--card-pad"
       ],
       "spacing": [
+        "--sp-1",
+        "--sp-2",
+        "--sp-3",
         "--sp-4"
       ],
       "radius": [
-        "--radius-md"
+        "--radius-md",
+        "--radius-full"
       ],
       "typography": [
-        "--text-micro",
-        "--text-small"
+        "--text-body",
+        "--text-label",
+        "--text-small",
+        "--text-micro"
+      ],
+      "motion": [
+        "--dur-fast",
+        "--dur-slow",
+        "--ease-standard"
       ]
     },
     "accessibility": {
       "requirements": [
-        "表示専用rootを不要にtab順へ追加しない。",
-        "状態は色だけで表さずtext、icon、shapeを併用する。"
+        "Root articleをheadingで命名し、root自体はfocusableにしない。",
+        "Primary destinationはdescriptive nameを持つnative Linkにする。",
+        "Status、progress、members、updated timeを色やshapeだけに依存せずtextでも示す。",
+        "全targetは24px minimum、主要touch targetは44px以上推奨とする。"
       ],
       "aria": [
-        "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        "articleはaria-labelledbyでheadingへ関連付ける。",
+        "Progressはvisible labelとaria-valuenow/min/maxを持つ。",
+        "ActionsはProject名と目的を含むaccessible nameを所有する。"
       ],
       "focus": [
-        "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+        "Tab順はPrimary Linkと任意actionsだけにする。",
+        "Primary Link focusをCard surface全体のfocus ringで示す。",
+        "Actionsのfocus indicatorをstretched Link layerで隠さない。"
       ]
     },
-    "keyboardInteractions": [],
+    "keyboardInteractions": [
+      {
+        "key": "Enter",
+        "action": "FocusされたPrimary Linkのdestinationへ移動する。"
+      },
+      {
+        "key": "Tab / Shift+Tab",
+        "action": "Primary Linkと任意actionsをdocument順に移動する。"
+      }
+    ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "projectの状態、member、更新時刻をgridで比較するとき。",
+        "id": "linked-summary",
+        "title": "Linked project summary",
+        "description": "Project gridから詳細へ移動する要約。",
         "recommended": [
-          "カード全体をクリック可能にしつつ、メニューは独立した操作にする。"
+          "Heading native Linkをprimary destinationにする",
+          "ActionはLink外のsiblingにする",
+          "Progressとstatusをtextでも示す"
         ],
         "avoid": [
-          "列ごとの精密比較にはTableを使う。"
+          "Root click handler",
+          "Link内のButton",
+          "Hover-only action"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのProject Card。",
+        "summary": "Available widthに応じたgrid内で同種Cardを揃える。",
         "rules": [
-          "Gridまたはsectionのreading orderに沿って配置し、同種itemの寸法を揃える。",
-          "面の入れ子を増やさない。"
+          "Card自身に固定260px幅を持たせない",
+          "Heading/status/actionsを上部、members/timeを下部に保つ",
+          "Grid reading orderとDOM orderを一致させる"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "Hoverだけでactionsを表示する",
+          "Card surfaceを入れ子にする"
         ]
       },
       "mobile": {
-        "summary": "MobileでのProject Card。",
+        "summary": "同じarticle/link/action semanticsで1 columnへreflowする。",
         "rules": [
-          "1列へreflowし、heading、content、actionの順序を保つ。",
-          "Actionが複数ある場合は縦積みまたはmenuへ整理する。"
+          "Nameとdescriptionをwrapする",
+          "Members/timeは必要なら複数行にする",
+          "Horizontal scrollを発生させない"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "PC用とSP用にcomponentを分ける",
+          "Metadataを無言で削除する"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのProject Card。",
+        "summary": "Primary Linkとactionsを独立したpointer targetとして操作する。",
         "rules": [
-          "表示専用rootをtab順へ追加しない。",
-          "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+          "Primary Link hit areaをsurfaceへ拡張してもfocus targetは1つに保つ",
+          "Actionsは24px minimum、主要targetは44px以上推奨",
+          "Hit areaを重ねない"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "Nested actionをLink内へ入れる",
+          "Gestureだけでactionを提供する"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "prompt-input": {
     "id": "prompt-input",

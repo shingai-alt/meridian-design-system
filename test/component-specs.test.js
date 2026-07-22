@@ -534,6 +534,55 @@ test('Invite Member Dialog is implementation-ready as a single-invite Dialog com
   assert.match(indexSource, /\.invitec-error\{[^}]*background:var\(--danger-subtle\)/);
 });
 
+test('Project Card is implementation-ready with a native heading link and independent actions', () => {
+  const contract = contracts.find(({ id }) => id === 'project-card');
+  assert.equal(contract.contractVersion, '0.2.0');
+  assert.equal(contract.implementationReadiness.status, 'ready');
+  assert.deepEqual(Object.keys(contract.variants), ['default']);
+  assert.deepEqual(contract.states.map(({ id }) => id), ['default', 'hover', 'focus-visible']);
+  assert.deepEqual(contract.props.map(({ name }) => name), ['project', 'href', 'actions', 'ref']);
+  assert.deepEqual(contract.runtime.rootElements, ['article']);
+  assert.ok(contract.runtime.relations.includes('article-heading'));
+  assert.ok(contract.runtime.relations.includes('independent-sibling-actions'));
+  assert.ok(contract.runtime.relations.includes('named-progress-value'));
+  assert.ok(contract.runtime.relations.includes('machine-readable-time'));
+  assert.equal(contract.tokenBindings.coverage, 'complete');
+  assert.deepEqual(contract.tokenBindings.unboundSlots, []);
+  assert.deepEqual(contract.openQuestions, []);
+
+  const component = renderedComponents.find(({ id }) => id === 'project-card');
+  const standard = component.render({ ...renderProps(component), state: 'default', scenario: 'with-actions' });
+  const hovered = component.render({ ...renderProps(component), state: 'hover' });
+  const focused = component.render({ ...renderProps(component), state: 'focus-visible' });
+  const noActions = component.render({ ...renderProps(component), scenario: 'no-actions' });
+  const zero = component.render({ ...renderProps(component), scenario: 'zero-progress' });
+  const complete = component.render({ ...renderProps(component), scenario: 'complete' });
+  const manyMembers = component.render({ ...renderProps(component), scenario: 'many-members' });
+  const longContent = component.render({ ...renderProps(component), scenario: 'long-content' });
+  assert.match(standard, /<article[^>]+data-component="project-card"[^>]+aria-labelledby="project-card-\d+-title"/);
+  assert.match(standard, /<h3[^>]+id="project-card-\d+-title"[^>]*><a class="projectc-link" href="#\/projects\/meridian-docs">Meridian Docs<\/a><\/h3>/);
+  assert.match(standard, /<button[^>]+data-icononly[^>]+aria-label="Meridian Docsのアクションを開く"[^>]+aria-haspopup="menu"[^>]+aria-expanded="false"/);
+  assert.doesNotMatch(standard, /<a\b[^>]*>(?:(?!<\/a>).)*<button/s);
+  assert.doesNotMatch(standard, /<article[^>]+(?:onclick|role="link"|tabindex)/i);
+  assert.match(standard, /role="progressbar"[^>]+aria-labelledby="project-card-\d+-progress-label"[^>]+aria-valuemin="0"[^>]+aria-valuemax="100"[^>]+aria-valuenow="72"/);
+  assert.match(standard, />完了率<\/span><b>72%<\/b>/);
+  assert.match(standard, /role="group" aria-label="メンバー: 新谷 尚史、加藤 由紀、ほか3人"/);
+  assert.match(standard, /<time datetime="2026-07-22T09:00:00\+09:00">更新 2時間前<\/time>/);
+  assert.match(hovered, /data-state="hover"/);
+  assert.match(focused, /data-state="focus-visible"/);
+  assert.doesNotMatch(noActions, /aria-haspopup="menu"/);
+  assert.match(zero, /aria-valuenow="0"/);
+  assert.match(zero, />未着手<\/span>/);
+  assert.match(complete, /aria-valuenow="100"/);
+  assert.match(complete, />完了<\/span>/);
+  assert.match(manyMembers, /ほか6人/);
+  assert.match(longContent, /Meridian Enterprise Design System Documentation/);
+  assert.match(indexSource, /\.projectc-link::after\{content:"";position:absolute;inset:0;border-radius:var\(--radius-md\)\}/);
+  assert.match(indexSource, /\.projectc-actions\{position:relative;z-index:1\}/);
+  assert.doesNotMatch(indexSource, /\.projectc-members\{[^}]*z-index/);
+  assert.match(indexSource, /\.projectc:has\(\.projectc-link:focus-visible\)[^}]*var\(--focus-ring\)/);
+});
+
 test('Drawer is implementation-ready as a native modal dialog with trigger and focus lifecycle', () => {
   const drawer = contracts.find((contract) => contract.id === 'drawer');
   assert.equal(drawer.contractVersion, '0.2.0');

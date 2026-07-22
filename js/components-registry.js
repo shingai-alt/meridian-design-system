@@ -483,9 +483,9 @@ def({id:'invite-member-dialog',name:'Invite Member Dialog',group:'SaaS',desc:'1�
  usage:['単一メールアドレスと通常ロールだけを受け付ける。','ロールには権限の説明を添え、失敗後も入力を保持する。','複数招待、Owner付与、partial successはDedicated Batch Invitation Pageを使う。'],
  render:p=>inviteDialogEl(p),code:()=>`<InviteMemberDialog\n  trigger={<Button>メンバーを招待</Button>}\n  workspaceName="Meridian"\n  roles={quickInviteRoles}\n  defaultRoleId="member"\n  onInvite={inviteMember}\n/>`,related:['dialog','button','text-field','select','validation-message','team-invitation-flow']});
 
-def({id:'project-card',name:'Project Card',group:'SaaS',desc:'プロジェクト一覧のカード表示。進捗・メンバー・更新時刻を要約する。',
- render:()=>projectCard(),code:()=>`<ProjectCard project={p} onOpen={open} />`,
- usage:['カード全体をクリック可能にしつつ、メニューは独立した操作にする。'],related:['card','task-board-card']});
+def({id:'project-card',name:'Project Card',group:'SaaS',desc:'Projectのstatus、完了率、member、更新時刻を要約し、詳細へ移動するCard composition。',
+ render:p=>projectCard(p),code:()=>`<ProjectCard\n  project={project}\n  href={\`/projects/${project.id}\`}\n  actions={<ProjectActions project={project} />}\n/>`,
+ usage:['Headingのnative Linkをprimary destinationにし、root自体はfocusableにしない。','ActionsはLink外のsiblingとして常時発見可能にする。','Status、progress、members、updated timeをtextでも伝える。'],related:['card','link','badge','avatar','progress','icon-button','task-board-card']});
 
 def({id:'issue-row',name:'Issue Row',group:'SaaS',desc:'Issue トラッカーの 1 行。ID・タイトル・優先度・状態・担当を 1 行に収める。',
  usage:['タイトルは省略記号で 1 行に収め、詳細はパネルで見せる。','優先度と状態は色+ラベルで表示する。'],
