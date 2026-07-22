@@ -1,0 +1,82 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.issue-row",
+  "cycleId": "2026-07-22-components-issue-row-02",
+  "supersedesCycleId": "2026-07-13-components-issue-row-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-22",
+  "completedAt": "2026-07-22",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/implementation-readiness.json",
+    "components/issue-row.md",
+    "design/contracts/components/issue-row.contract.json",
+    "components/link.md",
+    "design/contracts/components/link.contract.json",
+    "components/checkbox.md",
+    "design/contracts/components/checkbox.contract.json",
+    "components/table.md",
+    "design/contracts/components/table.contract.json",
+    "components/data-grid.md",
+    "design/contracts/components/data-grid.contract.json",
+    "js/components-registry.js",
+    "js/ui-builders.js",
+    "index.html",
+    "test/component-specs.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": { "itemId": "components.issue-row", "summary": "Issue RowとTable/Data Gridのselection boundary、native list/link/checkbox semantics、independent actions、target size、320 CSS px reflowの実装前Contractを確定する。" },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior"],
+    "questions": ["Issue Rowをtable row、ARIA composite、native list itemのどれへ固定するか。", "Primary destination、selection、actionsをどのTab順とpointer layerで共存させるか。", "Desktopの高密度1行をMobile/zoomで情報損失なくどうreflowするか。"],
+    "evidence": [
+      { "id": "html-list", "title": "HTML Standard: Grouping content", "url": "https://html.spec.whatwg.org/dev/grouping-content.html", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "ulとliをunordered collectionとそのlist itemとして定義する。", "supportedDecisions": ["native-list-item"] },
+      { "id": "html-label", "title": "HTML Standard: Forms", "url": "https://html.spec.whatwg.org/dev/forms.html", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "labelはfor/idまたはcontrolの包含によってform controlへcaptionを関連付けられる。", "supportedDecisions": ["controlled-selection", "descriptive-control-names"] },
+      { "id": "wai-control-labels", "title": "WAI Forms Tutorial: Labeling Controls", "url": "https://www.w3.org/WAI/tutorials/forms/labels/", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Checkboxを含むcontrolへ目的を説明するlabelを関連付け、label自体をlarger clickable areaとして使う。", "supportedDecisions": ["controlled-selection", "descriptive-control-names"] },
+      { "id": "wcag-link-purpose", "title": "WCAG 2.2 Understanding 2.4.4: Link Purpose in Context", "url": "https://www.w3.org/WAI/WCAG22/Understanding/link-purpose-in-context.html", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Link purposeをlink textまたはprogrammatically determined contextから理解できるようにする。", "supportedDecisions": ["descriptive-link-name"] },
+      { "id": "wcag-reflow", "title": "WCAG 2.2 Understanding 1.4.10: Reflow", "url": "https://www.w3.org/WAI/WCAG22/Understanding/reflow.html", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "320 CSS px相当で情報や機能を失わず、非例外contentに2方向scrollを要求しない。", "supportedDecisions": ["two-row-reflow", "selection-boundary"] },
+      { "id": "wcag-target-size", "title": "WCAG 2.2 Understanding 2.5.8: Target Size Minimum", "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Pointer targetの24 CSS px minimumとspacing exceptionを定義する。", "supportedDecisions": ["independent-targets"] }
+    ],
+    "synthesis": "Issue Rowをnative ul配下のliへ限定し、Issue ID/title Linkをprimary destination、Checkboxとactionsを独立siblingとする。Column comparisonとgrid keyboardはTable/Data Gridへ委譲し、同じDOMをDesktop 1行からMobile 2段へreflowする。",
+    "decisionImpact": "Contract 0.2.0、React API Freeze、native Showcase、Default/Hover/Focus-visible/Selected、data edge scenarios、complete token bindingsを確定した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    { "id": "selection-boundary", "summary": "Issue Rowを非表形式のlinked list itemへ限定し、column comparison/sort/cell navigationをTable/Data Gridへ委譲する。", "rationale": "List reading orderとtable/grid interaction modelを混同しないため。" },
+    { "id": "native-list-item", "summary": "Collectionをnamed ul、rootを直接liへ固定し、listbox/option/grid/row roleを付けない。", "rationale": "Document navigation、selection checkbox、actionsをnative document orderで共存させるため。" },
+    { "id": "descriptive-link-name", "summary": "Issue IDとtitleをaria-labelledbyで結合したnative a[href]をprimary destinationにする。", "rationale": "反復listとlinks listの双方でdestinationを識別できるようにするため。" },
+    { "id": "controlled-selection", "summary": "Selectionはselected/callback/disabledを1 objectにしたcontrolled native Checkboxとする。", "rationale": "Checkboxの有無とchecked state ownershipを曖昧にしないため。" },
+    { "id": "descriptive-control-names", "summary": "CheckboxとactionsのnameへIssue IDを含める。", "rationale": "反復行で『選択』『メニュー』だけが並ぶ状態を避けるため。" },
+    { "id": "independent-targets", "summary": "Checkbox/actionsをstretched Link外のsiblingかつ上位layerへ置く。", "rationale": "Native activationと24px targetを競合なく保つため。" },
+    { "id": "two-row-reflow", "summary": "Desktop 1行とMobile 2段で同じli/link/checkbox/actions semanticsを維持する。", "rationale": "320 CSS px相当で情報損失とhorizontal scrollを避けるため。" },
+    { "id": "complete-token-binding", "summary": "Surface、state、density、spacing、type、motionの全slotを公開tokenへ結線する。", "rationale": "React実装時のvisual decisionを残さないため。" }
+  ],
+  "differences": [
+    { "classification": "cross-layer-conflict", "description": "旧APIはonOpen/onSelectを示したがShowcase rootはgeneric divでdetail Linkもevent ownershipもなかった。", "action": "Named ul、li、Issue ID/title Link、controlled selection、sibling actionsへ構造を確定した。", "status": "resolved" },
+    { "classification": "implementation-stale", "description": "旧ShowcaseのCheckbox名は『選択』だけで、titleは非Linkのellipsis、assigneeはinitialsだけ、Mobile reflowもなかった。", "action": "Issue固有names、native Link、assignee summary、two-row reflowへ更新した。", "status": "resolved" },
+    { "classification": "missing-contract", "description": "Issue data shape、href、controlled selection、actions、ref、native DOM、Hover/Focus-visible/Selected、edge scenariosが未確定だった。", "action": "React API Freeze、runtime、required scenariosへ固定した。", "status": "resolved" },
+    { "classification": "missing-token", "description": "Selection/focus surface、density target、responsive gaps、motionのbindingが未確定だった。", "action": "既存semantic tokenとtable-row-hoverへ全slotを結線し新規component tokenを追加しなかった。", "status": "resolved" }
+  ],
+  "changes": [
+    { "path": "components/issue-row.md", "summary": "Selection boundary、native list/link/checkbox composition、API、responsive rulesを確定。" },
+    { "path": "design/contracts/components/issue-row.contract.json", "summary": "Contract 0.2.0、readiness、runtime、complete bindings、negative examplesを追加。" },
+    { "path": "js/ui-builders.js", "summary": "li、Issue ID/title Link、controlled Checkbox、independent action、textual metadataを持つShowcaseへ更新。" },
+    { "path": "js/components-registry.js", "summary": "Named ul wrapper、usage、sample API、related compositionを確定Contractへ同期。" },
+    { "path": "index.html", "summary": "Stretched Link、independent target layers、state surfaces、Desktop/Mobile reflowをtokenized CSSへ追加。" },
+    { "path": "test/component-specs.test.js", "summary": "Native DOM、API、state、edge data、layeringの回帰testを追加。" },
+    { "path": "design/system-registry.json", "summary": "Composition dependenciesと最新review cycleを台帳へ接続。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js", "status": "passed", "notes": "27件が通過し、Contract、native ul/li/Link/Checkbox、independent actions、state/data scenariosを確認した。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "Available width 398pxで2段container reflow、title Link 243x20px、row/page横溢れなしを確認した。320x844 viewportでdocument scroll width 320px、row 222px、wrapped title 112x60px、selection 28x24px、action 32x28pxを実測した。Focus surface ringは2px、Selectedはnative checkedとdata-selectedを同期。Density default/comfortable/compactのselection targetは28x24 / 32x24 / 26x24px、actionは32x28 / 32x32 / 32x26px。light/dark x standard/highの4条件で横溢れなし。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、134 review cycles、generated artifacts、13/74 implementation-ready gateを含む全159テストが通過した。" }
+  ],
+  "openQuestions": [
+    { "question": "React実装、router/selection/action integration tests、visual regressionを完了しstableへ昇格する。", "owner": "components.issue-row", "exitCriteria": "Native navigation/context menu、controlled Checkbox、independent action、focus/target、edge data、全context baselineがCIで通ること。" }
+  ],
+  "acknowledgedImpacts": [],
+  "impactedItems": [],
+  "nextRecommendedItems": ["components.task-board-card"]
+}

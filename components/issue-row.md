@@ -2,191 +2,294 @@
 
 ## Summary
 
-Issue トラッカーの 1 行。ID・タイトル・優先度・状態・担当を 1 行に収める。
+Issue ID、title、priority、status、labels、assigneeを要約し、詳細へ移動できる非表形式のlist item。
 
 Machine-readable contract: `design/contracts/components/issue-row.contract.json`
 
 ## Role
 
-SaaS領域でIssue Rowの責務を1か所にまとめ、類似componentとの選択境界を固定します。PC用とSP用に別componentを作らず、同じ意味とAPIをlayout、viewport、input methodへ適応させます。
+Issue Rowは、issue collection内の1件分のsummary、primary destination、任意selection、任意actionsの配置を所有します。Link、Checkbox、Badge、Tag、Avatar、Icon Buttonの内部契約は各child componentへ委譲します。列見出し、sort、cell navigationを持つ表形式の管理は所有しません。PC用とSP用に別componentを作らず、同じDOM、意味、APIをreflowします。
 
 ## Principles
 
-- Taskの主目的と現在状態を最短で理解できること。
-- Native semanticsまたは確立したARIA patternを優先すること。
-- Semantic tokenを基本とし、Component tokenはpolicy triggerがある場合だけ追加すること。
+- Issue IDとtitleを最初に読み取り、priority、status、labels、assigneeを短く走査できること。
+- Root全体をcustom controlにせず、native Link、Checkbox、任意actionsだけをTab順へ入れること。
+- Selection、priority、statusを色だけで伝えないこと。
+- DesktopとMobileで同じDOM、意味、APIを維持すること。
+- Semantic tokenと既存child componentを優先し、Issue Row固有tokenを増やさないこと。
 
 ## When To Use
 
-- issue一覧でID、title、priority、status、assigneeを高密度に走査するとき。
+- Issue一覧で各itemのID、title、priority、status、labels、assigneeを高密度に走査するとき。
+- 各issueが1つの詳細destinationを持ち、任意で複数選択やitem actionを提供するとき。
+- Column alignmentよりissue単位のreading orderとresponsive reflowを優先するとき。
 
 ## When Not To Use
 
-- 詳細編集や長い説明には専用detail viewを使う。
+- Column header、sort、resize、cell comparison、spreadsheet-like keyboard navigationが必要ならTableまたはData Gridを使う。
+- Board lane間のdrag/dropが主目的ならTask Board Cardを使う。
+- 1件のissue本文、comment、編集formには専用Issue Detailを使う。
+- Destinationを持たない静的metadata groupにはListまたはKey Valueを使う。
 
 ## Visual Model
 
-Collection container with an explicit reading order. Surface、border、type、spacingの強弱は内容の階層を支え、装飾のためだけにcard、shadow、accentを追加しません。状態は色だけでなくlabel、icon、shape、positionを組み合わせます。
+1つのbounded list item内にselection、Issue ID/title Link、metadata、任意actionsをreading order順に配置します。Primary Linkのpointer hit areaはrow surfaceへ拡張できますが、CheckboxとactionsはLink外のsiblingかつ上位layerとして独立させます。
 
 ## Anatomy
 
 | Part | Required | Description |
 |---|---:|---|
-| root | Yes | Collection container with an explicit reading order. |
-| item | Yes | Repeated row, event, node, message, or entry. |
-| primary-content | Yes | Main scannable value. |
-| metadata | No | Secondary state, time, owner, or count. |
-| actions | No | Item-level operations with independent names. |
+| collection | Yes | Issue Rowを直接の子に持つnamed `ul`。呼び出し側が所有する。 |
+| root | Yes | `ul`の直接の子になる`li`。 |
+| selection | No | Issue固有labelを持つnative Checkbox。 |
+| issue-key | Yes | Monospaceで表示するstable Issue ID。 |
+| primary-link | Yes | Issue IDとtitleで命名されるnative Link。 |
+| priority | Yes | Text labelを持つBadge。 |
+| status | Yes | Dotとtext labelを持つStatus。 |
+| labels | No | 最大2件を表示し、残数とfull accessible summaryを持つTag group。 |
+| assignee | No | Assignee名を伝えるAvatar summary。 |
+| actions | No | Link外に置く1つの独立actionまたはMenu trigger。 |
 
 ## Variants
 
 | Variant | Use | Notes |
 |---|---|---|
-| `default` | 標準文脈。 | 意味を変えずに見た目だけを増やさない。 |
+| `default` | 非表形式のIssue list item。 | Priority/status/selectionはdataまたはstateでありvisual variantではない。 |
 
 ## Sizes / Density
 
-| Size | Token | Typical use |
-|---|---|---|
-| Dedicated size propなし | Density token | 周辺layoutのdensityに従う。 |
-
-Compact / Default / Comfortableはviewportではなく作業密度と入力方式で選び、componentの意味やprop集合は変えません。
+Dedicated size propは持ちません。`--row-h`、`--cell-y`、`--ctl-sm`を現在のdensity contextから受け取り、viewportだけでdensityを変更しません。
 
 ## Icon Rules
 
-このcomponentは必須のicon slotを持ちません。追加する場合も情報をiconだけへ閉じ込めません。
+- Actionsがある場合だけIcon Buttonを表示し、nameへIssue IDと目的を含める。
+- Priority、status、selectionをiconやcolorだけで表さない。
+- Avatar画像の有無にかかわらずassignee名をaccessible textとして保持する。
 
 ## States
 
 | State | Behavior |
 |---|---|
-| `default` | 通常状態。意味、label、valueを省略しない。 |
+| `default` | Summaryと提供されたfocus targetを常時表示する。 |
+| `hover` | Backgroundとborderを補助的に変え、情報やactionsを新たに出現させない。 |
+| `focus-visible` | Primary Link focusをrow surface全体のringとして表示する。 |
+| `selected` | Native Checkboxのchecked stateを正本とし、background/borderは補助表示にする。 |
+
+Priority、status、assignee不在、label数はcomponent stateではなくissue dataです。
 
 ## Behavior
 
-- タイトルは省略記号で 1 行に収め、詳細はパネルで見せる。
-- 優先度と状態は色+ラベルで表示する。
+- Rootは`li`で、`onClick`、`role="link"`、`role="row"`、`tabIndex`を持たない。
+- Issue IDとtitleを`aria-labelledby`で結合したnative Linkを唯一のprimary destinationとする。
+- Pointer向けにLinkのpseudo-elementをrow surfaceへ拡張できるが、Link内へCheckbox、Button、別Linkを入れない。
+- `selection`がある場合だけnative Checkboxを表示し、labelを「MRD-142を選択」のようにIssue IDで識別する。
+- `selection.selected`とCheckboxのchecked stateを同期し、change時は`onSelectedChange(nextSelected)`を1回呼ぶ。
+- `actions`はLink外のsiblingとして拡張Link layerより前面へ置き、activationでnavigationを発生させない。
+- Actionsをhover時だけ表示しない。
+- Labelsはvisual上2件まで表示し、残数を`+N`で示す。Accessible summaryには全label名を残す。
+- Assigneeがない場合は空Avatarや「未割当」を自動挿入せずslotを省略する。必要ならconsumerがstatus/filter contextで未割当を示す。
+- TitleはDesktopで1行ellipsisを許可するが、DOM textとaccessible nameは切り詰めない。Mobileではwrapする。
 
-- Controlled stateを提供する場合、visual stateとprogrammatic stateを同じeventで同期します。
-- 非同期actionでは二重実行を防ぎ、完了・失敗・中断を説明します。
+## React API Freeze
+
+```tsx
+type IssueRowTone = "neutral" | "info" | "success" | "warning" | "danger";
+
+type IssueRowIssue = {
+  id: string;
+  title: string;
+  priority: { label: string; tone: IssueRowTone };
+  status: { label: string; tone: IssueRowTone };
+  labels?: readonly string[];
+  assignee?: { id: string; name: string; avatarSrc?: string };
+};
+
+type IssueRowSelection = {
+  selected: boolean;
+  onSelectedChange: (selected: boolean) => void;
+  disabled?: boolean;
+};
+
+type IssueRowProps = {
+  issue: IssueRowIssue;
+  href: string;
+  selection?: IssueRowSelection;
+  actions?: ReactElement;
+  ref?: ForwardedRef<HTMLLIElement>;
+};
+```
+
+- `issue.id`、`issue.title`、`href`は空文字を許可しません。
+- `selection`はcontrolled objectです。Checkboxを表示する場合は`selected`とcallbackを必ず同時に渡します。
+- `selection.disabled`はCheckboxだけをdisabledにし、Issue Linkやactionsをdisabledにしません。
+- `actions`は1つのfocusable actionまたはMenu compositionとし、accessible nameとopen stateはそのcomponentが所有します。
+- `ref`はroot `li`へforwardします。
 
 ## Layout / Placement Rules
 
 ### Recommended Pattern
 
-- Reading orderとfocus orderを一致させます。
-- 周辺componentとのspacingはtokenを使い、固定viewport値で内部寸法を変えません。
-- 主情報を先にしてmetadataを折り返し、非表示情報にはdetail viewから到達できるようにする。
+- Collectionはnamed `ul`とし、Issue Rowを直接の`li` childにする。
+- DOM順はselection → Issue ID/title → priority/status/labels/assignee → actionsとする。
+- Issue IDとtitleへ残り幅を与え、metadataとactionsをtitleの前へ押し込まない。
+- Selectionとactions以外のrow surfaceをPrimary Linkのpointer areaとして使える。
+- Bulk toolbar、select-all、result count、paginationはcollection ownerが管理する。
 
 ## Responsive / Viewport Behavior
 
 ### Desktop
 
-- CompactまたはDefault densityで走査性を優先し、metadataとactionの列を安定させる。
-- Hover actionはfocusでも表示する。
+- 1行を基本にIssue ID/titleへ可変幅を与え、metadataとactionsを右側へ配置する。
+- Available widthが不足したらlabelsを2件＋残数へ要約する。
+- Densityに応じたrow heightを使い、固定pixel heightでtextをclipしない。
 
 ### Mobile
 
-- 主情報を先にしてmetadataを折り返し、非表示情報にはdetail viewから到達できるようにする。
-- 行全体clickだけに依存せず明示的なtargetを残す。
+- 同じ`li`、Link、Checkbox、actionsを2段へreflowする。
+- 1段目をselection、Issue ID/title、actions、2段目をpriority/status/labels/assigneeとする。
+- Titleをwrapし、320 CSS px相当でも横scrollを発生させない。
+- Metadataを無言で削除せず、必要なら視覚的な要約とdetail destinationを併用する。
 
 ### Touch
 
-- 表示専用rootをtab順へ追加しない。
-- 内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。
+- Primary Linkのpointer hit areaをrow surfaceへ拡張し、focus targetは1つに保つ。
+- Checkboxとactionsは24px minimumを満たし、Link hit areaと重ねない。
+- Bulk selectionやactionsをswipe/long-pressだけに依存させない。
 
 ## Accessibility
 
-- 表示専用rootを不要にtab順へ追加しない。
-- 状態は色だけで表さずtext、icon、shapeを併用する。
-- Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。
-- Nested controlがある場合だけ、そのcontrolがfocusを受け取る。
+- Named `ul` / `li`でcollectionとitemの関係を伝える。`listbox`、`option`、`grid`、`row`へ置き換えない。
+- Primary LinkはIssue IDとtitleを組み合わせたdescriptive accessible nameを持つ。
+- Checkboxはnative `input[type="checkbox"]`とlabelを使い、checked/disabledをplatformへ委譲する。
+- Rootをfocusableにせず、Tab順はCheckbox、Primary Link、任意actionsのDOM順とする。
+- Link focusはrow surface全体へ可視ringを表示し、Checkbox/Icon Buttonのfocus indicatorを上書きしない。
+- Priority/status/labels/assigneeはtextで理解でき、color、dot、avatarだけに依存しない。
+- 200% zoom、High contrast、Reduced motion、320 CSS px相当でも情報、focus、reading orderを保持する。
+- 全pointer targetは24px minimum、主要touch targetは44px以上推奨とする。
 
 Keyboard:
 
-- Component root固有のkeyboard interactionは持たない。Nested controlは各componentのcontractに従う。
+- `Space`: FocusされたCheckboxのchecked stateを切り替える。
+- `Enter`: FocusされたPrimary Linkのdestinationへ移動する。
+- `Tab / Shift+Tab`: Checkbox、Primary Link、任意actionsをdocument順に移動する。
+- Actionsの追加interactionはそのcomponent Contractに従う。
 
 ## Content Guidelines
 
-- Labelは対象または結果を具体的に書き、状態だけを繰り返さない。
-- Errorは原因と修正方法、Emptyは何がないかと次の一歩を示す。
-- 省略するmetadataにも別経路から到達できるようにする。
+- Issue IDはproject prefixと連番を保持し、titleだけで識別しにくい反復listを補助する。
+- Titleは問題または成果を具体的に書き、「修正」「対応」のような単独語を避ける。
+- Priority/statusは「High」「In Progress」のように単独で理解できるlabelにする。
+- Labelは分類語だけにし、statusやpriorityを重複させない。
+- Actionsのnameは「MRD-142のアクションを開く」のように対象を含める。
 
 ## Tokens
 
-- semanticColor: `--border`, `--border-muted`, `--fg`, `--fg-muted`, `--fg-subtle`, `--focus-ring`, `--surface`, `--surface-muted`, `--table-row-hover`
-- density: `--cell-y`, `--row-h`
-- typography: `--font-mono`, `--text-label`
-- radius: `--radius-md`
+- Surface / interaction: `--surface`, `--table-row-hover`, `--primary-subtle`, `--border`, `--border-strong`, `--primary`, `--focus-ring`, `--fg`, `--fg-subtle`
+- Density / spacing: `--row-h`, `--cell-y`, `--ctl-sm`, `--sp-1`, `--sp-2`, `--sp-3`
+- Shape / type / motion: `--radius-md`, `--font-mono`, `--text-label`, `--text-micro`, `--dur-fast`, `--ease-standard`
 
-Primitive color、raw hex、任意pxをcomponentから直接選びません。
+Issue Row固有tokenは追加しません。Badge、Status、Tag、Avatar、Checkbox、Icon Button内部のvisual tokenは各child Contractへ委譲します。
 
 ### Token Binding Decisions
 
 | Slot | Source | Scope | Trigger | Reason |
 |---|---|---|---|---|
-| `token.surface.value` | `--surface` | `semantic` | - | Issue Rowの公開visual contractで用途tokenとして共有する。 |
-| `token.border.value` | `--border` | `semantic` | - | Issue Rowの公開visual contractで用途tokenとして共有する。 |
-| `token.fg.value` | `--fg` | `semantic` | - | Issue Rowの公開visual contractで用途tokenとして共有する。 |
-| `token.surface-muted.value` | `--surface-muted` | `semantic` | - | Issue Rowの公開visual contractで用途tokenとして共有する。 |
-| `token.fg-muted.value` | `--fg-muted` | `semantic` | - | Issue Rowの公開visual contractで用途tokenとして共有する。 |
-| `token.border-muted.value` | `--border-muted` | `semantic` | - | Issue Rowの公開visual contractで用途tokenとして共有する。 |
-| `token.table-row-hover.value` | `--table-row-hover` | `component` | `intrinsic-component-value` | 大量行で反復するTable hoverはsurface tokenより弱い固有濃度を必要とする。 |
-| `token.row-h.value` | `--row-h` | `semantic` | - | Issue Rowの公開visual contractで用途tokenとして共有する。 |
-| `token.cell-y.value` | `--cell-y` | `semantic` | - | Issue Rowの公開visual contractで用途tokenとして共有する。 |
-| `token.focus-ring.value` | `--focus-ring` | `semantic` | - | Issue Rowの公開visual contractで用途tokenとして共有する。 |
-| `token.fg-subtle.value` | `--fg-subtle` | `semantic` | - | Issue RowのHTML showcaseで実際に参照する公開token。 |
-| `token.font-mono.value` | `--font-mono` | `semantic` | - | Issue RowのHTML showcaseで実際に参照する公開token。 |
-| `token.radius-md.value` | `--radius-md` | `semantic` | - | Issue RowのHTML showcaseで実際に参照する公開token。 |
-| `token.text-label.value` | `--text-label` | `semantic` | - | Issue RowのHTML showcaseで実際に参照する公開token。 |
+| `surface.background` | `--surface` | semantic | - | Default row surface。 |
+| `surface.hover` | `--table-row-hover` | component | `intrinsic-component-value` | 反復rowの弱いhover濃度をTableと共有する。 |
+| `surface.selected` | `--primary-subtle` | semantic | - | Native checked stateの補助面。 |
+| `surface.border` | `--border` | semantic | - | Default boundary。 |
+| `surface.hover-border` | `--border-strong` | semantic | - | Hover boundary。 |
+| `surface.selected-border` | `--primary` | semantic | - | Selected補助boundary。 |
+| `surface.focus` | `--focus-ring` | semantic | - | Primary Link focusをrow surfaceへ投影する。 |
+| `surface.height` | `--row-h` | semantic | - | Density contextのminimum row height。 |
+| `surface.padding-block` | `--cell-y` | semantic | - | Density contextのvertical padding。 |
+| `selection.target` | `--ctl-sm` | semantic | - | Checkbox labelのminimum pointer area。 |
+| `content.gap` | `--sp-3` | semantic | - | Primary/meta/action separation。 |
+| `compact.gap` | `--sp-1`, `--sp-2` | semantic | - | Key/titleとmobile metadataのspacing。 |
+| `surface.radius` | `--radius-md` | semantic | - | Bounded list item shape。 |
+| `content.foreground` | `--fg` | semantic | - | Title Link。 |
+| `metadata.foreground` | `--fg-subtle` | semantic | - | Issue ID。 |
+| `content.type` | `--text-label` | semantic | - | Title scale。 |
+| `metadata.type` | `--text-micro`, `--font-mono` | semantic | - | Stable Issue ID。 |
+| `interaction.motion` | `--dur-fast`, `--ease-standard` | semantic | - | Hover/focus/selected transition。 |
 
-Current coverage: `partial`。HTML showcaseを確認済みの仕様候補として記録し、React package実装時にDOM/state selectorまで結線して`complete`へ移行します。
+Current coverage: `complete`。未結線のIssue Row固有visual slotはありません。
 
 ## Do / Don't
 
 Do:
 
 ```tsx
-<IssueRow issue={issue} selected={sel} onSelect={toggle} onOpen={openDetail} />
+<IssueRow
+  issue={issue}
+  href={`/issues/${issue.id}`}
+  selection={{ selected, onSelectedChange: setSelected }}
+  actions={<IssueActions issue={issue} />}
+/>
 ```
 
 Don't:
 
 ```tsx
-{/* 詳細編集や長い説明には専用detail viewを使う。 */}
-<IssueRow />
+{/* Interactive descendantを含むrow全体をLinkで包まない。 */}
+<a href={`/issues/${issue.id}`}>
+  <input type="checkbox" />
+  <IssueRow issue={issue} />
+</a>
 ```
 
 ## Prohibited Patterns
 
-- `NO_RAW_HEX_COLOR`に反する実装。
-- `SPACING_FROM_TOKENS_ONLY`に反する実装。
-- `RADIUS_FROM_TOKENS_ONLY`に反する実装。
-- `CONTRAST_AA_MINIMUM`に反する実装。
+- Root `div`へ`onClick`、`role="link"`、`role="row"`、`tabIndex=0`を追加する。
+- Row全体を包むLink内へCheckbox、Button、別Linkを入れる。
+- `listbox` / `option`内へLinkやButtonを混在させる。
+- Primary LinkとCheckbox/actionsのpointer hit areaを重ねる。
+- Hover時だけselection、actions、full titleを表示する。
+- Checkboxを「選択」、actionを「メニュー」だけで命名する。
+- Priority/statusをcolorやdotだけ、assigneeを無名avatarだけで表す。
+- Mobileでmetadataを削除する、またはhorizontal scrollを必須にする。
+- Raw hex、任意spacing/radius、固定heightを追加する。
+- `FOCUS_VISIBLE_REQUIRED`、`NO_POSITIVE_TABINDEX`、`TARGET_SIZE_MINIMUM`、`INTERACTIVE_NAME_REQUIRED`に反する実装。
 
 ## AI Selection Rules
 
 AIが選ぶ条件:
 
-- issue一覧でID、title、priority、status、assigneeを高密度に走査するとき。
+- 非表形式のissue listで、各itemが1つの詳細destinationと任意selection/actionsを持つ。
+- Issue単位のreading orderとresponsive reflowをcolumn comparisonより優先する。
 
 AIが避ける条件:
 
-- 詳細編集や長い説明には専用detail viewを使う。
+- Column header/sort/cell navigationはTableまたはData Grid、drag/dropはTask Board Card、詳細編集はIssue Detail。
 
-AIはvariantを意味、sizeをtask密度、stateを実際のsystem stateから選びます。Viewport名だけでvariantやcomponentを分岐しません。
+AIはIssue Rowを「row roleを持つ大きなButton」として生成しません。Named `ul`の`li`、Issue ID/title Link、任意Checkbox/actionsとして生成します。
 
 ## Examples
 
 ```tsx
-<IssueRow issue={issue} selected={sel} onSelect={toggle} onOpen={openDetail} />
+<ul aria-label="Issues">
+  {issues.map((issue) => (
+    <IssueRow
+      key={issue.id}
+      issue={issue}
+      href={`/issues/${issue.id}`}
+      selection={{
+        selected: selectedIds.has(issue.id),
+        onSelectedChange: (selected) => updateSelection(issue.id, selected),
+      }}
+      actions={<IssueActions issue={issue} />}
+    />
+  ))}
+</ul>
 ```
 
 ## Implementation Notes
 
-- React packageは今後追加します。現在はsemantic contract、HTML showcase、token binding候補を正本として扱います。
-- Native element、ref forwarding、controlled state、event名はpackage実装時にこのcontractへ同期します。
+- React packageは今後追加します。現在はContract 0.2.0、native HTML Showcase、review evidenceを実装正本とします。
+- Pointer向けstretched Linkはpseudo-elementで実装し、selection/actionsを`position: relative; z-index: 1`で独立させます。
+- Collection wrapper、select-all、bulk toolbar、paginationはIssue Rowに内包しません。
+- Router integrationでもnative `href`を保持し、click callbackだけに置き換えません。
 
 ## Open Questions
 
-- React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。
+なし。React実装、router/selection/action integration tests、visual regressionはstable昇格条件であり、実装前Contractの未決事項ではありません。

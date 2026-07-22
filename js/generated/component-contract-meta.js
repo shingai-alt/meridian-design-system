@@ -6107,10 +6107,15 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "issue一覧でID、title、priority、status、assigneeを高密度に走査するとき。"
+        "Issue一覧で各itemのID、title、priority、status、labels、assigneeを高密度に走査するとき。",
+        "各issueが1つの詳細destinationを持ち、任意で複数選択やitem actionを提供するとき。",
+        "Column alignmentよりissue単位のreading orderとresponsive reflowを優先するとき。"
       ],
       "whenNotToUse": [
-        "詳細編集や長い説明には専用detail viewを使う。"
+        "Column header、sort、resize、cell comparison、spreadsheet-like keyboard navigationが必要ならTableまたはData Gridを使う。",
+        "Board lane間のdrag/dropが主目的ならTask Board Cardを使う。",
+        "1件のissue本文、comment、編集formには専用Issue Detailを使う。",
+        "Destinationを持たない静的metadata groupにはListまたはKey Valueを使う。"
       ],
       "principles": [
         1,
@@ -6122,29 +6127,54 @@ const COMPONENT_CONTRACTS={
     },
     "anatomy": [
       {
+        "part": "collection",
+        "required": true,
+        "description": "Issue Rowを直接の子に持つnamed ul。呼び出し側が所有する。"
+      },
+      {
         "part": "root",
         "required": true,
-        "description": "Collection container with an explicit reading order."
+        "description": "ulの直接の子になるli。"
       },
       {
-        "part": "item",
-        "required": true,
-        "description": "Repeated row, event, node, message, or entry."
-      },
-      {
-        "part": "primary-content",
-        "required": true,
-        "description": "Main scannable value."
-      },
-      {
-        "part": "metadata",
+        "part": "selection",
         "required": false,
-        "description": "Secondary state, time, owner, or count."
+        "description": "Issue固有labelを持つnative Checkbox。"
+      },
+      {
+        "part": "issue-key",
+        "required": true,
+        "description": "Monospaceで表示するstable Issue ID。"
+      },
+      {
+        "part": "primary-link",
+        "required": true,
+        "description": "Issue IDとtitleで命名されるnative Link。"
+      },
+      {
+        "part": "priority",
+        "required": true,
+        "description": "Text labelを持つBadge。"
+      },
+      {
+        "part": "status",
+        "required": true,
+        "description": "Dotとtext labelを持つStatus。"
+      },
+      {
+        "part": "labels",
+        "required": false,
+        "description": "最大2件、残数、full accessible summaryを持つTag group。"
+      },
+      {
+        "part": "assignee",
+        "required": false,
+        "description": "Assignee名を伝えるAvatar summary。"
       },
       {
         "part": "actions",
         "required": false,
-        "description": "Item-level operations with independent names."
+        "description": "Primary Link外の独立action。"
       }
     ],
     "variants": [
@@ -6154,106 +6184,202 @@ const COMPONENT_CONTRACTS={
     "states": [
       {
         "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "description": "通常のsummaryと提供されたfocus targetを表示する。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "Issue ID/title Linkを表示する",
+          "Selectionとactionsを提供する場合は常時発見可能にする",
+          "Priority、status、labels、assigneeをtextでも示す"
+        ]
+      },
+      {
+        "id": "hover",
+        "description": "Pointer hoverの補助状態。",
+        "requiredBehavior": [
+          "Backgroundとborderを変える",
+          "情報やactionsをhoverだけで出現させない",
+          "ActivationをLink、Checkbox、actionのいずれかへ帰属させる"
+        ]
+      },
+      {
+        "id": "focus-visible",
+        "description": "Primary Linkがkeyboard focusを持つ状態。",
+        "requiredBehavior": [
+          "Row surface全体へfocus ringを表示する",
+          "Checkboxとactionのfocus ringを上書きしない",
+          "Focusでlayoutを変えない"
+        ]
+      },
+      {
+        "id": "selected",
+        "description": "Native Checkboxがcheckedのcontrolled state。",
+        "requiredBehavior": [
+          "checked stateを正本にする",
+          "Backgroundとborderを補助表示にする",
+          "Primary Linkとactionsを引き続き操作可能にする"
         ]
       }
     ],
     "props": [
       {
-        "name": "children",
-        "type": "ReactNode",
+        "name": "issue",
+        "type": "IssueRowIssue",
         "required": true,
         "default": null,
-        "description": "Componentの主要content。"
+        "description": "ID、title、priority、status、labels、assigneeを持つsummary data。"
+      },
+      {
+        "name": "href",
+        "type": "string",
+        "required": true,
+        "default": null,
+        "description": "Primary native Linkの非空destination。"
+      },
+      {
+        "name": "selection",
+        "type": "IssueRowSelection",
+        "required": false,
+        "default": null,
+        "description": "Selected、onSelectedChange、任意disabledを同時に所有するcontrolled selection。"
+      },
+      {
+        "name": "actions",
+        "type": "ReactElement",
+        "required": false,
+        "default": null,
+        "description": "Link外へ置く1つのfocusable actionまたはMenu composition。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLLIElement>",
+        "required": false,
+        "default": null,
+        "description": "Root liへforwardするref。"
       }
     ],
     "tokenRefs": {
       "semanticColor": [
-        "--border",
-        "--border-muted",
-        "--fg",
-        "--fg-muted",
-        "--fg-subtle",
-        "--focus-ring",
         "--surface",
-        "--surface-muted",
+        "--primary-subtle",
+        "--border",
+        "--border-strong",
+        "--primary",
+        "--focus-ring",
+        "--fg",
+        "--fg-subtle",
         "--table-row-hover"
       ],
       "density": [
+        "--row-h",
         "--cell-y",
-        "--row-h"
+        "--ctl-sm"
       ],
-      "typography": [
-        "--font-mono",
-        "--text-label"
+      "spacing": [
+        "--sp-1",
+        "--sp-2",
+        "--sp-3"
       ],
       "radius": [
         "--radius-md"
+      ],
+      "typography": [
+        "--font-mono",
+        "--text-label",
+        "--text-micro"
+      ],
+      "motion": [
+        "--dur-fast",
+        "--ease-standard"
       ]
     },
     "accessibility": {
       "requirements": [
-        "表示専用rootを不要にtab順へ追加しない。",
-        "状態は色だけで表さずtext、icon、shapeを併用する。"
+        "Named ul / liでcollectionとitemを構造化しrootをfocusableにしない。",
+        "Primary destinationはIssue IDとtitleで命名したnative Linkにする。",
+        "Selection、priority、status、labels、assigneeを色やshapeだけに依存させない。",
+        "全targetは24px minimum、主要touch targetは44px以上推奨とする。"
       ],
       "aria": [
-        "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        "CheckboxはIssue IDを含むlabelとnative checked/disabled stateを持つ。",
+        "Primary LinkはIssue IDとtitleをaria-labelledbyで結合する。",
+        "ActionsはIssue IDと目的を含むaccessible nameを所有する。"
       ],
       "focus": [
-        "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+        "Tab順はCheckbox、Primary Link、任意actionsのDOM順とする。",
+        "Primary Link focusをrow surface全体のfocus ringで示す。",
+        "Checkboxとactionsのfocus indicatorをstretched Link layerで隠さない。"
       ]
     },
-    "keyboardInteractions": [],
+    "keyboardInteractions": [
+      {
+        "key": "Space",
+        "action": "FocusされたCheckboxのchecked stateを切り替える。"
+      },
+      {
+        "key": "Enter",
+        "action": "FocusされたPrimary Linkのdestinationへ移動する。"
+      },
+      {
+        "key": "Tab / Shift+Tab",
+        "action": "Checkbox、Primary Link、任意actionsをdocument順に移動する。"
+      }
+    ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "issue一覧でID、title、priority、status、assigneeを高密度に走査するとき。",
+        "id": "linked-selectable-issue",
+        "title": "Linked selectable issue",
+        "description": "非表形式のIssue listで詳細遷移と任意selection/actionsを提供する。",
         "recommended": [
-          "タイトルは省略記号で 1 行に収め、詳細はパネルで見せる。"
+          "Named ulの直接liにする",
+          "Issue ID/title native Linkをprimary destinationにする",
+          "Checkbox/actionsをLink外のsiblingにする"
         ],
         "avoid": [
-          "詳細編集や長い説明には専用detail viewを使う。"
+          "Root click handler",
+          "Link内のCheckbox/Button",
+          "grid/row role",
+          "Hover-only action"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのIssue Row。",
+        "summary": "Issue ID/titleへ可変幅を与えmetadata/actionsを右側へ配置する。",
         "rules": [
-          "CompactまたはDefault densityで走査性を優先し、metadataとactionの列を安定させる。",
-          "Hover actionはfocusでも表示する。"
+          "1行を基本にする",
+          "Labelsは2件と残数へ要約する",
+          "Density tokenでminimum row heightを決める"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "固定pixel heightでtextをclipする",
+          "Hoverだけでactionsを表示する"
         ]
       },
       "mobile": {
-        "summary": "MobileでのIssue Row。",
+        "summary": "同じli/link/checkbox/actions semanticsで2段へreflowする。",
         "rules": [
-          "主情報を先にしてmetadataを折り返し、非表示情報にはdetail viewから到達できるようにする。",
-          "行全体clickだけに依存せず明示的なtargetを残す。"
+          "1段目はselection、Issue ID/title、actions",
+          "2段目はpriority/status/labels/assignee",
+          "Titleをwrapし320 CSS px相当で横scrollを発生させない"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "PC用とSP用にcomponentを分ける",
+          "Metadataを無言で削除する"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのIssue Row。",
+        "summary": "Primary Link、Checkbox、actionsを独立したpointer targetとして操作する。",
         "rules": [
-          "表示専用rootをtab順へ追加しない。",
-          "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+          "Primary Link hit areaをsurfaceへ拡張してもfocus targetは1つに保つ",
+          "Checkbox/actionsは24px minimum",
+          "Hit areaを重ねない"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "Nested interactive content",
+          "Swipe/long-pressだけのselection/action"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "key-value-row": {
     "id": "key-value-row",

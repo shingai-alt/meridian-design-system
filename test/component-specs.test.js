@@ -583,6 +583,61 @@ test('Project Card is implementation-ready with a native heading link and indepe
   assert.match(indexSource, /\.projectc:has\(\.projectc-link:focus-visible\)[^}]*var\(--focus-ring\)/);
 });
 
+test('Issue Row is implementation-ready as a native list item with independent link, selection, and actions', () => {
+  const contract = contracts.find(({ id }) => id === 'issue-row');
+  assert.equal(contract.contractVersion, '0.2.0');
+  assert.equal(contract.implementationReadiness.status, 'ready');
+  assert.deepEqual(Object.keys(contract.variants), ['default']);
+  assert.deepEqual(contract.states.map(({ id }) => id), ['default', 'hover', 'focus-visible', 'selected']);
+  assert.deepEqual(contract.props.map(({ name }) => name), ['issue', 'href', 'selection', 'actions', 'ref']);
+  assert.deepEqual(contract.runtime.rootElements, ['li']);
+  assert.ok(contract.runtime.relations.includes('ul-direct-li'));
+  assert.ok(contract.runtime.relations.includes('issue-key-title-link-name'));
+  assert.ok(contract.runtime.relations.includes('controlled-checkbox-selection'));
+  assert.ok(contract.runtime.relations.includes('independent-sibling-actions'));
+  assert.equal(contract.tokenBindings.coverage, 'complete');
+  assert.deepEqual(contract.tokenBindings.unboundSlots, []);
+  assert.deepEqual(contract.openQuestions, []);
+
+  const component = renderedComponents.find(({ id }) => id === 'issue-row');
+  const standard = component.render({ ...renderProps(component), state: 'default', scenario: 'with-selection' });
+  const hovered = component.render({ ...renderProps(component), state: 'hover' });
+  const focused = component.render({ ...renderProps(component), state: 'focus-visible' });
+  const selected = component.render({ ...renderProps(component), state: 'selected' });
+  const withoutSelection = component.render({ ...renderProps(component), scenario: 'without-selection' });
+  const disabledSelection = component.render({ ...renderProps(component), scenario: 'disabled-selection' });
+  const withoutActions = component.render({ ...renderProps(component), scenario: 'without-actions' });
+  const noAssignee = component.render({ ...renderProps(component), scenario: 'no-assignee' });
+  const noLabels = component.render({ ...renderProps(component), scenario: 'no-labels' });
+  const manyLabels = component.render({ ...renderProps(component), scenario: 'many-labels' });
+  const longTitle = component.render({ ...renderProps(component), scenario: 'long-title' });
+  assert.match(standard, /^<div class="issuerow-demo"><ul class="issuerow-list" aria-label="Issues"><li class="panel issuerow"[^>]+data-component="issue-row"/);
+  assert.match(standard, /<label class="checkbox issuerow-select"><input type="checkbox" aria-label="MRD-142を選択"><\/label>/);
+  assert.match(standard, /<span id="issue-row-\d+-key" class="issuerow-key">MRD-142<\/span><a id="issue-row-\d+-title" class="issuerow-link" href="#\/issues\/mrd-142" aria-labelledby="issue-row-\d+-key issue-row-\d+-title">/);
+  assert.match(standard, /aria-label="ラベル: bug、table"/);
+  assert.match(standard, /aria-label="担当: 新谷 尚史"/);
+  assert.match(standard, /aria-label="MRD-142のアクションを開く"[^>]+aria-haspopup="menu"[^>]+aria-expanded="false"/);
+  assert.doesNotMatch(standard, /<a\b[^>]*>(?:(?!<\/a>).)*(?:<input|<button)/s);
+  assert.doesNotMatch(standard, /<li[^>]+(?:onclick|role="(?:link|row)"|tabindex)/i);
+  assert.match(hovered, /data-state="hover"/);
+  assert.match(focused, /data-state="focus-visible"/);
+  assert.match(selected, /data-state="selected"[^>]+data-selected="true"/);
+  assert.match(selected, /<input type="checkbox" aria-label="MRD-142を選択" checked>/);
+  assert.doesNotMatch(withoutSelection, /issuerow-select/);
+  assert.match(disabledSelection, /aria-label="MRD-142を選択" disabled/);
+  assert.doesNotMatch(withoutActions, /aria-haspopup="menu"/);
+  assert.doesNotMatch(noAssignee, /issuerow-assignee/);
+  assert.doesNotMatch(noLabels, /issuerow-labels/);
+  assert.match(manyLabels, /aria-label="ラベル: bug、table、routing、accessibility、regression"/);
+  assert.match(manyLabels, /<span class="tagc">\+3<\/span>/);
+  assert.match(longTitle, /server-side sortingとURL state synchronization/);
+  assert.match(indexSource, /\.issuerow-link::after\{content:"";position:absolute;inset:0;border-radius:var\(--radius-md\)\}/);
+  assert.match(indexSource, /\.issuerow-select,\.issuerow-actions\{position:relative;z-index:1;min-inline-size:var\(--ctl-sm\)/);
+  assert.match(indexSource, /\.issuerow:has\(\.issuerow-link:focus-visible\)[^}]*var\(--focus-ring\)/);
+  assert.match(indexSource, /\.issuerow-list\{[^}]*container-type:inline-size/);
+  assert.match(indexSource, /@container\(max-width:520px\)\{\.issuerow\{grid-template-columns:auto minmax\(0,1fr\) auto/);
+});
+
 test('Drawer is implementation-ready as a native modal dialog with trigger and focus lifecycle', () => {
   const drawer = contracts.find((contract) => contract.id === 'drawer');
   assert.equal(drawer.contractVersion, '0.2.0');

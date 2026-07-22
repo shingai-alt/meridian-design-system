@@ -487,10 +487,10 @@ def({id:'project-card',name:'Project Card',group:'SaaS',desc:'Projectのstatus�
  render:p=>projectCard(p),code:()=>`<ProjectCard\n  project={project}\n  href={\`/projects/${project.id}\`}\n  actions={<ProjectActions project={project} />}\n/>`,
  usage:['Headingのnative Linkをprimary destinationにし、root自体はfocusableにしない。','ActionsはLink外のsiblingとして常時発見可能にする。','Status、progress、members、updated timeをtextでも伝える。'],related:['card','link','badge','avatar','progress','icon-button','task-board-card']});
 
-def({id:'issue-row',name:'Issue Row',group:'SaaS',desc:'Issue トラッカーの 1 行。ID・タイトル・優先度・状態・担当を 1 行に収める。',
- usage:['タイトルは省略記号で 1 行に収め、詳細はパネルで見せる。','優先度と状態は色+ラベルで表示する。'],
- render:()=>`<div style="width:min(620px,100%);display:flex;flex-direction:column;gap:6px">${issueRow()}${issueRow({id:'MRD-138',title:'Density: Comfortable でフォーム間隔が広すぎる',pr:'Med',st:['idle','Todo'],labels:['density'],who:'YK'})}</div>`,
- code:()=>`<IssueRow issue={issue} selected={sel} onSelect={toggle} onOpen={openDetail} />`,related:['table','issue-tracker']});
+def({id:'issue-row',name:'Issue Row',group:'SaaS',desc:'Issue ID、title、priority、status、labels、assigneeを要約し、詳細へ移動できる非表形式のlist item。',
+ usage:['Issue IDとtitleをnative Linkの名前に含め、root自体はfocusableにしない。','Selection checkboxとactionsはLink外の独立targetとして常時表示する。','列比較、sort、cell navigationが必要ならTableまたはData Gridを使う。'],
+ render:p=>`<div class="issuerow-demo"><ul class="issuerow-list" aria-label="Issues">${issueRow(p)}</ul></div>`,
+ code:()=>`<IssueRow\n  issue={issue}\n  href={\`/issues/${issue.id}\`}\n  selection={{ selected, onSelectedChange: setSelected }}\n  actions={<IssueActions issue={issue} />}\n/>`,related:['link','checkbox','badge','tag','avatar','icon-button','table','data-grid']});
 
 def({id:'task-board-card',name:'Task Board Card',group:'SaaS',desc:'カンバンボードのタスクカード。ドラッグ対応を想定した密度。',
  usage:['ラベルは 2 個まで表示し、残りは +N にまとめる。','ドラッグ中は影を強め、ドロップ先をハイライトする。'],

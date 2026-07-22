@@ -2034,7 +2034,15 @@
           "order": 72,
           "route": "components/issue-row",
           "dependsOn": [
-            "tokens.json-tokens"
+            "tokens.json-tokens",
+            "components.link",
+            "components.checkbox",
+            "components.badge",
+            "components.tag",
+            "components.avatar",
+            "components.icon-button",
+            "components.table",
+            "components.data-grid"
           ],
           "sources": [
             "components/issue-row.md",
@@ -2046,7 +2054,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.issue-row.2026-07-13-components-issue-row-01.review.json"
+          "reviewRecord": "design/reviews/components.issue-row.2026-07-22-components-issue-row-02.review.json"
         },
         {
           "id": "components.task-board-card",

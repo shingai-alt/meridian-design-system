@@ -1,324 +1,142 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready",
+    "policyVersion": "0.1.0",
+    "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/issue-row.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/issue-row.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "accessibility.aria", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "negativeExamples", "design/reviews/components.issue-row.2026-07-22-components-issue-row-02.review.json"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["tokenBindings", "tokenRefs", "index.html#issuerow"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/issue-row.md#responsive-viewport-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#issue-row", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.issue-row.2026-07-22-components-issue-row-02.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": ["React実装", "router, selection, and independent-action integration tests", "visual regression baseline"]
+  },
   "id": "issue-row",
   "name": "Issue Row",
   "status": "draft",
   "category": "saas",
-  "description": "Issue トラッカーの 1 行。ID・タイトル・優先度・状態・担当を 1 行に収める。",
-  "source": {
-    "humanDoc": "components/issue-row.md",
-    "registry": "js/components-registry.js#issue-row"
-  },
+  "description": "Issue ID、title、priority、status、labels、assigneeを要約し詳細へ移動できる非表形式のlist item。",
+  "source": { "humanDoc": "components/issue-row.md", "registry": "js/components-registry.js#issue-row" },
   "intent": {
-    "whenToUse": [
-      "issue一覧でID、title、priority、status、assigneeを高密度に走査するとき。"
-    ],
-    "whenNotToUse": [
-      "詳細編集や長い説明には専用detail viewを使う。"
-    ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "whenToUse": ["Issue一覧で各itemのID、title、priority、status、labels、assigneeを高密度に走査するとき。", "各issueが1つの詳細destinationを持ち、任意で複数選択やitem actionを提供するとき。", "Column alignmentよりissue単位のreading orderとresponsive reflowを優先するとき。"],
+    "whenNotToUse": ["Column header、sort、resize、cell comparison、spreadsheet-like keyboard navigationが必要ならTableまたはData Gridを使う。", "Board lane間のdrag/dropが主目的ならTask Board Cardを使う。", "1件のissue本文、comment、編集formには専用Issue Detailを使う。", "Destinationを持たない静的metadata groupにはListまたはKey Valueを使う。"],
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "root",
-      "required": true,
-      "description": "Collection container with an explicit reading order."
-    },
-    {
-      "part": "item",
-      "required": true,
-      "description": "Repeated row, event, node, message, or entry."
-    },
-    {
-      "part": "primary-content",
-      "required": true,
-      "description": "Main scannable value."
-    },
-    {
-      "part": "metadata",
-      "required": false,
-      "description": "Secondary state, time, owner, or count."
-    },
-    {
-      "part": "actions",
-      "required": false,
-      "description": "Item-level operations with independent names."
-    }
+    { "part": "collection", "required": true, "description": "Issue Rowを直接の子に持つnamed ul。呼び出し側が所有する。" },
+    { "part": "root", "required": true, "description": "ulの直接の子になるli。" },
+    { "part": "selection", "required": false, "description": "Issue固有labelを持つnative Checkbox。" },
+    { "part": "issue-key", "required": true, "description": "Monospaceで表示するstable Issue ID。" },
+    { "part": "primary-link", "required": true, "description": "Issue IDとtitleで命名されるnative Link。" },
+    { "part": "priority", "required": true, "description": "Text labelを持つBadge。" },
+    { "part": "status", "required": true, "description": "Dotとtext labelを持つStatus。" },
+    { "part": "labels", "required": false, "description": "最大2件、残数、full accessible summaryを持つTag group。" },
+    { "part": "assignee", "required": false, "description": "Assignee名を伝えるAvatar summary。" },
+    { "part": "actions", "required": false, "description": "Primary Link外の独立action。" }
   ],
-  "variants": {
-    "default": {
-      "intent": "標準文脈。",
-      "tokenRefs": {},
-      "states": {}
-    }
-  },
+  "variants": { "default": { "intent": "非表形式のIssue list item。", "tokenRefs": {}, "states": {} } },
   "sizes": {},
   "states": [
-    {
-      "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
-      "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
-      ]
-    }
+    { "id": "default", "description": "通常のsummaryと提供されたfocus targetを表示する。", "requiredBehavior": ["Issue ID/title Linkを表示する", "Selectionとactionsを提供する場合は常時発見可能にする", "Priority、status、labels、assigneeをtextでも示す"] },
+    { "id": "hover", "description": "Pointer hoverの補助状態。", "requiredBehavior": ["Backgroundとborderを変える", "情報やactionsをhoverだけで出現させない", "ActivationをLink、Checkbox、actionのいずれかへ帰属させる"] },
+    { "id": "focus-visible", "description": "Primary Linkがkeyboard focusを持つ状態。", "requiredBehavior": ["Row surface全体へfocus ringを表示する", "Checkboxとactionのfocus ringを上書きしない", "Focusでlayoutを変えない"] },
+    { "id": "selected", "description": "Native Checkboxがcheckedのcontrolled state。", "requiredBehavior": ["checked stateを正本にする", "Backgroundとborderを補助表示にする", "Primary Linkとactionsを引き続き操作可能にする"] }
   ],
   "props": [
-    {
-      "name": "children",
-      "type": "ReactNode",
-      "required": true,
-      "default": null,
-      "description": "Componentの主要content。"
-    }
+    { "name": "issue", "type": "IssueRowIssue", "required": true, "default": null, "description": "ID、title、priority、status、labels、assigneeを持つsummary data。" },
+    { "name": "href", "type": "string", "required": true, "default": null, "description": "Primary native Linkの非空destination。" },
+    { "name": "selection", "type": "IssueRowSelection", "required": false, "default": null, "description": "Selected、onSelectedChange、任意disabledを同時に所有するcontrolled selection。" },
+    { "name": "actions", "type": "ReactElement", "required": false, "default": null, "description": "Link外へ置く1つのfocusable actionまたはMenu composition。" },
+    { "name": "ref", "type": "ForwardedRef<HTMLLIElement>", "required": false, "default": null, "description": "Root liへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--border",
-      "--border-muted",
-      "--fg",
-      "--fg-muted",
-      "--fg-subtle",
-      "--focus-ring",
-      "--surface",
-      "--surface-muted",
-      "--table-row-hover"
-    ],
-    "density": [
-      "--cell-y",
-      "--row-h"
-    ],
-    "typography": [
-      "--font-mono",
-      "--text-label"
-    ],
-    "radius": [
-      "--radius-md"
-    ]
+    "semanticColor": ["--surface", "--primary-subtle", "--border", "--border-strong", "--primary", "--focus-ring", "--fg", "--fg-subtle", "--table-row-hover"],
+    "density": ["--row-h", "--cell-y", "--ctl-sm"],
+    "spacing": ["--sp-1", "--sp-2", "--sp-3"],
+    "radius": ["--radius-md"],
+    "typography": ["--font-mono", "--text-label", "--text-micro"],
+    "motion": ["--dur-fast", "--ease-standard"]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.surface.value",
-        "source": "--surface",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Issue Rowの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Issue Rowの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Issue Rowの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.surface-muted.value",
-        "source": "--surface-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Issue Rowの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-muted.value",
-        "source": "--fg-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Issue Rowの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border-muted.value",
-        "source": "--border-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Issue Rowの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.table-row-hover.value",
-        "source": "--table-row-hover",
-        "scope": "component",
-        "componentToken": "--table-row-hover",
-        "aliases": null,
-        "trigger": "intrinsic-component-value",
-        "reason": "大量行で反復するTable hoverはsurface tokenより弱い固有濃度を必要とする。"
-      },
-      {
-        "slot": "token.row-h.value",
-        "source": "--row-h",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Issue Rowの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.cell-y.value",
-        "source": "--cell-y",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Issue Rowの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.focus-ring.value",
-        "source": "--focus-ring",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Issue Rowの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-subtle.value",
-        "source": "--fg-subtle",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Issue RowのHTML showcaseで実際に参照する公開token。"
-      },
-      {
-        "slot": "token.font-mono.value",
-        "source": "--font-mono",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Issue RowのHTML showcaseで実際に参照する公開token。"
-      },
-      {
-        "slot": "token.radius-md.value",
-        "source": "--radius-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Issue RowのHTML showcaseで実際に参照する公開token。"
-      },
-      {
-        "slot": "token.text-label.value",
-        "source": "--text-label",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Issue RowのHTML showcaseで実際に参照する公開token。"
-      }
+      { "slot": "surface.background", "source": "--surface", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Default row surface。" },
+      { "slot": "surface.hover", "source": "--table-row-hover", "scope": "component", "componentToken": "--table-row-hover", "aliases": null, "trigger": "intrinsic-component-value", "reason": "反復rowの弱いhover濃度をTableと共有する。" },
+      { "slot": "surface.selected", "source": "--primary-subtle", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Native checked stateの補助面。" },
+      { "slot": "surface.border", "source": "--border", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Default boundary。" },
+      { "slot": "surface.hover-border", "source": "--border-strong", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Hover boundary。" },
+      { "slot": "surface.selected-border", "source": "--primary", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Selected補助boundary。" },
+      { "slot": "surface.focus", "source": "--focus-ring", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Primary Link focusをrow surfaceへ投影する。" },
+      { "slot": "surface.height", "source": "--row-h", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Density contextのminimum row height。" },
+      { "slot": "surface.padding-block", "source": "--cell-y", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Density contextのvertical padding。" },
+      { "slot": "selection.target", "source": "--ctl-sm", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Checkbox labelのminimum pointer area。" },
+      { "slot": "content.gap", "source": "--sp-3", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Primary、metadata、action separation。" },
+      { "slot": "key-title.gap", "source": "--sp-1", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "MobileでIssue IDとtitleを近接させる。" },
+      { "slot": "metadata.gap", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Mobile metadata wrap spacing。" },
+      { "slot": "surface.radius", "source": "--radius-md", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Bounded list item shape。" },
+      { "slot": "content.foreground", "source": "--fg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Title Link。" },
+      { "slot": "metadata.foreground", "source": "--fg-subtle", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Issue ID。" },
+      { "slot": "content.type", "source": "--text-label", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Title scale。" },
+      { "slot": "metadata.type", "source": "--text-micro", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Issue ID scale。" },
+      { "slot": "metadata.font", "source": "--font-mono", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Stable Issue ID alignment。" },
+      { "slot": "interaction.duration", "source": "--dur-fast", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Hover、focus、selected response。" },
+      { "slot": "interaction.easing", "source": "--ease-standard", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Standard transition curve。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.issue-row"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
-    "requirements": [
-      "表示専用rootを不要にtab順へ追加しない。",
-      "状態は色だけで表さずtext、icon、shapeを併用する。"
-    ],
-    "aria": [
-      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
-    ],
-    "focus": [
-      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
-    ]
+    "requirements": ["Named ul / liでcollectionとitemを構造化しrootをfocusableにしない。", "Primary destinationはIssue IDとtitleで命名したnative Linkにする。", "Selection、priority、status、labels、assigneeを色やshapeだけに依存させない。", "全targetは24px minimum、主要touch targetは44px以上推奨とする。"],
+    "aria": ["CheckboxはIssue IDを含むlabelとnative checked/disabled stateを持つ。", "Primary LinkはIssue IDとtitleをaria-labelledbyで結合する。", "ActionsはIssue IDと目的を含むaccessible nameを所有する。"],
+    "focus": ["Tab順はCheckbox、Primary Link、任意actionsのDOM順とする。", "Primary Link focusをrow surface全体のfocus ringで示す。", "Checkboxとactionsのfocus indicatorをstretched Link layerで隠さない。"]
   },
-  "keyboardInteractions": [],
+  "keyboardInteractions": [
+    { "key": "Space", "action": "FocusされたCheckboxのchecked stateを切り替える。" },
+    { "key": "Enter", "action": "FocusされたPrimary Linkのdestinationへ移動する。" },
+    { "key": "Tab / Shift+Tab", "action": "Checkbox、Primary Link、任意actionsをdocument順に移動する。" }
+  ],
   "usagePatterns": [
-    {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "issue一覧でID、title、priority、status、assigneeを高密度に走査するとき。",
-      "recommended": [
-        "タイトルは省略記号で 1 行に収め、詳細はパネルで見せる。"
-      ],
-      "avoid": [
-        "詳細編集や長い説明には専用detail viewを使う。"
-      ]
-    }
+    { "id": "linked-selectable-issue", "title": "Linked selectable issue", "description": "非表形式のIssue listで詳細遷移と任意selection/actionsを提供する。", "recommended": ["Named ulの直接liにする", "Issue ID/title native Linkをprimary destinationにする", "Checkbox/actionsをLink外のsiblingにする"], "avoid": ["Root click handler", "Link内のCheckbox/Button", "grid/row role", "Hover-only action"] }
   ],
   "responsiveBehavior": {
-    "desktop": {
-      "summary": "DesktopでのIssue Row。",
-      "rules": [
-        "CompactまたはDefault densityで走査性を優先し、metadataとactionの列を安定させる。",
-        "Hover actionはfocusでも表示する。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
-    },
-    "mobile": {
-      "summary": "MobileでのIssue Row。",
-      "rules": [
-        "主情報を先にしてmetadataを折り返し、非表示情報にはdetail viewから到達できるようにする。",
-        "行全体clickだけに依存せず明示的なtargetを残す。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
-    },
-    "touch": {
-      "summary": "Touch入力でのIssue Row。",
-      "rules": [
-        "表示専用rootをtab順へ追加しない。",
-        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
-    }
+    "desktop": { "summary": "Issue ID/titleへ可変幅を与えmetadata/actionsを右側へ配置する。", "rules": ["1行を基本にする", "Labelsは2件と残数へ要約する", "Density tokenでminimum row heightを決める"], "avoid": ["固定pixel heightでtextをclipする", "Hoverだけでactionsを表示する"] },
+    "mobile": { "summary": "同じli/link/checkbox/actions semanticsで2段へreflowする。", "rules": ["1段目はselection、Issue ID/title、actions", "2段目はpriority/status/labels/assignee", "Titleをwrapし320 CSS px相当で横scrollを発生させない"], "avoid": ["PC用とSP用にcomponentを分ける", "Metadataを無言で削除する"] },
+    "touch": { "summary": "Primary Link、Checkbox、actionsを独立したpointer targetとして操作する。", "rules": ["Primary Link hit areaをsurfaceへ拡張してもfocus targetは1つに保つ", "Checkbox/actionsは24px minimum", "Hit areaを重ねない"], "avoid": ["Nested interactive content", "Swipe/long-pressだけのselection/action"] }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM"
+  "rules": ["NO_RAW_HEX_COLOR", "SPACING_FROM_TOKENS_ONLY", "RADIUS_FROM_TOKENS_ONLY", "CONTRAST_AA_MINIMUM", "FOCUS_VISIBLE_REQUIRED", "NO_POSITIVE_TABINDEX", "TARGET_SIZE_MINIMUM", "INTERACTIVE_NAME_REQUIRED"],
+  "qualityChecks": ["Issue Row / Table / Data Grid / Task Board Card / detail pageの選択境界が明確", "API、native list/link/checkbox DOM、stretched Link layeringが確定", "全visual slotが公開tokenまたはchild componentへ結線", "Default / Hover / Focus-visible / Selectedとdata edge casesを検証", "Light / Dark × Standard / High、3 density、Desktop / Mobileで確認"],
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["li"],
+    "slots": ["root", "selection", "issue-key", "primary-link", "priority", "status", "labels", "assignee", "actions"],
+    "attributes": ["href", "aria-labelledby", "checked", "disabled", "aria-label", "aria-haspopup", "aria-expanded", "data-state", "data-selected", "data-selectable", "data-issue-id", "data-*"],
+    "stateModel": ["native checkbox checked/disabled state", "native link focus state", "pointer hover", "issue summary data", "data-state"],
+    "events": ["change", "click", "focus", "blur", "pointerenter", "pointerleave"],
+    "relations": ["ul-direct-li", "issue-key-title-link-name", "controlled-checkbox-selection", "independent-sibling-actions", "textual-priority-status", "stretched-link-layering"],
+    "provenance": ["component", "instance", "state", "scenario", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["非表形式のissue listで各itemが1つの詳細destinationと任意selection/actionsを持つ。"],
+    "avoidWhen": ["Column header/sort/cell navigation、drag/drop、1件の詳細編集が主目的である。"],
+    "alternatives": ["Table", "Data Grid", "Task Board Card", "Issue Detail", "List"]
+  },
+  "negativeExamples": [
+    { "pattern": "Root divへonClick、role=link、role=row、tabIndex=0を付ける。", "reason": "Native Link/list semanticsとfocus targetを重複させるため。", "ruleIds": ["FOCUS_VISIBLE_REQUIRED", "NO_POSITIVE_TABINDEX"] },
+    { "pattern": "Row全体を包むLink内へCheckbox、Button、別Linkを入れる。", "reason": "Anchor content modelが禁じるinteractive descendantとなりactivationが競合するため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "listbox/option内へLinkやButtonを混在させる。", "reason": "Composite selection modelとdocument navigation/actionのkeyboard modelが競合するため。", "ruleIds": ["FOCUS_VISIBLE_REQUIRED"] },
+    { "pattern": "Primary LinkとCheckbox/actionsのpointer hit areaを重ねる。", "reason": "同じ座標のactivation結果が不明確になるため。", "ruleIds": ["TARGET_SIZE_MINIMUM"] },
+    { "pattern": "Checkboxを『選択』、actionを『メニュー』だけで命名する。", "reason": "反復list内で対象issueを識別できないため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "Mobileでmetadataを削除するかhorizontal scrollを必須にする。", "reason": "320 CSS px相当で情報または機能を失うため。", "ruleIds": ["CONTRAST_AA_MINIMUM"] }
   ],
-  "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
-  ],
+  "requiredScenarios": ["default", "hover", "focus-visible", "selected", "with-selection", "without-selection", "disabled-selection", "with-actions", "without-actions", "no-assignee", "no-labels", "many-labels", "long-title", "narrow-viewport"],
   "examples": [
-    {
-      "id": "default",
-      "description": "Issue Rowの標準例。",
-      "code": "<IssueRow issue={issue} selected={sel} onSelect={toggle} onOpen={openDetail} />"
-    }
+    { "id": "with-selection", "description": "Issue ID/title Link、controlled selection、独立actionsを持つlist item。", "code": "<IssueRow issue={issue} href={`/issues/${issue.id}`} selection={{ selected, onSelectedChange: setSelected }} actions={<IssueActions issue={issue} />} />" }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "openQuestions": []
 }
