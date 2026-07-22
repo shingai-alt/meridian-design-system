@@ -94,12 +94,15 @@ def({id:'badge',name:'Badge',group:'Core',desc:'状態やカテゴリを示す�
  render:p=>badge({...p,tone:p.variant||'neutral'}),
  code:p=>`<Badge tone="${p.variant||'neutral'}"${p.dot?' dot':''}>${esc(p.label||'Active')}</Badge>`,related:['tag','status-indicator']});
 
-def({id:'tag',name:'Tag',group:'Core',desc:'ユーザーが付与・削除できる属性ラベル。Badge と異なり操作可能。',
- states:['default','hover'],texts:[['label','Label','design-system']],
- when:['ラベル・トピックの付与','フィルタ条件の表示と解除'],notWhen:['システムが決めるステータス → Badge'],
- usage:['削除ボタンには aria-label「◯◯を削除」を付ける。'],
- keys:[['Backspace / Delete','フォーカス中の Tag を削除']],
- render:p=>tagEl(p),code:p=>`<Tag onRemove={...}>${esc(p.label||'design-system')}</Tag>`,related:['badge','combobox']});
+def({id:'tag',name:'Tag',group:'Core',desc:'ユーザーが付与した属性を表示し、必要な場合だけ明示的な削除buttonを内包するラベル。',
+ variants:['static','removable'],states:['default','remove-hover','remove-active','remove-focus'],texts:[['label','Label','design-system'],['removeLabel','Remove label','design-systemを削除']],
+ when:['ユーザーが付与したラベル、トピック、属性を読み取り可能な単位で表示する。','付与済みの属性を、対象名を含む明示的な削除操作で解除できるようにする。'],
+ notWhen:['システム状態、件数、カテゴリの読み取り専用表示にはBadgeを使う。','押下で選択状態を切り替えるfilter chipやtoggleとして使わない。','入力、候補popup、Backspace削除、collection focusをまとめて扱う場合はComboboxまたは専用Tag Input patternを使う。'],
+ usage:['rootは非interactiveなspanにし、onRemove指定時だけnative buttonを描画する。','onRemoveとlocalized removeLabelを組で渡す。','削除後のfocusとstatus通知は親collectionが管理する。'],
+ keys:[['Enter','focus中のremoveButtonをnative activationし、onRemoveを1回呼ぶ。'],['Space','focus中のremoveButtonをnative activationし、onRemoveを1回呼ぶ。'],['Tab','removable TagのremoveButtonへ通常のdocument順序で出入りする。static Tagは通過する。']],
+ dos:[[()=>tagEl({scenario:'removable',label:'design-system',removeLabel:'design-systemを削除'}),'対象とactionを含むlocalized nameを使う。'],[()=>tagEl({scenario:'long-label'}),'長い属性名をavailable width内で回収可能にする。'],[()=>`<span class="tag-list-demo">${tagEl({scenario:'tag-list',label:'accessibility',removeLabel:'accessibilityを削除'})}${tagEl({scenario:'tag-list',label:'design-system',removeLabel:'design-systemを削除'})}</span>`,'親layoutがwrapとgapを管理する。']],
+ donts:[[()=>'<span class="tagc" role="button" tabindex="0" aria-pressed="true">Active</span>','Tag rootをselection controlにしない。']],
+ render:p=>tagEl({...p,removable:p.variant==='removable'}),code:p=>p.variant==='removable'?`<Tag label="${esc(p.label||'design-system')}" onRemove={removeTag} removeLabel="${esc(p.removeLabel||'design-systemを削除')}" />`:`<Tag label="${esc(p.label||'design-system')}" />`,related:['badge','combobox','icon-button']});
 
 def({id:'avatar',name:'Avatar',group:'Core',desc:'ユーザー・チームを表す円形の識別子。イニシャルまたは画像。',
  sizes:['xs','sm','md','lg'],texts:[['name','Name','新谷']],

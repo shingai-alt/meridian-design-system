@@ -401,6 +401,50 @@ test('Text showcase preserves native elements, token roles, language, tone, and 
   })) assert.match(indexSource, new RegExp(`\\.textc\\[data-variant="${variant}"\\]\\{font:var\\(--type-${token}\\)`));
 });
 
+test('Tag is implementation-ready as a static label with an optional native remove button', () => {
+  const tag = contracts.find((contract) => contract.id === 'tag');
+  assert.equal(tag.status, 'draft');
+  assert.equal(tag.contractVersion, '0.2.0');
+  assert.equal(tag.implementationReadiness.status, 'ready');
+  assert.deepEqual(Object.keys(tag.variants), ['static', 'removable']);
+  assert.deepEqual(tag.states.map(({ id }) => id), ['default', 'remove-hover', 'remove-active', 'remove-focus']);
+  assert.deepEqual(tag.props.map(({ name }) => name), ['label', 'onRemove', 'removeLabel', 'ref']);
+  assert.equal(tag.props.find(({ name }) => name === 'label').required, true);
+  assert.match(tag.props.find(({ name }) => name === 'ref').type, /HTMLSpanElement/);
+  assert.deepEqual(tag.runtime.rootElements, ['span']);
+  assert.ok(tag.runtime.relations.includes('optional-native-remove-button'));
+  assert.ok(tag.runtime.relations.includes('collection-owned-focus'));
+  assert.equal(tag.tokenBindings.coverage, 'complete');
+  assert.deepEqual(tag.tokenBindings.unboundSlots, []);
+  assert.deepEqual(tag.openQuestions, []);
+  assert.deepEqual(tag.keyboardInteractions.map(({ key }) => key), ['Enter', 'Space', 'Tab']);
+  assert.ok(!tag.runtime.attributes.includes('aria-pressed'));
+  assert.ok(!tag.runtime.attributes.includes('aria-selected'));
+});
+
+test('Tag showcase separates the static root from its named 24px remove target', () => {
+  const component = renderedComponents.find(({ id }) => id === 'tag');
+  const base = { ...renderProps(component), label: 'design-system', removeLabel: 'design-systemを削除' };
+  const staticTag = component.render({ ...base, variant: 'static' });
+  const removable = component.render({ ...base, variant: 'removable' });
+  const focused = component.render({ ...base, variant: 'removable', state: 'remove-focus' });
+  const longLabel = component.render({ ...base, scenario: 'long-label' });
+
+  assert.match(staticTag, /^<span class="tagc"[^>]+data-meridian-variant="static"/);
+  assert.doesNotMatch(staticTag, /<(?:button|a)\b/);
+  assert.doesNotMatch(staticTag, /(?:role|tabindex|aria-pressed|aria-selected)=/i);
+  assert.match(removable, /data-meridian-variant="removable"/);
+  assert.match(removable, /<button type="button" class="tagc-remove" aria-label="design-systemを削除">/);
+  assert.match(removable, /data-icon="x" aria-hidden="true"/);
+  assert.match(focused, /data-meridian-state="remove-focus"/);
+  assert.match(longLabel, /design-system-accessibility-localization-verification-with-a-very-long-unbroken-attribute/);
+
+  assert.match(indexSource, /\.tagc\{[^}]*max-inline-size:100%[^}]*min-block-size:var\(--ctl-xs\)/);
+  assert.match(indexSource, /\.tagc-label\{[^}]*overflow-wrap:anywhere/);
+  assert.match(indexSource, /\.tagc-remove\{[^}]*inline-size:var\(--ctl-xs\)[^}]*block-size:var\(--ctl-xs\)/);
+  assert.match(indexSource, /\.tagc-remove:focus-visible[^}]*outline:var\(--focus-w\) solid var\(--focus-ring\)/);
+});
+
 test('Tooltip is implementation-ready as a non-interactive description popup', () => {
   const tooltip = contracts.find((contract) => contract.id === 'tooltip');
   assert.equal(tooltip.contractVersion, '0.2.0');

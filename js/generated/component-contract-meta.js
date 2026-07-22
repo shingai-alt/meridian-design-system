@@ -11491,11 +11491,13 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "ラベル・トピックの付与",
-        "フィルタ条件の表示と解除"
+        "ユーザーが付与したラベル、トピック、属性を読み取り可能な単位で表示する。",
+        "付与済みの属性を、対象名を含む明示的な削除操作で解除できるようにする。"
       ],
       "whenNotToUse": [
-        "システムが決めるステータス → Badge"
+        "システム状態、件数、カテゴリの読み取り専用表示にはBadgeを使う。",
+        "押下で選択状態を切り替えるfilter chipやtoggleとして使わない。",
+        "入力、候補popup、Backspace削除、collection focusをまとめて扱う場合はComboboxまたは専用Tag Input patternを使う。"
       ],
       "principles": [
         1,
@@ -11509,36 +11511,56 @@ const COMPONENT_CONTRACTS={
       {
         "part": "root",
         "required": true,
-        "description": "Native interactive root or navigation target."
+        "description": "意味を追加しない非interactiveなspan root。"
       },
       {
         "part": "label",
         "required": true,
-        "description": "Predictable accessible action or destination name."
+        "description": "空でない可視属性名。長い文字列はavailable width内で折り返す。"
       },
       {
-        "part": "icon",
+        "part": "removeButton",
         "required": false,
-        "description": "Meaning reinforcement; decorative icons stay hidden from assistive technology."
+        "description": "onRemoveがある場合だけ描画するtype=buttonのnative button。"
+      },
+      {
+        "part": "removeIcon",
+        "required": false,
+        "description": "removeButton内の装飾glyph。aria-hidden=trueにする。"
       }
     ],
     "variants": [
-      "default"
+      "static",
+      "removable"
     ],
     "sizes": [],
     "states": [
       {
         "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "description": "静的Tagまたは未操作のremoveButtonを表示する。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "rootをtab sequenceへ追加しない。"
         ]
       },
       {
-        "id": "hover",
-        "description": "Pointer hoverの補助変化。意味をhoverだけに依存させない。",
+        "id": "remove-hover",
+        "description": "PointerがremoveButton上にある。",
         "requiredBehavior": [
-          "Pointer hoverの補助変化。意味をhoverだけに依存させない。"
+          "Tag全体ではなくremoveButtonだけにhover feedbackを出す。"
+        ]
+      },
+      {
+        "id": "remove-active",
+        "description": "removeButtonが押下中。",
+        "requiredBehavior": [
+          "hoverより強いpressed feedbackを出す。"
+        ]
+      },
+      {
+        "id": "remove-focus",
+        "description": "removeButtonがkeyboard focusを持つ。",
+        "requiredBehavior": [
+          "focus-visible ringをbuttonの外周に表示する。"
         ]
       }
     ],
@@ -11546,117 +11568,160 @@ const COMPONENT_CONTRACTS={
       {
         "name": "label",
         "type": "string",
+        "required": true,
+        "default": null,
+        "description": "空でない可視属性名。"
+      },
+      {
+        "name": "onRemove",
+        "type": "(() => void) | undefined",
         "required": false,
         "default": null,
-        "description": "Label"
+        "description": "指定時だけremoveButtonを描画し、activationごとに1回呼ぶcontrolled callback。"
+      },
+      {
+        "name": "removeLabel",
+        "type": "string | undefined",
+        "required": false,
+        "default": null,
+        "description": "onRemove指定時に必須のlocalized accessible name。対象labelと削除actionを含める。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLSpanElement>",
+        "required": false,
+        "default": null,
+        "description": "非interactive root spanへforwardするref。"
       }
     ],
     "tokenRefs": {
       "semanticColor": [
-        "--surface",
-        "--border",
-        "--fg",
         "--surface-muted",
-        "--fg-disabled",
-        "--border-strong",
-        "--primary",
-        "--primary-hover",
-        "--primary-active",
-        "--primary-fg",
+        "--border",
+        "--fg-muted",
+        "--fg-subtle",
+        "--fg",
+        "--control-bg-hover",
+        "--control-bg-active",
         "--focus-ring"
       ],
+      "typography": [
+        "--type-body-sm",
+        "--type-body-sm-letter-spacing"
+      ],
       "density": [
-        "--ctl-md"
+        "--ctl-xs"
       ],
       "spacing": [
+        "--sp-1",
         "--sp-2"
       ],
       "radius": [
-        "--radius-sm"
+        "--radius-xs",
+        "--radius-2xs"
+      ],
+      "layout": [
+        "--focus-w"
       ],
       "motion": [
-        "--dur-fast"
+        "--dur-fast",
+        "--ease-standard"
       ]
     },
     "accessibility": {
       "requirements": [
-        "Keyboardとpointerで同じ機能を実行できる。",
-        "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-        "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        "rootは非interactiveでtab stopやbutton roleを持たない。",
+        "removeButtonはnative button、type=button、空でないlocalized accessible nameを持つ。",
+        "removeLabelは可視labelと削除actionを含め、同名Tagが複数あっても対象を識別できるようにする。",
+        "removeIconはaria-hidden=trueにする。",
+        "removeButton targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
+        "Focus indicatorを視認でき、sticky layerで完全に隠さない。"
       ],
       "aria": [
-        "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        "rootへroleを追加しない。",
+        "removeButtonをremoveLabelからaria-labelで命名する。",
+        "Tag自身にaria-selected、aria-pressed、aria-liveを追加しない。"
       ],
       "focus": [
-        "focus-visibleで--focus-ringを使う。",
-        "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        "static Tagはtab sequenceへ入れない。",
+        "removable TagではremoveButtonだけを通常のdocument順序へ入れる。",
+        "削除後のfocus移動と必要なstatus通知はTag collection ownerが管理する。"
       ]
     },
     "keyboardInteractions": [
       {
-        "key": "Delete / Backspace",
-        "action": "削除可能なTagを解除する。"
+        "key": "Enter",
+        "action": "focus中のremoveButtonをnative activationし、onRemoveを1回呼ぶ。"
+      },
+      {
+        "key": "Space",
+        "action": "focus中のremoveButtonをnative activationし、onRemoveを1回呼ぶ。"
+      },
+      {
+        "key": "Tab",
+        "action": "removable TagのremoveButtonへ通常のdocument順序で出入りする。static Tagは通過する。"
       }
     ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "ラベル・トピックの付与",
+        "id": "static-attribute",
+        "title": "Static attribute",
+        "description": "ユーザーが付与した属性を読み取り可能なlabelとして表示する。",
         "recommended": [
-          "削除ボタンには aria-label「◯◯を削除」を付ける。"
+          "labelだけを渡し、rootを非interactiveに保つ。"
         ],
         "avoid": [
-          "システムが決めるステータス → Badge"
+          "system statusや件数をTagで表す。",
+          "root全体へonClickやtabIndexを付ける。"
         ]
       },
       {
-        "id": "recommended-2",
-        "title": "Secondary context",
-        "description": "フィルタ条件の表示と解除",
+        "id": "removable-attribute",
+        "title": "Removable attribute",
+        "description": "明示的な子buttonで属性を解除する。",
         "recommended": [
-          "削除ボタンには aria-label「◯◯を削除」を付ける。"
+          "onRemoveとlocalized removeLabelを組で渡す。",
+          "親collectionが削除後のfocusと必要なstatus通知を管理する。"
         ],
         "avoid": [
-          "システムが決めるステータス → Badge"
+          "removeLabelをvisible labelから固定言語で自動生成する。",
+          "Tag自身でDOMから消えたりfocus先を推測する。"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのTag。",
+        "summary": "intrinsic widthを基本に、長いlabelはavailable width内でwrapする。",
         "rules": [
-          "周辺layoutに応じたintrinsic widthを基本にし、formではlabelとの整列を保つ。",
-          "Keyboard focusとhoverを別々に確認する。"
+          "Tag群のwrapとspacingは親layoutが管理する。",
+          "remove hover、active、focusを独立して確認する。"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "Tagへ固定max-widthや1行ellipsisを組み込み、属性名を回収不能にする。"
         ]
       },
       "mobile": {
-        "summary": "MobileでのTag。",
+        "summary": "同じ意味とAPIを保ち、親layout内で折り返す。",
         "rules": [
-          "Form文脈では利用可能幅まで広げ、複数controlを無理に横へ詰めない。",
-          "同じpropとstate contractを維持する。"
+          "rootはmax-inline-size:100%、labelはoverflow-wrap:anywhereでcontent lossを防ぐ。",
+          "必要ならcomfortable densityや別の一覧編集UIを選ぶ。"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "PC用とSP用に別componentを作る。"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのTag。",
+        "summary": "removeButtonを24px minimumにし、主要な反復削除は44px以上の別編集UIを優先する。",
         "rules": [
-          "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-          "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+          "Tag内removeButtonは全densityで--ctl-xs以上にする。",
+          "隣接Tag targetとの重なりを避ける。"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "glyphだけを16px前後のtargetとして使う。"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "task-board-card": {
     "id": "task-board-card",

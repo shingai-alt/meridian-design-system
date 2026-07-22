@@ -245,9 +245,9 @@ img,svg{display:block}
 .badge[data-tone="info"]{background:var(--info-subtle);color:var(--info-fg)}
 .badge[data-outline]{background:transparent;border-color:currentColor;opacity:.9}
 .badge .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
-.tagc{display:inline-flex;align-items:center;gap:5px;font-size:var(--text-small);padding:2px 4px 2px 9px;border-radius:var(--radius-xs);background:var(--surface-muted);border:1px solid var(--border);color:var(--fg-muted)}
-.tagc .x{display:inline-flex;border-radius:var(--radius-2xs);padding:1px;color:var(--fg-subtle)}
-.tagc .x:hover{background:var(--border);color:var(--fg)}
+.tagc{display:inline-flex;align-items:center;gap:var(--sp-1);max-inline-size:100%;min-block-size:var(--ctl-xs);padding-inline-start:var(--sp-2);padding-inline-end:var(--sp-2);border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--surface-muted);color:var(--fg-muted);font:var(--type-body-sm);letter-spacing:var(--type-body-sm-letter-spacing)}
+.tagc[data-meridian-variant="removable"]{padding-inline-end:0}.tagc-label{min-inline-size:0;overflow-wrap:anywhere}.tagc-remove{display:inline-grid;place-items:center;flex:none;inline-size:var(--ctl-xs);block-size:var(--ctl-xs);padding:0;border-radius:var(--radius-2xs);background:transparent;color:var(--fg-subtle);transition:background var(--dur-fast) var(--ease-standard),color var(--dur-fast) var(--ease-standard)}
+.tagc-remove:hover,.tagc[data-meridian-state="remove-hover"] .tagc-remove{background:var(--control-bg-hover);color:var(--fg)}.tagc-remove:active,.tagc[data-meridian-state="remove-active"] .tagc-remove{background:var(--control-bg-active);color:var(--fg)}.tagc-remove:focus-visible,.tagc[data-meridian-state="remove-focus"] .tagc-remove{outline:var(--focus-w) solid var(--focus-ring);outline-offset:2px}.tag-list-demo{display:flex;flex-wrap:wrap;gap:var(--sp-2);max-inline-size:100%}
 .avatar{display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-full);background:var(--primary-muted);color:var(--primary);font-weight:600;flex:none;border:1px solid color-mix(in srgb,var(--primary) 20%,transparent)}
 .avatar[data-size="xs"]{width:20px;height:20px;font-size:8.5px}
 .avatar[data-size="sm"]{width:24px;height:24px;font-size:10px}

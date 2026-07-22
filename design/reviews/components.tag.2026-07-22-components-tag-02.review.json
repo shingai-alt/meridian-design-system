@@ -1,0 +1,122 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.tag",
+  "cycleId": "2026-07-22-components-tag-02",
+  "supersedesCycleId": "2026-07-13-components-tag-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-22",
+  "completedAt": "2026-07-22",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/implementation-readiness.json",
+    "components/tag.md",
+    "design/contracts/components/tag.contract.json",
+    "components/badge.md",
+    "design/contracts/components/badge.contract.json",
+    "components/icon-button.md",
+    "design/contracts/components/icon-button.contract.json",
+    "components/combobox.md",
+    "design/contracts/components/combobox.contract.json",
+    "js/components-registry.js",
+    "js/ui-builders.js",
+    "index.html",
+    "test/component-specs.test.js",
+    "test/implementation-readiness.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "components.tag",
+      "summary": "Tagの表示と削除操作、Badge・selection control・tokenized inputとの境界、native button、localized accessible name、target size、削除後focus責務をReact実装前Contractとして確定する。"
+    },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior"],
+    "questions": [
+      "Tag全体をinteractiveにするか、静的rootとremove buttonへ分離するか。",
+      "Backspace/Delete、削除後focus、status通知をTagと親collectionのどちらが所有するか。",
+      "localized remove nameと24px targetを公開API、DOM、tokenへどう固定するか。"
+    ],
+    "evidence": [
+      {
+        "id": "html-button-element",
+        "title": "WHATWG HTML: The button element",
+        "url": "https://html.spec.whatwg.org/dev/form-elements.html#the-button-element",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "button elementはcontentsでlabelされるnative interactive controlで、type=buttonはform submitを行わない。",
+        "supportedDecisions": ["static-root-native-remove", "native-keyboard-contract"]
+      },
+      {
+        "id": "wcag-name-role-value",
+        "title": "WCAG 2.2 Understanding 4.1.2: Name, Role, Value",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/name-role-value",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "全UI componentのnameとroleをprogrammatically determineでき、standard controlを仕様どおり使うことが推奨される。",
+        "supportedDecisions": ["static-root-native-remove", "localized-remove-name"]
+      },
+      {
+        "id": "wcag-target-size-minimum",
+        "title": "WCAG 2.2 Understanding 2.5.8: Target Size (Minimum)",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "pointer targetは原則24 by 24 CSS pixels以上で、隣接する小targetではspacing exceptionだけに依存しない設計が重要。",
+        "supportedDecisions": ["minimum-remove-target", "complete-token-binding"]
+      },
+      {
+        "id": "apg-combobox-keyboard",
+        "title": "WAI-ARIA Authoring Practices Guide: Combobox Pattern",
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/combobox/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "editable comboboxのBackspace/Deleteはtext editingやpopup selection文脈に属し、browser提供のediting keyへJavaScriptで干渉しないことが推奨される。",
+        "supportedDecisions": ["collection-owned-keyboard-focus", "selection-boundary"]
+      }
+    ],
+    "synthesis": "Tagは非interactive span rootとoptional native remove buttonへ分離する。Tag単体はselection state、Backspace/Delete、削除後focus、live announcementを所有せず、localized removeLabelとcontrolled onRemoveだけを公開する。",
+    "decisionImpact": "Contract 0.2.0、human spec、Showcase、CSS、回帰testを同じstatic/removable DOMと共通implementation-readiness gateへ同期した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    { "id": "static-root-native-remove", "summary": "rootを非interactive span、削除をoptional type=buttonへ固定する。", "rationale": "表示対象とactionのname、role、focusをDOMで分離できるため。" },
+    { "id": "localized-remove-name", "summary": "onRemove指定時は対象とactionを含むlocalized removeLabelを必須にする。", "rationale": "固定言語の自動生成を避け、同名対象を呼び出し文脈で識別できるため。" },
+    { "id": "collection-owned-keyboard-focus", "summary": "Backspace/Delete、削除後focus、必要なstatus通知を親collectionへ委譲する。", "rationale": "Tag単体はinput編集状態、隣接item、return targetを判断できないため。" },
+    { "id": "selection-boundary", "summary": "Tagにaria-selected、aria-pressed、root onClickを提供しない。", "rationale": "attribute displayとselection toggleのstate modelを混在させないため。" },
+    { "id": "native-keyboard-contract", "summary": "remove buttonはnative Enter/Space activationと通常のTab順序だけを持つ。", "rationale": "custom key handlerを増やさずbutton semanticsを保持するため。" },
+    { "id": "minimum-remove-target", "summary": "remove buttonを全densityで--ctl-xsの24px四方以上にする。", "rationale": "隣接Tagを持つ密集layoutでもtarget size minimumを直接満たすため。" },
+    { "id": "complete-token-binding", "summary": "root、label、remove default/hover/active/focusの全visual slotを既存tokenへ結線する。", "rationale": "React実装者が未定義値を補わず実装できるため。" },
+    { "id": "shared-readiness-gate", "summary": "Button、Icon Button、Linkと同じ8基準でReact実装前readyを判定する。", "rationale": "全component精査へ同じ出口条件を適用するため。" }
+  ],
+  "differences": [
+    { "classification": "cross-layer-conflict", "description": "旧仕様はTag rootをinteractive targetとしながらShowcaseはspan内buttonで、責務が一致していなかった。", "action": "非interactive span rootとoptional native remove buttonへ全layerを統一した。", "status": "resolved" },
+    { "classification": "missing-contract", "description": "onRemove、removeLabel、ref、conditional API、削除後focus ownerが未確定だった。", "action": "React API freeze、runtime relations、親collection責務をContract 0.2.0へ追加した。", "status": "resolved" },
+    { "classification": "implementation-stale", "description": "remove targetが24px未満でfocus/active/long label scenariosを確認できなかった。", "action": "--ctl-xs target、tokenized states、long labelとtag list Showcaseへ更新した。", "status": "resolved" },
+    { "classification": "missing-token", "description": "visual binding coverageがpartialで、remove buttonのstate slotが未結線だった。", "action": "既存semantic/reference tokenで全slotをcompleteにした。", "status": "resolved" }
+  ],
+  "changes": [
+    { "path": "components/tag.md", "summary": "責務境界、conditional API、focus owner、responsive/a11y rulesを確定。" },
+    { "path": "design/contracts/components/tag.contract.json", "summary": "Contract 0.2.0、runtime、complete bindings、readiness evidenceを追加。" },
+    { "path": "js/ui-builders.js", "summary": "static spanとoptional native remove buttonのShowcaseを追加。" },
+    { "path": "js/components-registry.js", "summary": "Playground、usage、keyboard、React code例を確定Contractへ同期。" },
+    { "path": "index.html", "summary": "24px target、wrap、hover/active/focusをtokenized CSSで実装。" },
+    { "path": "test/component-specs.test.js", "summary": "Tag API、native DOM、naming、target、wrapの回帰testを追加。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js test/implementation-readiness.test.js", "status": "passed", "notes": "API freeze、native DOM、target geometry、共通gateを検証。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "1280pxと390x844でstatic/removable、hover/active/focus、long label、tag list、consoleを確認。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、review cycles、generated artifacts、17/74 implementation-ready gateを含む全testが通過。" },
+    { "command": "Structured local code review", "status": "passed", "notes": "Critical/Important 0件。Contract、human spec、Showcase、generated artifactsを照合。" }
+  ],
+  "openQuestions": [
+    { "question": "Contract 0.2.0に基づくReact実装と親collection integration、visual regression baselineを完了しstableへ昇格する。", "owner": "components.tag", "exitCriteria": "React component、conditional prop tests、collection focus tests、required scenariosのvisual regressionがCIで通ること。" }
+  ],
+  "acknowledgedImpacts": [],
+  "impactedItems": ["components.badge", "components.combobox"],
+  "nextRecommendedItems": ["components.avatar"]
+}

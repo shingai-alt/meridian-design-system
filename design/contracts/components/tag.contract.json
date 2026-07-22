@@ -1,356 +1,209 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready",
+    "policyVersion": "0.1.0",
+    "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/tag.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/tag.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "states", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "keyboardInteractions", "rules"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["variants", "sizes", "tokenBindings"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/tag.md#responsive-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#tag", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.tag.2026-07-22-components-tag-02.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": [
+      "React componentをContract 0.2.0どおりに実装する。",
+      "削除後の親collection focus policyを含むunit/integration testとvisual regressionをCIへ追加する。"
+    ]
+  },
   "id": "tag",
   "name": "Tag",
   "status": "draft",
   "category": "core",
-  "description": "ユーザーが付与・削除できる属性ラベル。Badge と異なり操作可能。",
+  "description": "ユーザーが付与した属性を表示し、必要な場合だけ明示的な削除buttonを内包するラベル。",
   "source": {
     "humanDoc": "components/tag.md",
     "registry": "js/components-registry.js#tag"
   },
   "intent": {
     "whenToUse": [
-      "ラベル・トピックの付与",
-      "フィルタ条件の表示と解除"
+      "ユーザーが付与したラベル、トピック、属性を読み取り可能な単位で表示する。",
+      "付与済みの属性を、対象名を含む明示的な削除操作で解除できるようにする。"
     ],
     "whenNotToUse": [
-      "システムが決めるステータス → Badge"
+      "システム状態、件数、カテゴリの読み取り専用表示にはBadgeを使う。",
+      "押下で選択状態を切り替えるfilter chipやtoggleとして使わない。",
+      "入力、候補popup、Backspace削除、collection focusをまとめて扱う場合はComboboxまたは専用Tag Input patternを使う。"
     ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "root",
-      "required": true,
-      "description": "Native interactive root or navigation target."
-    },
-    {
-      "part": "label",
-      "required": true,
-      "description": "Predictable accessible action or destination name."
-    },
-    {
-      "part": "icon",
-      "required": false,
-      "description": "Meaning reinforcement; decorative icons stay hidden from assistive technology."
-    }
+    { "part": "root", "required": true, "description": "意味を追加しない非interactiveなspan root。" },
+    { "part": "label", "required": true, "description": "空でない可視属性名。長い文字列はavailable width内で折り返す。" },
+    { "part": "removeButton", "required": false, "description": "onRemoveがある場合だけ描画するtype=buttonのnative button。" },
+    { "part": "removeIcon", "required": false, "description": "removeButton内の装飾glyph。aria-hidden=trueにする。" }
   ],
   "variants": {
-    "default": {
-      "intent": "標準文脈。",
-      "tokenRefs": {},
+    "static": {
+      "intent": "属性を読み取り専用で表示する。",
+      "tokenRefs": { "background": "--surface-muted", "foreground": "--fg-muted", "border": "--border" },
       "states": {}
+    },
+    "removable": {
+      "intent": "属性を表示し、独立したremoveButtonで解除する。",
+      "tokenRefs": { "background": "--surface-muted", "foreground": "--fg-muted", "border": "--border" },
+      "states": {
+        "remove-hover": { "buttonBackground": "--control-bg-hover", "buttonForeground": "--fg" },
+        "remove-active": { "buttonBackground": "--control-bg-active", "buttonForeground": "--fg" },
+        "remove-focus": { "focusRing": "--focus-ring" }
+      }
     }
   },
   "sizes": {},
   "states": [
-    {
-      "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
-      "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
-      ]
-    },
-    {
-      "id": "hover",
-      "description": "Pointer hoverの補助変化。意味をhoverだけに依存させない。",
-      "requiredBehavior": [
-        "Pointer hoverの補助変化。意味をhoverだけに依存させない。"
-      ]
-    }
+    { "id": "default", "description": "静的Tagまたは未操作のremoveButtonを表示する。", "requiredBehavior": ["rootをtab sequenceへ追加しない。"] },
+    { "id": "remove-hover", "description": "PointerがremoveButton上にある。", "requiredBehavior": ["Tag全体ではなくremoveButtonだけにhover feedbackを出す。"] },
+    { "id": "remove-active", "description": "removeButtonが押下中。", "requiredBehavior": ["hoverより強いpressed feedbackを出す。"] },
+    { "id": "remove-focus", "description": "removeButtonがkeyboard focusを持つ。", "requiredBehavior": ["focus-visible ringをbuttonの外周に表示する。"] }
   ],
   "props": [
-    {
-      "name": "label",
-      "type": "string",
-      "required": false,
-      "default": null,
-      "description": "Label"
-    }
+    { "name": "label", "type": "string", "required": true, "default": null, "description": "空でない可視属性名。" },
+    { "name": "onRemove", "type": "(() => void) | undefined", "required": false, "default": null, "description": "指定時だけremoveButtonを描画し、activationごとに1回呼ぶcontrolled callback。" },
+    { "name": "removeLabel", "type": "string | undefined", "required": false, "default": null, "description": "onRemove指定時に必須のlocalized accessible name。対象labelと削除actionを含める。" },
+    { "name": "ref", "type": "ForwardedRef<HTMLSpanElement>", "required": false, "default": null, "description": "非interactive root spanへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--surface",
-      "--border",
-      "--fg",
-      "--surface-muted",
-      "--fg-disabled",
-      "--border-strong",
-      "--primary",
-      "--primary-hover",
-      "--primary-active",
-      "--primary-fg",
-      "--focus-ring"
-    ],
-    "density": [
-      "--ctl-md"
-    ],
-    "spacing": [
-      "--sp-2"
-    ],
-    "radius": [
-      "--radius-sm"
-    ],
-    "motion": [
-      "--dur-fast"
-    ]
+    "semanticColor": ["--surface-muted", "--border", "--fg-muted", "--fg-subtle", "--fg", "--control-bg-hover", "--control-bg-active", "--focus-ring"],
+    "typography": ["--type-body-sm", "--type-body-sm-letter-spacing"],
+    "density": ["--ctl-xs"],
+    "spacing": ["--sp-1", "--sp-2"],
+    "radius": ["--radius-xs", "--radius-2xs"],
+    "layout": ["--focus-w"],
+    "motion": ["--dur-fast", "--ease-standard"]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.surface.value",
-        "source": "--surface",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.surface-muted.value",
-        "source": "--surface-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-disabled.value",
-        "source": "--fg-disabled",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border-strong.value",
-        "source": "--border-strong",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary.value",
-        "source": "--primary",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary-hover.value",
-        "source": "--primary-hover",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary-active.value",
-        "source": "--primary-active",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary-fg.value",
-        "source": "--primary-fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.focus-ring.value",
-        "source": "--focus-ring",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.ctl-md.value",
-        "source": "--ctl-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sp-2.value",
-        "source": "--sp-2",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.radius-sm.value",
-        "source": "--radius-sm",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.dur-fast.value",
-        "source": "--dur-fast",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tagの公開visual contractで用途tokenとして共有する。"
-      }
+      { "slot": "all.root.background", "source": "--surface-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Tagをneutralな属性面として表示する。" },
+      { "slot": "all.root.border", "source": "--border", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "周辺surfaceから形を識別できる境界を作る。" },
+      { "slot": "all.label.foreground", "source": "--fg-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "主contentより弱い属性label roleを使う。" },
+      { "slot": "all.label.typography", "source": "--type-body-sm", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "短い属性labelを既存typography scaleへ結線する。" },
+      { "slot": "all.label.letter-spacing", "source": "--type-body-sm-letter-spacing", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "composite typographyのletter spacingを保持する。" },
+      { "slot": "all.root.min-height", "source": "--ctl-xs", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "全densityで24px minimum以上を維持する。" },
+      { "slot": "all.root.gap", "source": "--sp-1", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "labelとremoveButtonの間隔をsystem spacingへ揃える。" },
+      { "slot": "all.root.padding-inline-start", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "可視labelの開始余白。" },
+      { "slot": "all.root.padding-inline-end.static", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "static Tagの左右余白を揃える。" },
+      { "slot": "all.root.padding-inline-end.removable", "source": "0", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "removeButton自身の24px targetを端部として使う。" },
+      { "slot": "all.root.radius", "source": "--radius-xs", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "compact label固有のsystem radiusを使う。" },
+      { "slot": "remove.button.height-width", "source": "--ctl-xs", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "removeButtonに24px四方以上のtargetを保証する。" },
+      { "slot": "remove.button.foreground.default", "source": "--fg-subtle", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "未操作glyphをlabelより弱く見せる。" },
+      { "slot": "remove.button.background.default", "source": "transparent", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "Tag surfaceを既定面として共有する。" },
+      { "slot": "remove.button.background.hover", "source": "--control-bg-hover", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "native buttonのhover feedback。" },
+      { "slot": "remove.button.background.active", "source": "--control-bg-active", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "native buttonのpressed feedback。" },
+      { "slot": "remove.button.foreground.hover-active", "source": "--fg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "操作中のglyphを明瞭にする。" },
+      { "slot": "remove.button.radius", "source": "--radius-2xs", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Tag内buttonの小さい内側radius。" },
+      { "slot": "remove.button.focus-ring.color", "source": "--focus-ring", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "keyboard focusを共通ring colorで示す。" },
+      { "slot": "remove.button.focus-ring.width", "source": "--focus-w", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "contrast modeを含むfocus widthを使う。" },
+      { "slot": "remove.button.transition.duration", "source": "--dur-fast", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "短いbutton feedbackへ揃える。" },
+      { "slot": "remove.button.transition.easing", "source": "--ease-standard", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "system標準curveを使う。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.tag"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
     "requirements": [
-      "Keyboardとpointerで同じ機能を実行できる。",
-      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+      "rootは非interactiveでtab stopやbutton roleを持たない。",
+      "removeButtonはnative button、type=button、空でないlocalized accessible nameを持つ。",
+      "removeLabelは可視labelと削除actionを含め、同名Tagが複数あっても対象を識別できるようにする。",
+      "removeIconはaria-hidden=trueにする。",
+      "removeButton targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
+      "Focus indicatorを視認でき、sticky layerで完全に隠さない。"
     ],
     "aria": [
-      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+      "rootへroleを追加しない。",
+      "removeButtonをremoveLabelからaria-labelで命名する。",
+      "Tag自身にaria-selected、aria-pressed、aria-liveを追加しない。"
     ],
     "focus": [
-      "focus-visibleで--focus-ringを使う。",
-      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+      "static Tagはtab sequenceへ入れない。",
+      "removable TagではremoveButtonだけを通常のdocument順序へ入れる。",
+      "削除後のfocus移動と必要なstatus通知はTag collection ownerが管理する。"
     ]
   },
   "keyboardInteractions": [
-    {
-      "key": "Delete / Backspace",
-      "action": "削除可能なTagを解除する。"
-    }
+    { "key": "Enter", "action": "focus中のremoveButtonをnative activationし、onRemoveを1回呼ぶ。" },
+    { "key": "Space", "action": "focus中のremoveButtonをnative activationし、onRemoveを1回呼ぶ。" },
+    { "key": "Tab", "action": "removable TagのremoveButtonへ通常のdocument順序で出入りする。static Tagは通過する。" }
   ],
   "usagePatterns": [
     {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "ラベル・トピックの付与",
-      "recommended": [
-        "削除ボタンには aria-label「◯◯を削除」を付ける。"
-      ],
-      "avoid": [
-        "システムが決めるステータス → Badge"
-      ]
+      "id": "static-attribute",
+      "title": "Static attribute",
+      "description": "ユーザーが付与した属性を読み取り可能なlabelとして表示する。",
+      "recommended": ["labelだけを渡し、rootを非interactiveに保つ。"],
+      "avoid": ["system statusや件数をTagで表す。", "root全体へonClickやtabIndexを付ける。"]
     },
     {
-      "id": "recommended-2",
-      "title": "Secondary context",
-      "description": "フィルタ条件の表示と解除",
-      "recommended": [
-        "削除ボタンには aria-label「◯◯を削除」を付ける。"
-      ],
-      "avoid": [
-        "システムが決めるステータス → Badge"
-      ]
+      "id": "removable-attribute",
+      "title": "Removable attribute",
+      "description": "明示的な子buttonで属性を解除する。",
+      "recommended": ["onRemoveとlocalized removeLabelを組で渡す。", "親collectionが削除後のfocusと必要なstatus通知を管理する。"],
+      "avoid": ["removeLabelをvisible labelから固定言語で自動生成する。", "Tag自身でDOMから消えたりfocus先を推測する。"]
     }
   ],
   "responsiveBehavior": {
     "desktop": {
-      "summary": "DesktopでのTag。",
-      "rules": [
-        "周辺layoutに応じたintrinsic widthを基本にし、formではlabelとの整列を保つ。",
-        "Keyboard focusとhoverを別々に確認する。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
+      "summary": "intrinsic widthを基本に、長いlabelはavailable width内でwrapする。",
+      "rules": ["Tag群のwrapとspacingは親layoutが管理する。", "remove hover、active、focusを独立して確認する。"],
+      "avoid": ["Tagへ固定max-widthや1行ellipsisを組み込み、属性名を回収不能にする。"]
     },
     "mobile": {
-      "summary": "MobileでのTag。",
-      "rules": [
-        "Form文脈では利用可能幅まで広げ、複数controlを無理に横へ詰めない。",
-        "同じpropとstate contractを維持する。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
+      "summary": "同じ意味とAPIを保ち、親layout内で折り返す。",
+      "rules": ["rootはmax-inline-size:100%、labelはoverflow-wrap:anywhereでcontent lossを防ぐ。", "必要ならcomfortable densityや別の一覧編集UIを選ぶ。"],
+      "avoid": ["PC用とSP用に別componentを作る。"]
     },
     "touch": {
-      "summary": "Touch入力でのTag。",
-      "rules": [
-        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
+      "summary": "removeButtonを24px minimumにし、主要な反復削除は44px以上の別編集UIを優先する。",
+      "rules": ["Tag内removeButtonは全densityで--ctl-xs以上にする。", "隣接Tag targetとの重なりを避ける。"],
+      "avoid": ["glyphだけを16px前後のtargetとして使う。"]
     }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM",
-    "FOCUS_VISIBLE_REQUIRED",
-    "NO_POSITIVE_TABINDEX",
-    "TARGET_SIZE_MINIMUM",
-    "INTERACTIVE_NAME_REQUIRED"
-  ],
+  "rules": ["NO_RAW_HEX_COLOR", "SPACING_FROM_TOKENS_ONLY", "RADIUS_FROM_TOKENS_ONLY", "CONTRAST_AA_MINIMUM", "FOCUS_VISIBLE_REQUIRED", "NO_POSITIVE_TABINDEX", "TARGET_SIZE_MINIMUM", "INTERACTIVE_NAME_REQUIRED"],
   "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
+    "static rootが非interactive spanで、removable時だけnative buttonを含む。",
+    "onRemoveとremoveLabelのconditional APIが明記されている。",
+    "removeButtonのdefault/hover/active/focus visual slotが全てtokenへ結線されている。",
+    "Light/Dark × Standard/High、3 density、mobile、長いlabelでShowcaseを確認する。"
   ],
   "examples": [
-    {
-      "id": "default",
-      "description": "Tagの標準例。",
-      "code": "<Tag onRemove={...}>design-system</Tag>"
-    }
+    { "id": "static", "description": "読み取り専用の属性。", "code": "<Tag label=\"design-system\" />" },
+    { "id": "removable", "description": "localized nameを持つ削除可能な属性。", "code": "<Tag label=\"design-system\" onRemove={removeTag} removeLabel=\"design-systemを削除\" />" }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["span"],
+    "slots": ["label", "removeButton", "removeIcon"],
+    "attributes": ["id", "className", "aria-*", "data-*"],
+    "stateModel": ["data-meridian-variant", "data-meridian-state"],
+    "events": ["click", "focus", "blur"],
+    "relations": ["optional-native-remove-button", "controlled-removal", "localized-remove-name", "collection-owned-focus", "native-global-props-passthrough"],
+    "provenance": ["component", "instance", "variant", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["user-assigned属性を静的に表示する。", "同じ属性を明示的な子buttonで解除する。"],
+    "avoidWhen": ["system statusやcountならBadgeを使う。", "selection toggleならdedicated filter chipまたはselection controlを使う。", "tokenized input全体ならComboboxまたはTag Input ownerを使う。"],
+    "alternatives": ["badge", "button", "checkbox", "combobox", "segmented-control"]
+  },
+  "negativeExamples": [
+    { "pattern": "Tag root全体へonClick、role=button、tabIndexを付ける。", "reason": "可視labelとremove actionの境界が曖昧になりnested interactionを招くため。", "ruleIds": ["NO_POSITIVE_TABINDEX", "INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "remove buttonを16px glyph相当のtargetにする。", "reason": "隣接targetを持つTag群で24px minimumを満たさないため。", "ruleIds": ["TARGET_SIZE_MINIMUM"] },
+    { "pattern": "Tag単体でBackspace/Deleteを捕捉する。", "reason": "input編集keyと競合し、collection focusの文脈をTag自身が判断できないため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "onRemoveがあるのにremoveLabelを固定言語で自動生成する。", "reason": "localizationと同名対象の識別を呼び出し側で保証できないため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] }
+  ],
+  "requiredScenarios": ["default", "static", "removable", "remove-hover", "remove-active", "remove-focus", "long-label", "localized-remove-name", "tag-list", "mobile-wrap"],
+  "openQuestions": []
 }
