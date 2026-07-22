@@ -4819,11 +4819,14 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "ツールバー・カードヘッダーの補助操作",
-        "スペースが限られたテーブル行内"
+        "ツールバー、カードヘッダー、テーブル行で意味が広く認識される補助アクションを置く。",
+        "利用可能幅が限られ、可視ラベル付きButtonを置くと主要contentの走査を妨げる。",
+        "破壊的な補助アクションをdanger表現と確認フローで明示する。"
       ],
       "whenNotToUse": [
-        "意味がアイコンだけでは伝わらない主要アクション → ラベル付き Button"
+        "主要アクション、初見で意味が推測できない操作、翻訳で意味が変わる操作には可視ラベル付きButtonを使う。",
+        "ページやresourceへの遷移にはLinkを使う。",
+        "ON/OFFや選択状態の保持にはSwitch、Checkbox、Segmented Controlなどのselection controlを使う。"
       ],
       "principles": [
         1,
@@ -4837,188 +4840,296 @@ const COMPONENT_CONTRACTS={
       {
         "part": "root",
         "required": true,
-        "description": "Native interactive root or navigation target."
-      },
-      {
-        "part": "label",
-        "required": true,
-        "description": "Predictable accessible action or destination name."
+        "description": "type=buttonを既定とするnative button。"
       },
       {
         "part": "icon",
+        "required": true,
+        "description": "単一の装飾glyph。accessible nameへ重複して含めない。"
+      },
+      {
+        "part": "accessible-label",
+        "required": true,
+        "description": "label propから生成する短く具体的なaria-label。"
+      },
+      {
+        "part": "tooltip",
+        "required": true,
+        "description": "hoverとfocusで表示し、labelと同じ操作名を伝えるTooltip。"
+      },
+      {
+        "part": "spinner",
         "required": false,
-        "description": "Meaning reinforcement; decorative icons stay hidden from assistive technology."
+        "description": "loading中にiconと同じ寸法へ置換する装飾indicator。"
       }
     ],
     "variants": [
       "ghost",
       "secondary",
-      "primary"
+      "danger"
     ],
     "sizes": [
       "xs",
       "sm",
       "md",
-      "lg"
+      "lg",
+      "xl"
     ],
     "states": [
       {
         "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "description": "操作可能な通常状態。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "native buttonとしてTab順に参加する。",
+          "labelをaria-labelとTooltip contentの単一sourceにする。"
         ]
       },
       {
         "id": "hover",
-        "description": "Pointer hoverの補助変化。意味をhoverだけに依存させない。",
+        "description": "pointerがroot上にある状態。",
         "requiredBehavior": [
-          "Pointer hoverの補助変化。意味をhoverだけに依存させない。"
+          "variantのhover tokenを使う。",
+          "Tooltipを表示するが、操作理解をhoverだけに依存させない。"
+        ]
+      },
+      {
+        "id": "active",
+        "description": "押下中の状態。",
+        "requiredBehavior": [
+          "active tokenでfeedbackを示す。",
+          "寸法とglyph位置を変えない。"
+        ]
+      },
+      {
+        "id": "focus",
+        "description": "keyboard focusがある状態。",
+        "requiredBehavior": [
+          "focus-visible ringを表示する。",
+          "Tooltipを表示し、Escapeで閉じてもroot focusを維持する。"
         ]
       },
       {
         "id": "disabled",
-        "description": "操作不能である理由を周辺文脈から理解できるようにする。",
+        "description": "操作不可の状態。",
         "requiredBehavior": [
-          "操作不能である理由を周辺文脈から理解できるようにする。"
+          "native disabledへ写像する。",
+          "理由が必要なら無効化せず周辺説明または実行後feedbackを優先する。"
+        ]
+      },
+      {
+        "id": "loading",
+        "description": "非同期処理中で再実行を防ぐ状態。",
+        "requiredBehavior": [
+          "aria-busy=trueとaria-disabled=trueを設定する。",
+          "clickとsubmit handlerをguardする。",
+          "accessible name、root寸法、focusを維持し、iconだけをspinnerへ置換する。"
         ]
       }
     ],
     "props": [
       {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "default": null,
+        "description": "aria-labelとTooltipへ使う短く具体的な操作名。"
+      },
+      {
+        "name": "icon",
+        "type": "ReactElement",
+        "required": true,
+        "default": null,
+        "description": "aria-hiddenで描画する単一glyph。"
+      },
+      {
         "name": "variant",
-        "type": "\"ghost\" | \"secondary\" | \"primary\"",
+        "type": "\"ghost\" | \"secondary\" | \"danger\"",
         "required": false,
         "default": "ghost",
-        "description": "意味と優先度を選ぶ。"
+        "description": "補助操作の視覚的な強度と危険性。"
       },
       {
         "name": "size",
-        "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
+        "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"",
         "required": false,
         "default": "md",
-        "description": "Density内の相対sizeを選ぶ。"
+        "description": "正方形controlの一辺とglyph寸法。"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "実行中表示と再実行防止。"
       },
       {
         "name": "disabled",
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "操作不能state。"
+        "description": "native disabled状態。"
+      },
+      {
+        "name": "tooltipPlacement",
+        "type": "\"top\" | \"right\" | \"bottom\" | \"left\"",
+        "required": false,
+        "default": "top",
+        "description": "Tooltipの希望位置。衝突時はTooltip側で反転する。"
+      },
+      {
+        "name": "type",
+        "type": "\"button\" | \"submit\" | \"reset\"",
+        "required": false,
+        "default": "button",
+        "description": "native button type。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLButtonElement>",
+        "required": false,
+        "default": null,
+        "description": "native buttonへforwardするref。"
       }
     ],
     "tokenRefs": {
       "semanticColor": [
-        "--surface",
-        "--border",
+        "--control-bg",
+        "--control-bg-hover",
+        "--control-bg-active",
+        "--control-border",
+        "--control-border-hover",
         "--fg",
-        "--surface-muted",
         "--fg-disabled",
-        "--border-strong",
-        "--primary",
-        "--primary-hover",
-        "--primary-active",
-        "--primary-fg",
+        "--surface-muted",
+        "--danger",
+        "--danger-hover",
+        "--danger-active",
+        "--danger-on-solid",
+        "--disabled",
         "--focus-ring"
       ],
       "density": [
-        "--ctl-md",
         "--ctl-xs",
         "--ctl-sm",
+        "--ctl-md",
         "--ctl-lg",
-        "--text-label"
-      ],
-      "spacing": [
-        "--sp-2"
+        "--ctl-xl"
       ],
       "radius": [
         "--radius-sm"
       ],
       "motion": [
-        "--dur-fast"
+        "--dur-fast",
+        "--dur-loop",
+        "--ease-standard"
+      ],
+      "component": [
+        "--icon-button-icon-size-xs",
+        "--icon-button-icon-size-sm",
+        "--icon-button-icon-size-md",
+        "--icon-button-icon-size-lg",
+        "--icon-button-icon-size-xl",
+        "--icon-button-spinner-stroke"
       ]
     },
     "accessibility": {
       "requirements": [
-        "aria-label を必須にする",
-        "ツールチップはフォーカス時にも表示する",
-        "Keyboardとpointerで同じ機能を実行できる。",
-        "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-        "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        "label propから空でないaccessible nameと同文のTooltipを生成する。",
+        "iconとspinnerはaria-hiddenにし、glyph名をaccessible nameへ重複させない。",
+        "Tooltipはhoverとfocusで表示し、Escapeで閉じ、root focusを奪わない。",
+        "Keyboardとpointerで同じactionを実行する。",
+        "Targetは24px minimumを満たし、touch中心ではxlの44pxを優先する。",
+        "Focus indicatorを視認でき、sticky layerで完全に隠さない。"
       ],
       "aria": [
-        "Native <button>と必須のaria-labelを使う。"
+        "Native buttonを使い、labelをaria-labelへ写像する。",
+        "Tooltipをaria-describedbyで関連付ける。",
+        "loading中はaria-busy=trueとaria-disabled=trueを設定する。"
       ],
       "focus": [
         "focus-visibleで--focus-ringを使う。",
-        "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        "Positive tabindexを使わずDOMとvisualの順序を一致させる。",
+        "Tooltip表示・非表示でfocusを移動しない。"
       ]
     },
     "keyboardInteractions": [
       {
-        "key": "Enter / Space",
+        "key": "Enter",
         "action": "Actionを実行する。"
+      },
+      {
+        "key": "Space",
+        "action": "Actionを実行する。"
+      },
+      {
+        "key": "Tab",
+        "action": "通常のdocument順序でrootへ出入りする。"
+      },
+      {
+        "key": "Escape",
+        "action": "表示中のTooltipを閉じ、root focusを維持する。"
       }
     ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "ツールバー・カードヘッダーの補助操作",
+        "id": "toolbar-action",
+        "title": "Toolbar action",
+        "description": "認識可能な編集・表示補助操作を密度の高いtoolbarへ置く。",
         "recommended": [
-          "必ず aria-label とツールチップを併用する。"
+          "labelを動詞から始め、Tooltipとaria-labelへ同じ文字列を使う。",
+          "複数Icon Buttonを並べる場合はToolbarのroving tabindex contractを親で管理する。"
         ],
         "avoid": [
-          "意味がアイコンだけでは伝わらない主要アクション → ラベル付き Button"
+          "初見で判別できない独自glyphを説明なしで使う。",
+          "Icon Button自体にaria-pressedを追加してselection control化する。"
         ]
       },
       {
-        "id": "recommended-2",
-        "title": "Secondary context",
-        "description": "スペースが限られたテーブル行内",
+        "id": "destructive-row-action",
+        "title": "Destructive row action",
+        "description": "行単位の削除など破壊的な補助操作。",
         "recommended": [
-          "操作ターゲットは 24px 以上を最低条件とし、タッチ中心の主要操作は原則 44px 以上にする。"
+          "danger variantと対象を含むlabelを使う。",
+          "確認DialogまたはUndoを用意する。"
         ],
         "avoid": [
-          "意味がアイコンだけでは伝わらない主要アクション → ラベル付き Button"
+          "主要な削除確認をIcon Buttonだけで完結させる。"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのIcon Button。",
+        "summary": "同一APIの正方形controlをtask densityで選ぶ。",
         "rules": [
-          "周辺layoutに応じたintrinsic widthを基本にし、formではlabelとの整列を保つ。",
-          "Keyboard focusとhoverを別々に確認する。"
+          "mdを標準、table rowではxs/sm、主要toolbarではmd/lgを使う。",
+          "hoverとfocusのTooltipを別々に確認する。"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "hoverだけに操作名を閉じ込めない。"
         ]
       },
       "mobile": {
-        "summary": "MobileでのIcon Button。",
+        "summary": "意味とAPIを変えず、spacingとsizeで誤操作を防ぐ。",
         "rules": [
-          "Form文脈では利用可能幅まで広げ、複数controlを無理に横へ詰めない。",
-          "同じpropとstate contractを維持する。"
+          "touch中心の主要操作はxlを優先する。",
+          "狭い画面でも隣接targetとの間隔を保つ。"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "PC用とSP用に異なるlabelやactionを持つIcon Buttonを複製しない。"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのIcon Button。",
+        "summary": "24px minimum、主要touch操作44px推奨を満たす。",
         "rules": [
-          "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-          "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+          "xsでも24px未満にしない。",
+          "繰り返し使う主要操作はxlまたは十分なspacingを使う。"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "24px円が隣接targetと重なる配置を作らない。"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "input-group": {
     "id": "input-group",
@@ -5966,11 +6077,14 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "別ページ・外部サイトへの遷移",
-        "文中の参照"
+        "別ページ、別resource、同一document内の位置へ移動する。",
+        "本文中で関連情報や出典を参照する。",
+        "外部サイトまたはdownload先への遷移を明示する。"
       ],
       "whenNotToUse": [
-        "データの作成・更新・削除 → Button"
+        "データの作成、更新、削除、送信、Dialog表示など現在の文脈でactionを実行する場合はButtonを使う。",
+        "遷移先が存在しない状態をdisabled Linkで表さず、textへ戻すかLink自体を表示しない。",
+        "カード全体をLinkにして内部のButtonやLinkを入れ子にしない。"
       ],
       "principles": [
         1,
@@ -5984,43 +6098,60 @@ const COMPONENT_CONTRACTS={
       {
         "part": "root",
         "required": true,
-        "description": "Native interactive root or navigation target."
+        "description": "hrefを必須とするnative a element。"
       },
       {
         "part": "label",
         "required": true,
-        "description": "Predictable accessible action or destination name."
+        "description": "遷移先または目的を文脈内で判別できる可視テキスト。"
       },
       {
-        "part": "icon",
+        "part": "leading-icon",
         "required": false,
-        "description": "Meaning reinforcement; decorative icons stay hidden from assistive technology."
+        "description": "resource種別を補足する装飾icon。"
+      },
+      {
+        "part": "trailing-indicator",
+        "required": false,
+        "description": "外部遷移、download、新しいtabを視覚・音声で補足するindicator。"
       }
     ],
     "variants": [
-      "default"
+      "inline",
+      "standalone"
     ],
     "sizes": [],
     "states": [
       {
         "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "description": "hrefを持つ通常のhyperlink。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "native aとしてTab順とbrowser context menuへ参加する。",
+          "visible labelからaccessible nameを得る。"
         ]
       },
       {
         "id": "hover",
-        "description": "Pointer hoverの補助変化。意味をhoverだけに依存させない。",
+        "description": "pointerがLink上にある状態。",
         "requiredBehavior": [
-          "Pointer hoverの補助変化。意味をhoverだけに依存させない。"
+          "foregroundをhover tokenへ変える。",
+          "underlineを維持または追加し、colorだけに依存しない。"
+        ]
+      },
+      {
+        "id": "active",
+        "description": "Linkをactivateしている状態。",
+        "requiredBehavior": [
+          "active tokenで短いfeedbackを示す。",
+          "navigationを独自keydown handlerで再実装しない。"
         ]
       },
       {
         "id": "focus",
-        "description": "focus-visibleで明確なringを表示する。",
+        "description": "keyboard focusがある状態。",
         "requiredBehavior": [
-          "focus-visibleで明確なringを表示する。"
+          "focus-visible outlineとunderlineを同時に表示する。",
+          "focusだけでnavigationやnew tabを開始しない。"
         ]
       }
     ],
@@ -6030,34 +6161,85 @@ const COMPONENT_CONTRACTS={
         "type": "ReactNode",
         "required": true,
         "default": null,
-        "description": "Componentの主要content。"
+        "description": "目的を説明する可視link label。"
+      },
+      {
+        "name": "href",
+        "type": "string",
+        "required": true,
+        "default": null,
+        "description": "native anchorの遷移先。空文字やjavascript URLを許可しない。"
+      },
+      {
+        "name": "variant",
+        "type": "\"inline\" | \"standalone\"",
+        "required": false,
+        "default": "inline",
+        "description": "本文内か、明示的なnavigation文脈かを選ぶ。"
+      },
+      {
+        "name": "external",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "外部resource indicatorと補足accessible textを表示する。targetは変更しない。"
+      },
+      {
+        "name": "download",
+        "type": "boolean | string",
+        "required": false,
+        "default": "false",
+        "description": "native download属性とdownload indicatorを設定する。"
+      },
+      {
+        "name": "target",
+        "type": "HTMLAttributeAnchorTarget",
+        "required": false,
+        "default": null,
+        "description": "native target。_blankでは新しいtabを示す補足と安全なrelを保証する。"
+      },
+      {
+        "name": "rel",
+        "type": "string",
+        "required": false,
+        "default": null,
+        "description": "native link relationship。target=_blankではnoopenerをmergeする。"
+      },
+      {
+        "name": "leadingIcon",
+        "type": "ReactNode",
+        "required": false,
+        "default": null,
+        "description": "resource種別を補足するaria-hidden icon。"
+      },
+      {
+        "name": "trailingIcon",
+        "type": "ReactNode",
+        "required": false,
+        "default": null,
+        "description": "方向を補足するaria-hidden icon。external/download indicatorより前に置く。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLAnchorElement>",
+        "required": false,
+        "default": null,
+        "description": "native anchorへforwardするref。"
       }
     ],
     "tokenRefs": {
       "semanticColor": [
-        "--border",
-        "--border-strong",
-        "--fg",
-        "--fg-disabled",
-        "--focus-ring",
         "--primary",
-        "--primary-active",
-        "--primary-fg",
         "--primary-hover",
-        "--surface",
-        "--surface-muted"
-      ],
-      "density": [
-        "--ctl-md"
+        "--primary-active",
+        "--focus-ring"
       ],
       "spacing": [
-        "--sp-2"
-      ],
-      "radius": [
-        "--radius-sm"
+        "--sp-1"
       ],
       "motion": [
-        "--dur-fast"
+        "--dur-fast",
+        "--ease-standard"
       ],
       "typography": [
         "--text-body"
@@ -6065,83 +6247,98 @@ const COMPONENT_CONTRACTS={
     },
     "accessibility": {
       "requirements": [
-        "Keyboardとpointerで同じ機能を実行できる。",
-        "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-        "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        "Linkの目的をvisible label単独、またはprogrammatically determined contextと合わせて判別できるようにする。",
+        "本文中Linkは通常時からunderlineを表示し、色だけで周辺textと区別しない。",
+        "external、download、target=_blankの結果をvisible indicatorと補足accessible textで伝える。",
+        "Targetは24px minimumを基本とするが、文中Linkのline-height例外を誤用して密集したnavigationを作らない。",
+        "Focus indicatorを視認でき、sticky layerで完全に隠さない。"
       ],
       "aria": [
-        "Navigationにはhrefを持つ<a>を使う。"
+        "Navigationにはhrefを持つnative aを使う。",
+        "現在位置にはaria-currentをnative属性としてpass-throughする。",
+        "visible labelと異なるaria-labelで目的を上書きしない。"
       ],
       "focus": [
-        "focus-visibleで--focus-ringを使う。",
-        "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        "focus-visibleで--focus-ringとunderlineを表示する。",
+        "Positive tabindexを使わずDOMとvisualの順序を一致させる。",
+        "focus取得だけでnavigationやcontext changeを開始しない。"
       ]
     },
     "keyboardInteractions": [
       {
         "key": "Enter",
-        "action": "リンク先へ移動する。"
+        "action": "Browser標準動作でhrefへ移動する。"
+      },
+      {
+        "key": "Tab",
+        "action": "通常のdocument順序でLinkへ出入りする。"
+      },
+      {
+        "key": "Shift+F10",
+        "action": "対応platformではbrowser標準のlink context menuを開く。"
       }
     ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "別ページ・外部サイトへの遷移",
+        "id": "inline-reference",
+        "title": "Inline reference",
+        "description": "本文中の関連情報、出典、詳細への参照。",
         "recommended": [
-          "文中リンクは下線または primary 色でリンクであることを明示する。"
+          "リンク先の内容を具体的なlabelで示す。",
+          "inline variantでunderlineを常時表示する。"
         ],
         "avoid": [
-          "データの作成・更新・削除 → Button"
+          "「こちら」「詳しく」だけを繰り返す。",
+          "onclickだけを持つspanやhrefなしのaを使う。"
         ]
       },
       {
-        "id": "recommended-2",
-        "title": "Secondary context",
-        "description": "文中の参照",
+        "id": "external-or-download",
+        "title": "External or download destination",
+        "description": "外部site、新しいtab、downloadなど通常と異なるnavigation結果。",
         "recommended": [
-          "外部リンクにはアイコンを付け、target=\"_blank\" には rel=\"noopener\" を併用する。"
+          "external/download propでindicatorと補足textを同期する。",
+          "target=_blankではrelにnoopenerをmergeする。"
         ],
         "avoid": [
-          "データの作成・更新・削除 → Button"
+          "外部URLだからという理由だけで自動的に新しいtabを開く。",
+          "iconだけでLinkの目的を表す。"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのLink。",
+        "summary": "周辺typographyとinline flowを維持する。",
         "rules": [
-          "周辺layoutに応じたintrinsic widthを基本にし、formではlabelとの整列を保つ。",
-          "Keyboard focusとhoverを別々に確認する。"
+          "inlineは文章の改行へ自然に追従する。",
+          "standaloneはnavigation文脈とindicatorを保つ。"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "LinkをButtonの面や固定control heightへ変える。"
         ]
       },
       "mobile": {
-        "summary": "MobileでのLink。",
+        "summary": "同じhrefとAPIを維持し、折返し可能なlabelを使う。",
         "rules": [
-          "Form文脈では利用可能幅まで広げ、複数controlを無理に横へ詰めない。",
-          "同じpropとstate contractを維持する。"
+          "長いlabelは省略せず自然にwrapする。",
+          "navigation群では十分なblock spacingまたはpaddingを親layoutで確保する。"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "PC用とSP用で異なる遷移先を持つLinkを複製する。"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのLink。",
+        "summary": "文中例外と独立navigation targetを区別する。",
         "rules": [
-          "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-          "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+          "独立したLinkは24px minimumのtargetまたは十分なspacingを確保する。",
+          "文中Linkはline-heightとunderlineを保ち、隣接Linkを密集させない。"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "小さなicon-only Linkや隣接targetと重なるhit areaを作る。"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "list": {
     "id": "list",

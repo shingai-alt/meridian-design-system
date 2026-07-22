@@ -371,6 +371,32 @@ const ICON_META=[
     "meaning": "次のstepまたはdestination"
   },
   {
+    "id": "external",
+    "canonicalName": "external-link",
+    "label": "外部リンク",
+    "aliases": [
+      "open-external",
+      "outside"
+    ],
+    "style": "stroke",
+    "defaultSize": "sm",
+    "directionality": "neutral",
+    "meaning": "外部resourceへの遷移"
+  },
+  {
+    "id": "download",
+    "canonicalName": "download",
+    "label": "ダウンロード",
+    "aliases": [
+      "save-file",
+      "export"
+    ],
+    "style": "stroke",
+    "defaultSize": "sm",
+    "directionality": "neutral",
+    "meaning": "resourceをdownloadする遷移"
+  },
+  {
     "id": "dots",
     "canonicalName": "ellipsis",
     "label": "その他",

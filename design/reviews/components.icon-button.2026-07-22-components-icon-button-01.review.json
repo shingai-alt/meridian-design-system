@@ -1,0 +1,181 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.icon-button",
+  "cycleId": "2026-07-22-components-icon-button-01",
+  "supersedesCycleId": "2026-07-13-components-icon-button-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-22",
+  "completedAt": "2026-07-22",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/implementation-readiness.json",
+    "components/icon-button.md",
+    "design/contracts/components/icon-button.contract.json",
+    "tokens/src/component.json",
+    "design/iconography.json",
+    "js/components-registry.js",
+    "js/ui-builders.js",
+    "index.html",
+    "schemas/implementation-readiness.schema.json",
+    "scripts/lib/implementation-readiness.mjs",
+    "test/component-specs.test.js",
+    "test/implementation-readiness.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "components.icon-button",
+      "summary": "Icon ButtonをReact実装へ渡せる確定Contractとして、Buttonとの責務境界、accessible name、Tooltip、loading、target size、token bindingを精査する。"
+    },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior"],
+    "questions": [
+      "可視ラベルを持たないcommandへ、どのように一意のaccessible nameと補足説明を与えるか。",
+      "Buttonとのvariant境界、loading、native button APIをどこまで共有するか。",
+      "Pointer、keyboard、touchで必要なTooltipとtarget sizeの最低条件は何か。"
+    ],
+    "evidence": [
+      {
+        "id": "wai-apg-button",
+        "title": "WAI-ARIA Authoring Practices Guide: Button Pattern",
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/button/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "Buttonはactionを実行し、EnterとSpaceでactivateする。Toggleはaria-pressedを持つ別の状態モデルである。",
+        "supportedDecisions": ["command-only-boundary", "native-react-api"]
+      },
+      {
+        "id": "wai-names-descriptions",
+        "title": "WAI-ARIA APG: Providing Accessible Names and Descriptions",
+        "url": "https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "Interactive elementには簡潔で目的を表すaccessible nameが必要で、nameとdescriptionは役割を分ける。",
+        "supportedDecisions": ["single-label-source"]
+      },
+      {
+        "id": "wai-tooltip",
+        "title": "WAI-ARIA Authoring Practices Guide: Tooltip Pattern",
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "Tooltipはhoverまたはkeyboard focusで表示し、Escapeで閉じ、triggerからaria-describedbyで関連付ける。",
+        "supportedDecisions": ["tooltip-contract"]
+      },
+      {
+        "id": "wcag-target-size",
+        "title": "WCAG 2.2 Understanding SC 2.5.8: Target Size (Minimum)",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "Pointer targetは原則24 CSS px minimumを満たす。Meridianではtouch中心の主要操作に44px推奨を重ねる。",
+        "supportedDecisions": ["target-size-model"]
+      }
+    ],
+    "synthesis": "Icon Buttonは可視ラベルを置かない単一commandへ限定し、labelをaccessible nameとTooltip表示文字列の単一sourceにする。Native button API、loading guard、focus、24px minimumと44px touch推奨を固定する。",
+    "decisionImpact": "Contract 0.2.0、Showcase、component token、共通implementation-readiness gate、回帰testを同じ責務とAPIへ同期した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "command-only-boundary",
+      "summary": "Icon Buttonを可視ラベルなしの単一commandへ限定し、toggle、navigation、主要CTAを別componentへ委譲する。",
+      "rationale": "aria-pressedやLink semanticsを混ぜず、Buttonとの選択境界を意図で決められるため。"
+    },
+    {
+      "id": "single-label-source",
+      "summary": "必須labelをaria-labelとTooltip表示文字列の単一sourceにする。",
+      "rationale": "表示説明とaccessible nameの文言driftを防ぎ、icon glyphだけに意味を依存しないため。"
+    },
+    {
+      "id": "native-react-api",
+      "summary": "native button attributesを継承し、type=buttonを既定、refをHTMLButtonElementへforwardする。",
+      "rationale": "formとkeyboard semanticsを保持し、Buttonと予測可能な実装基盤を共有するため。"
+    },
+    {
+      "id": "tooltip-contract",
+      "summary": "Tooltipをhoverとfocusで表示し、Escape dismissalとaria-describedby relationを実装責務にする。",
+      "rationale": "Pointerだけに依存せず、未知のglyphにも補足説明へ到達できるため。"
+    },
+    {
+      "id": "target-size-model",
+      "summary": "xsからxlを24/28/32/38/44pxの正方形targetへ固定する。",
+      "rationale": "24px minimumを維持しつつ、密度とtouch中心の用途を同一componentで選べるため。"
+    },
+    {
+      "id": "complete-token-binding",
+      "summary": "3 variant、5 size、6 stateの全visual slotをtokenまたは明示したintrinsic valueへ結線する。",
+      "rationale": "React実装者がraw valueや未定義のprimary variantを補わずに実装できるため。"
+    },
+    {
+      "id": "shared-readiness-gate",
+      "summary": "Buttonと同じ8基準のmachine-readable gateでReact実装前readyを判定する。",
+      "rationale": "今後のcomponent精査で完了条件とevidence粒度を再利用できるため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "cross-layer-conflict",
+      "description": "既存ShowcaseとContractにprimary variant、generic Button builder、Plus glyphが混在し、Icon Button固有の責務と例が一致していなかった。",
+      "action": "ghost/secondary/dangerへ固定し、専用builderとFilter glyphへ同期した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-contract",
+      "description": "label、Tooltip relation、type/ref、loading guard、active/focus stateのReact実装前contractが未確定だった。",
+      "action": "Contract 0.2.0へprops、runtime、state、required scenariosを固定した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-token",
+      "description": "size別glyph寸法とspinner strokeにcomponent tokenがなかった。",
+      "action": "5つのicon-size tokenとspinner-stroke tokenを追加しbinding coverageをcompleteにした。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "ShowcaseがTooltip、loading semantics、正方形target geometryを表現していなかった。",
+      "action": "専用markup/CSSへ更新しdesktop/mobileとtheme/contrast/densityで検証した。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    { "path": "components/icon-button.md", "summary": "責務、variant/state、Tooltip、API freeze、responsiveを確定。" },
+    { "path": "design/contracts/components/icon-button.contract.json", "summary": "Contract 0.2.0とcomplete token bindingsを機械可読化。" },
+    { "path": "tokens/src/component.json", "summary": "size別icon geometryとspinner stroke tokenを追加。" },
+    { "path": "js/ui-builders.js", "summary": "native semantics、Tooltip、loading、Filter glyphを持つ専用Showcase builderを追加。" },
+    { "path": "js/components-registry.js", "summary": "Playground、usage、React code例を確定Contractへ同期。" },
+    { "path": "design/implementation-readiness.json", "summary": "全componentで再利用するReact実装前の8基準を定義。" },
+    { "path": "scripts/lib/implementation-readiness.mjs", "summary": "ready evidence、scenario/token completenessを検証する共通gateを追加。" },
+    { "path": "test/component-specs.test.js", "summary": "Icon Button APIとShowcase driftの回帰testを追加。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js test/implementation-readiness.test.js", "status": "passed", "notes": "API freeze、native/Tooltip/loading semantics、共通gateのpositive/negative caseを検証。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "1280pxのDark/High/Comfortableと390x844のLight/Standard/Defaultで全size、state、Tooltip、overflow、accessible name、consoleを確認。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、registry、review cycle、contracts、generated artifacts、unit testsを一括検証。" },
+    { "command": "Structured local code review", "status": "passed", "notes": "Critical 0件。candidateによるgate回避とFilter/Plus glyph driftを検出・修正しnegative testを追加。" }
+  ],
+  "openQuestions": [
+    {
+      "question": "Contract 0.2.0に基づくReact実装とvisual regression baselineを完了しstableへ昇格する。",
+      "owner": "components.icon-button",
+      "exitCriteria": "React component、Tooltipのhover/focus/Escape interaction tests、required scenariosのvisual regressionがCIで通ること。"
+    }
+  ],
+  "acknowledgedImpacts": [
+    "2026-07-13-components-button-bootstrap",
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-content-01",
+    "2026-07-13-foundations-iconography-01",
+    "2026-07-13-foundations-spacing-01",
+    "2026-07-13-tokens-density-01",
+    "2026-07-21-components-button-01"
+  ],
+  "impactedItems": ["components.tooltip"],
+  "nextRecommendedItems": ["components.tooltip", "components.link"]
+}

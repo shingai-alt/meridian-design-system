@@ -19,7 +19,7 @@ const indexSource = read('index.html');
 const components = vm.runInNewContext(`${generatedMeta}\n${registrySource}\nCOMPONENTS;`);
 const renderSandbox = {
   esc: (value) => String(value ?? '').replace(/[&<>"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[character]),
-  I: new Proxy({}, { get: () => '<svg aria-hidden="true"></svg>' }),
+  I: new Proxy({}, { get: (_target, iconId) => `<svg data-icon="${String(iconId)}" aria-hidden="true"></svg>` }),
   codeBlock: (code) => `<pre><code>${code}</code></pre>`,
 };
 const renderedComponents = vm.runInNewContext(`${read('js/ui-builders.js')}\n${generatedMeta}\n${registrySource}\nCOMPONENTS;`, renderSandbox);
@@ -243,6 +243,92 @@ test('Button showcase preserves native semantics and async state', () => {
     assert.match(indexSource, new RegExp(`\\.btn\\[data-size="${size}"\\]\\{[^}]*gap:var\\(${token}\\)`));
   }
   assert.match(indexSource, /\.btn\[data-loading\]\{[^}]*color:transparent!important/);
+});
+
+test('Icon Button is implementation-ready with one label source and no primary variant', () => {
+  const iconButton = contracts.find((contract) => contract.id === 'icon-button');
+  assert.equal(iconButton.status, 'draft');
+  assert.equal(iconButton.contractVersion, '0.2.0');
+  assert.equal(iconButton.implementationReadiness.status, 'ready');
+  assert.deepEqual(Object.keys(iconButton.variants), ['ghost', 'secondary', 'danger']);
+  assert.deepEqual(Object.keys(iconButton.sizes), ['xs', 'sm', 'md', 'lg', 'xl']);
+  assert.equal(iconButton.tokenBindings.coverage, 'complete');
+  assert.deepEqual(iconButton.tokenBindings.unboundSlots, []);
+  assert.deepEqual(iconButton.openQuestions, []);
+  assert.deepEqual(iconButton.props.map(({ name }) => name), [
+    'label', 'icon', 'variant', 'size', 'loading', 'disabled', 'tooltipPlacement', 'type', 'ref',
+  ]);
+  assert.equal(iconButton.props.find(({ name }) => name === 'label').required, true);
+  assert.equal(iconButton.props.find(({ name }) => name === 'type').default, 'button');
+  assert.match(iconButton.props.find(({ name }) => name === 'ref').type, /HTMLButtonElement/);
+  assert.deepEqual(iconButton.runtime.rootElements, ['button']);
+  assert.ok(iconButton.runtime.relations.includes('tooltip-description'));
+  assert.ok(!iconButton.runtime.attributes.includes('aria-pressed'));
+});
+
+test('Icon Button showcase preserves native semantics, target geometry, and Tooltip naming', () => {
+  const component = renderedComponents.find(({ id }) => id === 'icon-button');
+  const normal = component.render({ ...renderProps(component), label: 'フィルターを開く' });
+  const loading = component.render({ ...renderProps(component), label: '再読み込み', state: 'loading' });
+  const disabled = component.render({ ...renderProps(component), label: '削除', state: 'disabled', variant: 'danger' });
+
+  assert.match(normal, /<button type="button"[^>]+data-component="icon-button"/);
+  assert.match(normal, /aria-label="フィルターを開く"/);
+  assert.match(normal, /data-icon="filter"/);
+  assert.match(normal, /aria-describedby="([^"]+)"/);
+  assert.match(normal, /role="tooltip"[^>]*>フィルターを開く<\/span>/);
+  assert.equal((normal.match(/フィルターを開く/g) ?? []).length, 2);
+  assert.match(loading, /aria-busy="true"/);
+  assert.match(loading, /aria-disabled="true"/);
+  assert.match(loading, /aria-label="再読み込み"/);
+  assert.match(loading, /class="spinner" aria-hidden="true"/);
+  assert.match(disabled, /\sdisabled(?:\s|>)/);
+
+  for (const size of ['xs', 'sm', 'md', 'lg', 'xl']) {
+    assert.match(indexSource, new RegExp(`\\.btn\\[data-component="icon-button"\\]\\[data-size="${size}"\\]\\{width:var\\(--ctl-${size}\\)\\}`));
+    assert.match(indexSource, new RegExp(`--icon-button-icon-size-${size}`));
+  }
+  assert.match(indexSource, /\.icon-btn:focus-visible\+\.icon-button-tooltip/);
+  assert.match(indexSource, /\.btn\[data-component="icon-button"\] \.spinner\{border-width:var\(--icon-button-spinner-stroke\)\}/);
+});
+
+test('Link is implementation-ready as a native anchor without a disabled API', () => {
+  const link = contracts.find((contract) => contract.id === 'link');
+  assert.equal(link.status, 'draft');
+  assert.equal(link.contractVersion, '0.2.0');
+  assert.equal(link.implementationReadiness.status, 'ready');
+  assert.deepEqual(Object.keys(link.variants), ['inline', 'standalone']);
+  assert.deepEqual(link.props.map(({ name }) => name), [
+    'children', 'href', 'variant', 'external', 'download', 'target', 'rel', 'leadingIcon', 'trailingIcon', 'ref',
+  ]);
+  assert.equal(link.props.find(({ name }) => name === 'href').required, true);
+  assert.equal(link.props.some(({ name }) => name === 'disabled'), false);
+  assert.match(link.props.find(({ name }) => name === 'ref').type, /HTMLAnchorElement/);
+  assert.deepEqual(link.runtime.rootElements, ['a']);
+  assert.ok(link.runtime.relations.includes('native-anchor-props-passthrough'));
+  assert.equal(link.tokenBindings.coverage, 'complete');
+  assert.deepEqual(link.tokenBindings.unboundSlots, []);
+  assert.deepEqual(link.openQuestions, []);
+});
+
+test('Link showcase keeps destination semantics and communicates non-default outcomes', () => {
+  const component = renderedComponents.find(({ id }) => id === 'link');
+  const inline = component.render({ ...renderProps(component), variant: 'inline' });
+  const external = component.render({ ...renderProps(component), variant: 'standalone', external: true });
+  const newTab = component.render({ ...renderProps(component), variant: 'standalone', external: true, newTab: true });
+  const download = component.render({ ...renderProps(component), download: true });
+
+  assert.match(inline, /<a href="\/docs\/accessibility" class="linkc/);
+  assert.doesNotMatch(inline, /role="link"/);
+  assert.match(inline, /data-variant="inline"/);
+  assert.match(external, /href="https:\/\/www\.w3\.org\/WAI\/"/);
+  assert.match(external, /（外部サイト）/);
+  assert.match(newTab, /target="_blank" rel="noopener"/);
+  assert.match(newTab, /（新しいタブで開く）/);
+  assert.match(download, /\sdownload(?:\s|>)/);
+  assert.match(download, /（ダウンロード）/);
+  assert.match(indexSource, /\.linkc\[data-variant="inline"\]\{text-decoration-line:underline/);
+  assert.match(indexSource, /\.linkc:focus-visible,\.linkc\.sim-focus\{text-decoration-line:underline/);
 });
 
 test('all component showcases render every declared state and variant as valid tokenized HTML', () => {

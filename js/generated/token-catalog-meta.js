@@ -115,7 +115,7 @@ const TOKEN_CATALOG={
       "id": "component",
       "label": "Component",
       "layer": "component",
-      "count": 18,
+      "count": 24,
       "source": "tokens/src/component.json",
       "css": "--{component}-*"
     }
@@ -143,25 +143,25 @@ const TOKEN_CATALOG={
       "path": "tokens/build/meridian.tokens.json",
       "format": "DTCG .tokens.json",
       "context": "Light / Standard",
-      "tokenCount": 324
+      "tokenCount": 330
     },
     {
       "path": "tokens/build/meridian.dark.tokens.json",
       "format": "DTCG .tokens.json",
       "context": "Dark / Standard",
-      "tokenCount": 324
+      "tokenCount": 330
     },
     {
       "path": "tokens/build/meridian.high-contrast.tokens.json",
       "format": "DTCG .tokens.json",
       "context": "Light / High",
-      "tokenCount": 324
+      "tokenCount": 330
     },
     {
       "path": "tokens/build/meridian.dark.high-contrast.tokens.json",
       "format": "DTCG .tokens.json",
       "context": "Dark / High",
-      "tokenCount": 324
+      "tokenCount": 330
     }
   ],
   "contexts": [
@@ -533,6 +533,186 @@ const TOKEN_CATALOG={
         "dark-standard": "#0a0a14",
         "light-high": "#ffffff",
         "dark-high": "#0a0a14"
+      }
+    },
+    {
+      "path": "component.icon-button.icon.size.xs",
+      "cssVariable": "--icon-button-icon-size-xs",
+      "trigger": "intrinsic-component-value",
+      "reason": "xs Icon Buttonのglyphを24px target内で判別可能に保つ。",
+      "aliases": {
+        "light-standard": {
+          "value": 0.75,
+          "unit": "rem"
+        },
+        "dark-standard": {
+          "value": 0.75,
+          "unit": "rem"
+        },
+        "light-high": {
+          "value": 0.75,
+          "unit": "rem"
+        },
+        "dark-high": {
+          "value": 0.75,
+          "unit": "rem"
+        }
+      },
+      "values": {
+        "light-standard": "0.75rem",
+        "dark-standard": "0.75rem",
+        "light-high": "0.75rem",
+        "dark-high": "0.75rem"
+      }
+    },
+    {
+      "path": "component.icon-button.icon.size.sm",
+      "cssVariable": "--icon-button-icon-size-sm",
+      "trigger": "intrinsic-component-value",
+      "reason": "sm Icon Buttonのglyphをcontrol heightへ比例させる。",
+      "aliases": {
+        "light-standard": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "dark-standard": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "light-high": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "dark-high": {
+          "value": 0.875,
+          "unit": "rem"
+        }
+      },
+      "values": {
+        "light-standard": "0.875rem",
+        "dark-standard": "0.875rem",
+        "light-high": "0.875rem",
+        "dark-high": "0.875rem"
+      }
+    },
+    {
+      "path": "component.icon-button.icon.size.md",
+      "cssVariable": "--icon-button-icon-size-md",
+      "trigger": "intrinsic-component-value",
+      "reason": "md Icon Buttonの標準glyph寸法を固定する。",
+      "aliases": {
+        "light-standard": {
+          "value": 1,
+          "unit": "rem"
+        },
+        "dark-standard": {
+          "value": 1,
+          "unit": "rem"
+        },
+        "light-high": {
+          "value": 1,
+          "unit": "rem"
+        },
+        "dark-high": {
+          "value": 1,
+          "unit": "rem"
+        }
+      },
+      "values": {
+        "light-standard": "1rem",
+        "dark-standard": "1rem",
+        "light-high": "1rem",
+        "dark-high": "1rem"
+      }
+    },
+    {
+      "path": "component.icon-button.icon.size.lg",
+      "cssVariable": "--icon-button-icon-size-lg",
+      "trigger": "intrinsic-component-value",
+      "reason": "lg Icon Buttonのglyphをcontrol heightへ比例させる。",
+      "aliases": {
+        "light-standard": {
+          "value": 1.125,
+          "unit": "rem"
+        },
+        "dark-standard": {
+          "value": 1.125,
+          "unit": "rem"
+        },
+        "light-high": {
+          "value": 1.125,
+          "unit": "rem"
+        },
+        "dark-high": {
+          "value": 1.125,
+          "unit": "rem"
+        }
+      },
+      "values": {
+        "light-standard": "1.125rem",
+        "dark-standard": "1.125rem",
+        "light-high": "1.125rem",
+        "dark-high": "1.125rem"
+      }
+    },
+    {
+      "path": "component.icon-button.icon.size.xl",
+      "cssVariable": "--icon-button-icon-size-xl",
+      "trigger": "intrinsic-component-value",
+      "reason": "xl Icon Buttonを44px touch targetで視認しやすくする。",
+      "aliases": {
+        "light-standard": {
+          "value": 1.25,
+          "unit": "rem"
+        },
+        "dark-standard": {
+          "value": 1.25,
+          "unit": "rem"
+        },
+        "light-high": {
+          "value": 1.25,
+          "unit": "rem"
+        },
+        "dark-high": {
+          "value": 1.25,
+          "unit": "rem"
+        }
+      },
+      "values": {
+        "light-standard": "1.25rem",
+        "dark-standard": "1.25rem",
+        "light-high": "1.25rem",
+        "dark-high": "1.25rem"
+      }
+    },
+    {
+      "path": "component.icon-button.spinner.stroke",
+      "cssVariable": "--icon-button-spinner-stroke",
+      "trigger": "intrinsic-component-value",
+      "reason": "Icon Button内loading indicatorのstroke geometryを固定する。",
+      "aliases": {
+        "light-standard": {
+          "value": 1.5,
+          "unit": "px"
+        },
+        "dark-standard": {
+          "value": 1.5,
+          "unit": "px"
+        },
+        "light-high": {
+          "value": 1.5,
+          "unit": "px"
+        },
+        "dark-high": {
+          "value": 1.5,
+          "unit": "px"
+        }
+      },
+      "values": {
+        "light-standard": "1.5px",
+        "dark-standard": "1.5px",
+        "light-high": "1.5px",
+        "dark-high": "1.5px"
       }
     },
     {

@@ -2,205 +2,236 @@
 
 ## Summary
 
-ナビゲーションのためのテキストリンク。アクションには Button を使う。
+現在の文脈から別のURLまたは同一document内の位置へ移動するnative hyperlinkです。
 
 Machine-readable contract: `design/contracts/components/link.contract.json`
 
+Contract version: `0.2.0`
+
 ## Role
 
-Core領域でLinkの責務を1か所にまとめ、類似componentとの選択境界を固定します。PC用とSP用に別componentを作らず、同じ意味とAPIをlayout、viewport、input methodへ適応させます。
+Linkはnavigationだけを所有します。現在の文脈でcommandを実行する場合はButton、現在位置を含むnavigation構造はBreadcrumbやNavigation Itemが所有します。PC用とSP用に別componentを作らず、同じhrefとAPIをlayout、typography、input methodへ適応させます。
 
 ## Principles
 
-- Taskの主目的と現在状態を最短で理解できること。
-- Native semanticsまたは確立したARIA patternを優先すること。
-- Semantic tokenを基本とし、Component tokenはpolicy triggerがある場合だけ追加すること。
+- `href`を持つnative `<a>`を使い、browser標準のnavigation、context menu、copy linkを保持する。
+- 見た目ではなく結果がnavigationかactionかでLinkとButtonを選ぶ。
+- Link目的と通常と異なる結果を、visible textとprogrammatic contextで予測可能にする。
+- Disabled Linkを作らない。
 
 ## When To Use
 
-- 別ページ・外部サイトへの遷移
-- 文中の参照
+- 別ページ、別resource、同一document内の位置へ移動する。
+- 本文中で関連情報や出典を参照する。
+- 外部サイトまたはdownload先への遷移を明示する。
 
 ## When Not To Use
 
-- データの作成・更新・削除 → Button
+- データの作成、更新、削除、送信、Dialog表示など現在の文脈でactionを実行する場合はButtonを使う。
+- 遷移先が存在しない状態をdisabled Linkで表さず、textへ戻すかLink自体を表示しない。
+- カード全体をLinkにして内部のButtonやLinkを入れ子にしない。
 
 ## Visual Model
 
-Native interactive root or navigation target. Surface、border、type、spacingの強弱は内容の階層を支え、装飾のためだけにcard、shadow、accentを追加しません。状態は色だけでなくlabel、icon、shape、positionを組み合わせます。
+Inline Linkは通常時からunderlineを表示し、周辺本文と色だけで区別しません。Standalone Linkはnavigation群やCTA補助など明確な配置文脈とdirection indicatorを持ち、hover・focusではunderlineも表示します。Buttonのsurfaceや固定control heightは持ちません。
 
 ## Anatomy
 
 | Part | Required | Description |
 |---|---:|---|
-| root | Yes | Native interactive root or navigation target. |
-| label | Yes | Predictable accessible action or destination name. |
-| icon | No | Meaning reinforcement; decorative icons stay hidden from assistive technology. |
+| root | Yes | `href`を必須とするnative `<a>`。 |
+| label | Yes | 遷移先または目的を説明する可視text。 |
+| leading-icon | No | Resource種別を補足する装飾icon。 |
+| trailing-indicator | No | External、download、new-tab結果を視覚・音声で補足する。 |
 
 ## Variants
 
 | Variant | Use | Notes |
 |---|---|---|
-| `default` | 標準文脈。 | 意味を変えずに見た目だけを増やさない。 |
+| `inline` | 本文中の参照。 | Underlineを常時表示する。既定値。 |
+| `standalone` | Navigation群、footer、CTA補助。 | 明確な配置文脈またはdirection indicatorが必要。 |
+
+Button風のvariantやdisabled variantは提供しません。
 
 ## Sizes / Density
 
-| Size | Token | Typical use |
-|---|---|---|
-| Dedicated size propなし | Density token | 周辺layoutのdensityに従う。 |
-
-Compact / Default / Comfortableはviewportではなく作業密度と入力方式で選び、componentの意味やprop集合は変えません。
+Link固有のsize propはありません。Inline flowでは周辺typographyとline-heightを継承し、Standaloneでも任意のcontrol heightを作りません。Density変更時もhref、label、variant、native semanticsを維持します。
 
 ## Icon Rules
 
-このcomponentは必須のicon slotを持ちません。追加する場合も情報をiconだけへ閉じ込めません。
+- Leading/trailing iconは`aria-hidden="true"`にし、labelの意味を置き換えない。
+- `external`、`download`、`target="_blank"`は専用indicatorと補足accessible textを同期する。
+- 外部URLだからという理由だけで自動的に新しいtabを開かない。
+- Icon-only navigationはLinkの対象外。可視labelを付ける。
 
 ## States
 
 | State | Behavior |
 |---|---|
-| `default` | 通常状態。意味、label、valueを省略しない。 |
-| `hover` | Pointer hoverの補助変化。意味をhoverだけに依存させない。 |
-| `focus` | focus-visibleで明確なringを表示する。 |
+| `default` | `href`を持つnative anchorとしてfocus可能。 |
+| `hover` | `--primary-hover`とunderlineで示す。 |
+| `active` | `--primary-active`で短いfeedbackを示す。 |
+| `focus` | `focus-visible` outlineとunderlineを同時に表示する。 |
+
+Disabled stateはありません。遷移先がなければtextへ戻すかLinkを表示しません。
 
 ## Behavior
 
-- 文中リンクは下線または primary 色でリンクであることを明示する。
-- 外部リンクにはアイコンを付け、target="_blank" には rel="noopener" を併用する。
-
-- Controlled stateを提供する場合、visual stateとprogrammatic stateを同じeventで同期します。
-- 非同期actionでは二重実行を防ぎ、完了・失敗・中断を説明します。
+- `external`はindicatorを追加するだけで、`target`を自動変更しない。
+- `target="_blank"`では`rel`へ`noopener`をmergeし、新しいtabで開くことをvisible/accessibilityの両方で伝える。
+- `download`はnative download属性を使い、download結果をindicatorで伝える。
+- `onClick`はanalyticsなどの補助目的に限定し、navigationをButton actionへ変えない。
+- Focus取得だけでnavigationや新しいtabを開始しない。
 
 ## Layout / Placement Rules
 
 ### Recommended Pattern
 
-- Reading orderとfocus orderを一致させます。
-- 周辺componentとのspacingはtokenを使い、固定viewport値で内部寸法を変えません。
-- Form文脈では利用可能幅まで広げ、複数controlを無理に横へ詰めない。
+- Inline Linkは文章と自然にwrapさせる。
+- Standalone Linkはnavigation群またはdirection indicatorで役割を明確にする。
+- Linkを含むCard内へ別のinteractive contentを入れ子にしない。
 
 ## Responsive / Viewport Behavior
 
 ### Desktop
 
-- 周辺layoutに応じたintrinsic widthを基本にし、formではlabelとの整列を保つ。
-- Keyboard focusとhoverを別々に確認する。
+- Inline flowと周辺typographyを維持する。
+- Hover、focus、context menuなどbrowser標準動作を確認する。
 
 ### Mobile
 
-- Form文脈では利用可能幅まで広げ、複数controlを無理に横へ詰めない。
-- 同じpropとstate contractを維持する。
+- 同じhrefとAPIを維持し、長いlabelは省略せず自然にwrapさせる。
+- Navigation群では親layoutが十分なblock spacingまたはpaddingを確保する。
 
 ### Touch
 
-- Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。
-- Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。
+- 独立したLinkは24px minimumのtargetまたは十分なspacingを確保する。
+- 文中Linkのtarget size例外を、密集したnavigationへ流用しない。
+- 主要touch操作はButtonなどを含め原則44px以上にするが、Inline Linkを不自然な44px line boxへ変えない。
 
 ## Accessibility
 
-- Keyboardとpointerで同じ機能を実行できる。
-- Focus indicatorを常に視認でき、sticky layerで完全に隠さない。
-- Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。
-- Navigationにはhrefを持つ<a>を使う。
-- focus-visibleで--focus-ringを使う。
-- Positive tabindexを使わず、DOMとvisualの順序を一致させる。
+- Link目的をvisible label単独、またはprogrammatically determined contextと合わせて判別可能にする。
+- Inline Linkは通常時からunderlineを表示し、色だけに依存しない。
+- External、download、new-tabの結果をvisible indicatorと補足accessible textで伝える。
+- `aria-current`をnative属性としてpass-throughする。
+- Visible labelと異なる`aria-label`で目的を上書きしない。
+- `focus-visible`で`--focus-ring`とunderlineを表示する。
 
 Keyboard:
 
-- `Enter`: リンク先へ移動する。
+- `Enter`: Browser標準動作でhrefへ移動する。
+- `Tab`: 通常のdocument順序で出入りする。
+- `Shift+F10`: 対応platformではbrowser標準のlink context menuを開く。
 
 ## Content Guidelines
 
-- Labelは対象または結果を具体的に書き、状態だけを繰り返さない。
-- Errorは原因と修正方法、Emptyは何がないかと次の一歩を示す。
-- 省略するmetadataにも別経路から到達できるようにする。
+- 「こちら」「詳しく」ではなく、遷移先の内容を書く。
+- 同じ遷移先には一貫したlabel、異なる遷移先には区別可能なlabelを使う。
+- File linkではformatや結果を必要に応じて示す。例:「Q2レポート（PDF）」。
+- 新しいtabで開く場合は「新しいタブ」相当の補足を提供する。
 
 ## Tokens
 
-- semanticColor: `--border`, `--border-strong`, `--fg`, `--fg-disabled`, `--focus-ring`, `--primary`, `--primary-active`, `--primary-fg`, `--primary-hover`, `--surface`, `--surface-muted`
-- density: `--ctl-md`
-- spacing: `--sp-2`
-- radius: `--radius-sm`
-- motion: `--dur-fast`
-- typography: `--text-body`
+- Semantic color: `--primary`, `--primary-hover`, `--primary-active`, `--focus-ring`
+- Spacing: `--sp-1`
+- Typography: Showcaseでは`--text-body`。実装は周辺typographyをinherit可能。
+- Motion: `--dur-fast`, `--ease-standard`
+- Literal: `transparent`, `currentColor`, `none`
 
-Primitive color、raw hex、任意pxをcomponentから直接選びません。
+Primitive color、raw hex、任意pxをcomponent実装から選びません。
 
 ### Token Binding Decisions
 
-| Slot | Source | Scope | Trigger | Reason |
-|---|---|---|---|---|
-| `token.surface.value` | `--surface` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.border.value` | `--border` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.fg.value` | `--fg` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.surface-muted.value` | `--surface-muted` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.fg-disabled.value` | `--fg-disabled` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.border-strong.value` | `--border-strong` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.primary.value` | `--primary` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.primary-hover.value` | `--primary-hover` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.primary-active.value` | `--primary-active` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.primary-fg.value` | `--primary-fg` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.focus-ring.value` | `--focus-ring` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.ctl-md.value` | `--ctl-md` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.sp-2.value` | `--sp-2` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.radius-sm.value` | `--radius-sm` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.dur-fast.value` | `--dur-fast` | `semantic` | - | Linkの公開visual contractで用途tokenとして共有する。 |
-| `token.text-body.value` | `--text-body` | `semantic` | - | LinkのHTML showcaseで実際に参照する公開token。 |
+- Default / hover / active / focus foregroundをprimary interaction tokensへ結線する。
+- Inlineのdecorationは全stateで`currentColor`、Standaloneはhover / active / focusで`currentColor`にする。
+- Backgroundは常にtransparent。Button surfaceへ変えない。
+- Indicator gapは`--sp-1`、focusは`--focus-ring`を使う。
 
-Current coverage: `partial`。HTML showcaseを確認済みの仕様候補として記録し、React package実装時にDOM/state selectorまで結線して`complete`へ移行します。
+Current coverage: `complete`。未結線のvisual slotはありません。
+
+## React API Freeze
+
+`0.2.0`で次の順序と意味を固定します。
+
+```ts
+type LinkProps = NativeAnchorProps & {
+  children: ReactNode
+  href: string
+  variant?: 'inline' | 'standalone'
+  external?: boolean
+  download?: boolean | string
+  target?: HTMLAttributeAnchorTarget
+  rel?: string
+  leadingIcon?: ReactNode
+  trailingIcon?: ReactNode
+  ref?: ForwardedRef<HTMLAnchorElement>
+}
+```
+
+- Rootは常に`<a href>`で、polymorphic rootを持たない。
+- `href`、`target`、`rel`、`download`、`hreflang`、`type`、`referrerPolicy`、`aria-*`、`data-*`をpass-throughする。
+- `external`はtargetを変更しない。
+- `target="_blank"`では`noopener`をmergeする。
+- `disabled` propは持たない。
 
 ## Do / Don't
 
 Do:
 
 ```tsx
-<Link href="/docs">ドキュメント</Link>
-<Link href="https://…" external>外部リンク</Link>
+<Link href="/docs/accessibility">アクセシビリティ指針</Link>
 ```
 
 Don't:
 
 ```tsx
-{/* データの作成・更新・削除 → Button */}
-<Link />
+<Link disabled onClick={saveChanges}>保存</Link>
 ```
 
 ## Prohibited Patterns
 
-- `NO_RAW_HEX_COLOR`に反する実装。
-- `SPACING_FROM_TOKENS_ONLY`に反する実装。
-- `RADIUS_FROM_TOKENS_ONLY`に反する実装。
-- `CONTRAST_AA_MINIMUM`に反する実装。
-- `FOCUS_VISIBLE_REQUIRED`に反する実装。
-- `NO_POSITIVE_TABINDEX`に反する実装。
-- `TARGET_SIZE_MINIMUM`に反する実装。
-- `INTERACTIVE_NAME_REQUIRED`に反する実装。
+- `href`なしの`a`、`role="link"`の`span`、`javascript:` URL。
+- Disabled Link、`pointer-events:none`による無効化。
+- Linkの見た目でaction、Buttonの見た目でnavigationを実装する。
+- Interactive contentをLink内へ入れ子にする。
+- Inline Linkを色だけで周辺textから区別する。
 
 ## AI Selection Rules
 
 AIが選ぶ条件:
 
-- 別ページ・外部サイトへの遷移
-- 文中の参照
+- 主な結果がURLまたはdocument位置へのnavigationである。
+- Browser標準のopen-in-new-tab、copy-link、download機能を保持する。
 
 AIが避ける条件:
 
-- データの作成・更新・削除 → Button
-
-AIはvariantを意味、sizeをtask密度、stateを実際のsystem stateから選びます。Viewport名だけでvariantやcomponentを分岐しません。
+- 現在の文脈でactionを実行するならButtonを使う。
+- 遷移先がない場合はdisabled Linkを作らない。
+- Iconだけのnavigationには可視labelを追加する。
 
 ## Examples
 
 ```tsx
-<Link href="/docs">ドキュメント</Link>
-<Link href="https://…" external>外部リンク</Link>
+<Link href="https://www.w3.org/WAI/" external variant="standalone">
+  WAIガイドライン
+</Link>
+
+<Link href="/reports/q2.pdf" download>
+  Q2レポート（PDF）
+</Link>
 ```
+
+## Implementation Readiness
+
+`design/implementation-readiness.json`の8 criteriaをすべて通過しています。これはReact実装前のContract確定を意味し、production stableを意味しません。
 
 ## Implementation Notes
 
-- React packageは今後追加します。現在はsemantic contract、HTML showcase、token binding候補を正本として扱います。
-- Native element、ref forwarding、controlled state、event名はpackage実装時にこのcontractへ同期します。
+- React packageは今後追加する。
+- Router adapterはLinkのnative anchor contractを保持する別integration layerとし、core Linkをpolymorphicにしない。
+- React実装とrequired scenariosのCI visual regression完了後に`stable`へ昇格する。
 
 ## Open Questions
 
-- React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。
+Contract上の未決事項はありません。

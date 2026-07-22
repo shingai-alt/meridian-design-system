@@ -62,20 +62,19 @@ def({id:'button',name:'Button',group:'Core',desc:'ユーザーが明確なアク
  render:p=>btn(p),
  code:p=>`<Button\n  variant="${p.variant||'primary'}"\n  size="${p.size||'md'}"${p.disabled||p.state==='disabled'?'\n  disabled':''}${p.loading||p.state==='loading'?'\n  loading':''}${p.fullWidth?'\n  fullWidth':''}${p.leadingIcon?'\n  leadingIcon={<PlusIcon />}':''}${p.trailingIcon?'\n  trailingIcon={<ArrowRightIcon />}':''}\n>\n  ${esc(p.label||'Create project')}\n</Button>`});
 
-def({id:'icon-button',name:'Icon Button',group:'Core',desc:'アイコンのみのコンパクトなアクション。ツールバーや行内操作に使う。',
- variants:['ghost','secondary','primary'],sizes:['xs','sm','md','lg'],states:['default','hover','disabled'],
- when:['ツールバー・カードヘッダーの補助操作','スペースが限られたテーブル行内'],
- notWhen:['意味がアイコンだけでは伝わらない主要アクション → ラベル付き Button'],
- usage:['必ず aria-label とツールチップを併用する。','操作targetは24px minimum、touch中心では原則44px以上のhit areaを確保する。'],
- a11y:['aria-label を必須にする','ツールチップはフォーカス時にも表示する'],related:['button','tooltip'],
- render:p=>btn({...p,iconOnly:true,variant:p.variant||'ghost'}),
- code:p=>`<IconButton variant="${p.variant||'ghost'}" size="${p.size||'md'}" aria-label="追加">\n  <PlusIcon />\n</IconButton>`});
+def({id:'icon-button',name:'Icon Button',group:'Core',desc:'可視ラベルを置かず、単一の明確な補助アクションを実行する正方形のbutton。',
+ variants:['ghost','secondary','danger'],sizes:['xs','sm','md','lg','xl'],states:['default','hover','active','focus','disabled','loading'],
+ flags:[['loading','Loading']],texts:[['label','Label','フィルターを開く']],
+ usage:['labelをaria-labelとTooltipの単一sourceにする。','操作targetは24px minimum、touch中心の主要操作はxlの44pxを優先する。'],
+ a11y:['Native buttonと空でないlabelを必須にする。','Tooltipはhoverとfocusで表示しEscapeで閉じる。'],related:['button','tooltip','switch'],
+ render:p=>iconButton({...p,variant:p.variant||'ghost'}),
+ code:p=>`<IconButton\n  label="${esc(p.label||'フィルターを開く')}"\n  icon={<FilterIcon />}\n  variant="${p.variant||'ghost'}"\n  size="${p.size||'md'}"${p.loading||p.state==='loading'?'\n  loading':''}\n/>`});
 
-def({id:'link',name:'Link',group:'Core',desc:'ナビゲーションのためのテキストリンク。アクションには Button を使う。',
- states:['default','hover','focus'],when:['別ページ・外部サイトへの遷移','文中の参照'],
- notWhen:['データの作成・更新・削除 → Button'],
- usage:['文中リンクは下線または primary 色でリンクであることを明示する。','外部リンクにはアイコンを付け、target="_blank" には rel="noopener" を併用する。'],
- render:p=>linkDemo(p),code:()=>`<Link href="/docs">ドキュメント</Link>\n<Link href="https://…" external>外部リンク</Link>`,related:['button','breadcrumb']});
+def({id:'link',name:'Link',group:'Core',desc:'現在の文脈から別のURLまたは同一document内の位置へ移動するnative hyperlink。',
+ variants:['inline','standalone'],states:['default','hover','active','focus'],
+ flags:[['external','External'],['download','Download'],['newTab','New tab']],
+ usage:['Inline Linkは通常時からunderlineを表示する。','Externalとnew-tabを分離し、target=_blankではnoopenerと補足textを付ける。','Disabled Linkは作らない。'],
+ render:p=>linkDemo(p),code:p=>`<Link\n  href="${p.external?'https://www.w3.org/WAI/':p.download?'/reports/q2.pdf':'/docs/accessibility'}"\n  variant="${p.variant||'inline'}"${p.external?'\n  external':''}${p.download?'\n  download':''}${p.newTab?'\n  target="_blank"':''}\n>\n  ${p.download?'Q2レポート（PDF）':p.external?'WAIガイドライン':'アクセシビリティ指針'}\n</Link>`,related:['button','breadcrumb','navigation-item']});
 
 def({id:'text',name:'Text',group:'Core',desc:'タイポグラフィトークンをコンポーネント化した基本テキスト。',
  when:['見出し・本文・補助テキストの一貫した実装'],notWhen:['数値の等幅表示 → Numeric スタイル'],

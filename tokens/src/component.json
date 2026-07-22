@@ -60,6 +60,40 @@
       }
     }
   },
+  "icon-button": {
+    "icon": {
+      "size": {
+        "$type": "dimension",
+        "xs": {
+          "$value": { "value": 0.75, "unit": "rem" },
+          "$extensions": { "com.meridian": { "cssVariable": "--icon-button-icon-size-xs", "trigger": "intrinsic-component-value", "reason": "xs Icon Buttonのglyphを24px target内で判別可能に保つ。" } }
+        },
+        "sm": {
+          "$value": { "value": 0.875, "unit": "rem" },
+          "$extensions": { "com.meridian": { "cssVariable": "--icon-button-icon-size-sm", "trigger": "intrinsic-component-value", "reason": "sm Icon Buttonのglyphをcontrol heightへ比例させる。" } }
+        },
+        "md": {
+          "$value": { "value": 1, "unit": "rem" },
+          "$extensions": { "com.meridian": { "cssVariable": "--icon-button-icon-size-md", "trigger": "intrinsic-component-value", "reason": "md Icon Buttonの標準glyph寸法を固定する。" } }
+        },
+        "lg": {
+          "$value": { "value": 1.125, "unit": "rem" },
+          "$extensions": { "com.meridian": { "cssVariable": "--icon-button-icon-size-lg", "trigger": "intrinsic-component-value", "reason": "lg Icon Buttonのglyphをcontrol heightへ比例させる。" } }
+        },
+        "xl": {
+          "$value": { "value": 1.25, "unit": "rem" },
+          "$extensions": { "com.meridian": { "cssVariable": "--icon-button-icon-size-xl", "trigger": "intrinsic-component-value", "reason": "xl Icon Buttonを44px touch targetで視認しやすくする。" } }
+        }
+      }
+    },
+    "spinner": {
+      "stroke": {
+        "$type": "dimension",
+        "$value": { "value": 1.5, "unit": "px" },
+        "$extensions": { "com.meridian": { "cssVariable": "--icon-button-spinner-stroke", "trigger": "intrinsic-component-value", "reason": "Icon Button内loading indicatorのstroke geometryを固定する。" } }
+      }
+    }
+  },
   "input": {
     "background": {
       "default": {

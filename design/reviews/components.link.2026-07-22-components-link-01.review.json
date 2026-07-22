@@ -1,0 +1,191 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.link",
+  "cycleId": "2026-07-22-components-link-01",
+  "supersedesCycleId": "2026-07-13-components-link-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-22",
+  "completedAt": "2026-07-22",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/implementation-readiness.json",
+    "components/link.md",
+    "design/contracts/components/link.contract.json",
+    "design/iconography.json",
+    "js/components-registry.js",
+    "js/ui-builders.js",
+    "index.html",
+    "schemas/implementation-readiness.schema.json",
+    "scripts/lib/implementation-readiness.mjs",
+    "test/component-specs.test.js",
+    "test/implementation-readiness.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "components.link",
+      "summary": "LinkをReact実装へ渡せる確定Contractとして、Buttonとの責務境界、native anchor API、文脈別style、external/new-tab/download結果、focusとlink purposeを精査する。"
+    },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior"],
+    "questions": [
+      "LinkとButtonを操作結果でどう選択し、disabledやpolymorphic rootを避けるか。",
+      "external、new tab、downloadの異なる結果をAPIとaccessible nameでどう伝えるか。",
+      "InlineとStandaloneでunderline、focus、target sizeをどう保証するか。"
+    ],
+    "evidence": [
+      {
+        "id": "wai-apg-link",
+        "title": "WAI-ARIA Authoring Practices Guide: Link Pattern",
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/link/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "Linkはresourceまたはapplication内の位置へのnavigationを提供し、Enterでactivateする。",
+        "supportedDecisions": ["navigation-only-boundary", "native-anchor-api"]
+      },
+      {
+        "id": "html-anchor-element",
+        "title": "WHATWG HTML: The a element",
+        "url": "https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "hrefを持つa elementはhyperlinkで、target、download、relなどのnative navigation contractを持つ。",
+        "supportedDecisions": ["native-anchor-api", "external-result-contract"]
+      },
+      {
+        "id": "wcag-link-purpose",
+        "title": "WCAG 2.2 Understanding SC 2.4.4: Link Purpose (In Context)",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/link-purpose-in-context.html",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "各Linkの目的はlink text単独またはprogrammatically determined contextから判断できる必要がある。",
+        "supportedDecisions": ["link-purpose-and-focus", "external-result-contract"]
+      },
+      {
+        "id": "wcag-on-focus",
+        "title": "WCAG 2.2 Understanding SC 3.2.1: On Focus",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/on-focus.html",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "Componentがfocusを受けただけで予期しないcontext changeを起こしてはならない。",
+        "supportedDecisions": ["external-result-contract", "link-purpose-and-focus"]
+      },
+      {
+        "id": "wcag-focus-appearance",
+        "title": "WCAG 2.2 Understanding SC 2.4.13: Focus Appearance",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance.html",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "Keyboard focus indicatorは十分な面積と周辺色とのコントラストを持つ必要がある。",
+        "supportedDecisions": ["link-purpose-and-focus"]
+      }
+    ],
+    "synthesis": "Linkはhrefを持つnative anchor navigationへ限定し、disabledやpolymorphic rootを提供しない。Inlineは常時underline、Standaloneはinteractive stateでunderlineを示し、external、target blank、downloadを独立した結果として伝える。",
+    "decisionImpact": "Contract 0.2.0、Showcase、external/download icon、共通implementation-readiness gate、回帰testを同じnative APIへ同期した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "navigation-only-boundary",
+      "summary": "Linkを別URLまたは同一document内位置へのnavigationに限定し、commandをButtonへ委譲する。",
+      "rationale": "視覚表現ではなく結果とnative semanticsでcomponentを選択できるため。"
+    },
+    {
+      "id": "native-anchor-api",
+      "summary": "href必須のnative a elementとし、anchor attributesを継承、refをHTMLAnchorElementへforwardする。",
+      "rationale": "browser標準のnavigation、context menu、copy link、keyboard semanticsを失わないため。"
+    },
+    {
+      "id": "two-context-variants",
+      "summary": "variantを本文中のinlineと独立配置のstandaloneへ固定し、size APIを持たせない。",
+      "rationale": "Typography contextを継承し、Button風のpriority/size modelを持ち込まないため。"
+    },
+    {
+      "id": "no-disabled-link",
+      "summary": "disabled prop/stateを提供せず、遷移不能ならLinkをrenderしないか静的textへ置換する。",
+      "rationale": "hrefを持つnavigationと操作不能表現の矛盾をAPIに持ち込まないため。"
+    },
+    {
+      "id": "external-result-contract",
+      "summary": "external、target blank、downloadを独立propとし、新しいtabとdownload結果を補足textで伝える。",
+      "rationale": "外部destinationと閲覧contextの変更を混同せず、予期しない結果をaccessible nameから判断できるため。"
+    },
+    {
+      "id": "link-purpose-and-focus",
+      "summary": "具体的なlink text、Inline常時underline、focus-visible ringを必須にする。",
+      "rationale": "色だけに依存せず目的とkeyboard focusを識別できるため。"
+    },
+    {
+      "id": "complete-token-binding",
+      "summary": "2 variantと4 stateの全visual slotをsemantic tokenへ結線する。",
+      "rationale": "React実装者がraw colorや未定義stateを補わず実装できるため。"
+    },
+    {
+      "id": "shared-readiness-gate",
+      "summary": "Button、Icon Buttonと同じ8基準でReact実装前readyを判定する。",
+      "rationale": "今後のcomponent精査へ同じ出口条件を適用できるため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "missing-contract",
+      "description": "childrenだけのAPIでhref、target、rel、download、ref、native passthroughが未確定だった。",
+      "action": "Contract 0.2.0へnative anchor APIとruntime attributesを固定した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "cross-layer-conflict",
+      "description": "disabled Linkの扱いとexternal/new-tabの意味が仕様、Contract、Showcase間で曖昧だった。",
+      "action": "disabledを非提供とし、external、target blank、downloadを独立した結果へ分離した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "Showcaseがhrefを持たない見た目中心のLinkで、Inline underlineと補足結果を検証できなかった。",
+      "action": "native href、rel=noopener、indicator、screen-reader補足textを持つ専用builderへ更新した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-token",
+      "description": "Linkのstate/style binding coverageが未完了だった。",
+      "action": "既存semantic tokenへ全slotを結線しcoverageをcompleteにした。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    { "path": "components/link.md", "summary": "責務、native API、variant/state、結果の伝達、API freezeを確定。" },
+    { "path": "design/contracts/components/link.contract.json", "summary": "Contract 0.2.0、native runtime、complete token bindingsを機械可読化。" },
+    { "path": "design/iconography.json", "summary": "externalとdownload indicatorをicon catalogへ追加。" },
+    { "path": "js/ui-builders.js", "summary": "native href、noopener、download、補足textを持つLink Showcaseを追加。" },
+    { "path": "js/components-registry.js", "summary": "Playground、usage、React code例を確定Contractへ同期。" },
+    { "path": "design/implementation-readiness.json", "summary": "全componentで再利用するReact実装前の8基準を定義。" },
+    { "path": "scripts/lib/implementation-readiness.mjs", "summary": "ready evidence、scenario/token completenessを検証する共通gateを追加。" },
+    { "path": "test/component-specs.test.js", "summary": "Link APIとnative Showcase driftの回帰testを追加。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js test/implementation-readiness.test.js", "status": "passed", "notes": "API freeze、native href/rel/download、style、共通gateのpositive/negative caseを検証。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "1280pxと390x844でnative anchor、Inline underline、external/new-tab/download補足、focus、overflow、consoleを確認。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、registry、review cycle、contracts、generated artifacts、unit testsを一括検証。" },
+    { "command": "Structured local code review", "status": "passed", "notes": "Critical/Important 0件。Contract、human spec、Showcase、generated artifactsのAPIと語彙を照合。" }
+  ],
+  "openQuestions": [
+    {
+      "question": "Contract 0.2.0に基づくReact実装とvisual regression baselineを完了しstableへ昇格する。",
+      "owner": "components.link",
+      "exitCriteria": "React component、native attribute merge tests、required scenariosのvisual regressionがCIで通ること。"
+    }
+  ],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-content-01",
+    "2026-07-13-foundations-iconography-01",
+    "2026-07-21-components-button-01"
+  ],
+  "impactedItems": ["components.breadcrumb", "components.navigation-item"],
+  "nextRecommendedItems": ["components.navigation-item", "components.breadcrumb"]
+}

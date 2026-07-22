@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { validateAgainstSchema } from './lib/schema-validator.mjs';
 import { validateResearchGate } from './lib/research-gate.mjs';
 import { validatePhaseTwoCoverage } from './lib/phase-2-validation.mjs';
+import { validateImplementationReadiness } from './lib/implementation-readiness.mjs';
 import { createVisualReviewReport, validateVisualCaptureManifest, validateVisualQualityRelations } from './lib/visual-quality.mjs';
 import {
   assertGroundingReady,
@@ -65,6 +66,7 @@ function assertUnique(values, label) {
 
 const policy = validateJson('design/token-policy.json', 'schemas/token-policy.schema.json');
 const researchPolicy = validateJson('design/research-policy.json', 'schemas/research-policy.schema.json');
+const implementationReadinessPolicy = validateJson('design/implementation-readiness.json', 'schemas/implementation-readiness.schema.json');
 const registry = validateJson('design/system-registry.json', 'schemas/system-registry.schema.json');
 validateJson('design/iconography.json', 'schemas/iconography.schema.json');
 const accessibility = validateJson('design/accessibility.json', 'schemas/accessibility.schema.json');
@@ -103,7 +105,10 @@ validateJson('design/contracts/components/_template.contract.json', 'schemas/com
 const contracts = [];
 for (const contractPath of contractPaths) {
   const contract = validateJson(contractPath, 'schemas/component-contract.schema.json');
-  if (contract) contracts.push({ contract, contractPath });
+  if (contract) {
+    contracts.push({ contract, contractPath });
+    if (implementationReadinessPolicy) errors.push(...validateImplementationReadiness(contract, implementationReadinessPolicy));
+  }
 }
 
 const patternPaths = listJsonFiles('design/contracts/patterns', (name) => name.endsWith('.pattern.json'));

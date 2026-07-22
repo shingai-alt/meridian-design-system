@@ -1,6 +1,6 @@
 # Meridian AI Component Index
 
-- Translation Pack: `sha256-543b8641662656715407ff1cd9ab3d599e8a14aa54ac0ba32c558148b755fa84`
+- Translation Pack: `sha256-8830490d5e9146574daffc9d640d8cdb778eea9dd8e4be5e3176c8755ac0b532`
 - Runtime: `0.1.0`
 - Generated from Contract, Token policy, and Accessibility policy. Do not edit.
 
@@ -9,13 +9,13 @@
 - Status: draft
 - Contract: 0.2.0
 - Source: `design/contracts/components/button.contract.json`
-- Source digest: `sha256-33a67f96b1c8cf06d1f1753a74a4c4bbd4f182a8acd027952796fa71daa5651a`
+- Source digest: `sha256-790c2b53ffe56f5606bd68ca34278539dfb79ef5d8eae98afb62c1a13c162a48`
 - Variants: primary, secondary, tertiary, ghost, danger
 - States: default, hover, active, focus, disabled, loading
 - Sizes: xs, sm, md, lg, xl
 - Runtime compatibility: >=0.1.0 <1.0.0
 - Pilot scope: team-invitation
-- Required scenarios: default, disabled, loading, focus, primary, secondary, tertiary, ghost, danger, with-leading-icon, with-trailing-icon, full-width, form-submit
+- Required scenarios: default, hover, active, disabled, loading, focus, primary, secondary, tertiary, ghost, danger, with-leading-icon, with-trailing-icon, full-width, form-submit
 
 Use when:
 - フォームを送信する。

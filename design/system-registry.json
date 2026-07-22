@@ -828,7 +828,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.icon-button.2026-07-13-components-icon-button-01.review.json"
+          "reviewRecord": "design/reviews/components.icon-button.2026-07-22-components-icon-button-01.review.json"
         },
         {
           "id": "components.link",
@@ -848,7 +848,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.link.2026-07-13-components-link-01.review.json"
+          "reviewRecord": "design/reviews/components.link.2026-07-22-components-link-01.review.json"
         },
         {
           "id": "components.text",

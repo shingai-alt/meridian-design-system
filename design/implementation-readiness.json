@@ -1,0 +1,53 @@
+{
+  "$schema": "../schemas/implementation-readiness.schema.json",
+  "schemaVersion": "0.1.0",
+  "name": "Component implementation readiness gate",
+  "description": "React実装前にcomponent contract、human spec、Showcase、token、検証証跡が同じ公開契約へ収束していることを判定する。production stableを意味しない。",
+  "requiredCriteria": [
+    {
+      "id": "intent-boundary",
+      "description": "責務、利用条件、非利用条件、隣接componentとの選択境界が確定している。"
+    },
+    {
+      "id": "public-api",
+      "description": "React props、既定値、required/optional、ref、native属性継承が確定している。"
+    },
+    {
+      "id": "runtime-semantics",
+      "description": "root element、slot、state、attribute、event、関係性がnative semanticsと一致している。"
+    },
+    {
+      "id": "accessibility",
+      "description": "accessible name、keyboard、focus、target size、必要なARIAが確定している。"
+    },
+    {
+      "id": "token-binding",
+      "description": "全visual slotが公開token、許可されたliteral、またはintrinsic valueへ結線されている。"
+    },
+    {
+      "id": "responsive-behavior",
+      "description": "desktop、mobile、touch、densityで意味とAPIを変えない規則が確定している。"
+    },
+    {
+      "id": "showcase-scenarios",
+      "description": "必須variant/state/content scenarioがShowcaseで有効なnative HTMLとして表現される。"
+    },
+    {
+      "id": "validation-evidence",
+      "description": "schema、contract drift、生成物、browser matrix、独立reviewの証跡を持つ。"
+    }
+  ],
+  "invariants": [
+    "contractVersionを持つ",
+    "tokenBindings.coverageがcomplete",
+    "tokenBindings.unboundSlotsが空",
+    "contract openQuestionsが空",
+    "runtime、selectionRules、negativeExamples、requiredScenariosを持つ",
+    "statusはReact実装とCI visual regression完了までdraftを維持する"
+  ],
+  "stableExitCriteria": [
+    "React componentが公開Contractどおりに実装される",
+    "requiredScenariosのunit/integration testsが成功する",
+    "Light/Dark、Standard/High contrast、density、responsiveのvisual regressionがCIで成功する"
+  ]
+}

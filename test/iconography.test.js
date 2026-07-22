@@ -15,14 +15,14 @@ const utilityBlock = /const ICON_SVG=[\s\S]+?\n\}\)\);/.exec(utilsSource)?.[0];
 assert.ok(utilityBlock, 'icon utility block must be extractable');
 const runtime = vm.runInNewContext(`${generatedSource}\n${utilityBlock}\n({ ICON_SVG, I, ICON_META, ICON_SIZES });`);
 
-test('registry, generated metadata, and SVG implementation contain the same 33 IDs', () => {
+test('registry, generated metadata, and SVG implementation contain the same 35 IDs', () => {
   const sourceIds = registry.icons.map((icon) => icon.id).sort();
-  assert.equal(sourceIds.length, 33);
+  assert.equal(sourceIds.length, 35);
   assert.deepEqual([...new Set(sourceIds)], sourceIds);
   assert.deepEqual(Array.from(runtime.ICON_META, (icon) => icon.id).sort(), sourceIds);
   assert.deepEqual(Object.keys(runtime.ICON_SVG).sort(), sourceIds);
   assert.deepEqual(Object.keys(runtime.I).sort(), sourceIds);
-  assert.equal(new Set(registry.icons.map((icon) => icon.canonicalName)).size, 33);
+  assert.equal(new Set(registry.icons.map((icon) => icon.canonicalName)).size, 35);
 });
 
 test('rendered glyphs inherit color, use the registry size, and stay out of the accessibility tree', () => {

@@ -1,470 +1,248 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready",
+    "policyVersion": "0.1.0",
+    "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/icon-button.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/icon-button.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "states", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "keyboardInteractions", "rules"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["variants", "sizes", "tokenBindings"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/icon-button.md#responsive-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#icon-button", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.icon-button.2026-07-22-components-icon-button-01.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": [
+      "React componentをContract 0.2.0どおりに実装する。",
+      "Tooltip連携を含むunit/integration testとvisual regressionをCIへ追加する。"
+    ]
+  },
   "id": "icon-button",
   "name": "Icon Button",
   "status": "draft",
   "category": "core",
-  "description": "アイコンのみのコンパクトなアクション。ツールバーや行内操作に使う。",
+  "description": "可視ラベルを置かず、単一の明確な補助アクションを実行する正方形のbutton。",
   "source": {
     "humanDoc": "components/icon-button.md",
     "registry": "js/components-registry.js#icon-button"
   },
   "intent": {
     "whenToUse": [
-      "ツールバー・カードヘッダーの補助操作",
-      "スペースが限られたテーブル行内"
+      "ツールバー、カードヘッダー、テーブル行で意味が広く認識される補助アクションを置く。",
+      "利用可能幅が限られ、可視ラベル付きButtonを置くと主要contentの走査を妨げる。",
+      "破壊的な補助アクションをdanger表現と確認フローで明示する。"
     ],
     "whenNotToUse": [
-      "意味がアイコンだけでは伝わらない主要アクション → ラベル付き Button"
+      "主要アクション、初見で意味が推測できない操作、翻訳で意味が変わる操作には可視ラベル付きButtonを使う。",
+      "ページやresourceへの遷移にはLinkを使う。",
+      "ON/OFFや選択状態の保持にはSwitch、Checkbox、Segmented Controlなどのselection controlを使う。"
     ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "root",
-      "required": true,
-      "description": "Native interactive root or navigation target."
-    },
-    {
-      "part": "label",
-      "required": true,
-      "description": "Predictable accessible action or destination name."
-    },
-    {
-      "part": "icon",
-      "required": false,
-      "description": "Meaning reinforcement; decorative icons stay hidden from assistive technology."
-    }
+    { "part": "root", "required": true, "description": "type=buttonを既定とするnative button。" },
+    { "part": "icon", "required": true, "description": "単一の装飾glyph。accessible nameへ重複して含めない。" },
+    { "part": "accessible-label", "required": true, "description": "label propから生成する短く具体的なaria-label。" },
+    { "part": "tooltip", "required": true, "description": "hoverとfocusで表示し、labelと同じ操作名を伝えるTooltip。" },
+    { "part": "spinner", "required": false, "description": "loading中にiconと同じ寸法へ置換する装飾indicator。" }
   ],
   "variants": {
     "ghost": {
-      "intent": "面を増やさない補助action。",
-      "tokenRefs": {},
-      "states": {}
+      "intent": "ツールバーや行内で面を増やさない標準の補助アクション。",
+      "tokenRefs": { "background": "transparent", "foreground": "--fg", "border": "transparent" },
+      "states": {
+        "hover": { "background": "--surface-muted" },
+        "active": { "background": "--control-bg-active" },
+        "disabled": { "background": "transparent", "foreground": "--fg-disabled", "border": "transparent" }
+      }
     },
     "secondary": {
-      "intent": "主要actionを補助する標準表現。",
-      "tokenRefs": {},
-      "states": {}
+      "intent": "常時境界を見せ、ghostより見つけやすくする補助アクション。",
+      "tokenRefs": { "background": "--control-bg", "foreground": "--fg", "border": "--control-border" },
+      "states": {
+        "hover": { "background": "--control-bg-hover", "border": "--control-border-hover" },
+        "active": { "background": "--control-bg-active", "border": "--control-border-hover" },
+        "disabled": { "background": "--control-bg", "foreground": "--fg-disabled", "border": "--control-border" }
+      }
     },
-    "primary": {
-      "intent": "主要actionまたは最優先の選択。",
-      "tokenRefs": {},
-      "states": {}
+    "danger": {
+      "intent": "削除など破壊的な補助操作。確認UIまたは取り消し手段と併用する。",
+      "tokenRefs": { "background": "--danger", "foreground": "--danger-on-solid", "border": "transparent" },
+      "states": {
+        "hover": { "background": "--danger-hover" },
+        "active": { "background": "--danger-active" },
+        "disabled": { "background": "--disabled", "foreground": "--fg-disabled", "border": "transparent" }
+      }
     }
   },
   "sizes": {
-    "xs": {
-      "controlHeight": "--ctl-xs",
-      "paddingInline": [
-        "--sp-2",
-        "--sp-2"
-      ],
-      "gap": "--sp-2",
-      "textToken": "--text-label",
-      "iconSize": "12"
-    },
-    "sm": {
-      "controlHeight": "--ctl-sm",
-      "paddingInline": [
-        "--sp-2",
-        "--sp-2"
-      ],
-      "gap": "--sp-2",
-      "textToken": "--text-label",
-      "iconSize": "14"
-    },
-    "md": {
-      "controlHeight": "--ctl-md",
-      "paddingInline": [
-        "--sp-2",
-        "--sp-2"
-      ],
-      "gap": "--sp-2",
-      "textToken": "--text-label",
-      "iconSize": "16"
-    },
-    "lg": {
-      "controlHeight": "--ctl-lg",
-      "paddingInline": [
-        "--sp-2",
-        "--sp-2"
-      ],
-      "gap": "--sp-2",
-      "textToken": "--text-label",
-      "iconSize": "18"
-    }
+    "xs": { "controlHeight": "--ctl-xs", "paddingInline": ["0", "0"], "gap": "0", "textToken": "--text-label", "iconSize": "--icon-button-icon-size-xs" },
+    "sm": { "controlHeight": "--ctl-sm", "paddingInline": ["0", "0"], "gap": "0", "textToken": "--text-label", "iconSize": "--icon-button-icon-size-sm" },
+    "md": { "controlHeight": "--ctl-md", "paddingInline": ["0", "0"], "gap": "0", "textToken": "--text-label", "iconSize": "--icon-button-icon-size-md" },
+    "lg": { "controlHeight": "--ctl-lg", "paddingInline": ["0", "0"], "gap": "0", "textToken": "--text-label", "iconSize": "--icon-button-icon-size-lg" },
+    "xl": { "controlHeight": "--ctl-xl", "paddingInline": ["0", "0"], "gap": "0", "textToken": "--text-label", "iconSize": "--icon-button-icon-size-xl" }
   },
   "states": [
-    {
-      "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
-      "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
-      ]
-    },
-    {
-      "id": "hover",
-      "description": "Pointer hoverの補助変化。意味をhoverだけに依存させない。",
-      "requiredBehavior": [
-        "Pointer hoverの補助変化。意味をhoverだけに依存させない。"
-      ]
-    },
-    {
-      "id": "disabled",
-      "description": "操作不能である理由を周辺文脈から理解できるようにする。",
-      "requiredBehavior": [
-        "操作不能である理由を周辺文脈から理解できるようにする。"
-      ]
-    }
+    { "id": "default", "description": "操作可能な通常状態。", "requiredBehavior": ["native buttonとしてTab順に参加する。", "labelをaria-labelとTooltip contentの単一sourceにする。"] },
+    { "id": "hover", "description": "pointerがroot上にある状態。", "requiredBehavior": ["variantのhover tokenを使う。", "Tooltipを表示するが、操作理解をhoverだけに依存させない。"] },
+    { "id": "active", "description": "押下中の状態。", "requiredBehavior": ["active tokenでfeedbackを示す。", "寸法とglyph位置を変えない。"] },
+    { "id": "focus", "description": "keyboard focusがある状態。", "requiredBehavior": ["focus-visible ringを表示する。", "Tooltipを表示し、Escapeで閉じてもroot focusを維持する。"] },
+    { "id": "disabled", "description": "操作不可の状態。", "requiredBehavior": ["native disabledへ写像する。", "理由が必要なら無効化せず周辺説明または実行後feedbackを優先する。"] },
+    { "id": "loading", "description": "非同期処理中で再実行を防ぐ状態。", "requiredBehavior": ["aria-busy=trueとaria-disabled=trueを設定する。", "clickとsubmit handlerをguardする。", "accessible name、root寸法、focusを維持し、iconだけをspinnerへ置換する。"] }
   ],
   "props": [
-    {
-      "name": "variant",
-      "type": "\"ghost\" | \"secondary\" | \"primary\"",
-      "required": false,
-      "default": "ghost",
-      "description": "意味と優先度を選ぶ。"
-    },
-    {
-      "name": "size",
-      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
-      "required": false,
-      "default": "md",
-      "description": "Density内の相対sizeを選ぶ。"
-    },
-    {
-      "name": "disabled",
-      "type": "boolean",
-      "required": false,
-      "default": "false",
-      "description": "操作不能state。"
-    }
+    { "name": "label", "type": "string", "required": true, "default": null, "description": "aria-labelとTooltipへ使う短く具体的な操作名。" },
+    { "name": "icon", "type": "ReactElement", "required": true, "default": null, "description": "aria-hiddenで描画する単一glyph。" },
+    { "name": "variant", "type": "\"ghost\" | \"secondary\" | \"danger\"", "required": false, "default": "ghost", "description": "補助操作の視覚的な強度と危険性。" },
+    { "name": "size", "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"", "required": false, "default": "md", "description": "正方形controlの一辺とglyph寸法。" },
+    { "name": "loading", "type": "boolean", "required": false, "default": "false", "description": "実行中表示と再実行防止。" },
+    { "name": "disabled", "type": "boolean", "required": false, "default": "false", "description": "native disabled状態。" },
+    { "name": "tooltipPlacement", "type": "\"top\" | \"right\" | \"bottom\" | \"left\"", "required": false, "default": "top", "description": "Tooltipの希望位置。衝突時はTooltip側で反転する。" },
+    { "name": "type", "type": "\"button\" | \"submit\" | \"reset\"", "required": false, "default": "button", "description": "native button type。" },
+    { "name": "ref", "type": "ForwardedRef<HTMLButtonElement>", "required": false, "default": null, "description": "native buttonへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--surface",
-      "--border",
-      "--fg",
-      "--surface-muted",
-      "--fg-disabled",
-      "--border-strong",
-      "--primary",
-      "--primary-hover",
-      "--primary-active",
-      "--primary-fg",
-      "--focus-ring"
-    ],
-    "density": [
-      "--ctl-md",
-      "--ctl-xs",
-      "--ctl-sm",
-      "--ctl-lg",
-      "--text-label"
-    ],
-    "spacing": [
-      "--sp-2"
-    ],
-    "radius": [
-      "--radius-sm"
-    ],
-    "motion": [
-      "--dur-fast"
-    ]
+    "semanticColor": ["--control-bg", "--control-bg-hover", "--control-bg-active", "--control-border", "--control-border-hover", "--fg", "--fg-disabled", "--surface-muted", "--danger", "--danger-hover", "--danger-active", "--danger-on-solid", "--disabled", "--focus-ring"],
+    "density": ["--ctl-xs", "--ctl-sm", "--ctl-md", "--ctl-lg", "--ctl-xl"],
+    "radius": ["--radius-sm"],
+    "motion": ["--dur-fast", "--dur-loop", "--ease-standard"],
+    "component": ["--icon-button-icon-size-xs", "--icon-button-icon-size-sm", "--icon-button-icon-size-md", "--icon-button-icon-size-lg", "--icon-button-icon-size-xl", "--icon-button-spinner-stroke"]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.surface.value",
-        "source": "--surface",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.surface-muted.value",
-        "source": "--surface-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-disabled.value",
-        "source": "--fg-disabled",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border-strong.value",
-        "source": "--border-strong",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary.value",
-        "source": "--primary",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary-hover.value",
-        "source": "--primary-hover",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary-active.value",
-        "source": "--primary-active",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary-fg.value",
-        "source": "--primary-fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.focus-ring.value",
-        "source": "--focus-ring",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.ctl-md.value",
-        "source": "--ctl-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sp-2.value",
-        "source": "--sp-2",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.radius-sm.value",
-        "source": "--radius-sm",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.dur-fast.value",
-        "source": "--dur-fast",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.ctl-xs.value",
-        "source": "--ctl-xs",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.ctl-sm.value",
-        "source": "--ctl-sm",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.ctl-lg.value",
-        "source": "--ctl-lg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.text-label.value",
-        "source": "--text-label",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Icon Buttonの公開visual contractで用途tokenとして共有する。"
-      }
+      { "slot": "variant.ghost.container.background-border.default-disabled", "source": "transparent", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "Ghostは通常時とdisabled時に面とborderを持たない。" },
+      { "slot": "variant.ghost.icon.foreground.default", "source": "--fg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "標準glyphは通常foreground roleへ合わせる。" },
+      { "slot": "variant.ghost.container.background.hover", "source": "--surface-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Ghost hoverだけ控えめな面を表示する。" },
+      { "slot": "variant.ghost.container.background.active", "source": "--control-bg-active", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Pressedをhoverより強いcontrol面で示す。" },
+      { "slot": "variant.secondary.container.background.default-disabled", "source": "--control-bg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Secondaryはneutral control面を維持する。" },
+      { "slot": "variant.secondary.icon.foreground.default", "source": "--fg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Secondary glyphは通常foreground roleへ合わせる。" },
+      { "slot": "variant.secondary.container.border.default-disabled", "source": "--control-border", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Secondaryのhit area境界を常時示す。" },
+      { "slot": "variant.secondary.container.background.hover", "source": "--control-bg-hover", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Secondary hoverをneutral control roleで示す。" },
+      { "slot": "variant.secondary.container.background.active", "source": "--control-bg-active", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Secondary pressedをhoverより強く示す。" },
+      { "slot": "variant.secondary.container.border.hover-active", "source": "--control-border-hover", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Hoverとactiveで境界を強める。" },
+      { "slot": "variant.danger.container.background.default", "source": "--danger", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "破壊的操作をdanger面で示す。" },
+      { "slot": "variant.danger.container.background.hover", "source": "--danger-hover", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Danger hoverのcontrast pairを維持する。" },
+      { "slot": "variant.danger.container.background.active", "source": "--danger-active", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Danger pressedを明確に示す。" },
+      { "slot": "variant.danger.icon.foreground.default", "source": "--danger-on-solid", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Solid danger上のglyph contrastを保証する。" },
+      { "slot": "variant.danger.container.background.disabled", "source": "--disabled", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Disabled時は危険色を外す。" },
+      { "slot": "variant.danger.container.border.default-disabled", "source": "transparent", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "Dangerは色面だけで境界を示す。" },
+      { "slot": "all.icon.foreground.disabled", "source": "--fg-disabled", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "全variantのdisabled glyphを共通roleへ揃える。" },
+      { "slot": "all.root.focus-ring", "source": "--focus-ring", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Keyboard focusを共通ringで示す。" },
+      { "slot": "all.root.radius", "source": "--radius-sm", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Button family共通のcontrol radiusを使う。" },
+      { "slot": "all.root.padding-gap", "source": "0", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "正方形root内ではflex centeringだけでglyphを配置する。" },
+      { "slot": "all.root.transition.duration", "source": "--dur-fast", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "色とborder feedbackを共通fast durationへ揃える。" },
+      { "slot": "all.root.transition.easing", "source": "--ease-standard", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "state transitionをsystem easingへ揃える。" },
+      { "slot": "size.xs.root.height-width", "source": "--ctl-xs", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "xsの正方形targetを24px minimumへ結線する。" },
+      { "slot": "size.sm.root.height-width", "source": "--ctl-sm", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "smの正方形targetをdensity tokenへ結線する。" },
+      { "slot": "size.md.root.height-width", "source": "--ctl-md", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "mdの正方形targetをdensity tokenへ結線する。" },
+      { "slot": "size.lg.root.height-width", "source": "--ctl-lg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "lgの正方形targetをdensity tokenへ結線する。" },
+      { "slot": "size.xl.root.height-width", "source": "--ctl-xl", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "xlを44px touch推奨targetへ結線する。" },
+      { "slot": "size.xs.icon.size", "source": "--icon-button-icon-size-xs", "scope": "component", "componentToken": "--icon-button-icon-size-xs", "aliases": null, "trigger": "intrinsic-component-value", "reason": "xs glyph固有寸法。" },
+      { "slot": "size.sm.icon.size", "source": "--icon-button-icon-size-sm", "scope": "component", "componentToken": "--icon-button-icon-size-sm", "aliases": null, "trigger": "intrinsic-component-value", "reason": "sm glyph固有寸法。" },
+      { "slot": "size.md.icon.size", "source": "--icon-button-icon-size-md", "scope": "component", "componentToken": "--icon-button-icon-size-md", "aliases": null, "trigger": "intrinsic-component-value", "reason": "md glyph固有寸法。" },
+      { "slot": "size.lg.icon.size", "source": "--icon-button-icon-size-lg", "scope": "component", "componentToken": "--icon-button-icon-size-lg", "aliases": null, "trigger": "intrinsic-component-value", "reason": "lg glyph固有寸法。" },
+      { "slot": "size.xl.icon.size", "source": "--icon-button-icon-size-xl", "scope": "component", "componentToken": "--icon-button-icon-size-xl", "aliases": null, "trigger": "intrinsic-component-value", "reason": "xl glyph固有寸法。" },
+      { "slot": "state.loading.spinner.stroke", "source": "--icon-button-spinner-stroke", "scope": "component", "componentToken": "--icon-button-spinner-stroke", "aliases": null, "trigger": "intrinsic-component-value", "reason": "loading indicator固有のstroke geometry。" },
+      { "slot": "state.loading.spinner.motion", "source": "--dur-loop", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Loading loopをreduced motion対応tokenへ結線する。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.icon-button"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
     "requirements": [
-      "aria-label を必須にする",
-      "ツールチップはフォーカス時にも表示する",
-      "Keyboardとpointerで同じ機能を実行できる。",
-      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+      "label propから空でないaccessible nameと同文のTooltipを生成する。",
+      "iconとspinnerはaria-hiddenにし、glyph名をaccessible nameへ重複させない。",
+      "Tooltipはhoverとfocusで表示し、Escapeで閉じ、root focusを奪わない。",
+      "Keyboardとpointerで同じactionを実行する。",
+      "Targetは24px minimumを満たし、touch中心ではxlの44pxを優先する。",
+      "Focus indicatorを視認でき、sticky layerで完全に隠さない。"
     ],
     "aria": [
-      "Native <button>と必須のaria-labelを使う。"
+      "Native buttonを使い、labelをaria-labelへ写像する。",
+      "Tooltipをaria-describedbyで関連付ける。",
+      "loading中はaria-busy=trueとaria-disabled=trueを設定する。"
     ],
     "focus": [
       "focus-visibleで--focus-ringを使う。",
-      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+      "Positive tabindexを使わずDOMとvisualの順序を一致させる。",
+      "Tooltip表示・非表示でfocusを移動しない。"
     ]
   },
   "keyboardInteractions": [
-    {
-      "key": "Enter / Space",
-      "action": "Actionを実行する。"
-    }
+    { "key": "Enter", "action": "Actionを実行する。" },
+    { "key": "Space", "action": "Actionを実行する。" },
+    { "key": "Tab", "action": "通常のdocument順序でrootへ出入りする。" },
+    { "key": "Escape", "action": "表示中のTooltipを閉じ、root focusを維持する。" }
   ],
   "usagePatterns": [
     {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "ツールバー・カードヘッダーの補助操作",
-      "recommended": [
-        "必ず aria-label とツールチップを併用する。"
-      ],
-      "avoid": [
-        "意味がアイコンだけでは伝わらない主要アクション → ラベル付き Button"
-      ]
+      "id": "toolbar-action",
+      "title": "Toolbar action",
+      "description": "認識可能な編集・表示補助操作を密度の高いtoolbarへ置く。",
+      "recommended": ["labelを動詞から始め、Tooltipとaria-labelへ同じ文字列を使う。", "複数Icon Buttonを並べる場合はToolbarのroving tabindex contractを親で管理する。"],
+      "avoid": ["初見で判別できない独自glyphを説明なしで使う。", "Icon Button自体にaria-pressedを追加してselection control化する。"]
     },
     {
-      "id": "recommended-2",
-      "title": "Secondary context",
-      "description": "スペースが限られたテーブル行内",
-      "recommended": [
-        "操作ターゲットは 24px 以上を最低条件とし、タッチ中心の主要操作は原則 44px 以上にする。"
-      ],
-      "avoid": [
-        "意味がアイコンだけでは伝わらない主要アクション → ラベル付き Button"
-      ]
+      "id": "destructive-row-action",
+      "title": "Destructive row action",
+      "description": "行単位の削除など破壊的な補助操作。",
+      "recommended": ["danger variantと対象を含むlabelを使う。", "確認DialogまたはUndoを用意する。"],
+      "avoid": ["主要な削除確認をIcon Buttonだけで完結させる。"]
     }
   ],
   "responsiveBehavior": {
     "desktop": {
-      "summary": "DesktopでのIcon Button。",
-      "rules": [
-        "周辺layoutに応じたintrinsic widthを基本にし、formではlabelとの整列を保つ。",
-        "Keyboard focusとhoverを別々に確認する。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
+      "summary": "同一APIの正方形controlをtask densityで選ぶ。",
+      "rules": ["mdを標準、table rowではxs/sm、主要toolbarではmd/lgを使う。", "hoverとfocusのTooltipを別々に確認する。"],
+      "avoid": ["hoverだけに操作名を閉じ込めない。"]
     },
     "mobile": {
-      "summary": "MobileでのIcon Button。",
-      "rules": [
-        "Form文脈では利用可能幅まで広げ、複数controlを無理に横へ詰めない。",
-        "同じpropとstate contractを維持する。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
+      "summary": "意味とAPIを変えず、spacingとsizeで誤操作を防ぐ。",
+      "rules": ["touch中心の主要操作はxlを優先する。", "狭い画面でも隣接targetとの間隔を保つ。"],
+      "avoid": ["PC用とSP用に異なるlabelやactionを持つIcon Buttonを複製しない。"]
     },
     "touch": {
-      "summary": "Touch入力でのIcon Button。",
-      "rules": [
-        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
+      "summary": "24px minimum、主要touch操作44px推奨を満たす。",
+      "rules": ["xsでも24px未満にしない。", "繰り返し使う主要操作はxlまたは十分なspacingを使う。"],
+      "avoid": ["24px円が隣接targetと重なる配置を作らない。"]
     }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM",
-    "FOCUS_VISIBLE_REQUIRED",
-    "NO_POSITIVE_TABINDEX",
-    "TARGET_SIZE_MINIMUM",
-    "INTERACTIVE_NAME_REQUIRED"
-  ],
+  "rules": ["NO_RAW_HEX_COLOR", "SPACING_FROM_TOKENS_ONLY", "RADIUS_FROM_TOKENS_ONLY", "CONTRAST_AA_MINIMUM", "FOCUS_VISIBLE_REQUIRED", "NO_POSITIVE_TABINDEX", "TARGET_SIZE_MINIMUM", "INTERACTIVE_NAME_REQUIRED"],
   "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
+    "label、Tooltip、aria-labelが同じ操作名である。",
+    "native button属性、type=button、ref、handler guardが確定している。",
+    "全variant/state/sizeのvisual slotがtokenへ結線されている。",
+    "Light/Dark × Standard/High、3 density、mobileでShowcaseを確認する。"
   ],
   "examples": [
-    {
-      "id": "default",
-      "description": "Icon Buttonの標準例。",
-      "code": "<IconButton variant=\"ghost\" size=\"md\" aria-label=\"追加\">\n  <PlusIcon />\n</IconButton>"
-    }
+    { "id": "default", "description": "標準の補助操作。", "code": "<IconButton label=\"フィルターを開く\" icon={<FilterIcon />} />" },
+    { "id": "danger", "description": "対象を明示した破壊的補助操作。", "code": "<IconButton label=\"プロジェクトを削除\" icon={<TrashIcon />} variant=\"danger\" />" },
+    { "id": "loading", "description": "nameとfocusを保持する非同期操作。", "code": "<IconButton label=\"再読み込み\" icon={<RefreshIcon />} loading />" }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["button"],
+    "slots": ["icon", "tooltip", "spinner"],
+    "attributes": ["type", "disabled", "name", "value", "form", "formAction", "formEncType", "formMethod", "formNoValidate", "formTarget", "aria-label", "aria-describedby", "aria-busy", "aria-disabled", "aria-*", "data-*"],
+    "stateModel": ["data-meridian-variant", "data-meridian-state"],
+    "events": ["click", "keydown", "focus", "blur", "pointerenter", "pointerleave"],
+    "relations": ["accessible-name", "tooltip-description", "native-button-props-passthrough"],
+    "provenance": ["component", "instance", "variant", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["単一の補助actionを認識可能なglyphで表せる。", "可視ラベルを置くと周辺contentの走査を妨げる。"],
+    "avoidWhen": ["主要actionまたは説明が必要ならButtonを使う。", "navigationならLinkを使う。", "selection stateなら専用selection controlを使う。"],
+    "alternatives": ["button", "link", "switch", "checkbox", "segmented-control"]
+  },
+  "negativeExamples": [
+    { "pattern": "labelなし、またはtitle属性だけでIcon Buttonを命名する。", "reason": "titleは一貫したaccessible nameやkeyboard利用可能な説明を保証しないため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "primary variantで主要CTAをiconだけにする。", "reason": "可視ラベルとaction hierarchyを失うため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "aria-pressedを追加してtoggleとして使う。", "reason": "commandとselectionの状態モデルが混在するため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] }
+  ],
+  "requiredScenarios": ["default", "hover", "active", "focus", "disabled", "loading", "ghost", "secondary", "danger", "xs", "sm", "md", "lg", "xl", "tooltip-hover", "tooltip-focus", "form-submit"],
+  "openQuestions": []
 }

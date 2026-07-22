@@ -50,6 +50,8 @@
     { "id": "bell", "canonicalName": "bell", "label": "通知", "aliases": ["notification", "alerts"], "style": "stroke", "defaultSize": "md", "directionality": "neutral", "meaning": "Notifications" },
     { "id": "github", "canonicalName": "github", "label": "GitHub", "aliases": ["repository", "source"], "style": "brand", "defaultSize": "md", "directionality": "brand-fixed", "meaning": "GitHub brand destination" },
     { "id": "arrowR", "canonicalName": "arrow-right", "label": "次へ", "aliases": ["forward", "continue"], "style": "stroke", "defaultSize": "sm", "directionality": "mirror-in-rtl", "meaning": "次のstepまたはdestination" },
+    { "id": "external", "canonicalName": "external-link", "label": "外部リンク", "aliases": ["open-external", "outside"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "外部resourceへの遷移" },
+    { "id": "download", "canonicalName": "download", "label": "ダウンロード", "aliases": ["save-file", "export"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "resourceをdownloadする遷移" },
     { "id": "dots", "canonicalName": "ellipsis", "label": "その他", "aliases": ["more", "overflow"], "style": "solid", "defaultSize": "sm", "directionality": "neutral", "meaning": "Overflow actions menu" },
     { "id": "cal", "canonicalName": "calendar", "label": "日付", "aliases": ["date", "schedule"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "Date or calendar picker" },
     { "id": "filter", "canonicalName": "filter", "label": "絞り込み", "aliases": ["refine", "funnel"], "style": "stroke", "defaultSize": "sm", "directionality": "neutral", "meaning": "Filter conditions" },

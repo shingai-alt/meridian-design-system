@@ -2,7 +2,7 @@
   "schemaVersion": "0.1.0",
   "conceptId": "phase2_team_invitation",
   "sourceDigests": {
-    "html": "sha256-ee7d8f9ce4d4b63ebb3507f1b5e98b4f5ef4750a3208df00e2a6b6e37c50ced0",
+    "html": "sha256-306034fedac69fb9bb9d99df8cb3c2bd47570ec824473220191f220dfc484390",
     "candidates": "sha256-dd0f7ba585a2ff3aca5f645d9d049ef959ed7a6e588014fe753d40ec83e4fd74",
     "rubric": "sha256-324086cf04135fe15d0b5391ddf4c02dfffa2e4c7bdce44b012863d1649a787a"
   },

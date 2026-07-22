@@ -252,6 +252,8 @@ accessible nameの代替ではありません。`mirror-in-rtl` だけRTLで反�
 | bell | bell | Notifications | md | neutral |
 | github | github | GitHub brand destination | md | brand-fixed |
 | arrowR | arrow-right | 次のstepまたはdestination | sm | mirror-in-rtl |
+| external | external-link | 外部resourceへの遷移 | sm | neutral |
+| download | download | resourceをdownloadする遷移 | sm | neutral |
 | dots | ellipsis | Overflow actions menu | sm | neutral |
 | cal | calendar | Date or calendar picker | sm | neutral |
 | filter | filter | Filter conditions | sm | neutral |

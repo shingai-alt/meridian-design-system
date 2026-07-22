@@ -1,375 +1,207 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready",
+    "policyVersion": "0.1.0",
+    "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/link.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/link.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "states", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "keyboardInteractions", "rules"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["variants", "tokenBindings"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/link.md#responsive-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#link", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.link.2026-07-22-components-link-01.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": [
+      "React componentをContract 0.2.0どおりに実装する。",
+      "native anchor、router integration境界、required scenariosのvisual regressionをCIへ追加する。"
+    ]
+  },
   "id": "link",
   "name": "Link",
   "status": "draft",
   "category": "core",
-  "description": "ナビゲーションのためのテキストリンク。アクションには Button を使う。",
+  "description": "現在の文脈から別のURLまたは同一document内の位置へ移動するnative hyperlink。",
   "source": {
     "humanDoc": "components/link.md",
     "registry": "js/components-registry.js#link"
   },
   "intent": {
     "whenToUse": [
-      "別ページ・外部サイトへの遷移",
-      "文中の参照"
+      "別ページ、別resource、同一document内の位置へ移動する。",
+      "本文中で関連情報や出典を参照する。",
+      "外部サイトまたはdownload先への遷移を明示する。"
     ],
     "whenNotToUse": [
-      "データの作成・更新・削除 → Button"
+      "データの作成、更新、削除、送信、Dialog表示など現在の文脈でactionを実行する場合はButtonを使う。",
+      "遷移先が存在しない状態をdisabled Linkで表さず、textへ戻すかLink自体を表示しない。",
+      "カード全体をLinkにして内部のButtonやLinkを入れ子にしない。"
     ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "root",
-      "required": true,
-      "description": "Native interactive root or navigation target."
-    },
-    {
-      "part": "label",
-      "required": true,
-      "description": "Predictable accessible action or destination name."
-    },
-    {
-      "part": "icon",
-      "required": false,
-      "description": "Meaning reinforcement; decorative icons stay hidden from assistive technology."
-    }
+    { "part": "root", "required": true, "description": "hrefを必須とするnative a element。" },
+    { "part": "label", "required": true, "description": "遷移先または目的を文脈内で判別できる可視テキスト。" },
+    { "part": "leading-icon", "required": false, "description": "resource種別を補足する装飾icon。" },
+    { "part": "trailing-indicator", "required": false, "description": "外部遷移、download、新しいtabを視覚・音声で補足するindicator。" }
   ],
   "variants": {
-    "default": {
-      "intent": "標準文脈。",
-      "tokenRefs": {},
-      "states": {}
+    "inline": {
+      "intent": "本文中の参照。通常時からunderlineを表示し、周辺textと色だけで区別しない。",
+      "tokenRefs": { "foreground": "--primary", "decoration": "currentColor", "background": "transparent" },
+      "states": {
+        "hover": { "foreground": "--primary-hover", "decoration": "currentColor" },
+        "active": { "foreground": "--primary-active", "decoration": "currentColor" },
+        "focus": { "foreground": "--primary", "decoration": "currentColor" }
+      }
+    },
+    "standalone": {
+      "intent": "ナビゲーション群、footer、CTA補助など配置とdirection indicatorでLinkと判別できる文脈。",
+      "tokenRefs": { "foreground": "--primary", "decoration": "none", "background": "transparent" },
+      "states": {
+        "hover": { "foreground": "--primary-hover", "decoration": "currentColor" },
+        "active": { "foreground": "--primary-active", "decoration": "currentColor" },
+        "focus": { "foreground": "--primary", "decoration": "currentColor" }
+      }
     }
   },
   "sizes": {},
   "states": [
-    {
-      "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
-      "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
-      ]
-    },
-    {
-      "id": "hover",
-      "description": "Pointer hoverの補助変化。意味をhoverだけに依存させない。",
-      "requiredBehavior": [
-        "Pointer hoverの補助変化。意味をhoverだけに依存させない。"
-      ]
-    },
-    {
-      "id": "focus",
-      "description": "focus-visibleで明確なringを表示する。",
-      "requiredBehavior": [
-        "focus-visibleで明確なringを表示する。"
-      ]
-    }
+    { "id": "default", "description": "hrefを持つ通常のhyperlink。", "requiredBehavior": ["native aとしてTab順とbrowser context menuへ参加する。", "visible labelからaccessible nameを得る。"] },
+    { "id": "hover", "description": "pointerがLink上にある状態。", "requiredBehavior": ["foregroundをhover tokenへ変える。", "underlineを維持または追加し、colorだけに依存しない。"] },
+    { "id": "active", "description": "Linkをactivateしている状態。", "requiredBehavior": ["active tokenで短いfeedbackを示す。", "navigationを独自keydown handlerで再実装しない。"] },
+    { "id": "focus", "description": "keyboard focusがある状態。", "requiredBehavior": ["focus-visible outlineとunderlineを同時に表示する。", "focusだけでnavigationやnew tabを開始しない。"] }
   ],
   "props": [
-    {
-      "name": "children",
-      "type": "ReactNode",
-      "required": true,
-      "default": null,
-      "description": "Componentの主要content。"
-    }
+    { "name": "children", "type": "ReactNode", "required": true, "default": null, "description": "目的を説明する可視link label。" },
+    { "name": "href", "type": "string", "required": true, "default": null, "description": "native anchorの遷移先。空文字やjavascript URLを許可しない。" },
+    { "name": "variant", "type": "\"inline\" | \"standalone\"", "required": false, "default": "inline", "description": "本文内か、明示的なnavigation文脈かを選ぶ。" },
+    { "name": "external", "type": "boolean", "required": false, "default": "false", "description": "外部resource indicatorと補足accessible textを表示する。targetは変更しない。" },
+    { "name": "download", "type": "boolean | string", "required": false, "default": "false", "description": "native download属性とdownload indicatorを設定する。" },
+    { "name": "target", "type": "HTMLAttributeAnchorTarget", "required": false, "default": null, "description": "native target。_blankでは新しいtabを示す補足と安全なrelを保証する。" },
+    { "name": "rel", "type": "string", "required": false, "default": null, "description": "native link relationship。target=_blankではnoopenerをmergeする。" },
+    { "name": "leadingIcon", "type": "ReactNode", "required": false, "default": null, "description": "resource種別を補足するaria-hidden icon。" },
+    { "name": "trailingIcon", "type": "ReactNode", "required": false, "default": null, "description": "方向を補足するaria-hidden icon。external/download indicatorより前に置く。" },
+    { "name": "ref", "type": "ForwardedRef<HTMLAnchorElement>", "required": false, "default": null, "description": "native anchorへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--border",
-      "--border-strong",
-      "--fg",
-      "--fg-disabled",
-      "--focus-ring",
-      "--primary",
-      "--primary-active",
-      "--primary-fg",
-      "--primary-hover",
-      "--surface",
-      "--surface-muted"
-    ],
-    "density": [
-      "--ctl-md"
-    ],
-    "spacing": [
-      "--sp-2"
-    ],
-    "radius": [
-      "--radius-sm"
-    ],
-    "motion": [
-      "--dur-fast"
-    ],
-    "typography": [
-      "--text-body"
-    ]
+    "semanticColor": ["--primary", "--primary-hover", "--primary-active", "--focus-ring"],
+    "spacing": ["--sp-1"],
+    "motion": ["--dur-fast", "--ease-standard"],
+    "typography": ["--text-body"]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.surface.value",
-        "source": "--surface",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.surface-muted.value",
-        "source": "--surface-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-disabled.value",
-        "source": "--fg-disabled",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border-strong.value",
-        "source": "--border-strong",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary.value",
-        "source": "--primary",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary-hover.value",
-        "source": "--primary-hover",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary-active.value",
-        "source": "--primary-active",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary-fg.value",
-        "source": "--primary-fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.focus-ring.value",
-        "source": "--focus-ring",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.ctl-md.value",
-        "source": "--ctl-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sp-2.value",
-        "source": "--sp-2",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.radius-sm.value",
-        "source": "--radius-sm",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.dur-fast.value",
-        "source": "--dur-fast",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Linkの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.text-body.value",
-        "source": "--text-body",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "LinkのHTML showcaseで実際に参照する公開token。"
-      }
+      { "slot": "all.label.foreground.default-focus", "source": "--primary", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "標準navigation foreground roleを使う。" },
+      { "slot": "all.label.foreground.hover", "source": "--primary-hover", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Hoverをtheme対応のprimary stateで示す。" },
+      { "slot": "all.label.foreground.active", "source": "--primary-active", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Activation中をhoverより強いprimary stateで示す。" },
+      { "slot": "variant.inline.label.decoration.default-hover-active-focus", "source": "currentColor", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "本文中Linkを常時underlineで周辺textから区別する。" },
+      { "slot": "variant.standalone.label.decoration.default", "source": "none", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "明示的navigation文脈では配置とindicatorを主要affordanceにする。" },
+      { "slot": "variant.standalone.label.decoration.hover-active-focus", "source": "currentColor", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "Interaction時はunderlineも加えてcolorだけに依存しない。" },
+      { "slot": "all.root.background", "source": "transparent", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "LinkはButtonの面を持たず周辺contentへ統合する。" },
+      { "slot": "all.root.focus-ring", "source": "--focus-ring", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Keyboard focusを周辺背景から識別する。" },
+      { "slot": "all.root.typography", "source": "--text-body", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Showcaseの標準文脈ではbody roleを使い、実装では周辺typographyをinheritできる。" },
+      { "slot": "all.icon.gap", "source": "--sp-1", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "labelと補助indicatorの間隔をspacing scaleへ固定する。" },
+      { "slot": "all.root.transition.duration", "source": "--dur-fast", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "foregroundとdecorationのfeedbackをfast durationへ揃える。" },
+      { "slot": "all.root.transition.easing", "source": "--ease-standard", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "state transitionをsystem easingへ揃える。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.link"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
     "requirements": [
-      "Keyboardとpointerで同じ機能を実行できる。",
-      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+      "Linkの目的をvisible label単独、またはprogrammatically determined contextと合わせて判別できるようにする。",
+      "本文中Linkは通常時からunderlineを表示し、色だけで周辺textと区別しない。",
+      "external、download、target=_blankの結果をvisible indicatorと補足accessible textで伝える。",
+      "Targetは24px minimumを基本とするが、文中Linkのline-height例外を誤用して密集したnavigationを作らない。",
+      "Focus indicatorを視認でき、sticky layerで完全に隠さない。"
     ],
     "aria": [
-      "Navigationにはhrefを持つ<a>を使う。"
+      "Navigationにはhrefを持つnative aを使う。",
+      "現在位置にはaria-currentをnative属性としてpass-throughする。",
+      "visible labelと異なるaria-labelで目的を上書きしない。"
     ],
     "focus": [
-      "focus-visibleで--focus-ringを使う。",
-      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+      "focus-visibleで--focus-ringとunderlineを表示する。",
+      "Positive tabindexを使わずDOMとvisualの順序を一致させる。",
+      "focus取得だけでnavigationやcontext changeを開始しない。"
     ]
   },
   "keyboardInteractions": [
-    {
-      "key": "Enter",
-      "action": "リンク先へ移動する。"
-    }
+    { "key": "Enter", "action": "Browser標準動作でhrefへ移動する。" },
+    { "key": "Tab", "action": "通常のdocument順序でLinkへ出入りする。" },
+    { "key": "Shift+F10", "action": "対応platformではbrowser標準のlink context menuを開く。" }
   ],
   "usagePatterns": [
     {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "別ページ・外部サイトへの遷移",
-      "recommended": [
-        "文中リンクは下線または primary 色でリンクであることを明示する。"
-      ],
-      "avoid": [
-        "データの作成・更新・削除 → Button"
-      ]
+      "id": "inline-reference",
+      "title": "Inline reference",
+      "description": "本文中の関連情報、出典、詳細への参照。",
+      "recommended": ["リンク先の内容を具体的なlabelで示す。", "inline variantでunderlineを常時表示する。"],
+      "avoid": ["「こちら」「詳しく」だけを繰り返す。", "onclickだけを持つspanやhrefなしのaを使う。"]
     },
     {
-      "id": "recommended-2",
-      "title": "Secondary context",
-      "description": "文中の参照",
-      "recommended": [
-        "外部リンクにはアイコンを付け、target=\"_blank\" には rel=\"noopener\" を併用する。"
-      ],
-      "avoid": [
-        "データの作成・更新・削除 → Button"
-      ]
+      "id": "external-or-download",
+      "title": "External or download destination",
+      "description": "外部site、新しいtab、downloadなど通常と異なるnavigation結果。",
+      "recommended": ["external/download propでindicatorと補足textを同期する。", "target=_blankではrelにnoopenerをmergeする。"],
+      "avoid": ["外部URLだからという理由だけで自動的に新しいtabを開く。", "iconだけでLinkの目的を表す。"]
     }
   ],
   "responsiveBehavior": {
     "desktop": {
-      "summary": "DesktopでのLink。",
-      "rules": [
-        "周辺layoutに応じたintrinsic widthを基本にし、formではlabelとの整列を保つ。",
-        "Keyboard focusとhoverを別々に確認する。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
+      "summary": "周辺typographyとinline flowを維持する。",
+      "rules": ["inlineは文章の改行へ自然に追従する。", "standaloneはnavigation文脈とindicatorを保つ。"],
+      "avoid": ["LinkをButtonの面や固定control heightへ変える。"]
     },
     "mobile": {
-      "summary": "MobileでのLink。",
-      "rules": [
-        "Form文脈では利用可能幅まで広げ、複数controlを無理に横へ詰めない。",
-        "同じpropとstate contractを維持する。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
+      "summary": "同じhrefとAPIを維持し、折返し可能なlabelを使う。",
+      "rules": ["長いlabelは省略せず自然にwrapする。", "navigation群では十分なblock spacingまたはpaddingを親layoutで確保する。"],
+      "avoid": ["PC用とSP用で異なる遷移先を持つLinkを複製する。"]
     },
     "touch": {
-      "summary": "Touch入力でのLink。",
-      "rules": [
-        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
+      "summary": "文中例外と独立navigation targetを区別する。",
+      "rules": ["独立したLinkは24px minimumのtargetまたは十分なspacingを確保する。", "文中Linkはline-heightとunderlineを保ち、隣接Linkを密集させない。"],
+      "avoid": ["小さなicon-only Linkや隣接targetと重なるhit areaを作る。"]
     }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM",
-    "FOCUS_VISIBLE_REQUIRED",
-    "NO_POSITIVE_TABINDEX",
-    "TARGET_SIZE_MINIMUM",
-    "INTERACTIVE_NAME_REQUIRED"
-  ],
+  "rules": ["NO_RAW_HEX_COLOR", "SPACING_FROM_TOKENS_ONLY", "RADIUS_FROM_TOKENS_ONLY", "CONTRAST_AA_MINIMUM", "FOCUS_VISIBLE_REQUIRED", "NO_POSITIVE_TABINDEX", "TARGET_SIZE_MINIMUM", "INTERACTIVE_NAME_REQUIRED"],
   "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
+    "href、visible label、ref、native anchor属性のAPIが確定している。",
+    "Buttonとのaction/navigation境界とdisabled禁止が明確である。",
+    "inline/standalone、external、download、new-tab scenarioをShowcaseで確認する。",
+    "Light/Dark × Standard/High、3 density、mobileでfocusとwrapを確認する。"
   ],
   "examples": [
-    {
-      "id": "default",
-      "description": "Linkの標準例。",
-      "code": "<Link href=\"/docs\">ドキュメント</Link>\n<Link href=\"https://…\" external>外部リンク</Link>"
-    }
+    { "id": "inline", "description": "本文中の参照。", "code": "<Link href=\"/docs/accessibility\">アクセシビリティ指針</Link>" },
+    { "id": "external", "description": "同じtabで開く外部resource。", "code": "<Link href=\"https://www.w3.org/WAI/\" external variant=\"standalone\">WAIガイドライン</Link>" },
+    { "id": "new-tab", "description": "新しいtabで開く結果を明示する。", "code": "<Link href=\"https://example.com/report\" external target=\"_blank\">監査レポート（新しいタブ）</Link>" },
+    { "id": "download", "description": "download結果をindicatorで示す。", "code": "<Link href=\"/reports/q2.pdf\" download>Q2レポート（PDF）</Link>" }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["a"],
+    "slots": ["label", "leading-icon", "trailing-icon", "external-indicator", "download-indicator", "supplemental-text"],
+    "attributes": ["href", "target", "rel", "download", "hreflang", "type", "referrerPolicy", "aria-current", "aria-describedby", "aria-*", "data-*"],
+    "stateModel": ["data-meridian-variant", "data-meridian-state"],
+    "events": ["click", "focus", "blur"],
+    "relations": ["accessible-name", "destination", "external-result", "download-result", "native-anchor-props-passthrough"],
+    "provenance": ["component", "instance", "variant", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["主な結果がURLまたはdocument位置へのnavigationである。", "browser標準のopen-in-new-tab、copy-link、download機能を保持する。"],
+    "avoidWhen": ["現在の文脈でactionを実行するならButtonを使う。", "遷移先がない場合はdisabled Linkを作らない。", "iconだけのnavigationには可視labelを追加する。"],
+    "alternatives": ["button", "breadcrumb", "navigation-item"]
+  },
+  "negativeExamples": [
+    { "pattern": "hrefなしのa、role=linkのspan、またはjavascript URLでnavigationを再実装する。", "reason": "browser標準のkeyboard、context menu、URL semanticsを失うため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "disabled prop、aria-disabled、pointer-events:noneでLinkを無効化する。", "reason": "存在しないnavigation targetをfocusableなLinkとして残し、意味と操作可能性を矛盾させるため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "Buttonの見た目でLink、またはLinkの見た目でactionを実装する。", "reason": "見た目とnative semanticsの予測可能性が崩れるため。", "ruleIds": ["FOCUS_VISIBLE_REQUIRED"] }
+  ],
+  "requiredScenarios": ["default", "hover", "active", "focus", "inline", "standalone", "external", "new-tab", "download", "aria-current", "wrapping-label"],
+  "openQuestions": []
 }

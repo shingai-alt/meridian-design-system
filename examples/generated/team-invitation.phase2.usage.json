@@ -3,7 +3,7 @@
   "conceptId": "phase2_team_invitation",
   "sourcePackageId": "phase1_team_invitation",
   "compositionId": "team-invitation.component-composition",
-  "translationPackDigest": "sha256-543b8641662656715407ff1cd9ab3d599e8a14aa54ac0ba32c558148b755fa84",
+  "translationPackDigest": "sha256-8830490d5e9146574daffc9d640d8cdb778eea9dd8e4be5e3176c8755ac0b532",
   "runtimeVersion": "0.1.0",
   "patterns": [
     "interactive-row-group"
@@ -332,5 +332,5 @@
       "callCount": 1
     }
   ],
-  "validationDigest": "sha256-4a1e78f02222191b8c9ace4cd402f52de70de5f186e12cb0f2aa92bd85f0da8d"
+  "validationDigest": "sha256-111b078fbf1fbd9b022fd2a3c4a816f75aa8ce27059e8423c92276b72c9bfaac"
 }

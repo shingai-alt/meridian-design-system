@@ -17,6 +17,7 @@
     "check:content-meta": "node scripts/build-content-meta.mjs --check",
     "build:component-meta": "node scripts/build-component-meta.mjs",
     "check:component-meta": "node scripts/build-component-meta.mjs --check",
+    "check:implementation-ready": "node scripts/check-implementation-readiness.mjs",
     "build:harness": "node scripts/build-component-harness.mjs",
     "check:harness": "node scripts/build-component-harness.mjs --check",
     "sync:component-registry": "node scripts/sync-component-registry.mjs",
@@ -33,7 +34,7 @@
     "refine:start": "node scripts/start-refinement.mjs",
     "refine:complete-impacts": "node scripts/complete-impact-followups.mjs",
     "test": "node --test test/*.test.js",
-    "check:system": "npm run validate:system && npm run check:tokens && npm run check:semantic-meta && npm run check:icon-meta && npm run check:a11y-meta && npm run check:content-meta && npm run check:component-meta && npm run check:harness && npm run design:check && npm run check:phase2 && npm run check:js && npm test"
+    "check:system": "npm run validate:system && npm run check:implementation-ready && npm run check:tokens && npm run check:semantic-meta && npm run check:icon-meta && npm run check:a11y-meta && npm run check:content-meta && npm run check:component-meta && npm run check:harness && npm run design:check && npm run check:phase2 && npm run check:js && npm test"
   },
   "license": "UNLICENSED"
 }

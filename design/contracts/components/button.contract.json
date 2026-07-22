@@ -2,6 +2,57 @@
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
   "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready",
+    "policyVersion": "0.1.0",
+    "reviewedAt": "2026-07-22",
+    "criteria": [
+      {
+        "id": "intent-boundary",
+        "status": "passed",
+        "evidence": ["intent", "selectionRules", "components/button.md#when-to-use"]
+      },
+      {
+        "id": "public-api",
+        "status": "passed",
+        "evidence": ["props", "runtime.compatibility", "components/button.md#react-api-freeze"]
+      },
+      {
+        "id": "runtime-semantics",
+        "status": "passed",
+        "evidence": ["runtime", "states", "keyboardInteractions"]
+      },
+      {
+        "id": "accessibility",
+        "status": "passed",
+        "evidence": ["accessibility", "keyboardInteractions", "rules"]
+      },
+      {
+        "id": "token-binding",
+        "status": "passed",
+        "evidence": ["variants", "sizes", "tokenBindings"]
+      },
+      {
+        "id": "responsive-behavior",
+        "status": "passed",
+        "evidence": ["responsiveBehavior", "components/button.md#responsive-behavior"]
+      },
+      {
+        "id": "showcase-scenarios",
+        "status": "passed",
+        "evidence": ["requiredScenarios", "js/components-registry.js#button", "js/ui-builders.js"]
+      },
+      {
+        "id": "validation-evidence",
+        "status": "passed",
+        "evidence": ["design/reviews/components.button.2026-07-21-components-button-01.review.json", "test/component-specs.test.js"]
+      }
+    ],
+    "remainingToStable": [
+      "React componentをContract 0.2.0どおりに実装する。",
+      "required scenariosのunit/integration testとvisual regressionをCIへ追加する。"
+    ]
+  },
   "runtime": {
     "compatibility": ">=0.1.0 <1.0.0",
     "rootElements": ["button"],
@@ -21,7 +72,7 @@
     { "pattern": "未登録variantや独自classでButtonを強調する。", "reason": "action hierarchyとToken bindingを迂回するため。", "ruleIds": ["NO_RAW_HEX_COLOR"] },
     { "pattern": "可視ラベルなしのButtonを作る。", "reason": "Icon-only actionの責務をIcon Buttonから奪い、音声入力と認知上の手掛かりを弱めるため。", "ruleIds": ["FOCUS_VISIBLE_REQUIRED"] }
   ],
-  "requiredScenarios": ["default", "disabled", "loading", "focus", "primary", "secondary", "tertiary", "ghost", "danger", "with-leading-icon", "with-trailing-icon", "full-width", "form-submit"],
+  "requiredScenarios": ["default", "hover", "active", "disabled", "loading", "focus", "primary", "secondary", "tertiary", "ghost", "danger", "with-leading-icon", "with-trailing-icon", "full-width", "form-submit"],
   "id": "button",
   "name": "Button",
   "status": "draft",
