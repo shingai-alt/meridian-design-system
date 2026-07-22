@@ -5659,10 +5659,14 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "外部integrationの接続状態と次actionをcatalogで比較するとき。"
+        "Named integration catalogで複数serviceの接続状態、説明、次actionを比較するとき。",
+        "各serviceへ1つのprimary actionと任意のsecondary actionsを提示するとき。"
       ],
       "whenNotToUse": [
-        "接続後の詳細設定にはSettings Panelを使う。"
+        "接続後の詳細設定formにはSettings Panelまたは専用設定画面を使う。",
+        "OAuth consent、認証error recovery、disconnect confirmationのflow全体には専用flow/page/dialogを使う。",
+        "1つのserviceだけをpageの主要CTAとして紹介する場合はFeature sectionまたはCalloutを使う。",
+        "ProjectやtaskのsummaryにはProject CardまたはTask Board Cardを使う。"
       ],
       "principles": [
         1,
@@ -5674,62 +5678,123 @@ const COMPONENT_CONTRACTS={
     },
     "anatomy": [
       {
+        "part": "collection",
+        "required": true,
+        "description": "Integration Cardを直接の子に持つnamed ul。Catalog ownerが所有する。"
+      },
+      {
         "part": "root",
         "required": true,
-        "description": "Bounded information or task container."
+        "description": "ulの直接の子になる非focusable li。"
       },
       {
-        "part": "header",
-        "required": false,
-        "description": "Title, summary, and context controls."
-      },
-      {
-        "part": "content",
+        "part": "logo",
         "required": true,
-        "description": "Primary values or composed components."
+        "description": "Visible service nameと重複するためaccessibility treeから隠すbrand mark。"
       },
       {
-        "part": "footer",
+        "part": "heading",
+        "required": true,
+        "description": "Integration名を示すh3。"
+      },
+      {
+        "part": "status",
+        "required": true,
+        "description": "接続状態をtextで示すBadge。"
+      },
+      {
+        "part": "description",
+        "required": true,
+        "description": "連携結果または用途を説明するsummary。"
+      },
+      {
+        "part": "error-message",
         "required": false,
-        "description": "Secondary metadata or actions."
+        "description": "Error variantだけに表示する原因と次の一歩。"
+      },
+      {
+        "part": "primary-action",
+        "required": true,
+        "description": "Statusと整合する1つのnative ButtonまたはLink composition。"
+      },
+      {
+        "part": "actions",
+        "required": false,
+        "description": "Primary action外のMenu triggerなど1つのsecondary composition。"
       }
     ],
     "variants": [
       "connected",
-      "setup",
-      "none"
+      "setup-required",
+      "not-connected",
+      "error"
     ],
     "sizes": [],
     "states": [
       {
         "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "description": "Controlled connection statusと提供されたactionsを表示する。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "Logo、heading、text status、descriptionを常時表示する",
+          "Primary actionを常時発見可能にする",
+          "Root自体をinteractiveにしない"
         ]
       }
     ],
     "props": [
       {
-        "name": "variant",
-        "type": "\"connected\" | \"setup\" | \"none\"",
+        "name": "integration",
+        "type": "IntegrationCardIntegration",
+        "required": true,
+        "default": null,
+        "description": "ID、name、description、logoを持つservice summary。"
+      },
+      {
+        "name": "status",
+        "type": "IntegrationCardStatus",
+        "required": true,
+        "default": null,
+        "description": "Connected、setup-required、not-connected、またはmessage必須のerror discriminated union。"
+      },
+      {
+        "name": "primaryAction",
+        "type": "ReactElement",
+        "required": true,
+        "default": null,
+        "description": "Statusと整合しservice名と結果を含む1つのButtonまたはLink。"
+      },
+      {
+        "name": "actions",
+        "type": "ReactElement",
         "required": false,
-        "default": "connected",
-        "description": "意味と優先度を選ぶ。"
+        "default": null,
+        "description": "その他の操作をまとめる1つのfocusable actionまたはMenu composition。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLLIElement>",
+        "required": false,
+        "default": null,
+        "description": "Root liへforwardするref。"
       }
     ],
     "tokenRefs": {
       "semanticColor": [
+        "--surface",
+        "--surface-muted",
         "--border",
         "--fg",
         "--fg-muted",
-        "--surface"
+        "--danger-fg"
       ],
       "density": [
-        "--card-pad"
+        "--card-pad",
+        "--ctl-md"
       ],
       "spacing": [
-        "--sp-4"
+        "--sp-1",
+        "--sp-2",
+        "--sp-3"
       ],
       "radius": [
         "--radius-md"
@@ -5741,65 +5806,97 @@ const COMPONENT_CONTRACTS={
     },
     "accessibility": {
       "requirements": [
-        "表示専用rootを不要にtab順へ追加しない。",
-        "状態は色だけで表さずtext、icon、shapeを併用する。"
+        "Named ul / liでcatalog collectionとitemを構造化しrootをfocusableにしない。",
+        "Service nameをvisible h3、connection statusをtext Badgeとして常時表示する。",
+        "Primary actionのvisible labelへservice名と結果を含める。",
+        "Action結果でstatusが変化する場合はcatalog/flow ownerのrole=statusで通知する。",
+        "全targetは24px minimum、主要touch targetは44px以上推奨とする。"
       ],
       "aria": [
-        "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        "Visible nameと重複するlogoはaria-hiddenにする。",
+        "Error retry actionはvisible error messageをaria-describedbyで参照できる。",
+        "Static Card rootや各初期status Badgeへrole=status、aria-live、aria-atomicを付けない。"
       ],
       "focus": [
-        "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+        "Tab順はheaderの任意actions、footerのPrimary actionというvisual/DOM順とする。",
+        "Root、logo、status Badge、descriptionはTab順へ追加しない。",
+        "Action pending中のfocus/aria-busy/disabled behaviorはButtonまたはLink Contractへ委譲する。",
+        "Status更新後もtriggerへfocusを維持し、不必要にCard rootへ移動しない。"
       ]
     },
-    "keyboardInteractions": [],
+    "keyboardInteractions": [
+      {
+        "key": "Enter / Space",
+        "action": "FocusされたButton primary actionをButton Contractどおりに実行する。"
+      },
+      {
+        "key": "Enter",
+        "action": "FocusされたLink primary actionのdestinationへ移動する。"
+      },
+      {
+        "key": "Tab / Shift+Tab",
+        "action": "任意secondary actionsとPrimary actionをvisual/DOM順に移動する。"
+      }
+    ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "外部integrationの接続状態と次actionをcatalogで比較するとき。",
+        "id": "status-driven-integration-catalog",
+        "title": "Status-driven integration catalog",
+        "description": "Service statusと次actionを反復Cardで比較する。",
         "recommended": [
-          "状態ごとに CTA を変える(接続する / 設定を完了 / 設定)。"
+          "Named ulの直接liにする",
+          "Statusをtext Badgeで常時示す",
+          "Statusと整合するservice固有action labelを使う",
+          "Dynamic resultをowner role=statusで通知する"
         ],
         "avoid": [
-          "接続後の詳細設定にはSettings Panelを使う。"
+          "Clickable Card root",
+          "Color-only or absent status",
+          "Generic 設定/接続 buttons",
+          "Live region on every Card"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのIntegration Card。",
+        "summary": "Catalog grid内でCardを同高にしprimary actionをfooterへ揃える。",
         "rules": [
-          "Gridまたはsectionのreading orderに沿って配置し、同種itemの寸法を揃える。",
-          "面の入れ子を増やさない。"
+          "Grid ownerのalign-stretchへ追従する",
+          "Logo/status/actions、heading/description、primary actionの順を保つ",
+          "Long name/descriptionをwrapする"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "Cardごとに固定pixel heightを持つ",
+          "Static Cardへhover affordanceやshadowを追加する"
         ]
       },
       "mobile": {
-        "summary": "MobileでのIntegration Card。",
+        "summary": "同じli/heading/status/actions semanticsで1列へreflowする。",
         "rules": [
-          "1列へreflowし、heading、content、actionの順序を保つ。",
-          "Actionが複数ある場合は縦積みまたはmenuへ整理する。"
+          "Card widthをavailable inline sizeへ縮める",
+          "Narrow containerでprimary actionをfull widthにする",
+          "Status、description、error、actionを削除しない"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "PC用とSP用にcomponentを分ける",
+          "Action labelをellipsisだけで識別不能にする"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのIntegration Card。",
+        "summary": "Primary actionと任意actionsを独立targetとして操作する。",
         "rules": [
-          "表示専用rootをtab順へ追加しない。",
-          "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+          "全targetを24px minimumにする",
+          "主要touch actionは44px以上を推奨する",
+          "Card surfaceをaction targetと重ねない"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "Card-wide hidden click target",
+          "Hover/gesture-only actions",
+          "Overlapping target areas"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "invite-member-dialog": {
     "id": "invite-member-dialog",

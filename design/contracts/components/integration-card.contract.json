@@ -1,281 +1,140 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready",
+    "policyVersion": "0.1.0",
+    "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/integration-card.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/integration-card.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "accessibility.aria", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "negativeExamples", "design/reviews/components.integration-card.2026-07-22-components-integration-card-02.review.json"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["tokenBindings", "tokenRefs", "index.html#integrationc"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/integration-card.md#responsive-viewport-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#integration-card", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.integration-card.2026-07-22-components-integration-card-02.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": ["React実装", "OAuth/router/action integration tests", "visual regression baseline"]
+  },
   "id": "integration-card",
   "name": "Integration Card",
   "status": "draft",
   "category": "saas",
-  "description": "外部連携のカード。接続済み・要設定・未接続の状態を持つ。",
-  "source": {
-    "humanDoc": "components/integration-card.md",
-    "registry": "js/components-registry.js#integration-card"
-  },
+  "description": "Integration catalogで接続状態、説明、次のactionを比較する非focusable list item。",
+  "source": { "humanDoc": "components/integration-card.md", "registry": "js/components-registry.js#integration-card" },
   "intent": {
-    "whenToUse": [
-      "外部integrationの接続状態と次actionをcatalogで比較するとき。"
-    ],
-    "whenNotToUse": [
-      "接続後の詳細設定にはSettings Panelを使う。"
-    ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "whenToUse": ["Named integration catalogで複数serviceの接続状態、説明、次actionを比較するとき。", "各serviceへ1つのprimary actionと任意のsecondary actionsを提示するとき。"],
+    "whenNotToUse": ["接続後の詳細設定formにはSettings Panelまたは専用設定画面を使う。", "OAuth consent、認証error recovery、disconnect confirmationのflow全体には専用flow/page/dialogを使う。", "1つのserviceだけをpageの主要CTAとして紹介する場合はFeature sectionまたはCalloutを使う。", "ProjectやtaskのsummaryにはProject CardまたはTask Board Cardを使う。"],
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "root",
-      "required": true,
-      "description": "Bounded information or task container."
-    },
-    {
-      "part": "header",
-      "required": false,
-      "description": "Title, summary, and context controls."
-    },
-    {
-      "part": "content",
-      "required": true,
-      "description": "Primary values or composed components."
-    },
-    {
-      "part": "footer",
-      "required": false,
-      "description": "Secondary metadata or actions."
-    }
+    { "part": "collection", "required": true, "description": "Integration Cardを直接の子に持つnamed ul。Catalog ownerが所有する。" },
+    { "part": "root", "required": true, "description": "ulの直接の子になる非focusable li。" },
+    { "part": "logo", "required": true, "description": "Visible service nameと重複するためaccessibility treeから隠すbrand mark。" },
+    { "part": "heading", "required": true, "description": "Integration名を示すh3。" },
+    { "part": "status", "required": true, "description": "接続状態をtextで示すBadge。" },
+    { "part": "description", "required": true, "description": "連携結果または用途を説明するsummary。" },
+    { "part": "error-message", "required": false, "description": "Error variantだけに表示する原因と次の一歩。" },
+    { "part": "primary-action", "required": true, "description": "Statusと整合する1つのnative ButtonまたはLink composition。" },
+    { "part": "actions", "required": false, "description": "Primary action外のMenu triggerなど1つのsecondary composition。" }
   ],
   "variants": {
-    "connected": {
-      "intent": "connectedという明示的な意味を持つ文脈。",
-      "tokenRefs": {},
-      "states": {}
-    },
-    "setup": {
-      "intent": "setupという明示的な意味を持つ文脈。",
-      "tokenRefs": {},
-      "states": {}
-    },
-    "none": {
-      "intent": "noneという明示的な意味を持つ文脈。",
-      "tokenRefs": {},
-      "states": {}
-    }
+    "connected": { "intent": "Serviceが接続済みで設定へ進める。", "tokenRefs": {}, "states": {} },
+    "setup-required": { "intent": "認証後に追加設定が必要である。", "tokenRefs": {}, "states": {} },
+    "not-connected": { "intent": "Serviceが未接続で接続開始へ進める。", "tokenRefs": {}, "states": {} },
+    "error": { "intent": "接続に失敗し原因と再試行を提示する。", "tokenRefs": {}, "states": {} }
   },
   "sizes": {},
   "states": [
-    {
-      "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
-      "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
-      ]
-    }
+    { "id": "default", "description": "Controlled connection statusと提供されたactionsを表示する。", "requiredBehavior": ["Logo、heading、text status、descriptionを常時表示する", "Primary actionを常時発見可能にする", "Root自体をinteractiveにしない"] }
   ],
   "props": [
-    {
-      "name": "variant",
-      "type": "\"connected\" | \"setup\" | \"none\"",
-      "required": false,
-      "default": "connected",
-      "description": "意味と優先度を選ぶ。"
-    }
+    { "name": "integration", "type": "IntegrationCardIntegration", "required": true, "default": null, "description": "ID、name、description、logoを持つservice summary。" },
+    { "name": "status", "type": "IntegrationCardStatus", "required": true, "default": null, "description": "Connected、setup-required、not-connected、またはmessage必須のerror discriminated union。" },
+    { "name": "primaryAction", "type": "ReactElement", "required": true, "default": null, "description": "Statusと整合しservice名と結果を含む1つのButtonまたはLink。" },
+    { "name": "actions", "type": "ReactElement", "required": false, "default": null, "description": "その他の操作をまとめる1つのfocusable actionまたはMenu composition。" },
+    { "name": "ref", "type": "ForwardedRef<HTMLLIElement>", "required": false, "default": null, "description": "Root liへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--border",
-      "--fg",
-      "--fg-muted",
-      "--surface"
-    ],
-    "density": [
-      "--card-pad"
-    ],
-    "spacing": [
-      "--sp-4"
-    ],
-    "radius": [
-      "--radius-md"
-    ],
-    "typography": [
-      "--text-body",
-      "--text-small"
-    ]
+    "semanticColor": ["--surface", "--surface-muted", "--border", "--fg", "--fg-muted", "--danger-fg"],
+    "density": ["--card-pad", "--ctl-md"],
+    "spacing": ["--sp-1", "--sp-2", "--sp-3"],
+    "radius": ["--radius-md"],
+    "typography": ["--text-body", "--text-small"]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.surface.value",
-        "source": "--surface",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Integration Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Integration Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Integration Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-muted.value",
-        "source": "--fg-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Integration Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.card-pad.value",
-        "source": "--card-pad",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Integration Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sp-4.value",
-        "source": "--sp-4",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Integration Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.radius-md.value",
-        "source": "--radius-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Integration Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.text-body.value",
-        "source": "--text-body",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Integration CardのHTML showcaseで実際に参照する公開token。"
-      },
-      {
-        "slot": "token.text-small.value",
-        "source": "--text-small",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Integration CardのHTML showcaseで実際に参照する公開token。"
-      }
+      { "slot": "surface.background", "source": "--surface", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Default Card surface。" },
+      { "slot": "surface.border", "source": "--border", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Static catalog item boundary。" },
+      { "slot": "surface.padding", "source": "--card-pad", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Density contextのCard inset。" },
+      { "slot": "surface.radius", "source": "--radius-md", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Static Card shape policy。" },
+      { "slot": "content.gap", "source": "--sp-3", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Header、content、footer separation。" },
+      { "slot": "header.gap", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Logo、status、actions separation。" },
+      { "slot": "content.compact-gap", "source": "--sp-1", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Heading、description proximity。" },
+      { "slot": "error.gap", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Error iconとmessage separation。" },
+      { "slot": "logo.background", "source": "--surface-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Brand mark holderの静かなsurface。" },
+      { "slot": "logo.border", "source": "--border", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Logo holder boundary。" },
+      { "slot": "logo.foreground", "source": "--fg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Fallback initial foreground。" },
+      { "slot": "logo.size", "source": "--ctl-md", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Density-aware square logo holder。" },
+      { "slot": "logo.radius", "source": "--radius-md", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Logo holder shape。" },
+      { "slot": "heading.foreground", "source": "--fg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Service name。" },
+      { "slot": "heading.type", "source": "--text-body", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Service heading scale。" },
+      { "slot": "description.foreground", "source": "--fg-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Supporting description。" },
+      { "slot": "description.type", "source": "--text-small", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Supporting text scale。" },
+      { "slot": "error.foreground", "source": "--danger-fg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Visible error explanation。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.integration-card"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
-    "requirements": [
-      "表示専用rootを不要にtab順へ追加しない。",
-      "状態は色だけで表さずtext、icon、shapeを併用する。"
-    ],
-    "aria": [
-      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
-    ],
-    "focus": [
-      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
-    ]
+    "requirements": ["Named ul / liでcatalog collectionとitemを構造化しrootをfocusableにしない。", "Service nameをvisible h3、connection statusをtext Badgeとして常時表示する。", "Primary actionのvisible labelへservice名と結果を含める。", "Action結果でstatusが変化する場合はcatalog/flow ownerのrole=statusで通知する。", "全targetは24px minimum、主要touch targetは44px以上推奨とする。"],
+    "aria": ["Visible nameと重複するlogoはaria-hiddenにする。", "Error retry actionはvisible error messageをaria-describedbyで参照できる。", "Static Card rootや各初期status Badgeへrole=status、aria-live、aria-atomicを付けない。"],
+    "focus": ["Tab順はheaderの任意actions、footerのPrimary actionというvisual/DOM順とする。", "Root、logo、status Badge、descriptionはTab順へ追加しない。", "Action pending中のfocus/aria-busy/disabled behaviorはButtonまたはLink Contractへ委譲する。", "Status更新後もtriggerへfocusを維持し、不必要にCard rootへ移動しない。"]
   },
-  "keyboardInteractions": [],
+  "keyboardInteractions": [
+    { "key": "Enter / Space", "action": "FocusされたButton primary actionをButton Contractどおりに実行する。" },
+    { "key": "Enter", "action": "FocusされたLink primary actionのdestinationへ移動する。" },
+    { "key": "Tab / Shift+Tab", "action": "任意secondary actionsとPrimary actionをvisual/DOM順に移動する。" }
+  ],
   "usagePatterns": [
-    {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "外部integrationの接続状態と次actionをcatalogで比較するとき。",
-      "recommended": [
-        "状態ごとに CTA を変える(接続する / 設定を完了 / 設定)。"
-      ],
-      "avoid": [
-        "接続後の詳細設定にはSettings Panelを使う。"
-      ]
-    }
+    { "id": "status-driven-integration-catalog", "title": "Status-driven integration catalog", "description": "Service statusと次actionを反復Cardで比較する。", "recommended": ["Named ulの直接liにする", "Statusをtext Badgeで常時示す", "Statusと整合するservice固有action labelを使う", "Dynamic resultをowner role=statusで通知する"], "avoid": ["Clickable Card root", "Color-only or absent status", "Generic 設定/接続 buttons", "Live region on every Card"] }
   ],
   "responsiveBehavior": {
-    "desktop": {
-      "summary": "DesktopでのIntegration Card。",
-      "rules": [
-        "Gridまたはsectionのreading orderに沿って配置し、同種itemの寸法を揃える。",
-        "面の入れ子を増やさない。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
-    },
-    "mobile": {
-      "summary": "MobileでのIntegration Card。",
-      "rules": [
-        "1列へreflowし、heading、content、actionの順序を保つ。",
-        "Actionが複数ある場合は縦積みまたはmenuへ整理する。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
-    },
-    "touch": {
-      "summary": "Touch入力でのIntegration Card。",
-      "rules": [
-        "表示専用rootをtab順へ追加しない。",
-        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
-    }
+    "desktop": { "summary": "Catalog grid内でCardを同高にしprimary actionをfooterへ揃える。", "rules": ["Grid ownerのalign-stretchへ追従する", "Logo/status/actions、heading/description、primary actionの順を保つ", "Long name/descriptionをwrapする"], "avoid": ["Cardごとに固定pixel heightを持つ", "Static Cardへhover affordanceやshadowを追加する"] },
+    "mobile": { "summary": "同じli/heading/status/actions semanticsで1列へreflowする。", "rules": ["Card widthをavailable inline sizeへ縮める", "Narrow containerでprimary actionをfull widthにする", "Status、description、error、actionを削除しない"], "avoid": ["PC用とSP用にcomponentを分ける", "Action labelをellipsisだけで識別不能にする"] },
+    "touch": { "summary": "Primary actionと任意actionsを独立targetとして操作する。", "rules": ["全targetを24px minimumにする", "主要touch actionは44px以上を推奨する", "Card surfaceをaction targetと重ねない"], "avoid": ["Card-wide hidden click target", "Hover/gesture-only actions", "Overlapping target areas"] }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM"
+  "rules": ["NO_RAW_HEX_COLOR", "SPACING_FROM_TOKENS_ONLY", "RADIUS_FROM_TOKENS_ONLY", "CONTRAST_AA_MINIMUM", "FOCUS_VISIBLE_REQUIRED", "NO_POSITIVE_TABINDEX", "TARGET_SIZE_MINIMUM", "INTERACTIVE_NAME_REQUIRED"],
+  "qualityChecks": ["Integration Card / Settings Panel / OAuth flow / Project Card / Task Board Cardの選択境界が明確", "API、native list/heading DOM、status/action compatibility、live-region ownershipが確定", "全connection variantとcontent/action scenariosを検証", "全visual slotが公開tokenまたはchild componentへ結線", "Light / Dark × Standard / High、3 density、Desktop / Mobileで確認"],
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["li"],
+    "slots": ["root", "logo", "heading", "status", "description", "error-message", "primary-action", "actions"],
+    "attributes": ["aria-hidden", "aria-describedby", "aria-busy", "aria-disabled", "disabled", "href", "aria-haspopup", "aria-expanded", "data-status", "data-scenario", "data-*"],
+    "stateModel": ["controlled connection status", "integration summary data", "child action state", "data-status"],
+    "events": ["child button click", "child link navigation", "child menu events", "focus", "blur"],
+    "relations": ["ul-direct-li", "heading-description-status", "decorative-logo-visible-name", "status-compatible-primary-action", "independent-primary-and-secondary-actions", "owner-live-status-announcement"],
+    "provenance": ["component", "instance", "variant", "scenario", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["Named catalogで複数integrationの接続状態と次actionを同じ構造で比較する。"],
+    "avoidWhen": ["詳細設定、OAuth/error flow、単独marketing CTA、project/task summaryが主目的である。"],
+    "alternatives": ["Settings Panel", "Dedicated OAuth Flow", "Feature Section", "Project Card", "Task Board Card"]
+  },
+  "negativeExamples": [
+    { "pattern": "Root div/liへonClick、role=button、role=link、tabIndex=0を付ける。", "reason": "Primary/secondary actionsとCard-wide activationが競合するため。", "ruleIds": ["FOCUS_VISIBLE_REQUIRED", "NO_POSITIVE_TABINDEX"] },
+    { "pattern": "ConnectedだけBadgeを表示しnot-connectedをBadge不在で表す。", "reason": "状態の欠如と未接続を区別できず、色や位置へ依存するため。", "ruleIds": ["CONTRAST_AA_MINIMUM"] },
+    { "pattern": "反復CardのButtonを『設定』『接続する』『再試行』だけで命名する。", "reason": "Links/buttons listや音声入力で対象serviceを識別できないため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "Connected statusに『接続』、not-connected statusに『設定』actionを組み合わせる。", "reason": "Controlled statusと次actionの結果が矛盾するため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "各Cardまたは初期status Badgeへrole=status/aria-liveを付ける。", "reason": "Catalog読込時や複数更新時に冗長なannouncementを発生させるため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "Errorをdanger color/iconだけで示し原因または次の一歩を省略する。", "reason": "色やgraphicを知覚できない利用者が状態と回復方法を理解できないため。", "ruleIds": ["CONTRAST_AA_MINIMUM"] },
+    { "pattern": "Mobileでstatus、error、primary actionを削除する。", "reason": "Viewportによって意味または機能を失うため。", "ruleIds": ["TARGET_SIZE_MINIMUM"] }
   ],
-  "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
-  ],
+  "requiredScenarios": ["default", "connected", "setup-required", "not-connected", "error", "with-actions", "without-actions", "action-pending", "long-name", "long-description", "narrow-viewport"],
   "examples": [
-    {
-      "id": "default",
-      "description": "Integration Cardの標準例。",
-      "code": "<IntegrationCard\n  integration={slack}\n  status=\"connected\"\n  onConfigure={openConfig}\n/>"
-    }
+    { "id": "connected", "description": "Connected status、service固有primary action、任意secondary actionsを持つcatalog item。", "code": "<IntegrationCard integration={slack} status={{ kind: \"connected\" }} primaryAction={<Button onClick={openConfig}>Slackを設定</Button>} actions={<IntegrationActions integration={slack} />} />" }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "openQuestions": []
 }

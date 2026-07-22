@@ -498,8 +498,9 @@ def({id:'task-board-card',name:'Task Board Card',group:'SaaS',desc:'Kanban列内
  usage:['Named listの直接liとし、titleのnative Linkをprimary destinationにする。','Reorderingはdrag handleとsingle-pointer move actionsを常に組で渡す。','Drop indicator、列名、移動結果のstatus通知はBoard ownerが管理する。'],
  render:p=>taskCard(p),code:()=>`<TaskBoardCard\n  task={task}\n  href={\`/tasks/\${task.id}\`}\n  reordering={{\n    dragHandle: <TaskDragHandle task={task} />,\n    moveActions: <TaskMoveActions task={task} />,\n  }}\n  actions={<TaskActions task={task} />}\n/>`,related:['link','tag','avatar','icon-button','project-card','issue-row','project-management']});
 
-def({id:'integration-card',name:'Integration Card',group:'SaaS',desc:'外部連携のカード。接続済み・要設定・未接続の状態を持つ。',
- variants:['connected','setup','none'],
- usage:['状態ごとに CTA を変える(接続する / 設定を完了 / 設定)。'],
- render:p=>integrationCard({state:p.variant||'connected'}),
- code:()=>`<IntegrationCard\n  integration={slack}\n  status="connected"\n  onConfigure={openConfig}\n/>`,related:['card','integration-marketplace']});
+def({id:'integration-card',name:'Integration Card',group:'SaaS',desc:'Integration catalogで接続状態、説明、次のactionを比較する非focusable list item。',
+ variants:['connected','setup-required','not-connected','error'],states:['default'],
+ scenarios:['with-actions','without-actions','action-pending','long-name','long-description','narrow-viewport'],
+ usage:['Named catalog listの直接liとし、root全体をclickableにしない。','Connected / setup-required / not-connected / errorをtext Badgeで常時示す。','Primary actionはintegration名と結果を含むnative ButtonまたはLinkにする。','状態変更の通知はcatalog/flow ownerのrole=statusが管理する。'],
+ render:p=>integrationCard(p),
+ code:()=>`<IntegrationCard\n  integration={slack}\n  status={{ kind: "connected" }}\n  primaryAction={<Button onClick={openConfig}>Slackを設定</Button>}\n  actions={<IntegrationActions integration={slack} />}\n/>`,related:['card','badge','button','link','icon-button','settings-panel','integration-marketplace']});

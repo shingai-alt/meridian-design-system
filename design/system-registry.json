@@ -2086,7 +2086,12 @@
           "order": 74,
           "route": "components/integration-card",
           "dependsOn": [
-            "tokens.json-tokens"
+            "tokens.json-tokens",
+            "components.card",
+            "components.badge",
+            "components.button",
+            "components.link",
+            "components.icon-button"
           ],
           "sources": [
             "components/integration-card.md",
@@ -2098,7 +2103,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.integration-card.2026-07-13-components-integration-card-01.review.json"
+          "reviewRecord": "design/reviews/components.integration-card.2026-07-22-components-integration-card-02.review.json"
         }
       ]
     }

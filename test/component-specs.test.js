@@ -689,6 +689,55 @@ test('Task Board Card is implementation-ready with a native task link and paired
   assert.match(indexSource, /\.taskboardc-list\{[^}]*container-type:inline-size/);
 });
 
+test('Integration Card is implementation-ready as a status-driven catalog list item with explicit actions', () => {
+  const contract = contracts.find(({ id }) => id === 'integration-card');
+  assert.equal(contract.contractVersion, '0.2.0');
+  assert.equal(contract.implementationReadiness.status, 'ready');
+  assert.deepEqual(Object.keys(contract.variants), ['connected', 'setup-required', 'not-connected', 'error']);
+  assert.deepEqual(contract.states.map(({ id }) => id), ['default']);
+  assert.deepEqual(contract.props.map(({ name }) => name), ['integration', 'status', 'primaryAction', 'actions', 'ref']);
+  assert.deepEqual(contract.runtime.rootElements, ['li']);
+  assert.ok(contract.runtime.relations.includes('ul-direct-li'));
+  assert.ok(contract.runtime.relations.includes('heading-description-status'));
+  assert.ok(contract.runtime.relations.includes('status-compatible-primary-action'));
+  assert.ok(contract.runtime.relations.includes('owner-live-status-announcement'));
+  assert.equal(contract.tokenBindings.coverage, 'complete');
+  assert.deepEqual(contract.tokenBindings.unboundSlots, []);
+  assert.deepEqual(contract.openQuestions, []);
+
+  const component = renderedComponents.find(({ id }) => id === 'integration-card');
+  const connected = component.render({ ...renderProps(component), variant: 'connected', scenario: 'with-actions' });
+  const setup = component.render({ ...renderProps(component), variant: 'setup-required' });
+  const disconnected = component.render({ ...renderProps(component), variant: 'not-connected' });
+  const error = component.render({ ...renderProps(component), variant: 'error' });
+  const noActions = component.render({ ...renderProps(component), scenario: 'without-actions' });
+  const pending = component.render({ ...renderProps(component), scenario: 'action-pending' });
+  const longName = component.render({ ...renderProps(component), scenario: 'long-name' });
+  const longDescription = component.render({ ...renderProps(component), scenario: 'long-description' });
+  assert.match(connected, /^<div class="integrationc-demo"><ul class="integrationc-list" aria-label="連携サービス"><li class="cardc integrationc"[^>]+data-component="integration-card"[^>]+data-status="connected"/);
+  assert.match(connected, /<h3 id="integration-card-\d+-title">Slack<\/h3>/);
+  assert.match(connected, />接続済み<\/span>/);
+  assert.match(connected, /<span class="btn-label">Slackを設定<\/span>/);
+  assert.match(connected, /aria-label="Slackのその他のアクションを開く"[^>]+aria-haspopup="menu"[^>]+aria-expanded="false"/);
+  assert.doesNotMatch(connected, /<li[^>]+(?:onclick|role="(?:button|link)"|tabindex)/i);
+  assert.match(setup, />設定が必要<\/span>/);
+  assert.match(setup, /<span class="btn-label">Slackの設定を完了<\/span>/);
+  assert.match(disconnected, />未接続<\/span>/);
+  assert.match(disconnected, /<span class="btn-label">Slackを接続<\/span>/);
+  assert.match(error, />接続エラー<\/span>/);
+  assert.match(error, /id="integration-card-\d+-error" class="integrationc-error"/);
+  assert.match(error, /aria-describedby="integration-card-\d+-error"/);
+  assert.match(error, /<span class="btn-label">Slackの接続を再試行<\/span>/);
+  assert.doesNotMatch(error, /role="(?:alert|status)"/);
+  assert.doesNotMatch(noActions, /aria-haspopup="menu"/);
+  assert.match(pending, /data-loading aria-busy="true" aria-disabled="true"/);
+  assert.match(longName, /Enterprise Communication Workspace/);
+  assert.match(longDescription, /通知範囲は接続後の設定画面で変更できます/);
+  assert.match(indexSource, /\.integrationc-list\{[^}]*container-type:inline-size/);
+  assert.match(indexSource, /\.integrationc\{[^}]*block-size:100%/);
+  assert.match(indexSource, /@container\(max-width:240px\)\{\.integrationc-footer,\.integrationc-primary,\.integrationc-primary \.btn\{inline-size:100%\}/);
+});
+
 test('Drawer is implementation-ready as a native modal dialog with trigger and focus lifecycle', () => {
   const drawer = contracts.find((contract) => contract.id === 'drawer');
   assert.equal(drawer.contractVersion, '0.2.0');
@@ -786,6 +835,8 @@ test('showcases demonstrate the defining semantic relationships of complex patte
   assert.match(render('navigation-item', { state: 'active' }), /<a\s+href="[^"]+"[^>]+aria-current="page"/);
   assert.match(render('task-board-card'), /<ul class="taskboardc-list" aria-label="進行中のタスク"><li class="cardc taskboardc"/);
   assert.match(render('task-board-card'), /aria-label="MRD-98を次の列へ移動"/);
+  assert.match(render('integration-card'), /<ul class="integrationc-list" aria-label="連携サービス"><li class="cardc integrationc"/);
+  assert.match(render('integration-card'), /<span class="btn-label">Slackを設定<\/span>/);
   assert.match(render('analytics-chart-container'), /<figure\b/);
   assert.match(render('analytics-chart-container'), /class="sr-only"/);
 });
