@@ -480,8 +480,58 @@ test('Dialog is implementation-ready as a native modal with safe confirmation fo
   assert.match(indexSource, /\.dialogc::backdrop\{background:var\(--overlay\)\}/);
   assert.match(indexSource, /\.dialogc\{[^}]*inline-size:min\(var\(--dialog-w-md\),calc\(100vi - var\(--sp-8\)\)\)/);
   assert.doesNotMatch(indexSource, /\.dialogc\{[^}]*display:none/);
-  const inviteDialog = renderedComponents.find(({ id }) => id === 'invite-member-dialog');
-  assert.match(inviteDialog.render(renderProps(inviteDialog)), /<div class="dialogc"/);
+});
+
+test('Invite Member Dialog is implementation-ready as a single-invite Dialog composition', () => {
+  const contract = contracts.find(({ id }) => id === 'invite-member-dialog');
+  assert.equal(contract.contractVersion, '0.2.0');
+  assert.equal(contract.implementationReadiness.status, 'ready');
+  assert.deepEqual(contract.variants && Object.keys(contract.variants), ['default']);
+  assert.deepEqual(contract.states.map(({ id }) => id), ['open', 'closed', 'invalid', 'submitting', 'error']);
+  assert.deepEqual(contract.props.map(({ name }) => name), [
+    'trigger', 'workspaceName', 'roles', 'defaultRoleId', 'onInvite', 'open', 'defaultOpen', 'onOpenChange', 'ref',
+  ]);
+  assert.deepEqual(contract.runtime.rootElements, ['dialog']);
+  assert.ok(contract.runtime.relations.includes('composes-dialog'));
+  assert.ok(contract.runtime.relations.includes('label-email'));
+  assert.ok(contract.runtime.relations.includes('first-invalid-focus'));
+  assert.equal(contract.tokenBindings.coverage, 'complete');
+  assert.deepEqual(contract.tokenBindings.unboundSlots, []);
+  assert.deepEqual(contract.openQuestions, []);
+
+  const component = renderedComponents.find(({ id }) => id === 'invite-member-dialog');
+  const opened = component.render({ ...renderProps(component), state: 'open', scenario: 'single-invite' });
+  const closed = component.render({ ...renderProps(component), state: 'closed' });
+  const invalid = component.render({ ...renderProps(component), state: 'invalid', scenario: 'invalid-email' });
+  const submitting = component.render({ ...renderProps(component), state: 'submitting' });
+  const pending = component.render({ ...renderProps(component), state: 'error', scenario: 'existing-pending' });
+  const seat = component.render({ ...renderProps(component), state: 'error', scenario: 'seat-limit' });
+  const network = component.render({ ...renderProps(component), state: 'error', scenario: 'network-error' });
+  assert.match(opened, /<button[^>]+aria-haspopup="dialog"[^>]+aria-controls="invite-dialog-\d+"[^>]+aria-expanded="true"/);
+  assert.match(opened, /<dialog[^>]+data-component="invite-member-dialog"[^>]+aria-labelledby="invite-dialog-\d+-title"[^>]+aria-describedby="invite-dialog-\d+-description"[^>]+open/);
+  assert.match(opened, /<button[^>]+data-icononly[^>]+aria-label="閉じる"/);
+  assert.match(opened, /<input[^>]+type="email"[^>]+name="email"[^>]+required/);
+  assert.doesNotMatch(opened, /\bmultiple\b|カンマ区切り/);
+  assert.match(opened, /<label for="invite-dialog-\d+-email">メールアドレス（必須）/);
+  assert.match(opened, /<label for="invite-dialog-\d+-role">ロール（必須）/);
+  assert.match(opened, /Member — 通常の作業と共同編集ができます。/);
+  assert.doesNotMatch(opened, /aria-modal=|\srole="dialog"/);
+  assert.match(closed, /aria-expanded="false"/);
+  assert.doesNotMatch(closed, /<dialog[^>]+\sopen(?:\s|>)/);
+  assert.match(invalid, /data-state="invalid"/);
+  assert.match(invalid, /aria-invalid="true"/);
+  assert.match(invalid, /name@company\.com の形式で1件入力してください。/);
+  assert.match(submitting, /data-state="submitting"/);
+  assert.match(submitting, /aria-busy="true" aria-disabled="true"/);
+  assert.match(submitting, /送信中/);
+  assert.match(pending, /role="alert" tabindex="-1"/);
+  assert.match(pending, /招待を送信済みです。/);
+  assert.match(pending, /Pending Invitationsを確認/);
+  assert.match(seat, /利用可能なシートがありません。/);
+  assert.match(network, /入力は保持されています。/);
+  assert.match(indexSource, /\.invitec-fields\{display:grid;gap:var\(--sp-4\)\}/);
+  assert.match(indexSource, /\.invitec-demo \.dialogc-stage\{block-size:520px\}/);
+  assert.match(indexSource, /\.invitec-error\{[^}]*background:var\(--danger-subtle\)/);
 });
 
 test('Drawer is implementation-ready as a native modal dialog with trigger and focus lifecycle', () => {

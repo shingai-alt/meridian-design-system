@@ -479,9 +479,9 @@ def({id:'notification-center',name:'Notification Center',group:'SaaS',desc:'通�
  usage:['未読は primary-subtle 背景で示す。','通知クリックで対象へ遷移し、既読化する。'],
  render:()=>notifCenterEl(),code:()=>`<NotificationCenter\n  notifications={items}\n  onMarkAllRead={markAll}\n  onItemClick={open}\n/>`,related:['toast','activity-feed']});
 
-def({id:'invite-member-dialog',name:'Invite Member Dialog',group:'SaaS',desc:'メンバー招待の定型ダイアログ。メール+ロール選択。',
- usage:['複数メールのカンマ区切り入力に対応する。','ロールには権限の説明を添える。','送信後は Pending invites 一覧に反映し、再送・取消を可能にする。'],
- render:()=>inviteDialogEl(),code:()=>`<InviteMemberDialog\n  open={open}\n  roles={roles}\n  onInvite={sendInvites}\n/>`,related:['dialog','team-invitation-flow']});
+def({id:'invite-member-dialog',name:'Invite Member Dialog',group:'SaaS',desc:'1人へ1つの通常ロールを指定する、単一招待用のDialog composition。',
+ usage:['単一メールアドレスと通常ロールだけを受け付ける。','ロールには権限の説明を添え、失敗後も入力を保持する。','複数招待、Owner付与、partial successはDedicated Batch Invitation Pageを使う。'],
+ render:p=>inviteDialogEl(p),code:()=>`<InviteMemberDialog\n  trigger={<Button>メンバーを招待</Button>}\n  workspaceName="Meridian"\n  roles={quickInviteRoles}\n  defaultRoleId="member"\n  onInvite={inviteMember}\n/>`,related:['dialog','button','text-field','select','validation-message','team-invitation-flow']});
 
 def({id:'project-card',name:'Project Card',group:'SaaS',desc:'プロジェクト一覧のカード表示。進捗・メンバー・更新時刻を要約する。',
  render:()=>projectCard(),code:()=>`<ProjectCard project={p} onOpen={open} />`,

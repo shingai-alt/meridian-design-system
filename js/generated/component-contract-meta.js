@@ -5806,10 +5806,13 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "emailとroleを指定してmember招待を完結するとき。"
+        "Members画面から1人へ1つの通常Roleを指定して素早く招待する。",
+        "Seatと招待権限が確認済みで追加reviewを必要としない単一招待。"
       ],
       "whenNotToUse": [
-        "多数memberの一括管理には専用pageを使う。"
+        "複数宛先、宛先ごとのRole、partial successはDedicated Batch Invitation Pageを使う。",
+        "Ownerなど高権限Role、seat調整、送信前reviewが必要な場合は専用pageを使う。",
+        "Pendingの再送・取消、既存member管理はMembers / Pending Invitationsで行う。"
       ],
       "principles": [
         1,
@@ -5821,29 +5824,49 @@ const COMPONENT_CONTRACTS={
     },
     "anatomy": [
       {
-        "part": "surface",
-        "required": true,
-        "description": "Floating or modal surface."
-      },
-      {
-        "part": "header",
-        "required": false,
-        "description": "Title and context."
-      },
-      {
-        "part": "content",
-        "required": true,
-        "description": "Information or controls owned by the surface."
-      },
-      {
-        "part": "actions",
-        "required": false,
-        "description": "Confirmation, navigation, or dismiss controls."
-      },
-      {
         "part": "trigger",
+        "required": true,
+        "description": "Dialogへ渡しclose後にfocusを受け取るButton。"
+      },
+      {
+        "part": "dialog",
+        "required": true,
+        "description": "Modal lifecycleをDialogへ委譲するnative dialog。"
+      },
+      {
+        "part": "title",
+        "required": true,
+        "description": "固定label『メンバーを招待』。"
+      },
+      {
+        "part": "description",
+        "required": true,
+        "description": "Workspaceと単一招待であることを示す短い説明。"
+      },
+      {
+        "part": "email-field",
+        "required": true,
+        "description": "type=email、requiredの単一Email input。"
+      },
+      {
+        "part": "role-field",
+        "required": true,
+        "description": "Role名を選ぶnative Select。"
+      },
+      {
+        "part": "role-description",
+        "required": true,
+        "description": "選択中Roleの権限を示す可視text。"
+      },
+      {
+        "part": "error-message",
         "required": false,
-        "description": "Element that opens the surface and receives restored focus."
+        "description": "Field errorまたはserver rejectionと回復方法。"
+      },
+      {
+        "part": "footer",
+        "required": true,
+        "description": "Cancelと招待を送信。"
       }
     ],
     "variants": [
@@ -5852,14 +5875,85 @@ const COMPONENT_CONTRACTS={
     "sizes": [],
     "states": [
       {
-        "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "id": "open",
+        "description": "単一招待formを表示する。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "Email fieldへinitial focusを置く",
+          "Triggerのaria-expandedをtrueにする"
+        ]
+      },
+      {
+        "id": "closed",
+        "description": "Surfaceを表示せずtriggerだけを残す。",
+        "requiredBehavior": [
+          "Dialog open attributeを残さない",
+          "Triggerのaria-expandedをfalseにする"
+        ]
+      },
+      {
+        "id": "invalid",
+        "description": "Client validation error。",
+        "requiredBehavior": [
+          "Errorをtextで特定する",
+          "aria-invalidとdescriptionを同期する",
+          "最初のinvalid controlへfocusする"
+        ]
+      },
+      {
+        "id": "submitting",
+        "description": "送信中で二重実行を防ぐ。",
+        "requiredBehavior": [
+          "入力を保持する",
+          "Primary actionをbusyかつdisabledにする",
+          "送信中をtextで伝える"
+        ]
+      },
+      {
+        "id": "error",
+        "description": "Server rejection後も修正または再試行できる。",
+        "requiredBehavior": [
+          "入力とRoleを保持する",
+          "理由と回復経路を示す",
+          "Error summaryへfocusする"
         ]
       }
     ],
     "props": [
+      {
+        "name": "trigger",
+        "type": "ReactElement",
+        "required": true,
+        "default": null,
+        "description": "Dialog triggerへ合成するfocusable element。"
+      },
+      {
+        "name": "workspaceName",
+        "type": "string",
+        "required": true,
+        "default": null,
+        "description": "招待先をdescriptionで明示するworkspace名。"
+      },
+      {
+        "name": "roles",
+        "type": "readonly InviteRoleOption[]",
+        "required": true,
+        "default": null,
+        "description": "1件以上の通常Role。Label、description、disabled reasonを持つ。"
+      },
+      {
+        "name": "defaultRoleId",
+        "type": "string",
+        "required": true,
+        "default": null,
+        "description": "Enabled roleを参照する明示的default。"
+      },
+      {
+        "name": "onInvite",
+        "type": "(input: { email: string; roleId: string }) => Promise<InviteMemberResult>",
+        "required": true,
+        "default": null,
+        "description": "sentまたはreason付きrejectedを返す単一招待処理。"
+      },
       {
         "name": "open",
         "type": "boolean",
@@ -5868,31 +5962,62 @@ const COMPONENT_CONTRACTS={
         "description": "Controlled open state。"
       },
       {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Uncontrolled initial open state。"
+      },
+      {
         "name": "onOpenChange",
         "type": "(open: boolean) => void",
         "required": false,
         "default": null,
-        "description": "Open state変更を通知する。"
+        "description": "Dialog open state変更を通知する。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLDialogElement>",
+        "required": false,
+        "default": null,
+        "description": "Native dialogへforwardするref。"
       }
     ],
     "tokenRefs": {
       "semanticColor": [
-        "--surface",
-        "--border",
-        "--fg",
         "--surface-overlay",
+        "--fg",
         "--fg-muted",
+        "--border",
+        "--border-muted",
         "--overlay",
+        "--input-bg",
+        "--input-border",
+        "--input-border-focus",
+        "--danger",
+        "--danger-subtle",
+        "--danger-fg",
         "--focus-ring"
       ],
       "spacing": [
-        "--sp-4"
+        "--sp-2",
+        "--sp-3",
+        "--sp-4",
+        "--sp-5"
       ],
       "radius": [
-        "--radius-md"
+        "--radius-md",
+        "--radius-xl"
+      ],
+      "sizing": [
+        "--dialog-w-md"
+      ],
+      "typography": [
+        "--text-small"
       ],
       "motion": [
-        "--dur-normal"
+        "--dur-normal",
+        "--ease-enter"
       ],
       "shadow": [
         "--shadow-overlay"
@@ -5900,72 +6025,82 @@ const COMPONENT_CONTRACTS={
     },
     "accessibility": {
       "requirements": [
-        "Keyboardとpointerで同じ機能を実行できる。",
-        "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-        "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        "Dialogのnative modal、visible close、contained focus、focus returnを継承する。",
+        "EmailとRoleへ可視labelと関連するinstructionを持たせる。",
+        "Errorはtextで特定し、24px minimum targetを保つ。"
       ],
       "aria": [
-        "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        "Email formatとRole descriptionをaria-describedbyでcontrolへ関連付ける。",
+        "Invalid controlはaria-invalid=trueとfield errorを同期する。",
+        "Server rejectionはrole=alertで通知しfocus可能なsummaryにする。"
       ],
       "focus": [
-        "focus-visibleで--focus-ringを使う。",
-        "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        "Open時はEmail inputへfocusする。",
+        "Invalid時は最初のinvalid control、server rejection時はerror summaryへfocusする。",
+        "Positive tabindexを使わずDOM orderとvisual orderを一致させる。"
       ]
     },
     "keyboardInteractions": [
       {
-        "key": "Tab",
-        "action": "順序どおりにfocusを移動する。"
+        "key": "Tab / Shift+Tab",
+        "action": "Dialog内のform controlsとactions間を循環する。"
+      },
+      {
+        "key": "Escape",
+        "action": "Close requestを発行しtriggerへfocusを戻す。"
+      },
+      {
+        "key": "Enter",
+        "action": "Native form submit規則に従い有効な単一招待を送信する。"
       }
     ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "emailとroleを指定してmember招待を完結するとき。",
+        "id": "single-invite",
+        "title": "Quick single invitation",
+        "description": "1人へ1つの通常Roleを指定する。",
         "recommended": [
-          "複数メールのカンマ区切り入力に対応する。"
+          "単一email inputとRole説明を表示する",
+          "失敗後も入力を保持する"
         ],
         "avoid": [
-          "多数memberの一括管理には専用pageを使う。"
+          "Comma-separated listやOwner roleを追加する"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのInvite Member Dialog。",
+        "summary": "Dialog標準幅内のsingle-column form。",
         "rules": [
-          "Invite Member Dialogは内容に応じたmax-widthを持ち、背景文脈を保つ。",
-          "Focusをsurface内で管理し、閉じたらtriggerへ戻す。"
+          "EmailとRoleを縦に並べる",
+          "Dialog bodyとfooterを再利用する"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "Batch editorをmodalへ詰め込む"
         ]
       },
       "mobile": {
-        "summary": "MobileでのInvite Member Dialog。",
+        "summary": "同じ意味とAPIでviewport-safe Dialogへ適応する。",
         "rules": [
-          "Viewportに収まらない固定幅を使わず、必要に応じてfull-screenまたはbottom-aligned presentationへ切り替える。",
-          "Safe areaとsoftware keyboardを考慮し、primary actionを見失わせない。"
+          "Fieldsとactionsをsingle columnにする",
+          "Software keyboardでもfield、error、footerへscrollできる"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "別componentへ分岐する",
+          "横overflowを起こす"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのInvite Member Dialog。",
+        "summary": "Close、Cancel、Sendを単一pointerで操作する。",
         "rules": [
-          "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-          "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+          "全targetは24px minimum、主要actionは44px推奨"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "Gestureだけをdismiss経路にする"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "issue-row": {
     "id": "issue-row",

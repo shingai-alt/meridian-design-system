@@ -1,0 +1,82 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.invite-member-dialog",
+  "cycleId": "2026-07-22-components-invite-member-dialog-02",
+  "supersedesCycleId": "2026-07-13-components-invite-member-dialog-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-22",
+  "completedAt": "2026-07-22",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/implementation-readiness.json",
+    "docs/ai-generation/pilots/team-invitation.md",
+    "components/invite-member-dialog.md",
+    "design/contracts/components/invite-member-dialog.contract.json",
+    "components/dialog.md",
+    "design/contracts/components/dialog.contract.json",
+    "components/text-field.md",
+    "components/select.md",
+    "components/validation-message.md",
+    "js/components-registry.js",
+    "js/ui-builders.js",
+    "index.html",
+    "test/component-specs.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": { "itemId": "components.invite-member-dialog", "summary": "単一招待とbatch invitationの境界、native email validation、Dialog composition、field/server error、async resultを確定する。" },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior"],
+    "questions": ["Quick invite Dialogは何件までを所有するか。", "EmailとRoleのinstruction/errorをどう関連付けるか。", "Async failureをAPIとfocusへどう固定するか。"],
+    "evidence": [
+      { "id": "html-email", "title": "HTML Standard: Email state", "url": "https://html.spec.whatwg.org/dev/input.html", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "type=emailはnative format validationを提供し、multiple属性がある場合だけcomma-separated listを受け付ける。", "supportedDecisions": ["single-native-email"] },
+      { "id": "wai-dialog-modal", "title": "WAI-ARIA APG: Dialog (Modal) Pattern", "url": "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Modal lifecycle、contained focus、Escape、focus return、visible close controlをDialogへ委譲する根拠。", "supportedDecisions": ["dialog-composition"] },
+      { "id": "wai-form-labels", "title": "WAI Forms Tutorial: Labeling Controls", "url": "https://www.w3.org/WAI/tutorials/forms/labels/", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "可視labelをnative form controlへ明示的に関連付ける。", "supportedDecisions": ["accessible-errors"] },
+      { "id": "wai-form-instructions", "title": "WAI Forms Tutorial: Form Instructions", "url": "https://www.w3.org/WAI/tutorials/forms/instructions/", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Required、format、field instructionを可視かつprogrammaticにcontrolへ関連付ける。", "supportedDecisions": ["accessible-errors"] },
+      { "id": "wcag-error-identification", "title": "WCAG 2.2 Understanding 3.3.1: Error Identification", "url": "https://www.w3.org/WAI/WCAG22/Understanding/error-identification", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "入力errorを特定しtextで説明する。", "supportedDecisions": ["accessible-errors"] },
+      { "id": "wcag-aria21", "title": "WCAG Technique ARIA21: Using aria-invalid", "url": "https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA21.html", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Validation後にinvalid fieldへaria-invalidを付与しerror textと同期する。", "supportedDecisions": ["accessible-errors"] }
+    ],
+    "synthesis": "Approved batch flowを正本とし、Dialogを1人・1通常Roleへ限定した。Native email、可視label/instruction、構造化async result、理由別recoveryをDialog compositionへ統合した。",
+    "decisionImpact": "旧comma-separated inputを廃止し、Contract 0.2.0、React API Freeze、required scenarios、honest native dialog Showcaseへ更新した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    { "id": "single-invite-boundary", "summary": "Dialogは1人・1通常Roleだけを扱い、batch/Owner/review/partial successはDedicated Pageへ送る。", "rationale": "Approved domain flowとquick taskのmodal boundaryを一致させるため。" },
+    { "id": "dialog-composition", "summary": "Trigger、modal lifecycle、backdrop、focus containment/return、responsive surfaceをDialogへ委譲する。", "rationale": "重複したmodal implementationを作らないため。" },
+    { "id": "single-native-email", "summary": "Required type=emailを使いmultiple属性とcomma listを許可しない。", "rationale": "単一招待contractをnative validationへ一致させるため。" },
+    { "id": "structured-result", "summary": "onInviteはsentまたはreason付きrejectedを返す。", "rationale": "Existing member、Pending、seat、permission、networkを同一errorへ潰さないため。" },
+    { "id": "accessible-errors", "summary": "Field errorはaria-invalidとdescription、server errorはfocus可能なalert summaryへ接続する。", "rationale": "Errorの位置、原因、回復方法をtextとfocusで理解可能にするため。" },
+    { "id": "complete-token-delegation", "summary": "Dialogとform primitiveのvisualを委譲し、composition固有spacing/errorだけをsemantic tokenへ結線する。", "rationale": "新規component tokenなしで実装判断を閉じるため。" }
+  ],
+  "differences": [
+    { "classification": "cross-layer-conflict", "description": "旧Dialogはcomma-separated複数emailを推奨したが、approved pilotは複数招待をDedicated Pageへ固定していた。", "action": "Dialogを単一招待へ限定し、batch flowをpageへ戻した。", "status": "resolved" },
+    { "classification": "implementation-stale", "description": "旧Showcaseはdiv role=dialogとaria-modal=trueで存在しないmodalityを宣言していた。", "action": "Related triggerを持つnative dialog openの静的Showcaseへ変更しaria-modalを除去した。", "status": "resolved" },
+    { "classification": "missing-contract", "description": "Trigger、workspace、role shape、default role、async result、controlled/uncontrolled state、refが未確定だった。", "action": "React API Freezeとruntime contractへ固定した。", "status": "resolved" },
+    { "classification": "missing-contract", "description": "Invalid、submitting、reason別server error、closed、narrow viewportのevidenceがなかった。", "action": "Required scenariosとShowcaseへ追加した。", "status": "resolved" }
+  ],
+  "changes": [
+    { "path": "components/invite-member-dialog.md", "summary": "単一招待boundary、API、async result、validation、responsive behaviorを確定。" },
+    { "path": "design/contracts/components/invite-member-dialog.contract.json", "summary": "Contract 0.2.0、readiness、runtime、complete token delegationを追加。" },
+    { "path": "js/ui-builders.js", "summary": "Native dialog、single email、Role説明、invalid/submitting/rejectionを持つShowcaseへ更新。" },
+    { "path": "js/components-registry.js", "summary": "Usage、sample code、related componentsを確定Contractへ同期。" },
+    { "path": "index.html", "summary": "Composition固有field spacingとserver error stylingをsemantic tokenへ結線。" },
+    { "path": "test/component-specs.test.js", "summary": "Boundary、API、native semantics、validation、async statesの回帰testを追加。" },
+    { "path": "design/system-registry.json", "summary": "Dialogとform primitive依存、最新review cycleを台帳へ接続。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js", "status": "passed", "notes": "25件が通過し、Contract、API、single-invite boundary、native dialog、invalid/submitting/rejection stateを確認した。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "1280×720と390×844でnative dialog、error alertの可視性と入力保持、4 theme/contrast context、3 density、横overflowなし、最小target 26px以上、console errorなしを確認した。Static Showcaseはaria-modalを宣言せず、showModal/inert/focus lifecycleはReact integrationのstable exit criteriaとする。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、review cycles、generated artifacts、11/74 implementation-ready gateを含む全157テストが通過した。" }
+  ],
+  "openQuestions": [
+    { "question": "React実装、Dialog integration、async result tests、visual regressionを完了しstableへ昇格する。", "owner": "components.invite-member-dialog", "exitCriteria": "Native lifecycle、validation focus、late result suppression、reason別recovery、全context baselineがCIで通ること。" }
+  ],
+  "acknowledgedImpacts": [
+    "2026-07-22-components-dialog-02",
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-content-01"
+  ],
+  "impactedItems": [],
+  "nextRecommendedItems": ["components.project-card"]
+}

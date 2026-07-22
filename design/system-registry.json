@@ -1983,7 +1983,12 @@
           "order": 70,
           "route": "components/invite-member-dialog",
           "dependsOn": [
-            "tokens.json-tokens"
+            "tokens.json-tokens",
+            "components.dialog",
+            "components.button",
+            "components.text-field",
+            "components.select",
+            "components.validation-message"
           ],
           "sources": [
             "components/invite-member-dialog.md",
@@ -1995,7 +2000,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.invite-member-dialog.2026-07-13-components-invite-member-dialog-01.review.json"
+          "reviewRecord": "design/reviews/components.invite-member-dialog.2026-07-22-components-invite-member-dialog-02.review.json"
         },
         {
           "id": "components.project-card",

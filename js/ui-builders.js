@@ -155,11 +155,27 @@ function userMenuEl(){return `<div class="panel" role="menu" aria-label="ユー�
   ${['プロフィール','環境設定','キーボードショートカット'].map(t=>`<button type="button" role="menuitem" class="tsb-item" style="width:100%">${t}</button>`).join('')}
   <div style="border-top:1px solid var(--border-muted);margin:4px 0"></div>
   <button type="button" role="menuitem" class="tsb-item" style="width:100%;color:var(--danger-fg)">ログアウト</button></div>`}
-function inviteDialogEl(){const id=nextUiDemoId('invite-dialog');return `<div class="dialogc" role="dialog" aria-modal="true" aria-labelledby="${id}" style="margin:0;position:static;width:420px">
-  <div class="dhd"><h3 id="${id}">メンバーを招待</h3><p>ワークスペースに新しいメンバーを追加します。</p></div>
-  <div class="dbd">${fieldEl({label:'メールアドレス',placeholder:'name@company.com',helper:'カンマ区切りで複数入力できます。'})}
-  ${fieldEl({label:'ロール',control:`<div class="input"><select><option>Editor — 編集と実行が可能</option><option>Viewer — 閲覧のみ</option><option>Admin — すべての管理権限</option></select></div>`})}</div>
-  <div class="dft">${btn({label:'キャンセル',variant:'ghost',size:'sm'})}${btn({label:'招待を送信',size:'sm'})}</div></div>`}
+function inviteDialogEl(p={}){const id=nextUiDemoId('invite-dialog'),titleId=`${id}-title`,descriptionId=`${id}-description`,requestedState=p.state||'open',state=requestedState==='default'?'open':requestedState,scenario=p.scenario||'single-invite',isOpen=state!=='closed',invalid=state==='invalid'||scenario==='invalid-email',submitting=state==='submitting',serverError=state==='error'||['existing-pending','seat-limit','network-error'].includes(scenario),errorByScenario={
+  'existing-pending':['このメールアドレスには招待を送信済みです。','Pending Invitationsを確認'],
+  'seat-limit':['利用可能なシートがありません。プランまたはメンバー数を確認してください。','プランを管理'],
+  'network-error':['接続できませんでした。入力は保持されています。もう一度お試しください。','再試行']
+},[serverMessage,recoveryLabel]=errorByScenario[scenario]||['招待を送信できませんでした。入力を確認してもう一度お試しください。','再試行'],email=invalid?'not-an-email':'member@example.com';return `<div class="dialogc-demo invitec-demo" data-component="invite-member-dialog-demo" data-invite-scenario="${scenario}">
+  <button type="button" class="btn" data-variant="secondary" data-size="sm" aria-haspopup="dialog" aria-controls="${id}" aria-expanded="${isOpen}"><span class="btn-label">メンバーを招待</span></button>
+  <div class="dialogc-stage" data-state="${isOpen?'open':'closed'}">
+    <div class="dialogc-context" ${isOpen?'inert':''} aria-hidden="true"><span>Members</span><b>Meridian workspace</b><span>12 members · 2 seats available</span></div>
+    <dialog id="${id}" class="dialogc" data-component="invite-member-dialog" data-state="${state}" data-invite-scenario="${scenario}" aria-labelledby="${titleId}" aria-describedby="${descriptionId}" ${isOpen?'open':''}>
+      <div class="dhd"><div><h3 id="${titleId}">メンバーを招待</h3><p id="${descriptionId}">Meridianへ1人のメンバーを招待します。</p></div><button type="button" class="tb-btn" data-icononly aria-label="閉じる">${I.x}</button></div>
+      <form class="dialogc-form">
+        <div class="dbd invitec-fields">
+          ${fieldEl({id:`${id}-email`,label:'メールアドレス（必須）',helper:'1件のメールアドレスを入力してください。',error:'name@company.com の形式で1件入力してください。',state:invalid?'error':'default',required:true,control:`<div class="input" ${invalid?'data-invalid':''}><input type="email" name="email" inputmode="email" autocomplete="off" value="${email}" required></div>`})}
+          ${fieldEl({id:`${id}-role`,label:'ロール（必須）',helper:'Member — 通常の作業と共同編集ができます。',required:true,control:`<div class="input"><select name="role" required><option value="member" selected>Member</option><option value="viewer">Viewer</option><option value="admin" disabled>Admin — 追加reviewが必要です</option></select></div>`})}
+          ${serverError?`<div class="invitec-error" role="alert" tabindex="-1"><b>招待を送信できません</b><span>${serverMessage}</span><a href="#/members/pending">${recoveryLabel}</a></div>`:''}
+        </div>
+        <div class="dft">${btn({label:'キャンセル',variant:'secondary',size:'sm',disabled:submitting})}${btn({label:submitting?'送信中':'招待を送信',size:'sm',type:'submit',loading:submitting,disabled:submitting})}</div>
+      </form>
+    </dialog>
+  </div>
+</div>`}
 function settingsPanelEl(){const id=nextUiDemoId('notification-settings');return `<section class="panel pad" aria-labelledby="${id}" style="width:min(460px,100%)"><b id="${id}" style="display:block;margin-bottom:4px">通知設定</b><p style="font-size:var(--text-small);color:var(--fg-muted);margin-bottom:16px">重要なイベントの通知方法を選択します。</p>
   ${[['デプロイの完了',true],['ビルドの失敗',true],['週次レポート',false]].map(([t,on])=>`<div class="rowflex" style="justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-muted)"><span style="font-size:var(--text-label)">${t}</span>${switchEl({checked:on,label:'',ariaLabel:t})}</div>`).join('')}
   <div class="rowflex" style="justify-content:flex-end;margin-top:16px;gap:8px">${btn({label:'リセット',variant:'ghost',size:'sm'})}${btn({label:'変更を保存',size:'sm'})}</div></section>`}
