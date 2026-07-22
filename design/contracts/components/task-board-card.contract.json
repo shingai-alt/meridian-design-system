@@ -1,293 +1,139 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready",
+    "policyVersion": "0.1.0",
+    "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/task-board-card.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/task-board-card.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "accessibility.aria", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "negativeExamples", "design/reviews/components.task-board-card.2026-07-22-components-task-board-card-02.review.json"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["tokenBindings", "tokenRefs", "index.html#taskboardc"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/task-board-card.md#responsive-viewport-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#task-board-card", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.task-board-card.2026-07-22-components-task-board-card-02.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": ["React実装", "drag-and-drop adapter and board integration tests", "visual regression baseline"]
+  },
   "id": "task-board-card",
   "name": "Task Board Card",
   "status": "draft",
   "category": "saas",
-  "description": "カンバンボードのタスクカード。ドラッグ対応を想定した密度。",
-  "source": {
-    "humanDoc": "components/task-board-card.md",
-    "registry": "js/components-registry.js#task-board-card"
-  },
+  "description": "Kanban列内でtaskを要約し、詳細遷移と代替操作つきreorderingを配置するlist item。",
+  "source": { "humanDoc": "components/task-board-card.md", "registry": "js/components-registry.js#task-board-card" },
   "intent": {
-    "whenToUse": [
-      "kanban列内でtaskを要約し、dragまたはkeyboardで移動するとき。"
-    ],
-    "whenNotToUse": [
-      "列比較や大量走査にはTableを使う。"
-    ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "whenToUse": ["Named Kanban列内でtask summaryと1つの詳細destinationを提示するとき。", "同じitemに任意reorderingとitem actionを配置するとき。", "Drag interactionと同等のsingle-pointer move actionを同時に提供できるとき。"],
+    "whenNotToUse": ["Column comparison、sort、bulk selectionが主目的ならTableまたはData Gridを使う。", "Drag/dropのない高密度issue listならIssue Rowを使う。", "Projectのstatus、progress、membersを要約するならProject Cardを使う。", "Lane、drop zone、column move、announcementを含む全体interactionにはTask Board patternを使う。"],
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "root",
-      "required": true,
-      "description": "Bounded information or task container."
-    },
-    {
-      "part": "header",
-      "required": false,
-      "description": "Title, summary, and context controls."
-    },
-    {
-      "part": "content",
-      "required": true,
-      "description": "Primary values or composed components."
-    },
-    {
-      "part": "footer",
-      "required": false,
-      "description": "Secondary metadata or actions."
-    }
+    { "part": "collection", "required": true, "description": "Task Board Cardを直接の子に持つnamed ul。Board columnが所有する。" },
+    { "part": "root", "required": true, "description": "ulの直接の子になる非focusable li。" },
+    { "part": "labels", "required": false, "description": "最大2件、残数、full accessible summaryを持つTag group。" },
+    { "part": "primary-link", "required": true, "description": "Task IDとtitleで命名されるnative Link。" },
+    { "part": "task-key", "required": true, "description": "Monospaceで表示するstable Task ID。" },
+    { "part": "assignee", "required": false, "description": "Assignee名を伝えるAvatar summary。" },
+    { "part": "reordering", "required": false, "description": "Drag handleとsingle-pointer move actionsを必ず組で持つslot group。" },
+    { "part": "actions", "required": false, "description": "Primary Link外の独立action。" }
   ],
-  "variants": {
-    "default": {
-      "intent": "標準文脈。",
-      "tokenRefs": {},
-      "states": {}
-    }
-  },
+  "variants": { "default": { "intent": "Kanban列内のlinked task item。", "tokenRefs": {}, "states": {} } },
   "sizes": {},
   "states": [
-    {
-      "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
-      "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
-      ]
-    }
+    { "id": "default", "description": "Task summaryと提供されたfocus targetを常時表示する。", "requiredBehavior": ["Task ID/title Linkを表示する", "Reordering/actionsを提供する場合は常時発見可能にする", "Labelsとassigneeをtextでも示す"] },
+    { "id": "hover", "description": "Pointer hoverの補助状態。", "requiredBehavior": ["Borderを変える", "情報やcontrolsをhoverだけで出現させない", "ActivationをLinkまたは各controlへ帰属させる"] },
+    { "id": "focus-visible", "description": "Primary Linkがkeyboard focusを持つ状態。", "requiredBehavior": ["Card surface全体へfocus ringを表示する", "Reordering/actionsのfocus ringを上書きしない", "Focusでlayoutを変えない"] },
+    { "id": "dragging", "description": "Board DnD adapterが公開する一時的なdrag state。", "requiredBehavior": ["Borderとshadowでliftを示す", "Source itemの意味とcontrolsを保持する", "Drop destinationはCardでなくBoard columnが示す"] }
   ],
   "props": [
-    {
-      "name": "children",
-      "type": "ReactNode",
-      "required": true,
-      "default": null,
-      "description": "Componentの主要content。"
-    }
+    { "name": "task", "type": "TaskBoardCardTask", "required": true, "default": null, "description": "ID、title、labels、assigneeを持つsummary data。" },
+    { "name": "href", "type": "string", "required": true, "default": null, "description": "Primary native Linkの非空destination。" },
+    { "name": "reordering", "type": "TaskBoardCardReordering", "required": false, "default": null, "description": "Drag handleとsingle-pointer move actionsを同時に提供するcomposition。" },
+    { "name": "actions", "type": "ReactElement", "required": false, "default": null, "description": "Link外へ置く1つのfocusable actionまたはMenu composition。" },
+    { "name": "ref", "type": "ForwardedRef<HTMLLIElement>", "required": false, "default": null, "description": "Root liへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--border",
-      "--fg",
-      "--fg-muted",
-      "--fg-subtle",
-      "--surface"
-    ],
-    "density": [
-      "--card-pad"
-    ],
-    "spacing": [
-      "--sp-4"
-    ],
-    "radius": [
-      "--radius-md"
-    ],
-    "typography": [
-      "--font-mono",
-      "--text-label"
-    ]
+    "semanticColor": ["--surface", "--border", "--border-strong", "--primary", "--focus-ring", "--fg", "--fg-subtle"],
+    "density": ["--card-pad", "--ctl-sm"],
+    "spacing": ["--sp-1", "--sp-2"],
+    "radius": ["--radius-md"],
+    "typography": ["--font-mono", "--text-label", "--text-micro"],
+    "motion": ["--dur-fast", "--ease-standard"],
+    "elevation": ["--shadow-md"]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.surface.value",
-        "source": "--surface",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-muted.value",
-        "source": "--fg-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.card-pad.value",
-        "source": "--card-pad",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sp-4.value",
-        "source": "--sp-4",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.radius-md.value",
-        "source": "--radius-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Task Board Cardの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-subtle.value",
-        "source": "--fg-subtle",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Task Board CardのHTML showcaseで実際に参照する公開token。"
-      },
-      {
-        "slot": "token.font-mono.value",
-        "source": "--font-mono",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Task Board CardのHTML showcaseで実際に参照する公開token。"
-      },
-      {
-        "slot": "token.text-label.value",
-        "source": "--text-label",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Task Board CardのHTML showcaseで実際に参照する公開token。"
-      }
+      { "slot": "surface.background", "source": "--surface", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Default card surface。" },
+      { "slot": "surface.border", "source": "--border", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Default boundary。" },
+      { "slot": "surface.hover-border", "source": "--border-strong", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Hover boundary。" },
+      { "slot": "surface.dragging-border", "source": "--primary", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Drag sourceの補助boundary。" },
+      { "slot": "surface.focus", "source": "--focus-ring", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Primary Link focusをcard surfaceへ投影する。" },
+      { "slot": "surface.dragging-elevation", "source": "--shadow-md", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Drag中だけsource itemのliftを示す。" },
+      { "slot": "surface.padding", "source": "--card-pad", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Density contextのcard inset。" },
+      { "slot": "content.gap", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Label、title、footer separation。" },
+      { "slot": "compact.gap", "source": "--sp-1", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Tagとreordering controlsのcompact spacing。" },
+      { "slot": "control.minimum", "source": "--ctl-sm", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Icon Buttonのminimum pointer area。" },
+      { "slot": "surface.radius", "source": "--radius-md", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Bounded task item shape。" },
+      { "slot": "content.foreground", "source": "--fg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Title Link。" },
+      { "slot": "metadata.foreground", "source": "--fg-subtle", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Task ID。" },
+      { "slot": "content.type", "source": "--text-label", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Title scale。" },
+      { "slot": "metadata.type", "source": "--text-micro", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Task ID scale。" },
+      { "slot": "metadata.font", "source": "--font-mono", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Stable Task ID alignment。" },
+      { "slot": "interaction.duration", "source": "--dur-fast", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Hover、focus、drag response。" },
+      { "slot": "interaction.easing", "source": "--ease-standard", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Standard transition curve。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.task-board-card"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
-    "requirements": [
-      "Keyboardとpointerで同じ機能を実行できる。",
-      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
-    ],
-    "aria": [
-      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
-    ],
-    "focus": [
-      "focus-visibleで--focus-ringを使う。",
-      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
-    ]
+    "requirements": ["Named ul / liでcolumn collectionとitemを構造化しrootをfocusableにしない。", "Primary destinationはTask IDとtitleで命名したnative Linkにする。", "Dragを提供する場合は同じ移動結果をclick/tapできるmove actionsでも提供する。", "移動完了はBoard ownerのrole=statusでtaskとdestinationを通知する。", "全targetは24px minimum、主要touch targetは44px以上推奨とする。"],
+    "aria": ["Drag handleとmove actionsはTask IDと目的を含むaccessible nameを持つ。", "Drag instructionsはdrag handleからaria-describedbyで参照できる。", "Rootへrole=button、role=option、aria-grabbedを追加しない。"],
+    "focus": ["Tab順はPrimary Link、drag handle、move actions、任意actionsのDOM順とする。", "Primary Link focusをcard surface全体のfocus ringで示す。", "Independent controlsのfocus indicatorをstretched Link layerで隠さない。", "Move後は実行したcontrolまたは同じtaskの予測可能なcontrolへfocusを維持する。"]
   },
   "keyboardInteractions": [
-    {
-      "key": "Tab",
-      "action": "順序どおりにfocusを移動する。"
-    }
+    { "key": "Enter", "action": "FocusされたPrimary Linkのdestinationへ移動する。" },
+    { "key": "Space / Enter", "action": "Focusされたdrag handleまたはmove actionを各DnD adapter / Button contractに従って実行する。" },
+    { "key": "Tab / Shift+Tab", "action": "Primary Link、reordering controls、任意actionsをdocument順に移動する。" },
+    { "key": "Escape", "action": "DnD adapterがkeyboard dragを開始している場合にcancelし、drag handleへfocusを戻す。" }
   ],
   "usagePatterns": [
-    {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "kanban列内でtaskを要約し、dragまたはkeyboardで移動するとき。",
-      "recommended": [
-        "ラベルは 2 個まで表示し、残りは +N にまとめる。"
-      ],
-      "avoid": [
-        "列比較や大量走査にはTableを使う。"
-      ]
-    }
+    { "id": "linked-reorderable-task", "title": "Linked reorderable task", "description": "Kanban列で詳細遷移と代替操作つきreorderingを提供する。", "recommended": ["Named ulの直接liにする", "Task ID/title native Linkをprimary destinationにする", "Drag handleとmove actionsを組で渡す", "Boardでstatusとdrop indicatorを管理する"], "avoid": ["Root click/draggable handler", "Drag-only movement", "Link内のButton", "Card-owned drop destination"] }
   ],
   "responsiveBehavior": {
-    "desktop": {
-      "summary": "DesktopでのTask Board Card。",
-      "rules": [
-        "CompactまたはDefault densityで走査性を優先し、metadataとactionの列を安定させる。",
-        "Hover actionはfocusでも表示する。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
-    },
-    "mobile": {
-      "summary": "MobileでのTask Board Card。",
-      "rules": [
-        "主情報を先にしてmetadataを折り返し、非表示情報にはdetail viewから到達できるようにする。",
-        "行全体clickだけに依存せず明示的なtargetを残す。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
-    },
-    "touch": {
-      "summary": "Touch入力でのTask Board Card。",
-      "rules": [
-        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
-    }
+    "desktop": { "summary": "Task titleを主領域にしmetadata/reordering/actionsをfooterへ配置する。", "rules": ["Labelsは2件と残数へ要約する", "Reordering controlsを常時表示する", "Density tokenでpaddingとcontrol sizeを決める"], "avoid": ["Hoverだけでcontrolsを表示する", "Fixed heightでtitleをclipする"] },
+    "mobile": { "summary": "同じli/link/reordering/actions semanticsでfooterをwrapする。", "rules": ["Titleをwrapする", "Controlsを次行へ移して320 CSS px相当で横scrollを発生させない", "Metadataを無言で削除しない"], "avoid": ["PC用とSP用にcomponentを分ける", "Drag handleだけを残す"] },
+    "touch": { "summary": "Dragとtap可能なmove actionsを同時に提供する。", "rules": ["Link、drag handle、move actions、actionsのhit areaを重ねない", "全targetを24px minimumにする", "Touch主要操作は44px以上を推奨する"], "avoid": ["Drag/long-pressだけの移動", "隣接targetの重なり"] }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM",
-    "FOCUS_VISIBLE_REQUIRED",
-    "NO_POSITIVE_TABINDEX",
-    "TARGET_SIZE_MINIMUM",
-    "INTERACTIVE_NAME_REQUIRED",
-    "DRAG_ALTERNATIVE_REQUIRED"
+  "rules": ["NO_RAW_HEX_COLOR", "SPACING_FROM_TOKENS_ONLY", "RADIUS_FROM_TOKENS_ONLY", "CONTRAST_AA_MINIMUM", "FOCUS_VISIBLE_REQUIRED", "NO_POSITIVE_TABINDEX", "TARGET_SIZE_MINIMUM", "INTERACTIVE_NAME_REQUIRED", "DRAG_ALTERNATIVE_REQUIRED"],
+  "qualityChecks": ["Task Board Card / Issue Row / Project Card / Table / Data Grid / Task Board patternの選択境界が明確", "API、native list/link DOM、reordering ownership、stretched Link layeringが確定", "Dragとsingle-pointer move controlsが必ず組になる", "全visual slotが公開token、literal、child componentへ結線", "Default / Hover / Focus-visible / Draggingとdata edge casesを検証", "Light / Dark × Standard / High、3 density、Desktop / Mobileで確認"],
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["li"],
+    "slots": ["root", "labels", "primary-link", "task-key", "assignee", "reordering.drag-handle", "reordering.move-actions", "actions"],
+    "attributes": ["href", "aria-label", "aria-describedby", "aria-haspopup", "aria-expanded", "data-state", "data-reordering", "data-task-id", "data-*"],
+    "stateModel": ["native link focus state", "pointer hover", "board-provided dragging state", "task summary data", "data-state"],
+    "events": ["click", "focus", "blur", "pointerenter", "pointerleave", "drag adapter events"],
+    "relations": ["ul-direct-li", "task-title-link-name", "paired-drag-and-single-pointer-controls", "independent-sibling-actions", "stretched-link-layering", "board-owned-status-and-drop-indicator"],
+    "provenance": ["component", "instance", "state", "scenario", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["Kanban列内のlinked task summaryにreorderingと任意actionsを配置する。"],
+    "avoidWhen": ["表形式比較、非drag list、静的project summary、またはBoard全体のinteractionを実装する。"],
+    "alternatives": ["Issue Row", "Project Card", "Table", "Data Grid", "Task Board pattern"]
+  },
+  "negativeExamples": [
+    { "pattern": "Root liへonClick、role=link、role=option、tabIndex、draggableを付ける。", "reason": "Native Link、list semantics、DnD adapterのfocus modelを競合させるため。", "ruleIds": ["FOCUS_VISIBLE_REQUIRED", "NO_POSITIVE_TABINDEX"] },
+    { "pattern": "Card全体を包むLink内へdrag handle、move Button、actionsを入れる。", "reason": "Interactive descendantとなりnavigationと操作が競合するため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "Drag handleだけを提供しclick/tap可能な移動手段を省略する。", "reason": "Dragging movementへ依存しWCAG 2.5.7を満たさないため。", "ruleIds": ["DRAG_ALTERNATIVE_REQUIRED"] },
+    { "pattern": "Keyboard操作だけをdragの代替とみなす。", "reason": "Single-pointer alternativeはkeyboard accessibilityと別に必要なため。", "ruleIds": ["DRAG_ALTERNATIVE_REQUIRED"] },
+    { "pattern": "Cardがdestination column名、drop indicator、live regionを内部所有する。", "reason": "Sibling columnsと並び順を知らないitemがBoard stateを重複所有するため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "Mobileでreordering controlsを隠すかhorizontal scrollを必須にする。", "reason": "320 CSS px相当で機能を失うため。", "ruleIds": ["TARGET_SIZE_MINIMUM", "DRAG_ALTERNATIVE_REQUIRED"] }
   ],
-  "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
-  ],
+  "requiredScenarios": ["default", "hover", "focus-visible", "dragging", "with-reordering", "without-reordering", "with-actions", "no-assignee", "no-labels", "many-labels", "long-title", "narrow-viewport"],
   "examples": [
-    {
-      "id": "default",
-      "description": "Task Board Cardの標準例。",
-      "code": "<TaskCard task={task} draggable onOpen={open} />"
-    }
+    { "id": "with-reordering", "description": "Task Link、paired reordering、独立actionsを持つKanban item。", "code": "<TaskBoardCard task={task} href={`/tasks/${task.id}`} reordering={{ dragHandle: <TaskDragHandle task={task} />, moveActions: <TaskMoveActions task={task} /> }} actions={<TaskActions task={task} />} />" }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "openQuestions": []
 }

@@ -492,9 +492,11 @@ def({id:'issue-row',name:'Issue Row',group:'SaaS',desc:'Issue ID、title、prior
  render:p=>`<div class="issuerow-demo"><ul class="issuerow-list" aria-label="Issues">${issueRow(p)}</ul></div>`,
  code:()=>`<IssueRow\n  issue={issue}\n  href={\`/issues/${issue.id}\`}\n  selection={{ selected, onSelectedChange: setSelected }}\n  actions={<IssueActions issue={issue} />}\n/>`,related:['link','checkbox','badge','tag','avatar','icon-button','table','data-grid']});
 
-def({id:'task-board-card',name:'Task Board Card',group:'SaaS',desc:'カンバンボードのタスクカード。ドラッグ対応を想定した密度。',
- usage:['ラベルは 2 個まで表示し、残りは +N にまとめる。','ドラッグ中は影を強め、ドロップ先をハイライトする。'],
- render:()=>taskCard(),code:()=>`<TaskCard task={task} draggable onOpen={open} />`,related:['project-card','project-management']});
+def({id:'task-board-card',name:'Task Board Card',group:'SaaS',desc:'Kanban列内でtaskを要約し、詳細遷移と代替操作つきreorderingを配置するlist item。',
+ states:['default','hover','focus-visible','dragging'],
+ scenarios:['with-reordering','without-reordering','with-actions','no-assignee','no-labels','many-labels','long-title','narrow-viewport'],
+ usage:['Named listの直接liとし、titleのnative Linkをprimary destinationにする。','Reorderingはdrag handleとsingle-pointer move actionsを常に組で渡す。','Drop indicator、列名、移動結果のstatus通知はBoard ownerが管理する。'],
+ render:p=>taskCard(p),code:()=>`<TaskBoardCard\n  task={task}\n  href={\`/tasks/\${task.id}\`}\n  reordering={{\n    dragHandle: <TaskDragHandle task={task} />,\n    moveActions: <TaskMoveActions task={task} />,\n  }}\n  actions={<TaskActions task={task} />}\n/>`,related:['link','tag','avatar','icon-button','project-card','issue-row','project-management']});
 
 def({id:'integration-card',name:'Integration Card',group:'SaaS',desc:'外部連携のカード。接続済み・要設定・未接続の状態を持つ。',
  variants:['connected','setup','none'],

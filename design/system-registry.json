@@ -2062,7 +2062,11 @@
           "order": 73,
           "route": "components/task-board-card",
           "dependsOn": [
-            "tokens.json-tokens"
+            "tokens.json-tokens",
+            "components.link",
+            "components.tag",
+            "components.avatar",
+            "components.icon-button"
           ],
           "sources": [
             "components/task-board-card.md",
@@ -2074,7 +2078,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.task-board-card.2026-07-13-components-task-board-card-01.review.json"
+          "reviewRecord": "design/reviews/components.task-board-card.2026-07-22-components-task-board-card-02.review.json"
         },
         {
           "id": "components.integration-card",

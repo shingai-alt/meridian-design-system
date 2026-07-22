@@ -1,0 +1,80 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.task-board-card",
+  "cycleId": "2026-07-22-components-task-board-card-02",
+  "supersedesCycleId": "2026-07-13-components-task-board-card-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-22",
+  "completedAt": "2026-07-22",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/implementation-readiness.json",
+    "components/task-board-card.md",
+    "design/contracts/components/task-board-card.contract.json",
+    "components/link.md",
+    "design/contracts/components/link.contract.json",
+    "components/icon-button.md",
+    "design/contracts/components/icon-button.contract.json",
+    "components/issue-row.md",
+    "design/contracts/components/issue-row.contract.json",
+    "components/project-card.md",
+    "design/contracts/components/project-card.contract.json",
+    "js/components-registry.js",
+    "js/ui-builders.js",
+    "index.html",
+    "test/component-specs.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": { "itemId": "components.task-board-card", "summary": "Task Board CardとBoard patternの責務境界、native list/link semantics、drag代替、status notification、target size、320 CSS px reflowの実装前Contractを確定する。" },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior"],
+    "questions": ["Card root、detail destination、DnD handleをどのDOM/focus modelへ固定するか。", "Dragging movementへ同等のsingle-pointer alternativeをどうContractで必須化するか。", "CardとBoardのdrop indicator、column state、announcement ownershipをどう分離するか。"],
+    "evidence": [
+      { "id": "wcag-dragging", "title": "WCAG 2.2 Understanding 2.5.7: Dragging Movements", "url": "https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements.html", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Dragで実行する全機能へdrag不要のsingle-pointer alternativeを要求し、task boardのmove menuを例示する。", "supportedDecisions": ["paired-reordering-capability", "single-pointer-move-actions"] },
+      { "id": "wcag-status", "title": "WCAG 2.2 Understanding 4.1.3: Status Messages", "url": "https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Focusを移動しない操作結果をrole/propertyで支援技術へ通知する。", "supportedDecisions": ["board-owned-status"] },
+      { "id": "wcag-target-size", "title": "WCAG 2.2 Understanding 2.5.8: Target Size Minimum", "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Pointer targetの24 by 24 CSS px minimumとspacing exceptionを定義する。", "supportedDecisions": ["independent-targets"] },
+      { "id": "html-list", "title": "HTML Standard: Grouping content", "url": "https://html.spec.whatwg.org/dev/grouping-content.html", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "ulとliをunordered collectionとそのlist itemとして定義する。", "supportedDecisions": ["native-list-item"] }
+    ],
+    "synthesis": "Cardをnamed ul直下の非focusable li、Task ID/title native Linkをprimary destinationとする。Reorderingはdrag handleとsingle-pointer move actionsのpaired capabilityへ固定し、columns、drop indicator、移動結果のrole=statusはBoard ownerへ委譲する。",
+    "decisionImpact": "Contract 0.2.0、React API Freeze、native Showcase、Default/Hover/Focus-visible/Dragging、edge scenarios、complete token bindingsを確定した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    { "id": "selection-boundary", "summary": "Task Board CardをKanban列内のlinked/reorderable list itemへ限定し、Table、Issue Row、Project Card、Board patternと分離する。", "rationale": "Task summaryとBoard全体interactionを1componentへ混在させないため。" },
+    { "id": "native-list-item", "summary": "Collectionをnamed ul、rootを直接li、primary destinationをTask ID/title native Linkへ固定する。", "rationale": "Root custom controlとnested interactionを避けるため。" },
+    { "id": "paired-reordering-capability", "summary": "reordering propはdragHandleとmoveActionsを同じobjectで必須にする。", "rationale": "Dragだけの不完全なinstanceをtype levelで作れなくするため。" },
+    { "id": "single-pointer-move-actions", "summary": "Dragと同じ結果をclick/tapだけで完了できるButton/Menu controlsを常時表示する。", "rationale": "Keyboard accessibilityとは別にWCAG 2.5.7のsingle-pointer alternativeを満たすため。" },
+    { "id": "board-owned-status", "summary": "Column名、drop indicator、移動結果のrole=statusをBoard ownerへ委譲する。", "rationale": "Sibling columnsを知らないitemへBoard stateを重複させないため。" },
+    { "id": "independent-targets", "summary": "Drag/move/actionsをstretched Link外のsiblingかつ上位layerへ置く。", "rationale": "Native activation、focus ring、24px targetを競合なく保つため。" },
+    { "id": "responsive-reflow", "summary": "Desktop/Mobileで同じli/link/reordering/actionsを維持しfooterだけをwrapする。", "rationale": "320 CSS px相当で操作と情報を失わないため。" },
+    { "id": "complete-token-binding", "summary": "Surface、state、density、spacing、type、motion、drag elevationの全slotを公開tokenまたは許可literalへ結線する。", "rationale": "React実装時のvisual decisionを残さないため。" }
+  ],
+  "differences": [
+    { "classification": "cross-layer-conflict", "description": "旧APIはdraggable/onOpenをCardへ直接渡したが、Showcaseにはdetail Link、drag handle、state ownershipがなかった。", "action": "href、paired reordering、actions、refとnative li/Link compositionへ確定した。", "status": "resolved" },
+    { "classification": "missing-contract", "description": "旧Showcaseは前後移動Buttonを持つ一方、drag handle、instructions、Board announcement ownershipを説明していなかった。", "action": "Drag handleとmove actionsを組にし、descriptive names/instructionsとBoard role=statusをContractへ追加した。", "status": "resolved" },
+    { "classification": "implementation-stale", "description": "Showcase wrapperのpercentage min()がauto-width stageで0へ収束しCardを34pxまで縮め、code sampleもtask.idを実行時評価していた。", "action": "280px basis + max 100%、scoped grid min-width:0、sample interpolation escapeへ修正した。", "status": "resolved" },
+    { "classification": "missing-token", "description": "Hover/focus/dragging、density target、responsive gaps、motion/elevationのbindingが未確定だった。", "action": "既存semantic/elevation tokenへ全slotを結線した。", "status": "resolved" }
+  ],
+  "changes": [
+    { "path": "components/task-board-card.md", "summary": "Selection boundary、Card/Board ownership、paired reordering API、responsive rulesを確定。" },
+    { "path": "design/contracts/components/task-board-card.contract.json", "summary": "Contract 0.2.0、readiness、runtime、complete bindings、negative examplesを追加。" },
+    { "path": "js/ui-builders.js", "summary": "Named ul/li、Task Link、labels/assignee、drag handle、move actionsを持つShowcaseへ更新。" },
+    { "path": "js/components-registry.js", "summary": "States/scenarios、usage、sample API、related compositionを確定Contractへ同期。" },
+    { "path": "index.html", "summary": "Stretched Link、independent target layers、dragging state、narrow reflowをtokenized CSSへ追加。" },
+    { "path": "test/component-specs.test.js", "summary": "Native DOM、API、paired alternatives、state、edge data、layeringの回帰testを追加。" },
+    { "path": "design/system-registry.json", "summary": "Child/pattern dependenciesと最新review cycleを台帳へ接続。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js test/implementation-readiness.test.js", "status": "passed", "notes": "32件が通過し、Contract、native ul/li/Link、paired reordering、state/data scenarios、共通gateを確認した。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "DesktopでCard 280px、scroll/client幅278px、controls 34x28 / 30x28 / 30x28px。320x720 viewportでCard 222px、scroll/client幅220px、page scroll width 320px、footer wrapと横溢れなし。Dark/High/Comfortableでfocus ring 2px、theme shadow、controls 34x32 / 32x32 / 32x32pxを実測。Sample interpolation修正後のreloadで新規console error 0件。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、review cycles、generated artifacts、14/74 implementation-ready gateを含む全160テストが通過した。" }
+  ],
+  "openQuestions": [
+    { "question": "React実装、DnD adapter/Board integration tests、visual regressionを完了しstableへ昇格する。", "owner": "components.task-board-card", "exitCriteria": "Native navigation、drag/move parity、focus retention、status announcement、drop indicator ownership、全context baselineがCIで通ること。" }
+  ],
+  "acknowledgedImpacts": [],
+  "impactedItems": [],
+  "nextRecommendedItems": ["components.integration-card"]
+}

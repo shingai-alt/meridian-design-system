@@ -638,6 +638,57 @@ test('Issue Row is implementation-ready as a native list item with independent l
   assert.match(indexSource, /@container\(max-width:520px\)\{\.issuerow\{grid-template-columns:auto minmax\(0,1fr\) auto/);
 });
 
+test('Task Board Card is implementation-ready with a native task link and paired reordering alternatives', () => {
+  const contract = contracts.find(({ id }) => id === 'task-board-card');
+  assert.equal(contract.contractVersion, '0.2.0');
+  assert.equal(contract.implementationReadiness.status, 'ready');
+  assert.deepEqual(Object.keys(contract.variants), ['default']);
+  assert.deepEqual(contract.states.map(({ id }) => id), ['default', 'hover', 'focus-visible', 'dragging']);
+  assert.deepEqual(contract.props.map(({ name }) => name), ['task', 'href', 'reordering', 'actions', 'ref']);
+  assert.deepEqual(contract.runtime.rootElements, ['li']);
+  assert.ok(contract.runtime.relations.includes('ul-direct-li'));
+  assert.ok(contract.runtime.relations.includes('task-title-link-name'));
+  assert.ok(contract.runtime.relations.includes('paired-drag-and-single-pointer-controls'));
+  assert.ok(contract.runtime.relations.includes('board-owned-status-and-drop-indicator'));
+  assert.equal(contract.tokenBindings.coverage, 'complete');
+  assert.deepEqual(contract.tokenBindings.unboundSlots, []);
+  assert.deepEqual(contract.openQuestions, []);
+
+  const component = renderedComponents.find(({ id }) => id === 'task-board-card');
+  const standard = component.render({ ...renderProps(component), state: 'default', scenario: 'with-reordering' });
+  const hovered = component.render({ ...renderProps(component), state: 'hover' });
+  const focused = component.render({ ...renderProps(component), state: 'focus-visible' });
+  const dragging = component.render({ ...renderProps(component), state: 'dragging' });
+  const noReordering = component.render({ ...renderProps(component), scenario: 'without-reordering' });
+  const withActions = component.render({ ...renderProps(component), scenario: 'with-actions' });
+  const noAssignee = component.render({ ...renderProps(component), scenario: 'no-assignee' });
+  const noLabels = component.render({ ...renderProps(component), scenario: 'no-labels' });
+  const manyLabels = component.render({ ...renderProps(component), scenario: 'many-labels' });
+  const longTitle = component.render({ ...renderProps(component), scenario: 'long-title' });
+  assert.match(standard, /^<div class="taskboardc-demo"><ul class="taskboardc-list" aria-label="進行中のタスク"><li class="cardc taskboardc"[^>]+data-component="task-board-card"/);
+  assert.match(standard, /<a id="task-board-card-\d+-title" class="taskboardc-link" href="#\/tasks\/mrd-98" aria-label="MRD-98 Dark themeでfocus ringのコントラストが不足">/);
+  assert.match(standard, /aria-label="MRD-98をドラッグして移動"[^>]+aria-describedby="task-board-card-\d+-instructions"/);
+  assert.match(standard, /aria-label="MRD-98を前の列へ移動"/);
+  assert.match(standard, /aria-label="MRD-98を次の列へ移動"/);
+  assert.doesNotMatch(standard, /<a\b[^>]*>(?:(?!<\/a>).)*(?:<button|<input)/s);
+  assert.doesNotMatch(standard, /<li[^>]+(?:onclick|role="(?:link|option)"|tabindex|draggable)/i);
+  assert.match(hovered, /data-state="hover"/);
+  assert.match(focused, /data-state="focus-visible"/);
+  assert.match(dragging, /data-state="dragging"/);
+  assert.doesNotMatch(noReordering, /taskboardc-drag-handle|を前の列へ移動|を次の列へ移動/);
+  assert.match(withActions, /aria-label="MRD-98のアクションを開く"[^>]+aria-haspopup="menu"/);
+  assert.doesNotMatch(noAssignee, /taskboardc-assignee/);
+  assert.match(noLabels, /aria-label="ラベル: なし"/);
+  assert.match(manyLabels, /aria-label="ラベル: bug、accessibility、theme、regression"/);
+  assert.match(manyLabels, /<span class="tagc">\+2<\/span>/);
+  assert.match(longTitle, /keyboard focus indicatorが複数のsticky layerに隠れる/);
+  assert.match(indexSource, /\.taskboardc-link::after\{content:"";position:absolute;inset:0;border-radius:var\(--radius-md\)\}/);
+  assert.match(indexSource, /\.taskboardc-assignee,\.taskboardc-reordering,\.taskboardc-actions\{position:relative;z-index:1/);
+  assert.match(indexSource, /\.taskboardc:has\(\.taskboardc-link:focus-visible\)[^}]*var\(--focus-ring\)/);
+  assert.match(indexSource, /\.taskboardc\[data-state="dragging"\][^}]*var\(--shadow-md\)/);
+  assert.match(indexSource, /\.taskboardc-list\{[^}]*container-type:inline-size/);
+});
+
 test('Drawer is implementation-ready as a native modal dialog with trigger and focus lifecycle', () => {
   const drawer = contracts.find((contract) => contract.id === 'drawer');
   assert.equal(drawer.contractVersion, '0.2.0');
@@ -733,6 +784,7 @@ test('showcases demonstrate the defining semantic relationships of complex patte
   assert.match(render('toast'), /role="status"[^>]+aria-live="polite"/);
   assert.match(render('prompt-input'), /<textarea\s+aria-label=/);
   assert.match(render('navigation-item', { state: 'active' }), /<a\s+href="[^"]+"[^>]+aria-current="page"/);
+  assert.match(render('task-board-card'), /<ul class="taskboardc-list" aria-label="進行中のタスク"><li class="cardc taskboardc"/);
   assert.match(render('task-board-card'), /aria-label="MRD-98を次の列へ移動"/);
   assert.match(render('analytics-chart-container'), /<figure\b/);
   assert.match(render('analytics-chart-container'), /class="sr-only"/);
