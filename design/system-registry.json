@@ -1378,7 +1378,10 @@
           "order": 40,
           "route": "components/drawer",
           "dependsOn": [
-            "tokens.json-tokens"
+            "tokens.json-tokens",
+            "components.button",
+            "components.icon-button",
+            "components.sidebar"
           ],
           "sources": [
             "components/drawer.md",
@@ -1390,7 +1393,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.drawer.2026-07-13-components-drawer-01.review.json"
+          "reviewRecord": "design/reviews/components.drawer.2026-07-22-components-drawer-02.review.json"
         },
         {
           "id": "components.popover",

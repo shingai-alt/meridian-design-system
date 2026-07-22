@@ -430,6 +430,42 @@ test('Top Bar is implementation-ready as a header with child-owned semantics', (
   assert.doesNotMatch(sticky, /role="(?:navigation|toolbar|banner)"/);
 });
 
+test('Drawer is implementation-ready as a native modal dialog with trigger and focus lifecycle', () => {
+  const drawer = contracts.find((contract) => contract.id === 'drawer');
+  assert.equal(drawer.contractVersion, '0.2.0');
+  assert.equal(drawer.implementationReadiness.status, 'ready');
+  assert.deepEqual(drawer.states.map(({ id }) => id), ['open', 'closed']);
+  assert.deepEqual(drawer.props.map(({ name }) => name), [
+    'trigger', 'title', 'children', 'footer', 'open', 'defaultOpen', 'onOpenChange',
+    'side', 'initialFocusRef', 'closeLabel', 'ref',
+  ]);
+  assert.deepEqual(drawer.runtime.rootElements, ['dialog']);
+  assert.ok(drawer.runtime.relations.includes('modal-inert-background'));
+  assert.ok(drawer.runtime.relations.includes('contained-tab-sequence'));
+  assert.ok(drawer.runtime.relations.includes('focus-return'));
+  assert.equal(drawer.tokenBindings.coverage, 'complete');
+  assert.deepEqual(drawer.openQuestions, []);
+
+  const component = renderedComponents.find(({ id }) => id === 'drawer');
+  const opened = component.render({ ...renderProps(component), state: 'open' });
+  const closed = component.render({ ...renderProps(component), state: 'closed' });
+  const longContent = component.render({ ...renderProps(component), state: 'open', scenario: 'long-content' });
+  const mobileNavigation = component.render({ ...renderProps(component), state: 'open', scenario: 'mobile-navigation' });
+  assert.match(opened, /<button[^>]+aria-haspopup="dialog"[^>]+aria-controls="drawer-\d+"[^>]+aria-expanded="true"/);
+  assert.match(opened, /<dialog[^>]+data-component="drawer"[^>]+aria-labelledby="drawer-\d+-title"[^>]+open/);
+  assert.match(opened, /<h3[^>]+id="drawer-\d+-title"[^>]+tabindex="-1"/);
+  assert.match(opened, /<button[^>]+data-icononly[^>]+aria-label="閉じる"/);
+  assert.doesNotMatch(opened, /role="dialog"/);
+  assert.doesNotMatch(opened, /aria-modal=/);
+  assert.doesNotMatch(opened, /tabindex="[1-9]/);
+  assert.match(closed, /aria-expanded="false"/);
+  assert.doesNotMatch(closed, /<dialog[^>]+\sopen(?:\s|>)/);
+  assert.equal((longContent.match(/<section>/g) ?? []).length, 8);
+  assert.match(longContent, /data-drawer-scenario="long-content"/);
+  assert.match(mobileNavigation, /<nav[^>]+data-component="sidebar"[^>]+aria-label="Primary"/);
+  assert.match(mobileNavigation, /<h3[^>]+>ナビゲーション<\/h3>/);
+});
+
 test('all component showcases render every declared state and variant as valid tokenized HTML', () => {
   for (const component of renderedComponents) {
     const cases = [renderProps(component)];

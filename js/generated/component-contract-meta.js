@@ -4098,11 +4098,14 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "一覧 → 詳細のクイックビュー",
-        "補助的な設定・フィルタ"
+        "一覧から詳細を確認・軽く編集するquick view。",
+        "現在の画面へ戻る前提のfilter、settings、補助form。",
+        "Narrow viewportでSidebar navigationを一時的に提示するmodal container。"
       ],
       "whenNotToUse": [
-        "独立した作業フロー → 専用ページ"
+        "短い確認や不可逆actionの判断はDialogを使う。",
+        "常設navigationはSidebar、常設inspectorはlayout panelを使う。",
+        "長いmulti-step workflowや固有URLが必要なtaskは専用pageを使う。"
       ],
       "principles": [
         1,
@@ -4114,29 +4117,39 @@ const COMPONENT_CONTRACTS={
     },
     "anatomy": [
       {
+        "part": "trigger",
+        "required": true,
+        "description": "Drawerを開き、close後にfocusを受け取るfocusable control。"
+      },
+      {
+        "part": "backdrop",
+        "required": true,
+        "description": "背景を視覚的に抑え、背景contentがmodal中に操作不能であることを示す。"
+      },
+      {
         "part": "surface",
         "required": true,
-        "description": "Floating or modal surface."
+        "description": "Native dialogとして画面端へ配置するmodal surface。"
       },
       {
-        "part": "header",
-        "required": false,
-        "description": "Title and context."
-      },
-      {
-        "part": "content",
+        "part": "title",
         "required": true,
-        "description": "Information or controls owned by the surface."
+        "description": "aria-labelledbyでsurfaceを命名する可視heading。"
       },
       {
-        "part": "actions",
-        "required": false,
-        "description": "Confirmation, navigation, or dismiss controls."
+        "part": "close-control",
+        "required": true,
+        "description": "常に可視でaccessible nameを持つIcon Button。"
       },
       {
-        "part": "trigger",
+        "part": "body",
+        "required": true,
+        "description": "独立してscrollできる補助content。"
+      },
+      {
+        "part": "footer",
         "required": false,
-        "description": "Element that opens the surface and receives restored focus."
+        "description": "Body scrollから独立して表示する補助action領域。"
       }
     ],
     "variants": [
@@ -4145,47 +4158,125 @@ const COMPONENT_CONTRACTS={
     "sizes": [],
     "states": [
       {
-        "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "id": "open",
+        "description": "Native dialogをshowModal()でtop layerへ表示した状態。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "背景contentをinertにする",
+          "Initial focusをDrawer内へ移す",
+          "Tab sequenceをDrawer内に保持する",
+          "triggerのaria-expandedをtrueにする"
+        ]
+      },
+      {
+        "id": "closed",
+        "description": "Surfaceを表示せずtriggerだけが通常のdocument順にある状態。",
+        "requiredBehavior": [
+          "Dialog open attributeを残さない",
+          "triggerのaria-expandedをfalseにする",
+          "Close直後はtriggerまたは論理的な次のfocus先へ戻す"
         ]
       }
     ],
     "props": [
       {
+        "name": "trigger",
+        "type": "ReactElement",
+        "required": true,
+        "default": null,
+        "description": "単一のfocusable trigger。aria-haspopup、aria-controls、aria-expanded、open handlerを合成する。"
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": true,
+        "default": null,
+        "description": "Drawerを命名する可視title。"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true,
+        "default": null,
+        "description": "Drawer body content。"
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "default": null,
+        "description": "Body scrollから独立したaction領域。"
+      },
+      {
         "name": "open",
         "type": "boolean",
         "required": false,
         "default": null,
-        "description": "Controlled open state。"
+        "description": "Controlled open state。Native open attributeは直接toggleせずshowModal()/close()へ同期する。"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Uncontrolled initial open state。"
       },
       {
         "name": "onOpenChange",
         "type": "(open: boolean) => void",
         "required": false,
         "default": null,
-        "description": "Open state変更を通知する。"
+        "description": "Trigger、Escape、close control、backdrop requestを同じopen stateへ通知する。"
+      },
+      {
+        "name": "side",
+        "type": "\"inline-start\" | \"inline-end\"",
+        "required": false,
+        "default": "inline-end",
+        "description": "RTLのdirectionに追従する論理的な表示端。"
+      },
+      {
+        "name": "initialFocusRef",
+        "type": "RefObject<HTMLElement | null>",
+        "required": false,
+        "default": null,
+        "description": "Open時の明示的focus先。未指定時はcontent構造に応じた安全な既定を使う。"
+      },
+      {
+        "name": "closeLabel",
+        "type": "string",
+        "required": false,
+        "default": "閉じる",
+        "description": "Close Icon Buttonのaccessible name。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLDialogElement>",
+        "required": false,
+        "default": null,
+        "description": "Native dialog elementへforwardするref。"
       }
     ],
     "tokenRefs": {
       "semanticColor": [
-        "--surface",
+        "--surface-overlay",
         "--border",
         "--fg",
-        "--surface-overlay",
         "--fg-muted",
-        "--overlay",
-        "--focus-ring"
+        "--overlay"
       ],
       "spacing": [
+        "--sp-3",
         "--sp-4"
       ],
-      "radius": [
-        "--radius-md"
+      "typography": [
+        "--text-label"
       ],
       "motion": [
-        "--dur-normal"
+        "--dur-normal",
+        "--ease-enter"
+      ],
+      "layout": [
+        "--drawer-w"
       ],
       "shadow": [
         "--shadow-overlay"
@@ -4193,83 +4284,111 @@ const COMPONENT_CONTRACTS={
     },
     "accessibility": {
       "requirements": [
-        "Keyboardとpointerで同じ機能を実行できる。",
-        "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-        "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        "Native dialogをshowModal()で開き、背景contentを実際にinertにする。",
+        "Visible title、常時visibleなclose control、24px minimum targetを持つ。",
+        "主要touch操作は44px以上を推奨し、swipe gestureだけでcloseしない。"
       ],
       "aria": [
-        "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        "Dialogはaria-labelledbyで可視titleから命名する。",
+        "Triggerはaria-haspopup=dialog、aria-controls、aria-expandedを同期する。",
+        "Structured contentを一続きに読ませるaria-describedbyは既定で付けない。"
       ],
       "focus": [
-        "focus-visibleで--focus-ringを使う。",
-        "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        "Open時はinitialFocusRef、先頭の意味あるcontrol、またはtabindex=-1のstatic title/contentへfocusを移す。",
+        "Tab / Shift+Tabをmodal内に保持し、close後はtriggerまたは論理的な次の要素へ戻す。",
+        "Positive tabindexを使わず、body内のfocused elementをsticky footerで完全に隠さない。"
       ]
     },
     "keyboardInteractions": [
       {
+        "key": "Tab / Shift+Tab",
+        "action": "Open中はDrawer内のtabbable element間を循環する。"
+      },
+      {
         "key": "Escape",
-        "action": "Drawerを閉じてtriggerへfocusを戻す。"
+        "action": "Cancel可能なclose requestを発行し、close後にtriggerへfocusを戻す。"
       }
     ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "一覧 → 詳細のクイックビュー",
+        "id": "quick-detail",
+        "title": "Quick detail",
+        "description": "一覧の位置関係を視覚的に残して対象を確認する。",
         "recommended": [
-          "背後の一覧は見えたままにし、位置関係を保つ。"
+          "短い確認・軽い編集に限定",
+          "対象名をtitleへ含める"
         ],
         "avoid": [
-          "独立した作業フロー → 専用ページ"
+          "固有URLが必要な深いworkflow",
+          "背景contentを操作可能なままにする"
         ]
       },
       {
-        "id": "recommended-2",
-        "title": "Secondary context",
-        "description": "補助的な設定・フィルタ",
+        "id": "supplementary-task",
+        "title": "Supplementary task",
+        "description": "Filterやsettingsを完了して元の画面へ戻る。",
         "recommended": [
-          "幅は drawer-width トークン(デフォルト 420px)を使う。"
+          "Primary actionとclose経路を明示",
+          "Unsaved stateはclose requestで確認"
         ],
         "avoid": [
-          "独立した作業フロー → 専用ページ"
+          "不可逆actionの最終確認",
+          "複数page相当の入力"
+        ]
+      },
+      {
+        "id": "mobile-navigation",
+        "title": "Mobile navigation container",
+        "description": "同じSidebar navigationをnarrow viewportで一時表示する。",
+        "recommended": [
+          "Drawerがmodal lifecycleを所有",
+          "Sidebarはnav/list semanticsだけを所有"
+        ],
+        "avoid": [
+          "Sidebar側へfocus trapを重複実装",
+          "Viewport専用navigation API"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのDrawer。",
+        "summary": "Inline-endを既定に背景文脈を視覚的に残す。",
         "rules": [
-          "Drawerは内容に応じたmax-widthを持ち、背景文脈を保つ。",
-          "Focusをsurface内で管理し、閉じたらtriggerへ戻す。"
+          "Inline sizeは--drawer-w、block sizeはdynamic viewport",
+          "Bodyだけをscrollしheader/close/footerを到達可能に保つ",
+          "Modal中は背景を操作不能にする"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "Non-modal inspectorとして流用",
+          "Main content全体を不必要に覆う"
         ]
       },
       "mobile": {
-        "summary": "MobileでのDrawer。",
+        "summary": "同じAPIとdialog semanticsのままviewport幅まで拡張する。",
         "rules": [
-          "Viewportに収まらない固定幅を使わず、必要に応じてfull-screenまたはbottom-aligned presentationへ切り替える。",
-          "Safe areaとsoftware keyboardを考慮し、primary actionを見失わせない。"
+          "max-inline-sizeを100viに制限",
+          "100dvbとsafe-areaを考慮",
+          "Sidebar compositionでも同じclose/focus lifecycleを維持"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "PC用とSP用に分けません",
+          "Fixed 420pxで横overflowを起こす"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのDrawer。",
+        "summary": "Visible close controlと単一pointer経路を維持する。",
         "rules": [
-          "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-          "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+          "全targetは24px minimum、主要controlは44px以上推奨",
+          "Backdrop tapはclose requestとして同じstate machineへ渡す",
+          "Swipeを追加してもclose buttonとEscapeを残す"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "Swipe gestureだけで閉じる",
+          "隣接する小さなtarget"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "empty-state": {
     "id": "empty-state",

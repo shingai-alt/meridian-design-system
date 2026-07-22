@@ -2,203 +2,181 @@
 
 ## Summary
 
-画面端からスライドする補助パネル。一覧の文脈を保ったまま詳細を表示する。
+現在の画面文脈を視覚的に残しながら、画面端へ一時的な補助taskをmodal表示するside-aligned dialogです。React実装前Contractは `0.2.0` です。
 
 Machine-readable contract: `design/contracts/components/drawer.contract.json`
 
 ## Role
 
-Feedback領域でDrawerの責務を1か所にまとめ、類似componentとの選択境界を固定します。PC用とSP用に別componentを作らず、同じ意味とAPIをlayout、viewport、input methodへ適応させます。
+Drawerはtrigger、modal lifecycle、side placement、backdrop、focus containment、dismiss、focus returnを所有します。内部へ置くSidebar、form、detail contentはそれぞれの意味を維持します。
 
 ## Principles
 
-- Taskの主目的と現在状態を最短で理解できること。
-- Native semanticsまたは確立したARIA patternを優先すること。
-- Semantic tokenを基本とし、Component tokenはpolicy triggerがある場合だけ追加すること。
+- Native `<dialog>`を`showModal()`で開き、宣言だけでなく背景を実際にinertにする。
+- Side placementとdialog semanticsを分離し、見た目を理由にmodal責務を弱めない。
+- PC用とSP用に分けません。同じ意味とReact APIをlogical sideとviewportへ適応します。
 
 ## When To Use
 
-- 一覧 → 詳細のクイックビュー
-- 補助的な設定・フィルタ
+- 一覧から詳細を確認・軽く編集するquick view。
+- 現在の画面へ戻る前提のfilter、settings、補助form。
+- Narrow viewportでSidebar navigationを一時的に提示するmodal container。
 
 ## When Not To Use
 
-- 独立した作業フロー → 専用ページ
+- 短い確認や不可逆actionの判断はDialogを使う。
+- 常設navigationはSidebar、常設inspectorはlayout panelを使う。
+- 長いmulti-step workflowや固有URLが必要なtaskは専用pageを使う。
 
 ## Visual Model
 
-Floating or modal surface. Surface、border、type、spacingの強弱は内容の階層を支え、装飾のためだけにcard、shadow、accentを追加しません。状態は色だけでなくlabel、icon、shape、positionを組み合わせます。
+`--surface-overlay`のfull-height surfaceをlogical inline edgeへ接続し、borderと`--shadow-overlay`で背景から分離します。`::backdrop`は`--overlay`を使います。Viewport edgeと連続するためcard radiusは付けません。
 
 ## Anatomy
 
 | Part | Required | Description |
 |---|---:|---|
-| surface | Yes | Floating or modal surface. |
-| header | No | Title and context. |
-| content | Yes | Information or controls owned by the surface. |
-| actions | No | Confirmation, navigation, or dismiss controls. |
-| trigger | No | Element that opens the surface and receives restored focus. |
+| trigger | Yes | Openし、close後にfocusを受け取るcontrol。 |
+| backdrop | Yes | 背景が操作不能であることを示すscrim。 |
+| surface | Yes | Native `dialog` modal surface。 |
+| title | Yes | `aria-labelledby`でsurfaceを命名する可視heading。 |
+| close-control | Yes | Accessible nameを持つ常時visibleなIcon Button。 |
+| body | Yes | 独立してscrollする補助content。 |
+| footer | No | Body scrollから独立したaction領域。 |
 
 ## Variants
 
-| Variant | Use | Notes |
-|---|---|---|
-| `default` | 標準文脈。 | 意味を変えずに見た目だけを増やさない。 |
+`default` のみです。`side`は意味variantではなくlogical placement propです。
 
 ## Sizes / Density
 
-| Size | Token | Typical use |
-|---|---|---|
-| Dedicated size propなし | Density token | 周辺layoutのdensityに従う。 |
-
-Compact / Default / Comfortableはviewportではなく作業密度と入力方式で選び、componentの意味やprop集合は変えません。
+Size propはありません。Inline sizeは`--drawer-w`、上限は`100vi`、block sizeは`100dvb`です。Internal controlsは周辺densityへ従います。24px minimumを必須とし、主要touch controlは44px以上を推奨します。
 
 ## Icon Rules
 
-このcomponentは必須のicon slotを持ちません。追加する場合も情報をiconだけへ閉じ込めません。
+Close controlはIcon Buttonを使い、`closeLabel`からprogrammatic accessible nameを持ちます。その他のiconはchildren側のContractに従い、iconだけへ意味を閉じ込めません。
 
 ## States
 
 | State | Behavior |
 |---|---|
-| `default` | 通常状態。意味、label、valueを省略しない。 |
+| `open` | `showModal()`でtop layerへ表示し、背景をinert化してfocusを内部へ移す。 |
+| `closed` | Surfaceは非表示。Triggerは`aria-expanded="false"`で通常のdocument順に残る。 |
+
+Reactの`open` propとnative `open` attributeは同一物ではありません。Componentはprop変更を`showModal()` / `close()`へ同期し、attributeだけを直接追加・削除しません。
 
 ## Behavior
 
-- 背後の一覧は見えたままにし、位置関係を保つ。
-- 幅は drawer-width トークン(デフォルト 420px)を使う。
-
-- Controlled stateを提供する場合、visual stateとprogrammatic stateを同じeventで同期します。
-- 非同期actionでは二重実行を防ぎ、完了・失敗・中断を説明します。
+- Triggerへ`aria-haspopup="dialog"`、`aria-controls`、`aria-expanded`を合成します。
+- Open時はnative `showModal()`を使い、`cancel`、close control、backdrop pointerを同じclose requestへ統合します。
+- Escapeはcancel可能なclose requestを発行します。
+- Close後は原則triggerへfocusを戻します。Triggerが消えた場合だけworkflow上の論理的な次の要素へ移します。
+- Backdropが見えていても背景contentは操作できません。背景との並行操作が必要ならDrawerを使いません。
 
 ## Layout / Placement Rules
 
-### Recommended Pattern
-
-- Reading orderとfocus orderを一致させます。
-- 周辺componentとのspacingはtokenを使い、固定viewport値で内部寸法を変えません。
-- Viewportに収まらない固定幅を使わず、必要に応じてfull-screenまたはbottom-aligned presentationへ切り替える。
+- Surfaceは`side="inline-end"`を既定とし、RTLのdirectionへ追従します。
+- Header、body、footerをDOM順に配置し、bodyだけをscrollさせます。
+- Titleとvisible close controlをscroll領域の外へ保ちます。
+- Footerがある場合、body内のfocused elementを完全に隠さないscroll paddingを確保します。
+- Full-height edge surfaceへcard radiusや重複したinner shadowを追加しません。
 
 ## Responsive / Viewport Behavior
 
-### Desktop
+Desktopでは`--drawer-w`を使い、背景の位置関係を視覚的に残します。ただしmodal中の背景操作は許可しません。
 
-- Drawerは内容に応じたmax-widthを持ち、背景文脈を保つ。
-- Focusをsurface内で管理し、閉じたらtriggerへ戻す。
+Mobileでは同じdialogとAPIのまま`max-inline-size: 100vi`へ収め、`100dvb`、safe area、software keyboardを考慮します。Sidebar compositionでもDrawerがclose/focus lifecycle、Sidebarがnavigation semanticsを所有します。
 
-### Mobile
-
-- Viewportに収まらない固定幅を使わず、必要に応じてfull-screenまたはbottom-aligned presentationへ切り替える。
-- Safe areaとsoftware keyboardを考慮し、primary actionを見失わせない。
-
-### Touch
-
-- Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。
-- Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。
+Touchではbackdrop tapをclose requestとして扱えますが、visible close controlを必ず残します。Swipe gestureを追加しても唯一のdismiss経路にしません。
 
 ## Accessibility
 
-- Keyboardとpointerで同じ機能を実行できる。
-- Focus indicatorを常に視認でき、sticky layerで完全に隠さない。
-- Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。
-- Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。
-- focus-visibleで--focus-ringを使う。
-- Positive tabindexを使わず、DOMとvisualの順序を一致させる。
+- Native `<dialog>`を`showModal()`で開き、modal外を実際にinertにします。
+- Dialogは可視titleを参照する`aria-labelledby`で命名します。
+- Structured contentを一続きに読ませる`aria-describedby`は既定で付けません。
+- Open時は`initialFocusRef`、先頭の意味あるcontrol、または`tabindex="-1"`のstatic title/contentへfocusを移します。
+- Tab sequenceをsurface内へ保持し、positive tabindexを使いません。
+- Visible close controlは24px minimum、touch中心では44px以上を推奨します。
 
 Keyboard:
 
-- `Escape`: Drawerを閉じてtriggerへfocusを戻す。
+- `Tab / Shift+Tab`: Open中はDrawer内のtabbable element間を循環。
+- `Escape`: Cancel可能なclose requestを発行し、close後にtriggerへfocus return。
 
 ## Content Guidelines
 
-- Labelは対象または結果を具体的に書き、状態だけを繰り返さない。
-- Errorは原因と修正方法、Emptyは何がないかと次の一歩を示す。
-- 省略するmetadataにも別経路から到達できるようにする。
+Titleは対象とtaskが分かる名詞句または短い動詞句にします。Close controlはlocaleに合う具体的なlabelを持ちます。長いworkflow、重要な判断、page固有navigationをDrawerへ詰め込みません。
 
 ## Tokens
 
-- semanticColor: `--surface`, `--border`, `--fg`, `--surface-overlay`, `--fg-muted`, `--overlay`, `--focus-ring`
-- spacing: `--sp-4`
-- radius: `--radius-md`
-- motion: `--dur-normal`
-- shadow: `--shadow-overlay`
+`--surface-overlay`, `--border`, `--fg`, `--fg-muted`, `--overlay`, `--sp-3`, `--sp-4`, `--text-label`, `--dur-normal`, `--ease-enter`, `--drawer-w`, `--shadow-overlay`。
 
-Primitive color、raw hex、任意pxをcomponentから直接選びません。
-
-### Token Binding Decisions
-
-| Slot | Source | Scope | Trigger | Reason |
-|---|---|---|---|---|
-| `token.surface.value` | `--surface` | `semantic` | - | Drawerの公開visual contractで用途tokenとして共有する。 |
-| `token.border.value` | `--border` | `semantic` | - | Drawerの公開visual contractで用途tokenとして共有する。 |
-| `token.fg.value` | `--fg` | `semantic` | - | Drawerの公開visual contractで用途tokenとして共有する。 |
-| `token.surface-overlay.value` | `--surface-overlay` | `semantic` | - | Drawerの公開visual contractで用途tokenとして共有する。 |
-| `token.fg-muted.value` | `--fg-muted` | `semantic` | - | Drawerの公開visual contractで用途tokenとして共有する。 |
-| `token.overlay.value` | `--overlay` | `semantic` | - | Drawerの公開visual contractで用途tokenとして共有する。 |
-| `token.shadow-overlay.value` | `--shadow-overlay` | `semantic` | - | Drawerの公開visual contractで用途tokenとして共有する。 |
-| `token.focus-ring.value` | `--focus-ring` | `semantic` | - | Drawerの公開visual contractで用途tokenとして共有する。 |
-| `token.sp-4.value` | `--sp-4` | `semantic` | - | Drawerの公開visual contractで用途tokenとして共有する。 |
-| `token.radius-md.value` | `--radius-md` | `semantic` | - | Drawerの公開visual contractで用途tokenとして共有する。 |
-| `token.dur-normal.value` | `--dur-normal` | `semantic` | - | Drawerの公開visual contractで用途tokenとして共有する。 |
-
-Current coverage: `partial`。HTML showcaseを確認済みの仕様候補として記録し、React package実装時にDOM/state selectorまで結線して`complete`へ移行します。
+全visual slotはContractで`complete` binding済みです。Child controlsのvisual tokenはButton / Icon Button側が所有します。
 
 ## Do / Don't
 
-Do:
+Do: Quick detail、補助form、mobile Sidebarをmodal lifecycle付きの一時surfaceとして構成します。
 
-```tsx
-<Drawer open={open} onClose={close} side="right">
-  <Drawer.Header>MRD-142 の詳細</Drawer.Header>
-  <Drawer.Body>…</Drawer.Body>
-</Drawer>
-```
-
-Don't:
-
-```tsx
-{/* 独立した作業フロー → 専用ページ */}
-<Drawer />
-```
+Don't: `aria-modal="true"`だけを付けて背景を操作可能にする、native `open` attributeをrenderで直接toggleする、close controlを省略する。
 
 ## Prohibited Patterns
 
-- `NO_RAW_HEX_COLOR`に反する実装。
-- `SPACING_FROM_TOKENS_ONLY`に反する実装。
-- `RADIUS_FROM_TOKENS_ONLY`に反する実装。
-- `CONTRAST_AA_MINIMUM`に反する実装。
-- `FOCUS_VISIBLE_REQUIRED`に反する実装。
-- `NO_POSITIVE_TABINDEX`に反する実装。
-- `TARGET_SIZE_MINIMUM`に反する実装。
-- `INTERACTIVE_NAME_REQUIRED`に反する実装。
+- `div role="dialog"`へARIAだけを付け、背景をinertにしない。
+- Native dialogの`open` attributeを直接追加・削除する。
+- Close後のfocusを`body`へ落とす。
+- Backdrop tapまたはswipeだけにdismissを依存する。
+- Fixed 420pxでmobile横overflowを起こす。
+- Raw color、spacing、shadow、width。
 
 ## AI Selection Rules
 
-AIが選ぶ条件:
-
-- 一覧 → 詳細のクイックビュー
-- 補助的な設定・フィルタ
-
-AIが避ける条件:
-
-- 独立した作業フロー → 専用ページ
-
-AIはvariantを意味、sizeをtask密度、stateを実際のsystem stateから選びます。Viewport名だけでvariantやcomponentを分岐しません。
+現在の画面へ戻る前提の補助taskをmodalなside surfaceで完了する場合だけDrawerを選びます。短い判断はDialog、常設領域はSidebar/layout panel、長いworkflowは専用page、trigger近傍の小さな補助UIはPopoverを選びます。
 
 ## Examples
 
 ```tsx
-<Drawer open={open} onClose={close} side="right">
-  <Drawer.Header>MRD-142 の詳細</Drawer.Header>
-  <Drawer.Body>…</Drawer.Body>
+<Drawer
+  trigger={<Button variant="secondary">詳細を表示</Button>}
+  title="MRD-142 の詳細"
+  open={open}
+  onOpenChange={setOpen}
+  footer={<Button fullWidth>Issueを開く</Button>}
+>
+  <IssueSummary issue={issue} />
+</Drawer>
+```
+
+```tsx
+<Drawer
+  trigger={<IconButton label="ナビゲーションを開く" icon={<MenuIcon />} />}
+  title="ナビゲーション"
+>
+  <Sidebar ariaLabel="Primary">…</Sidebar>
 </Drawer>
 ```
 
 ## Implementation Notes
 
-- React packageは今後追加します。現在はsemantic contract、HTML showcase、token binding候補を正本として扱います。
-- Native element、ref forwarding、controlled state、event名はpackage実装時にこのcontractへ同期します。
+Native dialogはportal先でrenderし、controlled/uncontrolled stateを`showModal()`、`requestClose()`、`close()`、`cancel`、`close` eventへ同期します。Backdrop pointerは`event.target === dialog`の場合だけclose requestとして扱います。Reduced motionではside transformを除去します。
+
+### React API Freeze
+
+```ts
+type DrawerProps = Omit<DialogHTMLAttributes<HTMLDialogElement>, 'open' | 'onClose'> & {
+  trigger: ReactElement
+  title: ReactNode
+  children: ReactNode
+  footer?: ReactNode
+  open?: boolean
+  defaultOpen?: boolean // false
+  onOpenChange?: (open: boolean) => void
+  side?: 'inline-start' | 'inline-end' // inline-end
+  initialFocusRef?: RefObject<HTMLElement | null>
+  closeLabel?: string // "閉じる"
+  ref?: ForwardedRef<HTMLDialogElement>
+}
+```
 
 ## Open Questions
 
-- React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。
+Contract上のopen questionはありません。React実装、native dialog lifecycle integration、visual regression完了後にstableへ昇格します。

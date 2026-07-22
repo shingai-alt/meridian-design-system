@@ -321,11 +321,9 @@ def({id:'dialog',name:'Dialog',group:'Feedback',desc:'ユーザーの判断・�
  render:p=>dialogDemo({tone:p.variant==='danger'?'danger':''}),
  code:p=>`<Dialog open={open} onClose={close}>\n  <Dialog.Title>プロジェクトを${p.variant==='danger'?'削除':'作成'}</Dialog.Title>\n  <Dialog.Body>…</Dialog.Body>\n  <Dialog.Footer>\n    <Button variant="ghost" onClick={close}>キャンセル</Button>\n    <Button variant="${p.variant==='danger'?'danger':'primary'}">${p.variant==='danger'?'完全に削除':'作成'}</Button>\n  </Dialog.Footer>\n</Dialog>`,related:['drawer','toast','invite-member-dialog']});
 
-def({id:'drawer',name:'Drawer',group:'Feedback',desc:'画面端からスライドする補助パネル。一覧の文脈を保ったまま詳細を表示する。',
- when:['一覧 → 詳細のクイックビュー','補助的な設定・フィルタ'],notWhen:['独立した作業フロー → 専用ページ'],
- usage:['背後の一覧は見えたままにし、位置関係を保つ。','幅は drawer-width トークン(デフォルト 420px)を使う。'],
- keys:[['Esc','閉じる']],
- render:()=>drawerEl(),code:()=>`<Drawer open={open} onClose={close} side="right">\n  <Drawer.Header>MRD-142 の詳細</Drawer.Header>\n  <Drawer.Body>…</Drawer.Body>\n</Drawer>`,related:['dialog','list-detail-layout']});
+def({id:'drawer',name:'Drawer',group:'Feedback',desc:'現在の画面文脈を視覚的に残しながら、画面端へ一時的な補助taskをmodal表示するside-aligned dialog。',
+ usage:['Native dialogをshowModal()で開き背景を実際にinertにする。','Drawerがmodal lifecycle、childrenがcontent semanticsを所有する。','Close後はtriggerへfocusを戻す。'],
+ render:p=>drawerEl(p),code:()=>`<Drawer\n  trigger={<Button variant="secondary">詳細を表示</Button>}\n  title="MRD-142 の詳細"\n  open={open}\n  onOpenChange={setOpen}\n  footer={<Button fullWidth>Issueを開く</Button>}\n>\n  <IssueSummary issue={issue} />\n</Drawer>`,related:['dialog','sidebar','icon-button','list-detail-layout']});
 
 def({id:'popover',name:'Popover',group:'Feedback',desc:'トリガーに紐づく小さな浮遊パネル。フィルタや補助操作を格納する。',
  when:['フィルタ・簡易フォーム・補足 UI'],notWhen:['テキストのみの補足 → Tooltip','重要な確認 → Dialog'],

@@ -1,0 +1,79 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.drawer",
+  "cycleId": "2026-07-22-components-drawer-02",
+  "supersedesCycleId": "2026-07-13-components-drawer-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-22",
+  "completedAt": "2026-07-22",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/implementation-readiness.json",
+    "components/drawer.md",
+    "design/contracts/components/drawer.contract.json",
+    "components/sidebar.md",
+    "design/contracts/components/sidebar.contract.json",
+    "components/button.md",
+    "design/contracts/components/button.contract.json",
+    "components/icon-button.md",
+    "design/contracts/components/icon-button.contract.json",
+    "js/components-registry.js",
+    "js/ui-builders.js",
+    "index.html",
+    "test/component-specs.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": { "itemId": "components.drawer", "summary": "Drawerのmodality、native dialog lifecycle、trigger/focus relation、Sidebar composition、responsive edge placementを確定する。" },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior"],
+    "questions": ["Drawerをmodalとnon-modalのどちらへ固定するか。", "Native dialogのopen/closeとReact state、focus lifecycleをどう同期するか。", "Mobile Sidebar compositionで責務をどう分離するか。"],
+    "evidence": [
+      { "id": "wai-dialog-modal", "title": "WAI-ARIA APG: Dialog (Modal) Pattern", "url": "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Modal外をinertにし、initial focus、contained Tab sequence、Escape、close後のfocus return、visible close controlを要求する。", "supportedDecisions": ["modal-boundary", "trigger-focus-lifecycle"] },
+      { "id": "html-dialog", "title": "HTML Standard: The dialog element", "url": "https://html.spec.whatwg.org/dev/interactive-elements.html#the-dialog-element", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "showModal()がtop-most modal dialogを表示し、open attributeの手動削除ではclose eventやdocument blockingが壊れる。", "supportedDecisions": ["native-dialog-lifecycle"] },
+      { "id": "wai-aria-dialog", "title": "WAI-ARIA 1.2: dialog role", "url": "https://www.w3.org/TR/wai-aria-1.2/#dialog", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Dialogはaccessible nameを必須とし、modal dialog表示時のfocus管理を求める。", "supportedDecisions": ["modal-boundary", "trigger-focus-lifecycle"] },
+      { "id": "wcag-html-dialog", "title": "WCAG 2.2 Technique H102: Creating modal dialogs with the HTML dialog element", "url": "https://www.w3.org/WAI/WCAG22/Techniques/html/H102", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "HTML dialogとmodal focus order、Escape closeをWCAG techniqueとして示す。", "supportedDecisions": ["native-dialog-lifecycle"] }
+    ],
+    "synthesis": "Drawerをmodalなside-aligned dialogへ限定し、native showModal/close、背景inert、trigger relation、Tab containment、Escape、focus returnを単一lifecycleへ統合した。",
+    "decisionImpact": "Contract 0.2.0、React API Freeze、Showcase、token binding、Sidebar composition boundaryを同じmodal modelへ同期した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    { "id": "modal-boundary", "summary": "Drawerを一時的なmodal supplementary taskへ限定する。", "rationale": "背景との並行操作が必要なnon-modal inspectorと明確に分離するため。" },
+    { "id": "native-dialog-lifecycle", "summary": "Rootをnative dialogへ固定し、showModal()/requestClose()/close()をReact stateへ同期する。", "rationale": "Top layer、background inert、cancel/close eventをplatform semanticsへ委譲するため。" },
+    { "id": "trigger-focus-lifecycle", "summary": "Trigger relation、initial focus、Tab containment、Escape、focus returnをDrawerが所有する。", "rationale": "Sidebarやbody childrenへmodal責務を重複させないため。" },
+    { "id": "responsive-composition", "summary": "Logical sideと100vi/100dvb制約で同じAPIをDesktop/Mobileへ適応する。", "rationale": "Mobile Sidebarでもsemantic contractを複製せずoverflowを防ぐため。" },
+    { "id": "complete-token-binding", "summary": "Surface、backdrop、edge、spacing、motionのvisual slotを公開tokenへ結線する。", "rationale": "React実装時のraw visual decisionを残さないため。" }
+  ],
+  "differences": [
+    { "classification": "cross-layer-conflict", "description": "旧仕様は背景文脈を保つDrawerへaria-modal=trueを付けながら、実際のbackground inertとTab containmentを確定していなかった。", "action": "Modal boundaryとnative dialog lifecycleへ統一した。", "status": "resolved" },
+    { "classification": "missing-contract", "description": "Trigger、title、children、footer、controlled/uncontrolled state、logical side、initial focus、refのReact APIが未確定だった。", "action": "Contract 0.2.0とReact API Freezeへ固定した。", "status": "resolved" },
+    { "classification": "implementation-stale", "description": "Showcaseが固定300pxのdiv role=dialogとinline raw layoutを使っていた。", "action": "Named native dialog、related trigger、open/closed state、tokenized side surfaceへ更新した。", "status": "resolved" }
+  ],
+  "changes": [
+    { "path": "components/drawer.md", "summary": "Modal boundary、native lifecycle、Sidebar composition、API Freezeを確定。" },
+    { "path": "design/contracts/components/drawer.contract.json", "summary": "Contract 0.2.0、runtime、complete bindings、readiness evidenceを追加。" },
+    { "path": "js/ui-builders.js", "summary": "Related trigger、native dialog、title、close control、open/closedを持つShowcaseへ更新。" },
+    { "path": "index.html", "summary": "Logical side、backdrop、scroll regions、viewport-safe sizingをtokenized CSSへ移行。" },
+    { "path": "test/component-specs.test.js", "summary": "Native dialog、trigger relation、state、API、focus lifecycleの回帰testを追加。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js", "status": "passed", "notes": "23件が通過し、Contract、Showcase、React API Freeze、native dialog、trigger relation、open/closed stateの同期を確認した。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "1280×720と390×844のstatic Showcaseでnative named dialog、trigger relation、open/closed、logical edge、theme/contrast/3 density、横overflowなし、最小target 26px以上、console errorなしを確認した。Native showModal/inert/focus lifecycleはReact integrationのstable exit criteriaとして残す。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、130 review cycles、generated artifacts、9/74 implementation-ready gateを含む全155テストが通過した。" }
+  ],
+  "openQuestions": [
+    { "question": "React実装、native dialog lifecycle integration、visual regressionを完了しstableへ昇格する。", "owner": "components.drawer", "exitCriteria": "showModal/close、inert、focus loop/return、全context baselineがCIで通ること。" }
+  ],
+  "acknowledgedImpacts": [
+    "2026-07-22-components-sidebar-02",
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-content-01",
+    "2026-07-13-foundations-elevation-01",
+    "2026-07-13-foundations-layout-01",
+    "2026-07-13-foundations-motion-01"
+  ],
+  "impactedItems": [],
+  "nextRecommendedItems": ["components.dialog"]
+}
