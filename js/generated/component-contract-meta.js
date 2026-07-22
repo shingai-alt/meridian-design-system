@@ -11938,10 +11938,15 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "見出し・本文・補助テキストの一貫した実装"
+        "Native heading、paragraph、generic inline/block textへMeridianのtypography roleを適用するとき。",
+        "短いUI本文、補助説明、metadataのneutral emphasisをdefault、muted、subtleで揃えるとき。",
+        "Semantic elementとvisual type scaleを独立して選ぶ必要があるとき。"
       ],
       "whenNotToUse": [
-        "数値の等幅表示 → Numeric スタイル"
+        "Link、Button、form label、status、errorなど専用componentがsemanticsとinteractionを所有する場合は、そのcomponentを使う。",
+        "複数paragraphのrich prose layout、list、blockquote、code blockにはnative structureまたは専用content componentを使う。",
+        "比較する数値にはNumeric typography、code/log/diffにはcode typographyまたはCode Blockを使う。",
+        "Ellipsisやline clampで重要情報を省略する目的には使わない。"
       ],
       "principles": [
         1,
@@ -11955,29 +11960,39 @@ const COMPONENT_CONTRACTS={
       {
         "part": "root",
         "required": true,
-        "description": "Semantic display root."
+        "description": "asで選ぶnative span、p、div、h1〜h6。"
       },
       {
         "part": "content",
         "required": true,
-        "description": "Primary perceivable content."
-      },
-      {
-        "part": "supporting",
-        "required": false,
-        "description": "Optional metadata or visual reinforcement."
+        "description": "空でないperceivable textと必要に応じたinline semantic markup。"
       }
     ],
     "variants": [
-      "default"
+      "display",
+      "heading-1",
+      "heading-2",
+      "heading-3",
+      "heading-4",
+      "heading-5",
+      "reading",
+      "body-lg",
+      "body",
+      "body-sm",
+      "label-lg",
+      "label",
+      "label-sm",
+      "caption"
     ],
     "sizes": [],
     "states": [
       {
         "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "description": "指定したnative semantics、typography variant、toneで静的contentを表示する。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "Rootをfocusableまたはinteractiveにしない。",
+          "Native elementとcontentをvariant/toneから独立して維持する。",
+          "Contentをavailable width内でwrapする。"
         ]
       }
     ],
@@ -11987,82 +12002,143 @@ const COMPONENT_CONTRACTS={
         "type": "ReactNode",
         "required": true,
         "default": null,
-        "description": "Componentの主要content。"
+        "description": "空でないperceivable textと任意のinline semantic markup。"
+      },
+      {
+        "name": "as",
+        "type": "\"span\" | \"p\" | \"div\" | \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\"",
+        "required": false,
+        "default": "span",
+        "description": "Content hierarchyから選ぶnative root element。"
+      },
+      {
+        "name": "variant",
+        "type": "TextVariant",
+        "required": false,
+        "default": "body",
+        "description": "Semantic elementを変更しないvisual typography role。"
+      },
+      {
+        "name": "tone",
+        "type": "\"default\" | \"muted\" | \"subtle\"",
+        "required": false,
+        "default": "default",
+        "description": "Neutral foreground emphasis。Statusやinteraction stateには使わない。"
+      },
+      {
+        "name": "ref",
+        "type": "PolymorphicRef<TextElement>",
+        "required": false,
+        "default": null,
+        "description": "asで選択したnative rootへforwardするref。"
       }
     ],
     "tokenRefs": {
       "semanticColor": [
-        "--border",
         "--fg",
         "--fg-muted",
-        "--surface"
+        "--fg-subtle"
       ],
       "typography": [
-        "--text-body",
-        "--text-small"
+        "--type-display",
+        "--type-h1",
+        "--type-h2",
+        "--type-h3",
+        "--type-h4",
+        "--type-h5",
+        "--type-reading",
+        "--type-body-lg",
+        "--type-body",
+        "--type-body-sm",
+        "--type-label-lg",
+        "--type-label",
+        "--type-label-sm",
+        "--type-caption"
       ]
     },
     "accessibility": {
       "requirements": [
-        "表示専用rootを不要にtab順へ追加しない。",
-        "状態は色だけで表さずtext、icon、shapeを併用する。"
+        "Headingは周辺content hierarchyに合うh1〜h6をasで選び、topicまたはpurposeを説明する。",
+        "Paragraphはp、inline textはspanを使い、divを見出しやparagraphの代替にしない。",
+        "Toneを重要度や状態の唯一の手段にせずmeaningful textまたはowner semanticsを併用する。",
+        "Normal textは背景との4.5:1 minimumを満たす公開foreground tokenを使う。",
+        "200% text enlargement、320 CSS px相当のreflow、text-spacing overrideでcontentをclip、overlap、非表示にしない。"
       ],
       "aria": [
-        "Content hierarchyに合うnative heading、paragraph、spanを選ぶ。"
+        "Heading variantだけでrole=headingやaria-levelを追加せずnative headingを使う。",
+        "Text rootへbutton/link/status/alert role、aria-live、aria-labelをcomponent責務として追加しない。",
+        "Content languageがpageの既定言語と異なる場合はlangをnative rootまたはinline childへforwardする。"
       ],
       "focus": [
-        "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+        "Text rootをTab順へ追加しない。",
+        "Text単体へclickまたはkeyboard activationを追加しない。",
+        "Nested interactive contentをTextへ持ち込まずowner componentでcompositionする。"
       ]
     },
     "keyboardInteractions": [],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "見出し・本文・補助テキストの一貫した実装",
+        "id": "semantic-heading",
+        "title": "Semantic heading",
+        "description": "Section outlineとvisual hierarchyを独立して選ぶ。",
         "recommended": [
-          "サイズ・行間は直接指定せず、type scale のロールを選ぶ。"
+          "asを周辺outlineから選ぶ。",
+          "variantをvisual hierarchyから選ぶ。"
         ],
         "avoid": [
-          "数値の等幅表示 → Numeric スタイル"
+          "heading variantだけでprogrammatic headingになると仮定する。",
+          "Visual sizeを理由にheading levelを飛ばす。"
+        ]
+      },
+      {
+        "id": "body-and-metadata",
+        "title": "Body and metadata",
+        "description": "短いUI本文と補助metadataをneutral toneで階層化する。",
+        "recommended": [
+          "Paragraphへp、inline metadataへspanを使う。",
+          "重要instructionはdefault toneに保つ。"
+        ],
+        "avoid": [
+          "Subtle toneへerrorや必須条件を落とす。",
+          "Captionをprimary contentやcontrol labelへ使う。"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのText。",
+        "summary": "Native inline/block flowと親containerのavailable widthに従う。",
         "rules": [
-          "Contentと周辺layoutに応じたintrinsic sizeを使う。",
-          "Viewportだけを理由にdensityを変更しない。"
+          "Headingとbodyのsemantic orderをvisual placementと一致させる。",
+          "Reading measureとblock gapは親layoutが所有する。"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "Textへfixed width/heightやabsolute positioningを持たせる。"
         ]
       },
       "mobile": {
-        "summary": "MobileでのText。",
+        "summary": "同じelement、content、variant、toneを維持してwrapする。",
         "rules": [
-          "意味とDOM順を変えず、wrapとavailable widthで適応する。",
-          "省略した情報へ別経路から到達できるようにする。"
+          "320 CSS px相当で長いcontentをoverflowさせない。",
+          "200% text enlargementとtext-spacing overrideでclip/overlapを発生させない。"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "Viewportに応じてsemantic element、content、variantを変更する。",
+          "Nowrap、line clamp、ellipsisで必須contentを隠す。"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのText。",
+        "summary": "Textはpointer targetを持たない表示専用contentとして維持する。",
         "rules": [
-          "表示専用rootをtab順へ追加しない。",
-          "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+          "Text rootをTab順やpointer targetへ追加しない。",
+          "Interactive ownerが24px minimumと主要touch操作44px以上を保証する。"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "Textのglyph領域だけをhidden click targetにする。",
+          "Pointer/gestureだけのbehaviorを追加する。"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "text-field": {
     "id": "text-field",

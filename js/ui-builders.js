@@ -234,7 +234,23 @@ function cmdMenuDemo(){const listId=nextUiDemoId('command-list');return `<div cl
   <button type="button" role="option" aria-selected="false" class="it">${I.zap}ダッシュボードへ移動<span class="k">G D</span></button>
   <button type="button" role="option" aria-selected="false" class="it">${I.gear}設定へ移動<span class="k">G S</span></button></div></div>`}
 function productSwitcherEl(){return `<div class="panel" role="listbox" aria-label="製品を切り替え" style="width:230px;padding:6px">${[['Meridian Docs','デザインシステム',true],['Acme Console','管理ツール',false],['Acme Analytics','分析',false]].map(([n,d,on])=>`<button type="button" role="option" aria-selected="${on}" class="tsb-item ${on?'on':''}" style="width:100%">${avatar({name:n,size:'xs'})}<span style="flex:1;text-align:left">${n}<span style="display:block;font-size:var(--text-micro);color:var(--fg-subtle)">${d}</span></span>${on?I.check:''}</button>`).join('')}</div>`}
-function textDemo(){return `<div style="max-width:380px"><div style="font-size:19px;font-weight:600;letter-spacing:-.015em;margin-bottom:6px">見出しのテキスト</div><p style="color:var(--fg);margin-bottom:6px;font-size:var(--text-body)">本文のテキスト。UI では安定した読みやすさを優先し、和欧混植でも破綻しないスケールを使います。</p><p style="font-size:var(--text-small);color:var(--fg-muted)">補助テキスト — メタ情報や説明に使用します。</p></div>`}
+function textDemo(p={}){const variants=new Set(['display','heading-1','heading-2','heading-3','heading-4','heading-5','reading','body-lg','body','body-sm','label-lg','label','label-sm','caption']);
+  const elements=new Set(['span','p','div','h1','h2','h3','h4','h5','h6']),tones=new Set(['default','muted','subtle']);
+  const scenario=p.scenario||'default',variant=variants.has(p.variant)?p.variant:'body';let tone=tones.has(p.tone)?p.tone:'default',as=elements.has(p.as)?p.as:'span';
+  let content=p.content||'本文のテキスト';
+  if(scenario==='semantic-heading'){as='h3';content='アクセシビリティ';}
+  else if(scenario==='paragraph'){as='p';content='変更は自動的に保存されます。';}
+  else if(scenario==='inline'){as='span';content='更新済み';}
+  else if(scenario==='default-tone'){tone='default';content='主要な本文';}
+  else if(scenario==='muted-tone'){tone='muted';content='補助説明';}
+  else if(scenario==='subtle-tone'){tone='subtle';content='2分前に更新';}
+  else if(scenario==='long-unbroken-content'||scenario==='narrow-viewport'){as='p';content='https://example.com/workspaces/meridian-design-system/accessibility/text-wrapping-verification';}
+  else if(scenario==='text-spacing'){as='p';content='文字間隔と行間を変更しても、内容は欠けずに自然に折り返します。';}
+  else if(scenario==='text-enlargement'){as='p';content='文字を200%へ拡大しても、内容は欠けずに自然に折り返します。';}
+  const userOverride=scenario==='text-spacing'?' style="line-height:1.5;letter-spacing:.12em;word-spacing:.16em;margin-block-end:2em" data-user-spacing-override':scenario==='text-enlargement'?' style="font-size:200%" data-user-text-scale="200"':'';
+  const attrs=`class="textc" data-component="text" data-variant="${variant}" data-tone="${tone}" data-meridian-state="default" data-scenario="${esc(scenario)}"${userOverride}`;
+  if(scenario==='mixed-language')return `<p ${attrs} lang="ja">Meridianでは<span lang="en">Design System</span>の用語を文脈に応じて示します。</p>`;
+  return `<${as} ${attrs}>${esc(content)}</${as}>`}
 function linkDemo(p={}){const{state='default',variant='inline',external,download,newTab}=p;
   const href=external?'https://www.w3.org/WAI/':download?'/reports/q2.pdf':'/docs/accessibility';
   const label=download?'Q2レポート（PDF）':external?'WAIガイドライン':'アクセシビリティ指針';

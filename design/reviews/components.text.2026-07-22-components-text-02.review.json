@@ -1,0 +1,201 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.text",
+  "cycleId": "2026-07-22-components-text-02",
+  "supersedesCycleId": "2026-07-13-components-text-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-22",
+  "completedAt": "2026-07-22",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/implementation-readiness.json",
+    "components/text.md",
+    "design/contracts/components/text.contract.json",
+    "tokens/src/typography.json",
+    "tokens/build/tokens.css",
+    "js/generated/typography-token-meta.js",
+    "js/components-registry.js",
+    "js/ui-builders.js",
+    "index.html",
+    "test/component-specs.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "components.text",
+      "summary": "Textのnative elementとvisual typographyの責務分離、heading/paragraph semantics、neutral tone、200% enlargement、320 CSS px reflow、text-spacing overrideをReact実装前Contractとして確定する。"
+    },
+    "triggers": [
+      "standard-or-regulation",
+      "accessibility-or-safety",
+      "new-pattern-or-api",
+      "cross-platform-behavior"
+    ],
+    "questions": [
+      "Textのvisual variantがheading/paragraph elementを自動選択するか、asと独立させるか。",
+      "Textが所有するtoneと、専用componentへ委譲するstatus/interaction colorの境界はどこか。",
+      "200% enlargement、320 CSS px、text-spacing overrideで失われない最小runtime/CSS contractは何か。"
+    ],
+    "evidence": [
+      {
+        "id": "html-headings",
+        "title": "HTML Standard: Sections",
+        "url": "https://html.spec.whatwg.org/dev/sections.html",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "h1〜h6はsection hierarchyに対応するheading levelを持つnative elementsとして定義される。",
+        "supportedDecisions": ["semantic-visual-separation", "native-heading-selection"]
+      },
+      {
+        "id": "wcag-headings-labels",
+        "title": "WCAG 2.2 Understanding 2.4.6: Headings and Labels",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "Headingはtopicまたはpurposeを説明し、content organizationとnavigationを支える。",
+        "supportedDecisions": ["native-heading-selection", "semantic-visual-separation"]
+      },
+      {
+        "id": "wcag-reflow",
+        "title": "WCAG 2.2 Understanding 1.4.10: Reflow",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/reflow.html",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "Horizontal writing contentは320 CSS px相当で情報や機能を失わず、二方向scrollなしにreflowする。",
+        "supportedDecisions": ["intrinsic-wrap"]
+      },
+      {
+        "id": "wcag-text-spacing",
+        "title": "WCAG 2.2 Understanding 1.4.12: Text Spacing",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/text-spacing.html",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "利用者がline、paragraph、letter、word spacingを指定値へoverrideしてもcontent/functionalityを失わないことを求める。",
+        "supportedDecisions": ["spacing-override-probe", "intrinsic-wrap"]
+      },
+      {
+        "id": "wcag-resize-text",
+        "title": "WCAG 2.2 Technique G179: No loss when text resizes",
+        "url": "https://www.w3.org/WAI/WCAG22/Techniques/general/G179.html",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "Textを200%へ拡大したときにcontent/functionalityが失われない検査方法を示す。",
+        "supportedDecisions": ["text-enlargement-probe", "intrinsic-wrap"]
+      }
+    ],
+    "synthesis": "Textを非interactive polymorphic primitiveへ限定し、asがnative semantics、variantが14のvisual typography role、toneが3段のneutral foregroundを所有する。Variantはelementを変更せず、fixed geometry/truncationを持たず利用者overrideへreflowする。",
+    "decisionImpact": "Contract 0.2.0、polymorphic React API Freeze、14 variants、3 tones、native Showcase、complete token bindings、enlargement/spacing/reflow scenariosを確定した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    {
+      "id": "selection-boundary",
+      "summary": "Textを短いnative textへtypography/toneを適用するprimitiveに限定し、action、form label、status/error、rich prose、code/numericと分離する。",
+      "rationale": "Semantic/interaction ownerをgeneric Textへ吸収しないため。"
+    },
+    {
+      "id": "semantic-visual-separation",
+      "summary": "asがnative element、variantがvisual typographyを所有し、variantからelementを推論しない。",
+      "rationale": "Visual sizeとdocument outlineを独立して正しく選べるため。"
+    },
+    {
+      "id": "native-heading-selection",
+      "summary": "Headingはh1〜h6をasで明示し、role=heading/aria-levelによる代替を標準pathにしない。",
+      "rationale": "Native heading semanticsとoutlineを保つため。"
+    },
+    {
+      "id": "neutral-tone-only",
+      "summary": "toneをdefault/muted/subtleへ限定し、success/warning/danger/disabled/selectedはowner componentへ委譲する。",
+      "rationale": "Neutral emphasisとsystem stateをcolorだけで混同しないため。"
+    },
+    {
+      "id": "intrinsic-wrap",
+      "summary": "Textはmargin resetとoverflow-wrap:anywhereだけを持ち、width/height/clamp/ellipsisを所有しない。",
+      "rationale": "Parent layout ownershipを保ち、long contentとnarrow viewportでreflowするため。"
+    },
+    {
+      "id": "spacing-override-probe",
+      "summary": "WCAG指定のline/letter/word/paragraph spacingをShowcase scenarioで適用しlossを検査する。",
+      "rationale": "Authored typographyが利用者spacing overrideを妨げないことを実装前に確認するため。"
+    },
+    {
+      "id": "text-enlargement-probe",
+      "summary": "200% font-size overrideをShowcase scenarioとして分離し320pxでclip/overflowを検査する。",
+      "rationale": "Browser zoom APIに依存せずText rootのenlargement耐性を直接測るため。"
+    },
+    {
+      "id": "complete-token-binding",
+      "summary": "14 typography variantsと3 tonesをsource composite/semantic tokenへ1対1で結線する。",
+      "rationale": "React実装時にfont/color decisionを残さないため。"
+    }
+  ],
+  "differences": [
+    {
+      "classification": "cross-layer-conflict",
+      "description": "旧APIはrole=heading-3/body/body-smallをvisual roleとして使い、HTMLはgeneric divとraw 19px/negative trackingを使ってsemantic elementとtype tokenが不一致だった。",
+      "action": "as/variant/toneへ分離しnative h1〜h6/p/spanと公開--type-* tokenへ確定した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-contract",
+      "description": "Polymorphic element/ref、native attribute forwarding、14 variants、3 tones、noninteractive boundaryが未確定だった。",
+      "action": "React API Freeze、runtime relations、selection rules、negative examplesへ固定した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "implementation-stale",
+      "description": "旧Showcaseはraw inline style、generic heading div、3固定samplesだけでnative semantics、全type role、tone、language、reflowを表現していなかった。",
+      "action": "Native builder、全variant、tone、mixed-language、long URL、text spacing、200% enlargement scenariosへ更新した。",
+      "status": "resolved"
+    },
+    {
+      "classification": "missing-token",
+      "description": "旧bindingは不要なsurface/borderとbody/smallだけを列挙し、source typography scaleの大半が未結線だった。",
+      "action": "14 composite typography token、3 foreground token、literal margin/wrapへcomplete bindingした。",
+      "status": "resolved"
+    }
+  ],
+  "changes": [
+    { "path": "components/text.md", "summary": "Selection boundary、as/variant/tone API、native semantics、reflow/spacing rulesを確定。" },
+    { "path": "design/contracts/components/text.contract.json", "summary": "Contract 0.2.0、readiness、runtime、complete bindings、negative examplesを追加。" },
+    { "path": "js/ui-builders.js", "summary": "Native element、14 variants、3 tones、language、long/reflow/override scenariosを持つShowcaseへ更新。" },
+    { "path": "js/components-registry.js", "summary": "Variant controls、usage、Do/Don't、sample API、related ownershipを確定Contractへ同期。" },
+    { "path": "index.html", "summary": "公開--type-* compositesとforeground tokenだけを使うText CSSを追加。" },
+    { "path": "test/component-specs.test.js", "summary": "API、native elements、all variants/tones、language、reflow、noninteractive semanticsの回帰testを追加。" },
+    { "path": "design/system-registry.json", "summary": "最新review cycleを台帳へ接続。" }
+  ],
+  "validations": [
+    {
+      "command": "node --test test/component-specs.test.js test/implementation-readiness.test.js",
+      "status": "passed",
+      "notes": "35件が通過し、Contract、API、native semantics、14 variants、3 tones、language/reflow scenarios、共通gateを確認した。"
+    },
+    {
+      "command": "Automated browser viewport QA",
+      "status": "passed",
+      "notes": "Desktop 1280pxで14 variants、native h3/p/span、Text由来interactive node 0件を確認。320x720でdocument scroll width 320px、text-spacing probe 254/254px、200% enlargement probe 254/254px、long URL probe 254/254pxで横overflow 0件。Light/Standard/DefaultとDark/High/Comfortableでdefault/muted/subtle foregroundとwrapを維持し、console warning/error 0件。"
+    },
+    {
+      "command": "npm run check:system",
+      "status": "passed",
+      "notes": "Schema、review cycles、generated artifacts、16/74 implementation-ready gateを含む全163テストが通過した。"
+    }
+  ],
+  "openQuestions": [
+    {
+      "question": "React polymorphic implementation、native element/ref type tests、required scenariosのCI visual regressionを完了しstableへ昇格する。",
+      "owner": "components.text",
+      "exitCriteria": "Contract 0.2.0のas/variant/tone/ref、global attributes、全context baselineがCIで通ること。"
+    }
+  ],
+  "acknowledgedImpacts": [],
+  "impactedItems": [],
+  "nextRecommendedItems": ["components.tag"]
+}

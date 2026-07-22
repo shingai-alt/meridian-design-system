@@ -219,6 +219,23 @@ img,svg{display:block}
 .linkc.sim-focus{outline:var(--focus-w) solid var(--focus-ring);outline-offset:2px;border-radius:var(--radius-2xs)}
 .linkc>svg{width:1em;height:1em;flex:none}
 
+.textc{margin:0;color:var(--fg);overflow-wrap:anywhere}
+.textc[data-tone="muted"]{color:var(--fg-muted)}.textc[data-tone="subtle"]{color:var(--fg-subtle)}
+.textc[data-variant="display"]{font:var(--type-display);letter-spacing:var(--type-display-letter-spacing)}
+.textc[data-variant="heading-1"]{font:var(--type-h1);letter-spacing:var(--type-h1-letter-spacing)}
+.textc[data-variant="heading-2"]{font:var(--type-h2);letter-spacing:var(--type-h2-letter-spacing)}
+.textc[data-variant="heading-3"]{font:var(--type-h3);letter-spacing:var(--type-h3-letter-spacing)}
+.textc[data-variant="heading-4"]{font:var(--type-h4);letter-spacing:var(--type-h4-letter-spacing)}
+.textc[data-variant="heading-5"]{font:var(--type-h5);letter-spacing:var(--type-h5-letter-spacing)}
+.textc[data-variant="reading"]{font:var(--type-reading);letter-spacing:var(--type-reading-letter-spacing)}
+.textc[data-variant="body-lg"]{font:var(--type-body-lg);letter-spacing:var(--type-body-lg-letter-spacing)}
+.textc[data-variant="body"]{font:var(--type-body);letter-spacing:var(--type-body-letter-spacing)}
+.textc[data-variant="body-sm"]{font:var(--type-body-sm);letter-spacing:var(--type-body-sm-letter-spacing)}
+.textc[data-variant="label-lg"]{font:var(--type-label-lg);letter-spacing:var(--type-label-lg-letter-spacing)}
+.textc[data-variant="label"]{font:var(--type-label);letter-spacing:var(--type-label-letter-spacing)}
+.textc[data-variant="label-sm"]{font:var(--type-label-sm);letter-spacing:var(--type-label-sm-letter-spacing)}
+.textc[data-variant="caption"]{font:var(--type-caption);letter-spacing:var(--type-caption-letter-spacing)}
+
 .badge{display:inline-flex;align-items:center;gap:4px;font-size:var(--text-micro);font-weight:550;padding:1px 8px;border-radius:var(--radius-full);border:1px solid transparent;line-height:1.7}
 .badge[data-tone="neutral"]{background:var(--surface-muted);color:var(--fg-muted);border-color:var(--border)}
 .badge[data-tone="primary"]{background:var(--primary-subtle);color:var(--primary)}

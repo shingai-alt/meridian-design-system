@@ -331,6 +331,76 @@ test('Link showcase keeps destination semantics and communicates non-default out
   assert.match(indexSource, /\.linkc:focus-visible,\.linkc\.sim-focus\{text-decoration-line:underline/);
 });
 
+test('Text is implementation-ready with independent native semantics, typography, and tone', () => {
+  const text = contracts.find((contract) => contract.id === 'text');
+  assert.equal(text.status, 'draft');
+  assert.equal(text.contractVersion, '0.2.0');
+  assert.equal(text.implementationReadiness.status, 'ready');
+  assert.deepEqual(Object.keys(text.variants), [
+    'display', 'heading-1', 'heading-2', 'heading-3', 'heading-4', 'heading-5',
+    'reading', 'body-lg', 'body', 'body-sm', 'label-lg', 'label', 'label-sm', 'caption',
+  ]);
+  assert.deepEqual(text.props.map(({ name }) => name), ['children', 'as', 'variant', 'tone', 'ref']);
+  assert.equal(text.props.find(({ name }) => name === 'as').default, 'span');
+  assert.equal(text.props.find(({ name }) => name === 'variant').default, 'body');
+  assert.equal(text.props.find(({ name }) => name === 'tone').default, 'default');
+  assert.match(text.props.find(({ name }) => name === 'ref').type, /PolymorphicRef/);
+  assert.deepEqual(text.runtime.rootElements, ['span', 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
+  assert.ok(text.runtime.relations.includes('semantic-visual-independence'));
+  assert.ok(text.runtime.relations.includes('native-global-props-passthrough'));
+  assert.deepEqual(text.keyboardInteractions, []);
+  assert.equal(text.tokenBindings.coverage, 'complete');
+  assert.deepEqual(text.tokenBindings.unboundSlots, []);
+  assert.deepEqual(text.openQuestions, []);
+
+  const typographySources = new Set(text.tokenBindings.bindings
+    .filter(({ slot }) => slot.endsWith('.typography'))
+    .map(({ source }) => source));
+  assert.deepEqual([...typographySources], [
+    '--type-display', '--type-h1', '--type-h2', '--type-h3', '--type-h4', '--type-h5',
+    '--type-reading', '--type-body-lg', '--type-body', '--type-body-sm',
+    '--type-label-lg', '--type-label', '--type-label-sm', '--type-caption',
+  ]);
+});
+
+test('Text showcase preserves native elements, token roles, language, tone, and reflow content', () => {
+  const component = renderedComponents.find(({ id }) => id === 'text');
+  const base = { ...renderProps(component), variant: 'body', content: '本文のテキスト' };
+  const normal = component.render(base);
+  const heading = component.render({ ...base, variant: 'heading-2', scenario: 'semantic-heading' });
+  const paragraph = component.render({ ...base, scenario: 'paragraph' });
+  const inline = component.render({ ...base, scenario: 'inline' });
+  const mixedLanguage = component.render({ ...base, scenario: 'mixed-language' });
+  const longContent = component.render({ ...base, scenario: 'long-unbroken-content' });
+  const textEnlargement = component.render({ ...base, scenario: 'text-enlargement' });
+  const muted = component.render({ ...base, scenario: 'muted-tone' });
+  const subtle = component.render({ ...base, scenario: 'subtle-tone' });
+
+  assert.match(normal, /^<span class="textc"[^>]+data-variant="body"[^>]+data-tone="default"/);
+  assert.match(heading, /^<h3 class="textc"[^>]+data-variant="heading-2"/);
+  assert.match(paragraph, /^<p class="textc"/);
+  assert.match(inline, /^<span class="textc"/);
+  assert.match(mixedLanguage, /^<p class="textc"[^>]+lang="ja">[^<]+<span lang="en">Design System<\/span>/);
+  assert.match(longContent, /text-wrapping-verification/);
+  assert.match(textEnlargement, /style="font-size:200%" data-user-text-scale="200"/);
+  assert.match(muted, /data-tone="muted"/);
+  assert.match(subtle, /data-tone="subtle"/);
+  for (const html of [normal, heading, paragraph, inline, mixedLanguage, longContent, textEnlargement, muted, subtle]) {
+    assert.doesNotMatch(html, /(?:tabindex|role="(?:button|link|heading|status|alert)"|aria-live|onclick)=/i);
+  }
+  for (const variant of component.variants) {
+    assert.match(component.render({ ...base, variant }), new RegExp(`data-variant="${variant}"`));
+  }
+  assert.match(indexSource, /\.textc\{margin:0;color:var\(--fg\);overflow-wrap:anywhere\}/);
+  assert.match(indexSource, /\.textc\[data-tone="muted"\]\{color:var\(--fg-muted\)\}/);
+  for (const [variant, token] of Object.entries({
+    display: 'display', 'heading-1': 'h1', 'heading-2': 'h2', 'heading-3': 'h3',
+    'heading-4': 'h4', 'heading-5': 'h5', reading: 'reading', 'body-lg': 'body-lg',
+    body: 'body', 'body-sm': 'body-sm', 'label-lg': 'label-lg', label: 'label',
+    'label-sm': 'label-sm', caption: 'caption',
+  })) assert.match(indexSource, new RegExp(`\\.textc\\[data-variant="${variant}"\\]\\{font:var\\(--type-${token}\\)`));
+});
+
 test('Tooltip is implementation-ready as a non-interactive description popup', () => {
   const tooltip = contracts.find((contract) => contract.id === 'tooltip');
   assert.equal(tooltip.contractVersion, '0.2.0');

@@ -76,10 +76,13 @@ def({id:'link',name:'Link',group:'Core',desc:'現在の文脈から別のURLま�
  usage:['Inline Linkは通常時からunderlineを表示する。','Externalとnew-tabを分離し、target=_blankではnoopenerと補足textを付ける。','Disabled Linkは作らない。'],
  render:p=>linkDemo(p),code:p=>`<Link\n  href="${p.external?'https://www.w3.org/WAI/':p.download?'/reports/q2.pdf':'/docs/accessibility'}"\n  variant="${p.variant||'inline'}"${p.external?'\n  external':''}${p.download?'\n  download':''}${p.newTab?'\n  target="_blank"':''}\n>\n  ${p.download?'Q2レポート（PDF）':p.external?'WAIガイドライン':'アクセシビリティ指針'}\n</Link>`,related:['button','breadcrumb','navigation-item']});
 
-def({id:'text',name:'Text',group:'Core',desc:'タイポグラフィトークンをコンポーネント化した基本テキスト。',
- when:['見出し・本文・補助テキストの一貫した実装'],notWhen:['数値の等幅表示 → Numeric スタイル'],
- usage:['サイズ・行間は直接指定せず、type scale のロールを選ぶ。','色は foreground / foreground-muted / foreground-subtle の 3 段で管理する。'],
- render:()=>textDemo(),code:()=>`<Text role="heading-3">見出し</Text>\n<Text role="body">本文テキスト</Text>\n<Text role="body-small" tone="muted">補助テキスト</Text>`,related:['typography']});
+def({id:'text',name:'Text',group:'Core',desc:'Native text semanticsを保ったまま、公開typography roleとneutral foreground toneを適用する非interactive primitive。',
+ variants:['display','heading-1','heading-2','heading-3','heading-4','heading-5','reading','body-lg','body','body-sm','label-lg','label','label-sm','caption'],
+ texts:[['content','Content','本文のテキスト']],
+ usage:['asがnative semantics、variantがvisual typography、toneがneutral emphasisを所有する。','Heading variantはroot elementを変更しない。','Text enlargement、narrow reflow、text-spacing overrideでcontentを失わない。'],
+ dos:[[()=>textDemo({variant:'heading-2',scenario:'semantic-heading'}),'Native headingとvisual variantを明示する。'],[()=>textDemo({variant:'body',scenario:'text-spacing'}),'利用者のtext-spacing overrideでもclipせずwrapする。'],[()=>textDemo({variant:'body',scenario:'text-enlargement'}),'200%文字拡大でもclipせずwrapする。'],[()=>`${textDemo({variant:'body',scenario:'default-tone'})} · ${textDemo({variant:'body',scenario:'muted-tone'})} · ${textDemo({variant:'caption',scenario:'subtle-tone'})}`,'Neutral toneは本文、補助説明、metadataの順で使う。'],[()=>textDemo({variant:'body',scenario:'long-unbroken-content'}),'長いURLもavailable width内で折り返す。']],
+ donts:[[()=>'<span class="textc" data-variant="heading-2" role="heading" aria-level="2">見出し</span>','Native headingを使える文脈でARIA headingへ置き換えない。']],
+ render:p=>textDemo(p),code:p=>`<Text\n  as="${p.variant==='display'?'h1':(p.variant||'body').startsWith('heading-')?'h2':'p'}"\n  variant="${p.variant||'body'}"\n>\n  ${esc(p.content||'本文のテキスト')}\n</Text>`,related:['typography','link','button','form-field','badge','code-block']});
 
 def({id:'badge',name:'Badge',group:'Core',desc:'状態やカテゴリを示す小さなラベル。読み取り専用で、操作は持たない。',
  variants:['neutral','primary','success','warning','danger','info'],states:['default'],

@@ -1,230 +1,213 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready",
+    "policyVersion": "0.1.0",
+    "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/text.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/text.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "states", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "negativeExamples", "design/reviews/components.text.2026-07-22-components-text-02.review.json"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["variants", "tokenBindings", "index.html#textc"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/text.md#responsive-viewport-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#text", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.text.2026-07-22-components-text-02.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": [
+      "React polymorphic TextをContract 0.2.0どおりに実装する。",
+      "Native element/ref type testsとrequired scenariosのCI visual regressionを追加する。"
+    ]
+  },
   "id": "text",
   "name": "Text",
   "status": "draft",
   "category": "core",
-  "description": "タイポグラフィトークンをコンポーネント化した基本テキスト。",
+  "description": "Native text semanticsを保ったまま、公開typography roleとneutral foreground toneを適用する非interactive primitive。",
   "source": {
     "humanDoc": "components/text.md",
     "registry": "js/components-registry.js#text"
   },
   "intent": {
     "whenToUse": [
-      "見出し・本文・補助テキストの一貫した実装"
+      "Native heading、paragraph、generic inline/block textへMeridianのtypography roleを適用するとき。",
+      "短いUI本文、補助説明、metadataのneutral emphasisをdefault、muted、subtleで揃えるとき。",
+      "Semantic elementとvisual type scaleを独立して選ぶ必要があるとき。"
     ],
     "whenNotToUse": [
-      "数値の等幅表示 → Numeric スタイル"
+      "Link、Button、form label、status、errorなど専用componentがsemanticsとinteractionを所有する場合は、そのcomponentを使う。",
+      "複数paragraphのrich prose layout、list、blockquote、code blockにはnative structureまたは専用content componentを使う。",
+      "比較する数値にはNumeric typography、code/log/diffにはcode typographyまたはCode Blockを使う。",
+      "Ellipsisやline clampで重要情報を省略する目的には使わない。"
     ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "root",
-      "required": true,
-      "description": "Semantic display root."
-    },
-    {
-      "part": "content",
-      "required": true,
-      "description": "Primary perceivable content."
-    },
-    {
-      "part": "supporting",
-      "required": false,
-      "description": "Optional metadata or visual reinforcement."
-    }
+    { "part": "root", "required": true, "description": "asで選ぶnative span、p、div、h1〜h6。" },
+    { "part": "content", "required": true, "description": "空でないperceivable textと必要に応じたinline semantic markup。" }
   ],
   "variants": {
-    "default": {
-      "intent": "標準文脈。",
-      "tokenRefs": {},
-      "states": {}
-    }
+    "display": { "intent": "Product/pageの強い最上位title treatment。", "tokenRefs": { "typography": "--type-display" }, "states": {} },
+    "heading-1": { "intent": "画面の主見出しtreatment。", "tokenRefs": { "typography": "--type-h1" }, "states": {} },
+    "heading-2": { "intent": "大きなsection見出しtreatment。", "tokenRefs": { "typography": "--type-h2" }, "states": {} },
+    "heading-3": { "intent": "小sectionやcard group見出しtreatment。", "tokenRefs": { "typography": "--type-h3" }, "states": {} },
+    "heading-4": { "intent": "Compact panel見出しtreatment。", "tokenRefs": { "typography": "--type-h4" }, "states": {} },
+    "heading-5": { "intent": "Labelに近い最小見出しtreatment。", "tokenRefs": { "typography": "--type-h5" }, "states": {} },
+    "reading": { "intent": "複数paragraphを読む本文。", "tokenRefs": { "typography": "--type-reading" }, "states": {} },
+    "body-lg": { "intent": "Lead文や余裕のある設定説明。", "tokenRefs": { "typography": "--type-body-lg" }, "states": {} },
+    "body": { "intent": "標準の短いUI本文。", "tokenRefs": { "typography": "--type-body" }, "states": {} },
+    "body-sm": { "intent": "短い補助説明。", "tokenRefs": { "typography": "--type-body-sm" }, "states": {} },
+    "label-lg": { "intent": "Large control相当の短いlabel treatment。", "tokenRefs": { "typography": "--type-label-lg" }, "states": {} },
+    "label": { "intent": "標準control相当の短いlabel treatment。", "tokenRefs": { "typography": "--type-label" }, "states": {} },
+    "label-sm": { "intent": "Compact control相当の短いlabel treatment。", "tokenRefs": { "typography": "--type-label-sm" }, "states": {} },
+    "caption": { "intent": "補助的なmetadataとtimestamp。", "tokenRefs": { "typography": "--type-caption" }, "states": {} }
   },
   "sizes": {},
   "states": [
     {
       "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
+      "description": "指定したnative semantics、typography variant、toneで静的contentを表示する。",
       "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
+        "Rootをfocusableまたはinteractiveにしない。",
+        "Native elementとcontentをvariant/toneから独立して維持する。",
+        "Contentをavailable width内でwrapする。"
       ]
     }
   ],
   "props": [
-    {
-      "name": "children",
-      "type": "ReactNode",
-      "required": true,
-      "default": null,
-      "description": "Componentの主要content。"
-    }
+    { "name": "children", "type": "ReactNode", "required": true, "default": null, "description": "空でないperceivable textと任意のinline semantic markup。" },
+    { "name": "as", "type": "\"span\" | \"p\" | \"div\" | \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\"", "required": false, "default": "span", "description": "Content hierarchyから選ぶnative root element。" },
+    { "name": "variant", "type": "TextVariant", "required": false, "default": "body", "description": "Semantic elementを変更しないvisual typography role。" },
+    { "name": "tone", "type": "\"default\" | \"muted\" | \"subtle\"", "required": false, "default": "default", "description": "Neutral foreground emphasis。Statusやinteraction stateには使わない。" },
+    { "name": "ref", "type": "PolymorphicRef<TextElement>", "required": false, "default": null, "description": "asで選択したnative rootへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--border",
-      "--fg",
-      "--fg-muted",
-      "--surface"
-    ],
+    "semanticColor": ["--fg", "--fg-muted", "--fg-subtle"],
     "typography": [
-      "--text-body",
-      "--text-small"
+      "--type-display", "--type-h1", "--type-h2", "--type-h3", "--type-h4", "--type-h5",
+      "--type-reading", "--type-body-lg", "--type-body", "--type-body-sm",
+      "--type-label-lg", "--type-label", "--type-label-sm", "--type-caption"
     ]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.surface.value",
-        "source": "--surface",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Textの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Textの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Textの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-muted.value",
-        "source": "--fg-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Textの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.text-body.value",
-        "source": "--text-body",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "TextのHTML showcaseで実際に参照する公開token。"
-      },
-      {
-        "slot": "token.text-small.value",
-        "source": "--text-small",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "TextのHTML showcaseで実際に参照する公開token。"
-      }
+      { "slot": "tone.default.foreground", "source": "--fg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Primary neutral text。" },
+      { "slot": "tone.muted.foreground", "source": "--fg-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Secondary explanation。" },
+      { "slot": "tone.subtle.foreground", "source": "--fg-subtle", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Tertiary metadata。" },
+      { "slot": "variant.display.typography", "source": "--type-display", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Display typography sourceへ1対1で結線する。" },
+      { "slot": "variant.heading-1.typography", "source": "--type-h1", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Heading 1 typography sourceへ1対1で結線する。" },
+      { "slot": "variant.heading-2.typography", "source": "--type-h2", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Heading 2 typography sourceへ1対1で結線する。" },
+      { "slot": "variant.heading-3.typography", "source": "--type-h3", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Heading 3 typography sourceへ1対1で結線する。" },
+      { "slot": "variant.heading-4.typography", "source": "--type-h4", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Heading 4 typography sourceへ1対1で結線する。" },
+      { "slot": "variant.heading-5.typography", "source": "--type-h5", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Heading 5 typography sourceへ1対1で結線する。" },
+      { "slot": "variant.reading.typography", "source": "--type-reading", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Reading typography sourceへ1対1で結線する。" },
+      { "slot": "variant.body-lg.typography", "source": "--type-body-lg", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Body Large typography sourceへ1対1で結線する。" },
+      { "slot": "variant.body.typography", "source": "--type-body", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Body typography sourceへ1対1で結線する。" },
+      { "slot": "variant.body-sm.typography", "source": "--type-body-sm", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Body Small typography sourceへ1対1で結線する。" },
+      { "slot": "variant.label-lg.typography", "source": "--type-label-lg", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Label Large typography sourceへ1対1で結線する。" },
+      { "slot": "variant.label.typography", "source": "--type-label", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Label typography sourceへ1対1で結線する。" },
+      { "slot": "variant.label-sm.typography", "source": "--type-label-sm", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Label Small typography sourceへ1対1で結線する。" },
+      { "slot": "variant.caption.typography", "source": "--type-caption", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Caption typography sourceへ1対1で結線する。" },
+      { "slot": "root.margin", "source": "0", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "Browser既定marginをresetし親layoutへspacing ownershipを戻す。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.text"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
     "requirements": [
-      "表示専用rootを不要にtab順へ追加しない。",
-      "状態は色だけで表さずtext、icon、shapeを併用する。"
+      "Headingは周辺content hierarchyに合うh1〜h6をasで選び、topicまたはpurposeを説明する。",
+      "Paragraphはp、inline textはspanを使い、divを見出しやparagraphの代替にしない。",
+      "Toneを重要度や状態の唯一の手段にせずmeaningful textまたはowner semanticsを併用する。",
+      "Normal textは背景との4.5:1 minimumを満たす公開foreground tokenを使う。",
+      "200% text enlargement、320 CSS px相当のreflow、text-spacing overrideでcontentをclip、overlap、非表示にしない。"
     ],
     "aria": [
-      "Content hierarchyに合うnative heading、paragraph、spanを選ぶ。"
+      "Heading variantだけでrole=headingやaria-levelを追加せずnative headingを使う。",
+      "Text rootへbutton/link/status/alert role、aria-live、aria-labelをcomponent責務として追加しない。",
+      "Content languageがpageの既定言語と異なる場合はlangをnative rootまたはinline childへforwardする。"
     ],
     "focus": [
-      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+      "Text rootをTab順へ追加しない。",
+      "Text単体へclickまたはkeyboard activationを追加しない。",
+      "Nested interactive contentをTextへ持ち込まずowner componentでcompositionする。"
     ]
   },
   "keyboardInteractions": [],
   "usagePatterns": [
     {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "見出し・本文・補助テキストの一貫した実装",
-      "recommended": [
-        "サイズ・行間は直接指定せず、type scale のロールを選ぶ。"
-      ],
-      "avoid": [
-        "数値の等幅表示 → Numeric スタイル"
-      ]
+      "id": "semantic-heading",
+      "title": "Semantic heading",
+      "description": "Section outlineとvisual hierarchyを独立して選ぶ。",
+      "recommended": ["asを周辺outlineから選ぶ。", "variantをvisual hierarchyから選ぶ。"],
+      "avoid": ["heading variantだけでprogrammatic headingになると仮定する。", "Visual sizeを理由にheading levelを飛ばす。"]
+    },
+    {
+      "id": "body-and-metadata",
+      "title": "Body and metadata",
+      "description": "短いUI本文と補助metadataをneutral toneで階層化する。",
+      "recommended": ["Paragraphへp、inline metadataへspanを使う。", "重要instructionはdefault toneに保つ。"],
+      "avoid": ["Subtle toneへerrorや必須条件を落とす。", "Captionをprimary contentやcontrol labelへ使う。"]
     }
   ],
   "responsiveBehavior": {
     "desktop": {
-      "summary": "DesktopでのText。",
-      "rules": [
-        "Contentと周辺layoutに応じたintrinsic sizeを使う。",
-        "Viewportだけを理由にdensityを変更しない。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
+      "summary": "Native inline/block flowと親containerのavailable widthに従う。",
+      "rules": ["Headingとbodyのsemantic orderをvisual placementと一致させる。", "Reading measureとblock gapは親layoutが所有する。"],
+      "avoid": ["Textへfixed width/heightやabsolute positioningを持たせる。"]
     },
     "mobile": {
-      "summary": "MobileでのText。",
-      "rules": [
-        "意味とDOM順を変えず、wrapとavailable widthで適応する。",
-        "省略した情報へ別経路から到達できるようにする。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
+      "summary": "同じelement、content、variant、toneを維持してwrapする。",
+      "rules": ["320 CSS px相当で長いcontentをoverflowさせない。", "200% text enlargementとtext-spacing overrideでclip/overlapを発生させない。"],
+      "avoid": ["Viewportに応じてsemantic element、content、variantを変更する。", "Nowrap、line clamp、ellipsisで必須contentを隠す。"]
     },
     "touch": {
-      "summary": "Touch入力でのText。",
-      "rules": [
-        "表示専用rootをtab順へ追加しない。",
-        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
+      "summary": "Textはpointer targetを持たない表示専用contentとして維持する。",
+      "rules": ["Text rootをTab順やpointer targetへ追加しない。", "Interactive ownerが24px minimumと主要touch操作44px以上を保証する。"],
+      "avoid": ["Textのglyph領域だけをhidden click targetにする。", "Pointer/gestureだけのbehaviorを追加する。"]
     }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM"
-  ],
+  "rules": ["NO_RAW_HEX_COLOR", "CONTRAST_AA_MINIMUM", "NO_POSITIVE_TABINDEX"],
   "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
+    "as、variant、tone、children、polymorphic refのAPIが確定している。",
+    "Semantic elementとvisual variantが独立し、heading hierarchyを自動推論しない。",
+    "全14 typography variantと3 toneが公開tokenへcomplete bindingされている。",
+    "Heading/paragraph/inline/mixed-language/long-contentをnative Showcaseで確認する。",
+    "Light/Dark × Standard/High、3 density、320 CSS px、200% text enlargement、text spacingで確認する。"
   ],
   "examples": [
-    {
-      "id": "default",
-      "description": "Textの標準例。",
-      "code": "<Text role=\"heading-3\">見出し</Text>\n<Text role=\"body\">本文テキスト</Text>\n<Text role=\"body-small\" tone=\"muted\">補助テキスト</Text>"
-    }
+    { "id": "heading", "description": "Semantic section heading。", "code": "<Text as=\"h2\" variant=\"heading-2\">アクセシビリティ</Text>" },
+    { "id": "paragraph", "description": "Muted supporting paragraph。", "code": "<Text as=\"p\" variant=\"body\" tone=\"muted\">変更は自動的に保存されます。</Text>" },
+    { "id": "language-change", "description": "Page既定言語と異なるinline metadata。", "code": "<Text as=\"span\" variant=\"caption\" lang=\"en\">Updated 2 min ago</Text>" }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["span", "p", "div", "h1", "h2", "h3", "h4", "h5", "h6"],
+    "slots": ["content"],
+    "attributes": ["id", "className", "style", "title", "lang", "dir", "aria-*", "data-*"],
+    "stateModel": ["data-variant", "data-tone", "data-meridian-state"],
+    "events": [],
+    "relations": ["native-element-selection", "semantic-visual-independence", "typography-token-mapping", "neutral-tone-mapping", "native-global-props-passthrough"],
+    "provenance": ["component", "instance", "variant", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["Native text elementへMeridian typographyとneutral foregroundを適用する。", "Semantic elementとvisual roleを別々に決定できる。"],
+    "avoidWhen": ["Action/navigation、form label、status/errorは専用owner componentを使う。", "Rich prose structure、code、numeric dataをText 1つへ平坦化しない。", "Visual variantからheading levelを推測しない。"],
+    "alternatives": ["link", "button", "form-field", "badge", "validation-message", "code-block"]
+  },
+  "negativeExamples": [
+    { "pattern": "heading variantだけを指定したspan/divをheadingとして扱う。", "reason": "Visual treatmentはdocument outlineやprogrammatic heading semanticsを生成しないため。", "ruleIds": ["CONTRAST_AA_MINIMUM"] },
+    { "pattern": "TextへonClick、keyboard handler、button/link role、positive tabindexを追加する。", "reason": "表示専用primitiveをcustom control化しnative interaction contractを失うため。", "ruleIds": ["NO_POSITIVE_TABINDEX"] },
+    { "pattern": "Muted/subtle toneだけでerror、disabled、status、選択状態を伝える。", "reason": "Neutral emphasisとsystem stateを混同しcolorだけへ意味を閉じるため。", "ruleIds": ["CONTRAST_AA_MINIMUM"] },
+    { "pattern": "Fixed height、nowrap、line clamp、ellipsisでTextを切り取る。", "reason": "Text enlargement、reflow、spacing overrideでcontentが失われるため。", "ruleIds": ["CONTRAST_AA_MINIMUM"] }
+  ],
+  "requiredScenarios": [
+    "default",
+    "display", "heading-1", "heading-2", "heading-3", "heading-4", "heading-5",
+    "reading", "body-lg", "body", "body-sm", "label-lg", "label", "label-sm", "caption",
+    "semantic-heading", "paragraph", "inline", "default-tone", "muted-tone", "subtle-tone",
+    "mixed-language", "long-unbroken-content", "narrow-viewport", "text-spacing", "text-enlargement"
+  ],
+  "openQuestions": []
 }
