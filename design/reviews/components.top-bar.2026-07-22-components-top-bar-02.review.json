@@ -1,0 +1,43 @@
+{
+  "$schema": "../../schemas/review-record.schema.json", "schemaVersion": "0.1.0",
+  "itemId": "components.top-bar", "cycleId": "2026-07-22-components-top-bar-02", "supersedesCycleId": "2026-07-13-components-top-bar-01", "reviewType": "follow-up", "status": "complete", "startedAt": "2026-07-22", "completedAt": "2026-07-22",
+  "reviewedSources": ["design/research-policy.json", "design/implementation-readiness.json", "components/top-bar.md", "design/contracts/components/top-bar.contract.json", "components/breadcrumb.md", "design/contracts/components/breadcrumb.contract.json", "js/components-registry.js", "js/ui-builders.js", "index.html", "test/component-specs.test.js"],
+  "research": {
+    "status": "complete", "scope": { "itemId": "components.top-bar", "summary": "Top Barのheader semantics、child landmark ownership、sticky focus、responsive action priorityを確定する。" },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior"],
+    "questions": ["Top Bar rootはheader、navigation、toolbarのどの意味を持つか。", "Stickyとnarrow viewportでlocationとglobal functionをどう保持するか。"],
+    "evidence": [
+      { "id": "html-header", "title": "HTML Standard: The header element", "url": "https://html.spec.whatwg.org/multipage/sections.html#the-header-element", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "headerはintroductoryまたはnavigational aidsのgroupを表し、それ自体はsectionを作らない。", "supportedDecisions": ["header-container-semantics"] },
+      { "id": "wai-navigation-landmark", "title": "WAI-ARIA APG: Navigation Landmark", "url": "https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/navigation.html", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Navigation landmarkはlink群のnavigation sectionへ限定し、複数の場合は目的を区別する。", "supportedDecisions": ["child-owned-landmarks"] },
+      { "id": "wcag-focus-not-obscured", "title": "WCAG 2.2 Understanding SC 2.4.11", "url": "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Sticky headerはkeyboard focusを完全に隠さずscroll offset等で回避する。", "supportedDecisions": ["sticky-focus-offset"] }
+    ],
+    "synthesis": "Top Barをnative headerへ限定し、Breadcrumbのnavとchild controlsのsemanticsを維持した。Sticky offsetとresponsive action経路を明文化した。",
+    "decisionImpact": "Contract 0.2.0、React slots、Showcase、token bindingをheader/location/actions modelへ同期した。", "notRequiredReason": null
+  },
+  "decisions": [
+    { "id": "header-container-semantics", "summary": "Rootをnative headerへ固定しnav/toolbar roleを付けない。", "rationale": "Containerとchild componentsのsemanticsを重複させないため。" },
+    { "id": "child-owned-landmarks", "summary": "Breadcrumbがnamed nav、各actionがname/keyboardを所有する。", "rationale": "Composition時にも既確定Contractを保持するため。" },
+    { "id": "sticky-focus-offset", "summary": "--topbar-hをsticky高さとdocument focus scroll offsetへ共有する。", "rationale": "Sticky layerがfocused elementを完全に隠さないため。" },
+    { "id": "responsive-action-priority", "summary": "Narrow viewportでleading/locationを保持しsecondary actionをTooltip付きIcon Buttonまたは到達可能なMenu/Popoverへ再構成する。", "rationale": "唯一のglobal functionをCSSだけで消さないため。" },
+    { "id": "complete-token-binding", "summary": "Surface、border、height、spacingの全visual slotを公開tokenへ結線する。", "rationale": "React実装時のraw value補完を不要にするため。" }
+  ],
+  "differences": [
+    { "classification": "cross-layer-conflict", "description": "旧仕様はTop Bar自体をnavigation containerと説明しBreadcrumb landmarkと重複していた。", "action": "Rootをheader、location childをBreadcrumbへ分離した。", "status": "resolved" },
+    { "classification": "missing-contract", "description": "Required location、leading/actions、sticky、refのReact APIが未確定だった。", "action": "Contract 0.2.0とReact API Freezeへ固定した。", "status": "resolved" },
+    { "classification": "implementation-stale", "description": "Showcaseがinline raw layoutと非interactive Avatarをaccount actionとして表示していた。", "action": "Tokenized headerとnamed native controlsへ更新した。", "status": "resolved" }
+  ],
+  "changes": [
+    { "path": "components/top-bar.md", "summary": "Header/child semantics、responsive priority、API freezeを確定。" },
+    { "path": "design/contracts/components/top-bar.contract.json", "summary": "Contract 0.2.0、runtime、complete bindings、readiness evidenceを追加。" },
+    { "path": "js/ui-builders.js", "summary": "Header、Breadcrumb、named global controlsを持つShowcaseへ更新。" },
+    { "path": "index.html", "summary": "Top Bar layoutとsticky stateをtokenized CSSへ移行。" },
+    { "path": "test/component-specs.test.js", "summary": "Header/landmark/sticky/APIの回帰testを追加。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js", "status": "passed", "notes": "22件が通過し、Contract、Showcase、React API Freeze、headerとchild-owned semanticsの同期を確認した。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "1280×720と390×844でheader、Breadcrumb、named actions、current location visibility、theme/contrast/density、overflow、Tooltip relation、console errorなしを確認した。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、generated artifacts、implementation-ready gateを含む全154テストが通過した。" }
+  ],
+  "openQuestions": [{ "question": "React実装、sticky/focus integration、visual regressionを完了しstableへ昇格する。", "owner": "components.top-bar", "exitCriteria": "Header composition、sticky focus offset、全context baselineがCIで通ること。" }],
+  "acknowledgedImpacts": ["2026-07-22-components-breadcrumb-02"], "impactedItems": [], "nextRecommendedItems": ["components.drawer"]
+}

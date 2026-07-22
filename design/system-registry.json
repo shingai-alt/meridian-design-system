@@ -776,7 +776,8 @@
           "order": 10,
           "route": "components/sidebar",
           "dependsOn": [
-            "tokens.json-tokens"
+            "tokens.json-tokens",
+            "components.navigation-item"
           ],
           "sources": [
             "components/sidebar.md",
@@ -788,7 +789,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.sidebar.2026-07-13-components-sidebar-01.review.json"
+          "reviewRecord": "design/reviews/components.sidebar.2026-07-22-components-sidebar-02.review.json"
         },
         {
           "id": "components.top-bar",
@@ -796,7 +797,8 @@
           "order": 11,
           "route": "components/top-bar",
           "dependsOn": [
-            "tokens.json-tokens"
+            "tokens.json-tokens",
+            "components.breadcrumb"
           ],
           "sources": [
             "components/top-bar.md",
@@ -808,7 +810,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.top-bar.2026-07-13-components-top-bar-01.review.json"
+          "reviewRecord": "design/reviews/components.top-bar.2026-07-22-components-top-bar-02.review.json"
         },
         {
           "id": "components.icon-button",

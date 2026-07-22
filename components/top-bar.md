@@ -2,207 +2,153 @@
 
 ## Summary
 
-現在地(パンくず)とグローバル操作(検索・通知・ユーザー)を置く上部バー。
+App shell上端で現在地とpage横断actionを構成するheaderです。React実装前Contractは `0.2.0` です。
 
 Machine-readable contract: `design/contracts/components/top-bar.contract.json`
 
 ## Role
 
-Navigation領域でTop Barの責務を1か所にまとめ、類似componentとの選択境界を固定します。PC用とSP用に別componentを作らず、同じ意味とAPIをlayout、viewport、input methodへ適応させます。
+Top Barは`leading`、`location`、`actions`のlayoutを所有します。Breadcrumbは自身のnavigation landmarkを、Icon ButtonやSearch Fieldは自身のname/keyboard semanticsを所有します。Top Bar自身はnavigationでもtoolbarでもありません。
 
 ## Principles
 
-- Taskの主目的と現在状態を最短で理解できること。
-- Native semanticsまたは確立したARIA patternを優先すること。
-- Semantic tokenを基本とし、Component tokenはpolicy triggerがある場合だけ追加すること。
+- Native `header`でshell contextをまとめる。
+- Child componentのlandmark、focus、accessible nameを上書きしない。
+- Narrow viewportでも現在地とglobal functionへの到達経路を残す。
 
 ## When To Use
 
-- ページ横断の操作と現在地表示
+- Breadcrumbまたは現在地とglobal search、notifications、account controlsを一貫して配置する。
+- Responsive navigation triggerをshell上端へ置く。
 
 ## When Not To Use
 
-- ページ固有actionだけを置く領域にはPage headerを使う。
+- Page固有titleとactionはPage Headerを使う。
+- Destination listはSidebarを使う。
+- 編集command群はToolbarを使う。
+- 現在地だけならBreadcrumbまたはpage titleを単独で使う。
+- Top Bar自身をnavigation landmarkにしない。
 
 ## Visual Model
 
-Navigation landmark or grouped navigation container. Surface、border、type、spacingの強弱は内容の階層を支え、装飾のためだけにcard、shadow、accentを追加しません。状態は色だけでなくlabel、icon、shape、positionを組み合わせます。
+`--surface`とbottom borderでmain contentから分離する単一行のshell headerです。Elevationや半透明blurを必須にせず、sticky時もcontent contrastを一定に保ちます。
 
 ## Anatomy
 
 | Part | Required | Description |
 |---|---:|---|
-| root | Yes | Navigation landmark or grouped navigation container. |
-| item | Yes | Destination or view selector. |
-| current-indicator | No | Non-color cue for the current location or selection. |
-| metadata | No | Count, icon, or supporting context. |
+| root | Yes | Native `header`。 |
+| leading | No | Sidebar triggerまたはproduct context。 |
+| location | Yes | Breadcrumbまたは現在地label。 |
+| actions | No | Search、notification、accountなどglobal controls。 |
 
 ## Variants
 
-| Variant | Use | Notes |
-|---|---|---|
-| `default` | 標準文脈。 | 意味を変えずに見た目だけを増やさない。 |
+`default` のみです。`sticky`はvariantではなくplacement stateです。
 
 ## Sizes / Density
 
-| Size | Token | Typical use |
-|---|---|---|
-| Dedicated size propなし | Density token | 周辺layoutのdensityに従う。 |
-
-Compact / Default / Comfortableはviewportではなく作業密度と入力方式で選び、componentの意味やprop集合は変えません。
+Size propはありません。Block sizeは `--topbar-h`、child controlは周辺densityへ従います。Viewportだけでdensityを変えません。
 
 ## Icon Rules
 
-意味を補強するiconはtext labelと併用し、装飾iconはassistive technologyから隠します。Icon-only actionには見えるtooltipとprogrammatic accessible nameを付けます。
+Icon-only global actionはIcon Buttonを使い、programmatic labelと可視Tooltipを持ちます。Top Barはchild iconのaccessible nameを生成しません。
 
 ## States
 
 | State | Behavior |
 |---|---|
-| `default` | 通常状態。意味、label、valueを省略しない。 |
+| `default` | Document flow内でlocationとactionsを表示。 |
+| `sticky` | `data-sticky=true`で上端固定し、後続focus targetを隠さない。 |
 
 ## Behavior
 
-- 高さは topbar-height トークンで固定し、スクロールで固定表示する。
-- ページ固有のアクションは Top Bar ではなくページヘッダーに置く。
-
-- Controlled stateを提供する場合、visual stateとprogrammatic stateを同じeventで同期します。
-- 非同期actionでは二重実行を防ぎ、完了・失敗・中断を説明します。
+- Rootは`header`。`role="navigation"`や`role="toolbar"`を付けません。
+- `location`はrequiredで、現在地を常に識別可能にします。
+- DOM/focus orderはleading → location内links → actionsです。
+- Page固有primary actionはPage Headerへ置きます。
+- Sticky高さとdocumentのscroll offsetを`--topbar-h`で同期します。
 
 ## Layout / Placement Rules
 
-### Recommended Pattern
-
-- Reading orderとfocus orderを一致させます。
-- 周辺componentとのspacingはtokenを使い、固定viewport値で内部寸法を変えません。
-- 同じnavigation contractをDrawerまたはcompact barで提示し、別component APIへ分岐しない。
+- Locationがavailable inline spaceを受け取り、actionsを押し出しません。
+- Actionsは末尾にgroup化しますがtoolbar roleは使いません。
+- Sticky Top Barはmain contentのfocused targetを完全に覆いません。
+- Horizontal document overflowを発生させません。
 
 ## Responsive / Viewport Behavior
 
-### Desktop
+Desktopではleading、full location、global actionsを1行に配置します。MobileではSidebar triggerとlocationを優先し、secondary global actionsはprogrammatic labelとTooltipを持つIcon Button、またはMenu/Popoverへ再構成します。CSSで唯一のsearch/account経路を隠しません。
 
-- 恒常navigationとして固定領域を使い、main contentを覆わない。
-- Collapsed stateでもlabelへ到達できる。
-
-### Mobile
-
-- 同じnavigation contractをDrawerまたはcompact barで提示し、別component APIへ分岐しない。
-- 開閉controlと現在地を常に認識できるようにする。
-
-### Touch
-
-- Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。
-- Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。
+PC用とSP用に分けません。同じ`location`、`leading`、`actions` APIを維持します。Touch targetは24px minimumを満たし、主要controlは44px以上を推奨します。
 
 ## Accessibility
 
-- Keyboardとpointerで同じ機能を実行できる。
-- Focus indicatorを常に視認でき、sticky layerで完全に隠さない。
-- Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。
-- Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。
-- focus-visibleで--focus-ringを使う。
-- Positive tabindexを使わず、DOMとvisualの順序を一致させる。
+- Native `header`へ明示的な`role="banner"`を追加せず、document contextのlandmark mappingに従います。
+- Top Barへ`role="navigation"`を付けず、Breadcrumbがnamed navを所有します。
+- Actionsへ`role="toolbar"`を付けず、native Tab順を維持します。
+- Sticky時は`scroll-padding`または`scroll-margin`を`--topbar-h`へ同期します。
+- Labelを省略するactionはprogrammatic labelとTooltipを維持し、hidden actionには同じ機能へ到達できるMenu等の経路を残します。
 
 Keyboard:
 
-- `Tab`: 順序どおりにfocusを移動する。
+- `Tab / Shift+Tab`: Leading、location内links、actionsをnative順で移動。
+- `Enter / Space`: Child component固有のnative activation。
 
 ## Content Guidelines
 
-- Labelは対象または結果を具体的に書き、状態だけを繰り返さない。
-- Errorは原因と修正方法、Emptyは何がないかと次の一歩を示す。
-- 省略するmetadataにも別経路から到達できるようにする。
+Locationはpage hierarchyまたは現在地を明確に書きます。Actionsはpage横断機能に限定し、同じ機能をviewportごとに異なる名前へ変えません。
 
 ## Tokens
 
-- semanticColor: `--border`, `--fg`, `--fg-muted`, `--focus-ring`, `--primary`, `--primary-subtle`, `--surface`, `--surface-muted`
-- density: `--ctl-md`
-- spacing: `--sp-2`
-- motion: `--dur-fast`
-- radius: `--radius-2xs`
+`--surface`, `--border`, `--fg`, `--topbar-h`, `--sp-2`, `--sp-4`。
 
-Primitive color、raw hex、任意pxをcomponentから直接選びません。
-
-### Token Binding Decisions
-
-| Slot | Source | Scope | Trigger | Reason |
-|---|---|---|---|---|
-| `token.surface.value` | `--surface` | `semantic` | - | Top Barの公開visual contractで用途tokenとして共有する。 |
-| `token.border.value` | `--border` | `semantic` | - | Top Barの公開visual contractで用途tokenとして共有する。 |
-| `token.fg.value` | `--fg` | `semantic` | - | Top Barの公開visual contractで用途tokenとして共有する。 |
-| `token.surface-muted.value` | `--surface-muted` | `semantic` | - | Top Barの公開visual contractで用途tokenとして共有する。 |
-| `token.fg-muted.value` | `--fg-muted` | `semantic` | - | Top Barの公開visual contractで用途tokenとして共有する。 |
-| `token.primary.value` | `--primary` | `semantic` | - | Top Barの公開visual contractで用途tokenとして共有する。 |
-| `token.primary-subtle.value` | `--primary-subtle` | `semantic` | - | Top Barの公開visual contractで用途tokenとして共有する。 |
-| `token.focus-ring.value` | `--focus-ring` | `semantic` | - | Top Barの公開visual contractで用途tokenとして共有する。 |
-| `token.ctl-md.value` | `--ctl-md` | `semantic` | - | Top Barの公開visual contractで用途tokenとして共有する。 |
-| `token.sp-2.value` | `--sp-2` | `semantic` | - | Top Barの公開visual contractで用途tokenとして共有する。 |
-| `token.dur-fast.value` | `--dur-fast` | `semantic` | - | Top Barの公開visual contractで用途tokenとして共有する。 |
-| `token.radius-2xs.value` | `--radius-2xs` | `semantic` | - | Top BarのHTML showcaseで実際に参照する公開token。 |
-
-Current coverage: `partial`。HTML showcaseを確認済みの仕様候補として記録し、React package実装時にDOM/state selectorまで結線して`complete`へ移行します。
+全visual slotはContractで `complete` binding済みです。
 
 ## Do / Don't
 
-Do:
+Do: `header`内にBreadcrumbとglobal actionsを合成し、sticky offsetをlayout tokenへ同期します。
 
-```tsx
-<TopBar>
-  <Breadcrumb items={crumbs} />
-  <TopBar.Spacer />
-  <SearchField shortcut="⌘K" />
-  <NotificationButton />
-  <UserMenu />
-</TopBar>
-```
-
-Don't:
-
-```tsx
-{/* ページ固有actionだけを置く領域にはPage headerを使う。 */}
-<TopBar />
-```
+Don't: Top Bar rootをnav/toolbarにする、page固有actionを混ぜる、narrow viewportで唯一のglobal actionを消す。
 
 ## Prohibited Patterns
 
-- `NO_RAW_HEX_COLOR`に反する実装。
-- `SPACING_FROM_TOKENS_ONLY`に反する実装。
-- `RADIUS_FROM_TOKENS_ONLY`に反する実装。
-- `CONTRAST_AA_MINIMUM`に反する実装。
-- `FOCUS_VISIBLE_REQUIRED`に反する実装。
-- `NO_POSITIVE_TABINDEX`に反する実装。
-- `TARGET_SIZE_MINIMUM`に反する実装。
-- `INTERACTIVE_NAME_REQUIRED`に反する実装。
+- Rootの`role="navigation"`または`role="toolbar"`。
+- Locationなしのaction bar。
+- Sticky headerによるfocused targetの完全な遮蔽。
+- 代替経路のない`display:none` action。
+- Raw height、color、spacing。
 
 ## AI Selection Rules
 
-AIが選ぶ条件:
-
-- ページ横断の操作と現在地表示
-
-AIが避ける条件:
-
-- ページ固有actionだけを置く領域にはPage headerを使う。
-
-AIはvariantを意味、sizeをtask密度、stateを実際のsystem stateから選びます。Viewport名だけでvariantやcomponentを分岐しません。
+App全体の現在地とglobal actionsをshell上端へ置く場合だけTop Barを選びます。Page固有contentはPage Header、destination listはSidebar、command groupはToolbarを選びます。
 
 ## Examples
 
 ```tsx
-<TopBar>
-  <Breadcrumb items={crumbs} />
-  <TopBar.Spacer />
-  <SearchField shortcut="⌘K" />
-  <NotificationButton />
-  <UserMenu />
-</TopBar>
+<TopBar
+  leading={<SidebarTrigger />}
+  location={<Breadcrumb items={crumbs} />}
+  actions={<><SearchField /><NotificationButton /><UserMenu /></>}
+/>
 ```
 
 ## Implementation Notes
 
-- React packageは今後追加します。現在はsemantic contract、HTML showcase、token binding候補を正本として扱います。
-- Native element、ref forwarding、controlled state、event名はpackage実装時にこのcontractへ同期します。
+`location`、`leading`、`actions`を固定DOM順のwrapperへ配置します。`ref`はnative `header`へforwardし、child propsやlandmarkを変更しません。
+
+### React API Freeze
+
+```ts
+type TopBarProps = HTMLAttributes<HTMLElement> & {
+  location: ReactNode
+  leading?: ReactNode
+  actions?: ReactNode
+  sticky?: boolean // false
+  ref?: ForwardedRef<HTMLElement>
+}
+```
 
 ## Open Questions
 
-- React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。
+Contract上のopen questionはありません。React実装、sticky/focus integration、visual regression完了後にstableへ昇格します。

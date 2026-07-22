@@ -9237,10 +9237,14 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "5 個以上の恒常的なナビゲーション先を持つアプリ"
+        "5件以上の恒常的destinationを持つapp。",
+        "Workspace switcher、group、footer actionをprimary navigationと同じ領域で構成する。"
       ],
       "whenNotToUse": [
-        "3〜4 ページの単純なアプリ → Top Bar のタブ"
+        "3〜4件のpeer viewはTabsまたはTop Barを使う。",
+        "Page内section navigationはTable of Contentsを使う。",
+        "Mobile overlay containerはDrawerを使う。",
+        "Commandや一時actionはMenuを使う。"
       ],
       "principles": [
         1,
@@ -9254,22 +9258,27 @@ const COMPONENT_CONTRACTS={
       {
         "part": "root",
         "required": true,
-        "description": "Navigation landmark or grouped navigation container."
+        "description": "Accessible nameを持つnative nav landmark。"
       },
       {
-        "part": "item",
+        "part": "header",
+        "required": false,
+        "description": "Workspace switcherなどnavigation contextを示す領域。"
+      },
+      {
+        "part": "group",
         "required": true,
-        "description": "Destination or view selector."
+        "description": "Optional labelとulを持つdestination group。"
       },
       {
-        "part": "current-indicator",
-        "required": false,
-        "description": "Non-color cue for the current location or selection."
+        "part": "navigation-item",
+        "required": true,
+        "description": "li内へ置くNavigation Item。Current pageは全Sidebarで1件。"
       },
       {
-        "part": "metadata",
+        "part": "footer",
         "required": false,
-        "description": "Count, icon, or supporting context."
+        "description": "User menuやsettingsなど恒常的な補助control領域。"
       }
     ],
     "variants": [
@@ -9279,9 +9288,11 @@ const COMPONENT_CONTRACTS={
     "states": [
       {
         "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "description": "全labelとgroup hierarchyを表示する通常状態。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "Named nav landmarkを維持",
+          "Native Tab順とlist hierarchyを維持",
+          "Current pageを1件だけ含む"
         ]
       }
     ],
@@ -9291,111 +9302,140 @@ const COMPONENT_CONTRACTS={
         "type": "ReactNode",
         "required": true,
         "default": null,
-        "description": "Componentの主要content。"
+        "description": "Sidebar.Header、Sidebar.Group、Sidebar.Footerのcomposition。"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "default": "Primary",
+        "description": "Page内の他navigation landmarkと区別するaccessible name。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLElement>",
+        "required": false,
+        "default": null,
+        "description": "Native nav elementへforwardするref。"
       }
     ],
     "tokenRefs": {
+      "componentColor": [
+        "--sidebar-bg"
+      ],
       "semanticColor": [
         "--bg-subtle",
         "--border",
         "--border-muted",
-        "--fg",
-        "--fg-muted",
-        "--focus-ring",
-        "--primary",
-        "--primary-subtle",
-        "--sidebar-bg",
-        "--sidebar-item-active-bg",
-        "--surface",
-        "--surface-muted"
-      ],
-      "density": [
-        "--ctl-md"
-      ],
-      "spacing": [
-        "--sp-2"
-      ],
-      "motion": [
-        "--dur-fast"
+        "--fg-subtle"
       ],
       "layout": [
         "--sidebar-w"
       ],
-      "radius": [
-        "--radius-full"
+      "spacing": [
+        "--sp-1",
+        "--sp-2",
+        "--sp-3"
       ],
       "typography": [
-        "--text-small"
+        "--text-micro"
       ]
     },
     "accessibility": {
       "requirements": [
-        "Keyboardとpointerで同じ機能を実行できる。",
-        "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-        "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        "Rootはaccessible nameを持つnav。",
+        "Destination groupはul/li hierarchyを持つ。",
+        "Current pageはSidebar全体で1件だけaria-current=pageを持つ。",
+        "Icon-onlyへ自動collapseせず可視labelを維持する。"
       ],
       "aria": [
-        "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        "Native navへrole=navigationを重ねない。",
+        "Page内に複数navがある場合は一意なlabelを付ける。",
+        "通常navigationへmenu/menuitem roleを付けない。"
       ],
       "focus": [
-        "focus-visibleで--focus-ringを使う。",
-        "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        "Tab / Shift+Tabでnative document順に移動する。",
+        "Sidebar内部のscrollはfocused itemを完全に隠さない。",
+        "Drawer配置時のinitial focus、trap、Escape、focus returnはDrawer/App Shellが所有する。"
       ]
     },
     "keyboardInteractions": [
       {
-        "key": "Tab",
-        "action": "順序どおりにfocusを移動する。"
+        "key": "Tab / Shift+Tab",
+        "action": "Native document順でSidebar内外のlinksとcontrolsを移動する。"
+      },
+      {
+        "key": "Enter / Space",
+        "action": "Focused native linkまたはbutton固有のactivationを実行する。Sidebar独自のarrow-key modelは追加しない。"
       }
     ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "5 個以上の恒常的なナビゲーション先を持つアプリ",
+        "id": "grouped-navigation",
+        "title": "Grouped primary navigation",
+        "description": "複数の恒常的destination group。",
         "recommended": [
-          "アクティブ項目は primary-subtle 背景+primary テキストで示す。"
+          "ul/li内にNavigation Itemを置く",
+          "3件以上の意味あるgroupだけlabelを付ける"
         ],
         "avoid": [
-          "3〜4 ページの単純なアプリ → Top Bar のタブ"
+          "Visual indentationだけでhierarchyを表す",
+          "Current itemを複数設定する"
+        ]
+      },
+      {
+        "id": "responsive-placement",
+        "title": "Responsive placement",
+        "description": "同じSidebarをApp ShellまたはDrawerへ配置する。",
+        "recommended": [
+          "Visibilityとoverlay behaviorをparentへ委譲",
+          "同じariaLabelとlist DOMを維持"
+        ],
+        "avoid": [
+          "Mobile専用Sidebar API",
+          "Sidebar自身のfocus trap"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのSidebar。",
+        "summary": "App Shellのinline columnへ配置しmain contentを覆わない。",
         "rules": [
-          "恒常navigationとして固定領域を使い、main contentを覆わない。",
-          "Collapsed stateでもlabelへ到達できる。"
+          "Widthは--sidebar-w",
+          "Root内部だけ縦scroll可能",
+          "全可視labelを維持"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "Navigation上へmain contentを重ねる",
+          "Icon-only自動collapse"
         ]
       },
       "mobile": {
-        "summary": "MobileでのSidebar。",
+        "summary": "同じSidebar DOMをDrawer内へ配置する。",
         "rules": [
-          "同じnavigation contractをDrawerまたはcompact barで提示し、別component APIへ分岐しない。",
-          "開閉controlと現在地を常に認識できるようにする。"
+          "Drawer triggerはaria-controlsとaria-expandedを所有",
+          "Open/close、Escape、focus returnはDrawer/App Shell責務",
+          "Navigation後のcloseもparentが決定"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "Sidebar rootへdialog semanticsを付ける",
+          "Viewportでdestinationを削除"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのSidebar。",
+        "summary": "Child controlのtarget sizeとvisible labelを維持する。",
         "rules": [
-          "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-          "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+          "最低24px target",
+          "Primary navigationは44px推奨",
+          "Hover非依存"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "Swipeだけで開閉",
+          "Tooltipだけでdestination labelを提供"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "skeleton": {
     "id": "skeleton",
@@ -12200,10 +12240,14 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "ページ横断の操作と現在地表示"
+        "Breadcrumbまたは現在地とglobal search、notifications、account controlsを一貫して配置する。",
+        "Responsive navigation triggerをshell上端へ置く。"
       ],
       "whenNotToUse": [
-        "ページ固有actionだけを置く領域にはPage headerを使う。"
+        "Page固有titleとactionはPage Headerを使う。",
+        "Destination listはSidebarを使う。",
+        "編集command群はToolbarを使う。",
+        "Top Bar自身をnavigation landmarkにしない。"
       ],
       "principles": [
         1,
@@ -12217,22 +12261,22 @@ const COMPONENT_CONTRACTS={
       {
         "part": "root",
         "required": true,
-        "description": "Navigation landmark or grouped navigation container."
+        "description": "Introductory/navigation aidsをまとめるnative header。"
       },
       {
-        "part": "item",
+        "part": "leading",
+        "required": false,
+        "description": "Responsive Sidebar triggerまたはproduct context。"
+      },
+      {
+        "part": "location",
         "required": true,
-        "description": "Destination or view selector."
+        "description": "Breadcrumbまたは現在地を表す可視text。"
       },
       {
-        "part": "current-indicator",
+        "part": "actions",
         "required": false,
-        "description": "Non-color cue for the current location or selection."
-      },
-      {
-        "part": "metadata",
-        "required": false,
-        "description": "Count, icon, or supporting context."
+        "description": "Search、notification、accountなどpage横断control。"
       }
     ],
     "variants": [
@@ -12242,113 +12286,168 @@ const COMPONENT_CONTRACTS={
     "states": [
       {
         "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "description": "Document flow内のshell header。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "Locationを常に識別可能",
+          "Child controlsのnative Tab順を維持"
+        ]
+      },
+      {
+        "id": "sticky",
+        "description": "Viewport上端へ固定されるheader。",
+        "requiredBehavior": [
+          "data-sticky=true",
+          "後続focus targetを完全に隠さないscroll offset",
+          "Main contentのreading orderを変えない"
         ]
       }
     ],
     "props": [
       {
-        "name": "children",
+        "name": "location",
         "type": "ReactNode",
         "required": true,
         "default": null,
-        "description": "Componentの主要content。"
+        "description": "Breadcrumbまたは現在地label。"
+      },
+      {
+        "name": "leading",
+        "type": "ReactNode",
+        "required": false,
+        "default": null,
+        "description": "Sidebar disclosureなどshell-level leading control。"
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "default": null,
+        "description": "Global search、notification、account controls。"
+      },
+      {
+        "name": "sticky",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "trueでviewport上端へ固定しdata-stickyを設定する。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLElement>",
+        "required": false,
+        "default": null,
+        "description": "Native header elementへforwardするref。"
       }
     ],
     "tokenRefs": {
       "semanticColor": [
-        "--border",
-        "--fg",
-        "--fg-muted",
-        "--focus-ring",
-        "--primary",
-        "--primary-subtle",
         "--surface",
-        "--surface-muted"
+        "--border",
+        "--fg"
       ],
-      "density": [
-        "--ctl-md"
+      "layout": [
+        "--topbar-h"
       ],
       "spacing": [
-        "--sp-2"
-      ],
-      "motion": [
-        "--dur-fast"
-      ],
-      "radius": [
-        "--radius-2xs"
+        "--sp-2",
+        "--sp-4"
       ]
     },
     "accessibility": {
       "requirements": [
-        "Keyboardとpointerで同じ機能を実行できる。",
-        "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-        "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        "Rootはnative headerを使う。",
+        "Locationは常に可視でpage contextを説明する。",
+        "各actionは自身のcomponent contractでaccessible nameとtargetを持つ。",
+        "Sticky時も後続のfocused elementを完全に隠さない。"
       ],
       "aria": [
-        "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        "Headerへrole=bannerを明示しない。Landmark mappingはdocument contextに従う。",
+        "Top Barへrole=navigationを付けない。Breadcrumbが自身のnav landmarkを所有する。",
+        "Actionsへtoolbar roleを付けずnative Tab順を維持する。"
       ],
       "focus": [
-        "focus-visibleで--focus-ringを使う。",
-        "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        "DOM順をleading、location内links、actionsと一致させる。",
+        "Sticky高さをscroll-padding/scroll-marginへ反映する。",
+        "Narrow viewportでlabelを省略するactionはprogrammatic labelとTooltipを維持し、hiddenにするactionは同じ機能へ到達できるMenu等へ移す。"
       ]
     },
     "keyboardInteractions": [
       {
-        "key": "Tab",
-        "action": "順序どおりにfocusを移動する。"
+        "key": "Tab / Shift+Tab",
+        "action": "Leading、location内links、actionsをnative document順で移動する。"
+      },
+      {
+        "key": "Enter / Space",
+        "action": "Focused child component固有のnative activationを実行する。Top Bar独自keyboard modelは追加しない。"
       }
     ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "ページ横断の操作と現在地表示",
+        "id": "shell-context",
+        "title": "Shell context",
+        "description": "現在地とglobal actionsを一貫して配置する。",
         "recommended": [
-          "高さは topbar-height トークンで固定し、スクロールで固定表示する。"
+          "Locationをrequiredにする",
+          "Global actionsだけをactionsへ置く"
         ],
         "avoid": [
-          "ページ固有actionだけを置く領域にはPage headerを使う。"
+          "Page固有primary action",
+          "Top Bar rootをnavにする"
+        ]
+      },
+      {
+        "id": "responsive-priority",
+        "title": "Responsive priority",
+        "description": "Narrow viewportでもleadingとlocationを残す。",
+        "recommended": [
+          "Secondary global actionsをTooltip付きIcon ButtonまたはMenu/Popoverへ再構成",
+          "同じ機能とaccessible nameを維持"
+        ],
+        "avoid": [
+          "CSSで唯一のactionを到達不能にする",
+          "Locationをiconだけにする"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのTop Bar。",
+        "summary": "Leading、full location、global actionsを1行に配置する。",
         "rules": [
-          "恒常navigationとして固定領域を使い、main contentを覆わない。",
-          "Collapsed stateでもlabelへ到達できる。"
+          "Heightは--topbar-h",
+          "Locationはavailable spaceを受け取る",
+          "Actionsは末尾にまとまる"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "Page Header actionの重複",
+          "Nested toolbar role"
         ]
       },
       "mobile": {
-        "summary": "MobileでのTop Bar。",
+        "summary": "Sidebar triggerとcurrent locationを優先し、secondary actionsを再構成する。",
         "rules": [
-          "同じnavigation contractをDrawerまたはcompact barで提示し、別component APIへ分岐しない。",
-          "開閉controlと現在地を常に認識できるようにする。"
+          "Leading triggerとlocationを保持",
+          "Global actionはTooltip付きIcon ButtonまたはMenu/Popover内でも同じcomponent contractを維持",
+          "Document横overflowを起こさない"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "唯一のsearch/account経路をdisplay:none",
+          "Mobile専用Top Bar API"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのTop Bar。",
+        "summary": "Global controlsへ十分なtargetと間隔を提供する。",
         "rules": [
-          "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-          "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+          "最低24px target",
+          "Primary touch controlsは44px推奨",
+          "Hover非依存"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "密集したicon controls",
+          "Tooltipだけのaccessible name"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "usage-meter": {
     "id": "usage-meter",

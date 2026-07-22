@@ -237,15 +237,16 @@ def({id:'validation-message',name:'Validation Message',group:'Forms',desc:'入�
 
 /* ---- Navigation ---- */
 def({id:'sidebar',name:'Sidebar',group:'Navigation',desc:'アプリの主ナビゲーション。ワークスペース切替・グループ・ユーザーメニューを含む。',
- when:['5 個以上の恒常的なナビゲーション先を持つアプリ'],notWhen:['3〜4 ページの単純なアプリ → Top Bar のタブ'],
- usage:['アクティブ項目は primary-subtle 背景+primary テキストで示す。','グループ見出しは 3 個以上の項目がある場合のみ付ける。','折りたたみ時はアイコン+ツールチップで代替する。'],
- tokens:['--sidebar-bg','--sidebar-item-active-bg','--sidebar-w','--border'],
- keys:[['⌘B','サイドバーの開閉'],['↑ ↓','項目を移動']],
- render:()=>sidebarDemo(),code:()=>`<Sidebar>\n  <Sidebar.WorkspaceSwitcher />\n  <Sidebar.Group label="Workspace">\n    <Sidebar.Item icon={<ZapIcon />} active>ダッシュボード</Sidebar.Item>\n    <Sidebar.Item icon={<FolderIcon />} badge={12}>プロジェクト</Sidebar.Item>\n  </Sidebar.Group>\n  <Sidebar.Footer><UserMenu /></Sidebar.Footer>\n</Sidebar>`,related:['navigation-item','top-bar','product-switcher']});
+ when:['5件以上の恒常的なapp destinationをgroup化する'],notWhen:['少数peer view → Tabs','Mobile overlay → Drawer'],
+ usage:['名前付きnavとul/li hierarchyを所有する。','開閉・overlay・focus managementはApp Shell／Drawerへ委譲する。','通常navigationへmenu roleやArrow key modelを追加しない。'],
+ keys:[['Tab','Native順で移動'],['Enter / Space','Child controlをactivate']],
+ render:()=>sidebarDemo(),code:()=>`<Sidebar ariaLabel="Primary">\n  <Sidebar.Header><WorkspaceSwitcher /></Sidebar.Header>\n  <Sidebar.Group label="Workspace">\n    <NavigationItem href="/dashboard" current>ダッシュボード</NavigationItem>\n    <NavigationItem href="/projects">プロジェクト</NavigationItem>\n  </Sidebar.Group>\n  <Sidebar.Footer><UserMenu /></Sidebar.Footer>\n</Sidebar>`,related:['navigation-item','top-bar','drawer']});
 
 def({id:'top-bar',name:'Top Bar',group:'Navigation',desc:'現在地(パンくず)とグローバル操作(検索・通知・ユーザー)を置く上部バー。',
- when:['ページ横断の操作と現在地表示'],usage:['高さは topbar-height トークンで固定し、スクロールで固定表示する。','ページ固有のアクションは Top Bar ではなくページヘッダーに置く。'],
- render:()=>topBarDemo(),code:()=>`<TopBar>\n  <Breadcrumb items={crumbs} />\n  <TopBar.Spacer />\n  <SearchField shortcut="⌘K" />\n  <NotificationButton />\n  <UserMenu />\n</TopBar>`,related:['breadcrumb','sidebar']});
+ states:['default','sticky'],when:['App全体の現在地とpage横断actionをshell上端へ置く'],notWhen:['Page固有title/action → Page Header','編集command群 → Toolbar'],
+ usage:['Rootはheaderでnav/toolbar roleを持たない。','LocationをrequiredにしBreadcrumbのlandmarkを維持する。','Sticky高さとfocus scroll offsetを--topbar-hへ同期する。'],
+ keys:[['Tab','Leading、location、actionsをNative順で移動']],
+ render:p=>topBarDemo(p),code:()=>`<TopBar\n  leading={<SidebarTrigger />}\n  location={<Breadcrumb items={crumbs} />}\n  actions={<><SearchField /><NotificationButton /><UserMenu /></>}\n/>`,related:['breadcrumb','sidebar','page-header']});
 
 def({id:'breadcrumb',name:'Breadcrumb',group:'Navigation',desc:'階層内の現在地を示し、上位階層へ戻る導線を提供する。',
  states:['default','hover','focus','current'],

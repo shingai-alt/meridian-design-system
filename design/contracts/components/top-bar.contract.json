@@ -1,312 +1,118 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready", "policyVersion": "0.1.0", "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/top-bar.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/top-bar.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "accessibility.aria", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "negativeExamples", "design/reviews/components.top-bar.2026-07-22-components-top-bar-02.review.json"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["tokenBindings", "tokenRefs", "index.html#top-bar-component"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/top-bar.md#responsive-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#top-bar", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.top-bar.2026-07-22-components-top-bar-02.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": ["React実装", "sticky/focus integration tests", "visual regression baseline"]
+  },
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["header"],
+    "slots": ["leading", "location", "actions"],
+    "attributes": ["data-sticky", "data-meridian-state", "data-*"],
+    "stateModel": ["data-sticky", "data-meridian-state"],
+    "events": [],
+    "relations": ["shell-header", "composes-breadcrumb", "global-actions-group", "child-owned-semantics"],
+    "provenance": ["component", "instance", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["App全体の現在地とpage横断actionを、shell上端の一貫した位置へ置く。"],
+    "avoidWhen": ["Page固有title/action、primary destination list、または単独toolbarを表す。"],
+    "alternatives": ["Page Header", "Sidebar", "Toolbar", "Breadcrumb"]
+  },
+  "negativeExamples": [
+    { "pattern": "Top Bar rootへrole=navigationを付ける。", "reason": "Breadcrumbなど子navigation landmarkとTop Bar containerの意味が重複するため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "Actions containerへrole=toolbarを付けて通常Tab順のままにする。", "reason": "Toolbar roleが要求するroving focus modelを実装していないため。", "ruleIds": ["NO_POSITIVE_TABINDEX"] }
+  ],
+  "requiredScenarios": ["default", "sticky", "default-variant", "with-leading", "with-breadcrumb", "global-actions", "long-location", "narrow-viewport"],
   "id": "top-bar",
   "name": "Top Bar",
   "status": "draft",
   "category": "navigation",
-  "description": "現在地(パンくず)とグローバル操作(検索・通知・ユーザー)を置く上部バー。",
-  "source": {
-    "humanDoc": "components/top-bar.md",
-    "registry": "js/components-registry.js#top-bar"
-  },
+  "description": "App shell上端で現在地とpage横断actionを構成するheader。",
+  "source": { "humanDoc": "components/top-bar.md", "registry": "js/components-registry.js#top-bar" },
   "intent": {
-    "whenToUse": [
-      "ページ横断の操作と現在地表示"
-    ],
-    "whenNotToUse": [
-      "ページ固有actionだけを置く領域にはPage headerを使う。"
-    ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "whenToUse": ["Breadcrumbまたは現在地とglobal search、notifications、account controlsを一貫して配置する。", "Responsive navigation triggerをshell上端へ置く。"],
+    "whenNotToUse": ["Page固有titleとactionはPage Headerを使う。", "Destination listはSidebarを使う。", "編集command群はToolbarを使う。", "Top Bar自身をnavigation landmarkにしない。"],
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "root",
-      "required": true,
-      "description": "Navigation landmark or grouped navigation container."
-    },
-    {
-      "part": "item",
-      "required": true,
-      "description": "Destination or view selector."
-    },
-    {
-      "part": "current-indicator",
-      "required": false,
-      "description": "Non-color cue for the current location or selection."
-    },
-    {
-      "part": "metadata",
-      "required": false,
-      "description": "Count, icon, or supporting context."
-    }
+    { "part": "root", "required": true, "description": "Introductory/navigation aidsをまとめるnative header。" },
+    { "part": "leading", "required": false, "description": "Responsive Sidebar triggerまたはproduct context。" },
+    { "part": "location", "required": true, "description": "Breadcrumbまたは現在地を表す可視text。" },
+    { "part": "actions", "required": false, "description": "Search、notification、accountなどpage横断control。" }
   ],
   "variants": {
     "default": {
-      "intent": "標準文脈。",
-      "tokenRefs": {},
-      "states": {}
+      "intent": "現在地とglobal actionsをinlineに構成する唯一のvariant。",
+      "tokenRefs": { "background": "--surface", "border": "--border", "height": "--topbar-h" },
+      "states": { "sticky": { "background": "--surface" } }
     }
   },
   "sizes": {},
   "states": [
-    {
-      "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
-      "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
-      ]
-    }
+    { "id": "default", "description": "Document flow内のshell header。", "requiredBehavior": ["Locationを常に識別可能", "Child controlsのnative Tab順を維持"] },
+    { "id": "sticky", "description": "Viewport上端へ固定されるheader。", "requiredBehavior": ["data-sticky=true", "後続focus targetを完全に隠さないscroll offset", "Main contentのreading orderを変えない"] }
   ],
   "props": [
-    {
-      "name": "children",
-      "type": "ReactNode",
-      "required": true,
-      "default": null,
-      "description": "Componentの主要content。"
-    }
+    { "name": "location", "type": "ReactNode", "required": true, "default": null, "description": "Breadcrumbまたは現在地label。" },
+    { "name": "leading", "type": "ReactNode", "required": false, "default": null, "description": "Sidebar disclosureなどshell-level leading control。" },
+    { "name": "actions", "type": "ReactNode", "required": false, "default": null, "description": "Global search、notification、account controls。" },
+    { "name": "sticky", "type": "boolean", "required": false, "default": "false", "description": "trueでviewport上端へ固定しdata-stickyを設定する。" },
+    { "name": "ref", "type": "ForwardedRef<HTMLElement>", "required": false, "default": null, "description": "Native header elementへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--border",
-      "--fg",
-      "--fg-muted",
-      "--focus-ring",
-      "--primary",
-      "--primary-subtle",
-      "--surface",
-      "--surface-muted"
-    ],
-    "density": [
-      "--ctl-md"
-    ],
-    "spacing": [
-      "--sp-2"
-    ],
-    "motion": [
-      "--dur-fast"
-    ],
-    "radius": [
-      "--radius-2xs"
-    ]
+    "semanticColor": ["--surface", "--border", "--fg"],
+    "layout": ["--topbar-h"],
+    "spacing": ["--sp-2", "--sp-4"]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.surface.value",
-        "source": "--surface",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.surface-muted.value",
-        "source": "--surface-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-muted.value",
-        "source": "--fg-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary.value",
-        "source": "--primary",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary-subtle.value",
-        "source": "--primary-subtle",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.focus-ring.value",
-        "source": "--focus-ring",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.ctl-md.value",
-        "source": "--ctl-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sp-2.value",
-        "source": "--sp-2",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.dur-fast.value",
-        "source": "--dur-fast",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Top Barの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.radius-2xs.value",
-        "source": "--radius-2xs",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Top BarのHTML showcaseで実際に参照する公開token。"
-      }
+      { "slot": "root.background", "source": "--surface", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Sticky時もcontentを透過させず判読性を保つshell surface。" },
+      { "slot": "root.border-block-end", "source": "--border", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Main contentとの境界を示す。" },
+      { "slot": "root.foreground", "source": "--fg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Current locationとglobal controlsの基本foreground。" },
+      { "slot": "root.block-size", "source": "--topbar-h", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Shellとscroll offsetが共有するTop Bar高さ。" },
+      { "slot": "root.padding-inline", "source": "--sp-4", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Viewport edgeとleading/actionsを分離する。" },
+      { "slot": "root.gap", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Leading、location、actions間のrhythm。" },
+      { "slot": "actions.gap", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Global controlsのtargetを分離する。" },
+      { "slot": "root.shadow", "source": "none", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "Top Barはborderでshell hierarchyを示しelevationを持たない。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.top-bar"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
-    "requirements": [
-      "Keyboardとpointerで同じ機能を実行できる。",
-      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
-    ],
-    "aria": [
-      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
-    ],
-    "focus": [
-      "focus-visibleで--focus-ringを使う。",
-      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
-    ]
+    "requirements": ["Rootはnative headerを使う。", "Locationは常に可視でpage contextを説明する。", "各actionは自身のcomponent contractでaccessible nameとtargetを持つ。", "Sticky時も後続のfocused elementを完全に隠さない。"],
+    "aria": ["Headerへrole=bannerを明示しない。Landmark mappingはdocument contextに従う。", "Top Barへrole=navigationを付けない。Breadcrumbが自身のnav landmarkを所有する。", "Actionsへtoolbar roleを付けずnative Tab順を維持する。"],
+    "focus": ["DOM順をleading、location内links、actionsと一致させる。", "Sticky高さをscroll-padding/scroll-marginへ反映する。", "Narrow viewportでlabelを省略するactionはprogrammatic labelとTooltipを維持し、hiddenにするactionは同じ機能へ到達できるMenu等へ移す。"]
   },
   "keyboardInteractions": [
-    {
-      "key": "Tab",
-      "action": "順序どおりにfocusを移動する。"
-    }
+    { "key": "Tab / Shift+Tab", "action": "Leading、location内links、actionsをnative document順で移動する。" },
+    { "key": "Enter / Space", "action": "Focused child component固有のnative activationを実行する。Top Bar独自keyboard modelは追加しない。" }
   ],
   "usagePatterns": [
-    {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "ページ横断の操作と現在地表示",
-      "recommended": [
-        "高さは topbar-height トークンで固定し、スクロールで固定表示する。"
-      ],
-      "avoid": [
-        "ページ固有actionだけを置く領域にはPage headerを使う。"
-      ]
-    }
+    { "id": "shell-context", "title": "Shell context", "description": "現在地とglobal actionsを一貫して配置する。", "recommended": ["Locationをrequiredにする", "Global actionsだけをactionsへ置く"], "avoid": ["Page固有primary action", "Top Bar rootをnavにする"] },
+    { "id": "responsive-priority", "title": "Responsive priority", "description": "Narrow viewportでもleadingとlocationを残す。", "recommended": ["Secondary global actionsをTooltip付きIcon ButtonまたはMenu/Popoverへ再構成", "同じ機能とaccessible nameを維持"], "avoid": ["CSSで唯一のactionを到達不能にする", "Locationをiconだけにする"] }
   ],
   "responsiveBehavior": {
-    "desktop": {
-      "summary": "DesktopでのTop Bar。",
-      "rules": [
-        "恒常navigationとして固定領域を使い、main contentを覆わない。",
-        "Collapsed stateでもlabelへ到達できる。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
-    },
-    "mobile": {
-      "summary": "MobileでのTop Bar。",
-      "rules": [
-        "同じnavigation contractをDrawerまたはcompact barで提示し、別component APIへ分岐しない。",
-        "開閉controlと現在地を常に認識できるようにする。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
-    },
-    "touch": {
-      "summary": "Touch入力でのTop Bar。",
-      "rules": [
-        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
-    }
+    "desktop": { "summary": "Leading、full location、global actionsを1行に配置する。", "rules": ["Heightは--topbar-h", "Locationはavailable spaceを受け取る", "Actionsは末尾にまとまる"], "avoid": ["Page Header actionの重複", "Nested toolbar role"] },
+    "mobile": { "summary": "Sidebar triggerとcurrent locationを優先し、secondary actionsを再構成する。", "rules": ["Leading triggerとlocationを保持", "Global actionはTooltip付きIcon ButtonまたはMenu/Popover内でも同じcomponent contractを維持", "Document横overflowを起こさない"], "avoid": ["唯一のsearch/account経路をdisplay:none", "Mobile専用Top Bar API"] },
+    "touch": { "summary": "Global controlsへ十分なtargetと間隔を提供する。", "rules": ["最低24px target", "Primary touch controlsは44px推奨", "Hover非依存"], "avoid": ["密集したicon controls", "Tooltipだけのaccessible name"] }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM",
-    "FOCUS_VISIBLE_REQUIRED",
-    "NO_POSITIVE_TABINDEX",
-    "TARGET_SIZE_MINIMUM",
-    "INTERACTIVE_NAME_REQUIRED"
-  ],
-  "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
-  ],
+  "rules": ["INTERACTIVE_NAME_REQUIRED", "FOCUS_VISIBLE_REQUIRED", "TARGET_SIZE_MINIMUM", "NO_POSITIVE_TABINDEX", "NO_RAW_HEX_COLOR", "SPACING_FROM_TOKENS_ONLY"],
+  "qualityChecks": ["Rootがheaderでnav/toolbar roleを持たない。", "Location slotが存在する。", "Breadcrumbは独立したnamed navを維持する。", "Sticky時のscroll offsetが--topbar-hと同期する。", "Narrow viewportでdocument横overflowがない。", "Hidden actionに代替経路がある。"],
   "examples": [
-    {
-      "id": "default",
-      "description": "Top Barの標準例。",
-      "code": "<TopBar>\n  <Breadcrumb items={crumbs} />\n  <TopBar.Spacer />\n  <SearchField shortcut=\"⌘K\" />\n  <NotificationButton />\n  <UserMenu />\n</TopBar>"
-    }
+    { "id": "default", "description": "Breadcrumbとglobal actionsを持つshell header。", "code": "<TopBar leading={<SidebarTrigger />} location={<Breadcrumb items={crumbs} />} actions={<><SearchField /><NotificationButton /><UserMenu /></>} />" }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "openQuestions": []
 }

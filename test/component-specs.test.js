@@ -388,6 +388,48 @@ test('Breadcrumb is implementation-ready with landmark, list, and non-link curre
   assert.match(html, /class="crumb-separator" aria-hidden="true"/);
 });
 
+test('Sidebar is implementation-ready as a named native navigation landmark', () => {
+  const sidebar = contracts.find((contract) => contract.id === 'sidebar');
+  assert.equal(sidebar.contractVersion, '0.2.0');
+  assert.equal(sidebar.implementationReadiness.status, 'ready');
+  assert.deepEqual(sidebar.props.map(({ name }) => name), ['children', 'ariaLabel', 'ref']);
+  assert.deepEqual(sidebar.runtime.rootElements, ['nav']);
+  assert.ok(sidebar.runtime.relations.includes('named-navigation-landmark'));
+  assert.ok(sidebar.runtime.relations.includes('shell-owned-placement'));
+  assert.equal(sidebar.tokenBindings.coverage, 'complete');
+  assert.deepEqual(sidebar.openQuestions, []);
+
+  const component = renderedComponents.find(({ id }) => id === 'sidebar');
+  const html = component.render(renderProps(component));
+  assert.match(html, /<nav[^>]+data-component="sidebar"[^>]+aria-label="Primary"/);
+  assert.equal((html.match(/<ul\b/g) ?? []).length, 2);
+  assert.equal((html.match(/<li\b/g) ?? []).length, 4);
+  assert.equal((html.match(/aria-current="page"/g) ?? []).length, 1);
+  assert.doesNotMatch(html, /role="(?:menu|menuitem)"/);
+  assert.doesNotMatch(html, /tabindex=/);
+});
+
+test('Top Bar is implementation-ready as a header with child-owned semantics', () => {
+  const topBar = contracts.find((contract) => contract.id === 'top-bar');
+  assert.equal(topBar.contractVersion, '0.2.0');
+  assert.equal(topBar.implementationReadiness.status, 'ready');
+  assert.deepEqual(topBar.props.map(({ name }) => name), ['location', 'leading', 'actions', 'sticky', 'ref']);
+  assert.deepEqual(topBar.runtime.rootElements, ['header']);
+  assert.ok(topBar.runtime.relations.includes('composes-breadcrumb'));
+  assert.ok(topBar.runtime.relations.includes('child-owned-semantics'));
+  assert.equal(topBar.tokenBindings.coverage, 'complete');
+  assert.deepEqual(topBar.openQuestions, []);
+
+  const component = renderedComponents.find(({ id }) => id === 'top-bar');
+  const normal = component.render({ ...renderProps(component), state: 'default', sticky: false });
+  const sticky = component.render({ ...renderProps(component), state: 'sticky' });
+  assert.match(normal, /<header[^>]+data-component="top-bar"[^>]+data-sticky="false"/);
+  assert.match(sticky, /<header[^>]+data-meridian-state="sticky"[^>]+data-sticky="true"/);
+  assert.match(sticky, /<nav[^>]+data-component="breadcrumb"[^>]+aria-label="Breadcrumb"/);
+  assert.match(sticky, /aria-label="通知を開く"/);
+  assert.doesNotMatch(sticky, /role="(?:navigation|toolbar|banner)"/);
+});
+
 test('all component showcases render every declared state and variant as valid tokenized HTML', () => {
   for (const component of renderedComponents) {
     const cases = [renderProps(component)];

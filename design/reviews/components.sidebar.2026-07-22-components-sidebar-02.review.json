@@ -1,0 +1,43 @@
+{
+  "$schema": "../../schemas/review-record.schema.json", "schemaVersion": "0.1.0",
+  "itemId": "components.sidebar", "cycleId": "2026-07-22-components-sidebar-02", "supersedesCycleId": "2026-07-13-components-sidebar-01", "reviewType": "follow-up", "status": "complete", "startedAt": "2026-07-22", "completedAt": "2026-07-22",
+  "reviewedSources": ["design/research-policy.json", "design/implementation-readiness.json", "components/sidebar.md", "design/contracts/components/sidebar.contract.json", "components/navigation-item.md", "design/contracts/components/navigation-item.contract.json", "js/components-registry.js", "js/ui-builders.js", "index.html", "test/component-specs.test.js"],
+  "research": {
+    "status": "complete", "scope": { "itemId": "components.sidebar", "summary": "Sidebarのnavigation landmark、list hierarchy、keyboard model、responsive placement責務を確定する。" },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior"],
+    "questions": ["Sidebar rootとdestination groupに必要なnative semanticsは何か。", "Desktop columnとmobile Drawerの責務をどこで分離するか。"],
+    "evidence": [
+      { "id": "html-nav", "title": "HTML Standard: The nav element", "url": "https://html.spec.whatwg.org/multipage/sections.html#the-nav-element", "sourceType": "standard", "authority": "primary", "accessedAt": "2026-07-22", "summary": "navは主要なnavigation linksのsectionを表す。", "supportedDecisions": ["named-navigation-landmark"] },
+      { "id": "wai-navigation-landmark", "title": "WAI-ARIA APG: Navigation Landmark", "url": "https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/navigation.html", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "複数navigation landmarkは一意に命名しnative navを優先する。", "supportedDecisions": ["named-navigation-landmark"] },
+      { "id": "wai-disclosure-navigation", "title": "WAI-ARIA APG: Disclosure Navigation Example", "url": "https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "通常navigationはmenu roleを使わずlist hierarchyとnative Tab順を維持し、Arrow keysは必須ではない。", "supportedDecisions": ["native-navigation-keyboard"] },
+      { "id": "wcag-focus-not-obscured", "title": "WCAG 2.2 Understanding SC 2.4.11", "url": "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Expandable side navigationはreflow、dismissal、または適切なfocus managementでfocused itemを隠さない。", "supportedDecisions": ["parent-owned-responsive-placement"] }
+    ],
+    "synthesis": "Sidebarをnamed navとlist hierarchyへ限定し、通常navigationからmenu/arrow-key modelを除外した。Mobile overlayとfocus lifecycleはDrawer/App Shellへ委譲した。",
+    "decisionImpact": "Contract 0.2.0、React API、Showcase、token bindingをNavigation Itemと同じnative navigation modelへ同期した。", "notRequiredReason": null
+  },
+  "decisions": [
+    { "id": "named-navigation-landmark", "summary": "Rootを一意に命名されたnative navへ固定する。", "rationale": "Page内のBreadcrumb等のnavigation landmarkと目的を区別するため。" },
+    { "id": "native-navigation-keyboard", "summary": "ul/li、native Tab、link/button activationを使いmenu roleとArrow key必須modelを除外する。", "rationale": "通常navigationへwidget semanticsを誤適用しないため。" },
+    { "id": "parent-owned-responsive-placement", "summary": "Desktop columnとmobile Drawerのplacement/open/focus責務をApp Shell／Drawerへ委譲する。", "rationale": "Navigation semanticsをviewport-specific overlay behaviorから分離するため。" },
+    { "id": "complete-token-binding", "summary": "Root、group label、footerのvisual slotを公開tokenへ結線する。", "rationale": "React実装時のraw value補完を不要にするため。" }
+  ],
+  "differences": [
+    { "classification": "cross-layer-conflict", "description": "旧registryはSidebarへArrow key移動とglobal shortcutを割り当てていた。", "action": "Native Tab modelへ統一しSidebar独自key bindingを削除した。", "status": "resolved" },
+    { "classification": "missing-contract", "description": "Root、compound slots、ref、responsive ownershipのReact APIが未確定だった。", "action": "Contract 0.2.0とReact API Freezeへ固定した。", "status": "resolved" },
+    { "classification": "implementation-stale", "description": "Showcaseが平坦なanchor列とinline raw layout valueを使っていた。", "action": "Named nav、grouped ul/li、Navigation Item composition、tokenized CSSへ更新した。", "status": "resolved" }
+  ],
+  "changes": [
+    { "path": "components/sidebar.md", "summary": "Navigationとresponsive placementの責務境界、API freezeを確定。" },
+    { "path": "design/contracts/components/sidebar.contract.json", "summary": "Contract 0.2.0、runtime、complete bindings、readiness evidenceを追加。" },
+    { "path": "js/ui-builders.js", "summary": "Named navとgrouped listを持つShowcaseへ更新。" },
+    { "path": "index.html", "summary": "Sidebar layoutをtokenized CSSへ移行。" },
+    { "path": "test/component-specs.test.js", "summary": "Landmark/list/keyboard/APIの回帰testを追加。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js", "status": "passed", "notes": "22件が通過し、Contract、Showcase、React API Freeze、native navigation semanticsの同期を確認した。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "1280×720と390×844でnamed nav、grouped list、単一のaria-current、theme/contrast/density、overflow、target size、console errorなしを確認した。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、generated artifacts、implementation-ready gateを含む全154テストが通過した。" }
+  ],
+  "openQuestions": [{ "question": "React実装、App Shell／Drawer integration、visual regressionを完了しstableへ昇格する。", "owner": "components.sidebar", "exitCriteria": "Named nav、Drawer focus lifecycle、全context baselineがCIで通ること。" }],
+  "acknowledgedImpacts": ["2026-07-22-components-navigation-item-02", "2026-07-13-foundations-layout-01", "2026-07-13-tokens-component-01", "2026-07-13-tokens-theme-01"], "impactedItems": ["components.drawer"], "nextRecommendedItems": ["components.drawer"]
+}

@@ -180,18 +180,21 @@ function datePickerEl(){const days=['月','火','水','木','金','土','日'];l
   return `<div class="panel" role="dialog" aria-label="日付を選択" style="width:264px;padding:12px"><div class="rowflex" style="justify-content:space-between;margin-bottom:8px"><button type="button" class="tb-btn" aria-label="前の月">${I.chevR.replace('m9 6 6 6-6 6','m15 6-6 6 6 6')}</button><b style="font-size:var(--text-label)">2026年 7月</b><button type="button" class="tb-btn" aria-label="次の月">${I.chevR}</button></div>
   <div role="row" style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;font-size:var(--text-micro);color:var(--fg-subtle);text-align:center;margin-bottom:4px">${days.map(d=>`<span role="columnheader">${d}</span>`).join('')}</div>
   <div role="grid" aria-label="2026年7月" style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;font-size:var(--text-small)">${cells}</div></div>`}
-function sidebarDemo(){return `<nav class="panel" aria-label="メインナビゲーション" style="width:240px;background:var(--sidebar-bg);padding:10px;height:360px;display:flex;flex-direction:column">
-  <button type="button" class="tsb-item" style="font-weight:600;margin-bottom:8px">${avatar({name:'AC',size:'xs'})} Acme Inc. <span style="margin-left:auto">${I.chevD}</span></button>
-  <div class="tsb-hd">Workspace</div>
-  <a href="#" class="tsb-item on" aria-current="page">${I.zap} ダッシュボード</a>
-  <a href="#" class="tsb-item">${I.folder} プロジェクト <span class="nbadge" style="margin-left:auto;font-size:9.5px;background:var(--primary-subtle);color:var(--primary);padding:0 6px;border-radius:var(--radius-full)">12</span></a>
-  <a href="#" class="tsb-item">${I.users} メンバー</a>
-  <div style="padding-left:20px"><a href="#" class="tsb-item" style="font-size:var(--text-small)">招待中</a></div>
-  <div class="tsb-hd">設定</div>
-  <a href="#" class="tsb-item">${I.gear} 環境設定</a>
-  <div style="margin-top:auto;border-top:1px solid var(--border-muted);padding-top:8px"><button type="button" class="tsb-item" style="width:100%">${avatar({name:'SN',size:'xs'})} 新谷 <span style="margin-left:auto">${I.dots}</span></button></div></nav>`}
-function topBarDemo(){return `<header class="panel" style="width:min(560px,100%);display:flex;align-items:center;gap:8px;padding:8px 14px">
-  ${crumbsEl({items:['Acme','Meridian Docs']})}<div style="margin-left:auto"></div>${searchFieldEl({size:'sm'})}<button type="button" class="tb-btn" aria-label="通知">${I.bell}</button>${avatar({name:'SN',size:'sm'})}</header>`}
+function sidebarDemo(){const rootId=nextUiDemoId('sidebar'),workspaceId=`${rootId}-workspace`,settingsId=`${rootId}-settings`;return `<nav id="${rootId}" class="sidebarc" data-component="sidebar" data-meridian-state="default" aria-label="Primary">
+  <div class="sidebarc-header"><button type="button" class="sidebarc-context"><span class="avatar" data-size="xs" aria-hidden="true">AC</span><span>Acme Inc.</span><span class="sidebarc-end" aria-hidden="true">${I.chevD}</span></button></div>
+  <div class="sidebarc-group"><div id="${workspaceId}" class="sidebarc-group-label">Workspace</div><ul aria-labelledby="${workspaceId}">
+    <li><a href="#/dashboard" class="navitemc" data-component="navigation-item" data-meridian-state="current" aria-current="page">${I.zap}<span class="navitem-label">ダッシュボード</span></a></li>
+    <li><a href="#/projects" class="navitemc" data-component="navigation-item" data-meridian-state="default">${I.folder}<span class="navitem-label">プロジェクト</span><span class="navitem-badge">12</span></a></li>
+    <li><a href="#/members" class="navitemc" data-component="navigation-item" data-meridian-state="default">${I.users}<span class="navitem-label">メンバーとアクセス管理</span></a></li>
+  </ul></div>
+  <div class="sidebarc-group"><div id="${settingsId}" class="sidebarc-group-label">設定</div><ul aria-labelledby="${settingsId}"><li><a href="#/settings" class="navitemc" data-component="navigation-item" data-meridian-state="default">${I.gear}<span class="navitem-label">環境設定</span></a></li></ul></div>
+  <div class="sidebarc-footer"><button type="button" class="sidebarc-context"><span class="avatar" data-size="xs" aria-hidden="true">SN</span><span>新谷</span><span class="sidebarc-end" aria-hidden="true">${I.dots}</span></button></div>
+</nav>`}
+function topBarDemo(p={}){const sticky=p.state==='sticky'||p.sticky===true,searchTipId=nextUiDemoId('topbar-search'),tipId=nextUiDemoId('topbar-notifications'),accountTipId=nextUiDemoId('topbar-account');return `<header class="topbarc" data-component="top-bar" data-meridian-state="${sticky?'sticky':'default'}" data-sticky="${sticky}">
+  <a href="#/home" class="topbarc-brand" aria-label="Meridian home">M</a>
+  <div class="topbarc-location">${crumbsEl({items:['Workspace','Projects','Meridian']})}</div>
+  <div class="topbarc-actions"><span class="tooltipc"><button type="button" class="topbarc-search" aria-label="検索を開く" aria-describedby="${searchTipId}">${I.search}<span>検索</span><kbd>⌘K</kbd></button><span id="${searchTipId}" role="tooltip" class="tooltipc-surface">検索を開く</span></span><span class="tooltipc"><button type="button" class="tb-btn" aria-label="通知を開く" aria-describedby="${tipId}">${I.bell}</button><span id="${tipId}" role="tooltip" class="tooltipc-surface">通知を開く</span></span><span class="tooltipc"><button type="button" class="topbarc-account" aria-label="アカウントメニューを開く" aria-describedby="${accountTipId}"><span aria-hidden="true">SN</span><b>新谷</b></button><span id="${accountTipId}" role="tooltip" class="tooltipc-surface">アカウントメニューを開く</span></span></div>
+</header>`}
 function cmdMenuDemo(){const listId=nextUiDemoId('command-list');return `<div class="cmdk" role="dialog" aria-label="コマンドメニュー" style="margin:0;width:min(480px,100%)"><div class="ci">${I.search}<input role="combobox" aria-label="コマンドを検索" aria-expanded="true" aria-controls="${listId}" aria-activedescendant="${listId}-option-0" placeholder="コマンドを検索…" value=""><kbd style="font-size:10px;color:var(--fg-subtle);border:1px solid var(--border);border-radius:var(--radius-2xs);padding:1px 5px">esc</kbd></div>
   <div id="${listId}" class="list" role="listbox" aria-label="コマンド候補"><div class="ghd" role="presentation">最近</div>
   <button type="button" id="${listId}-option-0" role="option" aria-selected="true" class="it sel">${I.plus}新しいプロジェクト<span class="k">⌘N</span></button>

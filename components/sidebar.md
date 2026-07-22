@@ -2,208 +2,136 @@
 
 ## Summary
 
-アプリの主ナビゲーション。ワークスペース切替・グループ・ユーザーメニューを含む。
+恒常的なapp destinationをgroup化して提示する、名前付きnavigation landmarkです。React実装前Contractは `0.2.0` です。
 
 Machine-readable contract: `design/contracts/components/sidebar.contract.json`
 
 ## Role
 
-Navigation領域でSidebarの責務を1か所にまとめ、類似componentとの選択境界を固定します。PC用とSP用に別componentを作らず、同じ意味とAPIをlayout、viewport、input methodへ適応させます。
+Sidebarはnavigationの意味とgroup/list構造だけを所有します。Desktopのcolumn配置、mobileのDrawer、開閉trigger、overlay、focus trap、Escape、focus returnはApp ShellまたはDrawerが所有します。
 
 ## Principles
 
-- Taskの主目的と現在状態を最短で理解できること。
-- Native semanticsまたは確立したARIA patternを優先すること。
-- Semantic tokenを基本とし、Component tokenはpolicy triggerがある場合だけ追加すること。
+- Native `nav` と `ul > li` hierarchyを使う。
+- Navigation Item、Workspace Switcher、User Menuの既存Contractを合成する。
+- Viewportごとに意味やReact APIを複製しない。
 
 ## When To Use
 
-- 5 個以上の恒常的なナビゲーション先を持つアプリ
+- 5件以上の恒常的destinationを持つapp。
+- Workspace switcher、group、footer actionをprimary navigationと同じ領域で構成する。
 
 ## When Not To Use
 
-- 3〜4 ページの単純なアプリ → Top Bar のタブ
+- 3〜4件のpeer viewはTabsまたはTop Barを使う。
+- Page内section navigationはTable of Contentsを使う。
+- Mobile overlay containerはDrawerを使う。
+- Commandや一時actionはMenuを使う。
 
 ## Visual Model
 
-Navigation landmark or grouped navigation container. Surface、border、type、spacingの強弱は内容の階層を支え、装飾のためだけにcard、shadow、accentを追加しません。状態は色だけでなくlabel、icon、shape、positionを組み合わせます。
+`--sidebar-bg` の常設surfaceをborderでmain contentから分離します。Group labelはdestinationより弱く、current/hover/focusの表現はNavigation Itemが所有します。Sidebar自身にcard、shadow、priority variantを追加しません。
 
 ## Anatomy
 
 | Part | Required | Description |
 |---|---:|---|
-| root | Yes | Navigation landmark or grouped navigation container. |
-| item | Yes | Destination or view selector. |
-| current-indicator | No | Non-color cue for the current location or selection. |
-| metadata | No | Count, icon, or supporting context. |
+| root | Yes | Accessible nameを持つnative `nav`。 |
+| header | No | Workspace switcherなどnavigation context。 |
+| group | Yes | Optional labelと`ul`を持つdestination group。 |
+| navigation-item | Yes | `li`内のNavigation Item。 |
+| footer | No | User Menuやsettingsなど恒常的な補助control。 |
 
 ## Variants
 
-| Variant | Use | Notes |
-|---|---|---|
-| `default` | 標準文脈。 | 意味を変えずに見た目だけを増やさない。 |
+`default` のみです。同じSidebarをDesktop App Shellまたはmobile Drawerへ配置します。
 
 ## Sizes / Density
 
-| Size | Token | Typical use |
-|---|---|---|
-| Dedicated size propなし | Density token | 周辺layoutのdensityに従う。 |
-
-Compact / Default / Comfortableはviewportではなく作業密度と入力方式で選び、componentの意味やprop集合は変えません。
+Size propはありません。Inline幅は `--sidebar-w`、child targetは周辺densityへ従います。Viewportだけでdensityやcomponent APIを切り替えません。
 
 ## Icon Rules
 
-意味を補強するiconはtext labelと併用し、装飾iconはassistive technologyから隠します。Icon-only actionには見えるtooltipとprogrammatic accessible nameを付けます。
+Destination iconはNavigation Itemの可視labelと併用します。Sidebarが自動でicon-onlyへcollapseすることはありません。Icon-only navigationが必要な製品要件は別compositionとして設計し、Tooltipだけをaccessible nameにしません。
 
 ## States
 
 | State | Behavior |
 |---|---|
-| `default` | 通常状態。意味、label、valueを省略しない。 |
+| `default` | Named landmark、list hierarchy、全可視labelを維持。 |
+
+Visibility、mobile open、collapsedはSidebar stateではなくApp Shell／Drawer placement stateです。
 
 ## Behavior
 
-- アクティブ項目は primary-subtle 背景+primary テキストで示す。
-- グループ見出しは 3 個以上の項目がある場合のみ付ける。
-- 折りたたみ時はアイコン+ツールチップで代替する。
-
-- Controlled stateを提供する場合、visual stateとprogrammatic stateを同じeventで同期します。
-- 非同期actionでは二重実行を防ぎ、完了・失敗・中断を説明します。
+- Rootは `nav`。Page内の他navと区別できるaccessible nameを持ちます。
+- Groupは`ul > li`でdestination hierarchyを表します。
+- Current pageはSidebar全体で1件だけです。
+- `role="menu"`、`role="menuitem"`、roving tabindexを追加しません。
+- Sidebar独自のArrow keyやglobal shortcutを追加しません。
 
 ## Layout / Placement Rules
 
-### Recommended Pattern
-
-- Reading orderとfocus orderを一致させます。
-- 周辺componentとのspacingはtokenを使い、固定viewport値で内部寸法を変えません。
-- 同じnavigation contractをDrawerまたはcompact barで提示し、別component APIへ分岐しない。
+- Header、groups、footerをDOM/reading orderどおりに並べます。
+- Root内部だけを縦scroll可能にし、focused itemを完全に隠しません。
+- Footerはborderでprimary destinationから分離します。
+- App ShellがSidebarのsticky/column placementを所有します。
 
 ## Responsive / Viewport Behavior
 
-### Desktop
+DesktopではApp Shellのinline columnへ置き、main contentを覆いません。Mobileでは同じ`nav`とlist DOMをDrawerへ配置し、Drawer triggerが`aria-controls`と`aria-expanded`、DrawerがEscapeとfocus managementを所有します。
 
-- 恒常navigationとして固定領域を使い、main contentを覆わない。
-- Collapsed stateでもlabelへ到達できる。
-
-### Mobile
-
-- 同じnavigation contractをDrawerまたはcompact barで提示し、別component APIへ分岐しない。
-- 開閉controlと現在地を常に認識できるようにする。
-
-### Touch
-
-- Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。
-- Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。
+PC用とSP用に分けません。Touch targetは24px minimumを満たし、primary navigationでは44px以上を推奨します。
 
 ## Accessibility
 
-- Keyboardとpointerで同じ機能を実行できる。
-- Focus indicatorを常に視認でき、sticky layerで完全に隠さない。
-- Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。
-- Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。
-- focus-visibleで--focus-ringを使う。
-- Positive tabindexを使わず、DOMとvisualの順序を一致させる。
+- Native `nav`へ重複する`role="navigation"`を付けません。
+- 複数navがあるpageでは一意なlabelを付けます。
+- Destinationは`ul > li > a[href]`構造を持ちます。
+- Native Tab順を維持し、通常navigationへmenu keyboard modelを持ち込みません。
+- Drawer配置時のinitial focus、trap、Escape、focus returnはparent責務です。
 
 Keyboard:
 
-- `Tab`: 順序どおりにfocusを移動する。
+- `Tab / Shift+Tab`: Native document順でlinksとcontrolsを移動。
+- `Enter / Space`: Focused native link/button固有のactivation。
 
 ## Content Guidelines
 
-- Labelは対象または結果を具体的に書き、状態だけを繰り返さない。
-- Errorは原因と修正方法、Emptyは何がないかと次の一歩を示す。
-- 省略するmetadataにも別経路から到達できるようにする。
+Group labelは3件以上の意味あるまとまりにだけ使い、短い名詞にします。Destination labelは重複や曖昧語を避け、footer controlも結果が分かるaccessible nameを持ちます。
 
 ## Tokens
 
-- semanticColor: `--bg-subtle`, `--border`, `--border-muted`, `--fg`, `--fg-muted`, `--focus-ring`, `--primary`, `--primary-subtle`, `--sidebar-bg`, `--sidebar-item-active-bg`, `--surface`, `--surface-muted`
-- density: `--ctl-md`
-- spacing: `--sp-2`
-- motion: `--dur-fast`
-- layout: `--sidebar-w`
-- radius: `--radius-full`
-- typography: `--text-small`
+`--sidebar-bg`, `--bg-subtle`, `--border`, `--border-muted`, `--fg-subtle`, `--sidebar-w`, `--sp-1`, `--sp-2`, `--sp-3`, `--text-micro`。
 
-Primitive color、raw hex、任意pxをcomponentから直接選びません。
-
-### Token Binding Decisions
-
-| Slot | Source | Scope | Trigger | Reason |
-|---|---|---|---|---|
-| `token.sidebar-bg.value` | `--sidebar-bg` | `component` | `semantic-divergence` | Dark themeでは常設navigationをcanvasへ統合し、Lightではsubtle面として区別する。 |
-| `token.bg-subtle.value` | `--bg-subtle` | `semantic` | - | Sidebarの公開visual contractで用途tokenとして共有する。 |
-| `token.sidebar-item-active-bg.value` | `--sidebar-item-active-bg` | `component` | `component-anatomy` | Sidebar itemのcurrent state slotをcomponent contractで固定する。 |
-| `token.primary-subtle.value` | `--primary-subtle` | `semantic` | - | Sidebarの公開visual contractで用途tokenとして共有する。 |
-| `token.sidebar-w.value` | `--sidebar-w` | `semantic` | - | Sidebarの公開visual contractで用途tokenとして共有する。 |
-| `token.border.value` | `--border` | `semantic` | - | Sidebarの公開visual contractで用途tokenとして共有する。 |
-| `token.surface.value` | `--surface` | `semantic` | - | Sidebarの公開visual contractで用途tokenとして共有する。 |
-| `token.surface-muted.value` | `--surface-muted` | `semantic` | - | Sidebarの公開visual contractで用途tokenとして共有する。 |
-| `token.fg.value` | `--fg` | `semantic` | - | Sidebarの公開visual contractで用途tokenとして共有する。 |
-| `token.fg-muted.value` | `--fg-muted` | `semantic` | - | Sidebarの公開visual contractで用途tokenとして共有する。 |
-| `token.primary.value` | `--primary` | `semantic` | - | Sidebarの公開visual contractで用途tokenとして共有する。 |
-| `token.focus-ring.value` | `--focus-ring` | `semantic` | - | Sidebarの公開visual contractで用途tokenとして共有する。 |
-| `token.ctl-md.value` | `--ctl-md` | `semantic` | - | Sidebarの公開visual contractで用途tokenとして共有する。 |
-| `token.sp-2.value` | `--sp-2` | `semantic` | - | Sidebarの公開visual contractで用途tokenとして共有する。 |
-| `token.dur-fast.value` | `--dur-fast` | `semantic` | - | Sidebarの公開visual contractで用途tokenとして共有する。 |
-| `token.border-muted.value` | `--border-muted` | `semantic` | - | SidebarのHTML showcaseで実際に参照する公開token。 |
-| `token.radius-full.value` | `--radius-full` | `semantic` | - | SidebarのHTML showcaseで実際に参照する公開token。 |
-| `token.text-small.value` | `--text-small` | `semantic` | - | SidebarのHTML showcaseで実際に参照する公開token。 |
-
-Current coverage: `partial`。HTML showcaseを確認済みの仕様候補として記録し、React package実装時にDOM/state selectorまで結線して`complete`へ移行します。
+全visual slotはContractで `complete` binding済みです。
 
 ## Do / Don't
 
-Do:
+Do: Named `nav`、list hierarchy、1件のcurrent Navigation Itemを使い、responsive placementをparentへ委譲します。
 
-```tsx
-<Sidebar>
-  <Sidebar.WorkspaceSwitcher />
-  <Sidebar.Group label="Workspace">
-    <Sidebar.Item icon={<ZapIcon />} active>ダッシュボード</Sidebar.Item>
-    <Sidebar.Item icon={<FolderIcon />} badge={12}>プロジェクト</Sidebar.Item>
-  </Sidebar.Group>
-  <Sidebar.Footer><UserMenu /></Sidebar.Footer>
-</Sidebar>
-```
-
-Don't:
-
-```tsx
-{/* 3〜4 ページの単純なアプリ → Top Bar のタブ */}
-<Sidebar />
-```
+Don't: Sidebarへdialog/menu semantics、focus trap、viewport別API、icon-only自動collapseを追加しません。
 
 ## Prohibited Patterns
 
-- `NO_RAW_HEX_COLOR`に反する実装。
-- `SPACING_FROM_TOKENS_ONLY`に反する実装。
-- `RADIUS_FROM_TOKENS_ONLY`に反する実装。
-- `CONTRAST_AA_MINIMUM`に反する実装。
-- `FOCUS_VISIBLE_REQUIRED`に反する実装。
-- `NO_POSITIVE_TABINDEX`に反する実装。
-- `TARGET_SIZE_MINIMUM`に反する実装。
-- `INTERACTIVE_NAME_REQUIRED`に反する実装。
+- `role="menu"` / `role="menuitem"` とroving tabindex。
+- List semanticsのない平坦なanchor列。
+- Sidebar自身によるDrawer focus management。
+- Current pageが複数。
+- Raw color、spacing、width。
 
 ## AI Selection Rules
 
-AIが選ぶ条件:
-
-- 5 個以上の恒常的なナビゲーション先を持つアプリ
-
-AIが避ける条件:
-
-- 3〜4 ページの単純なアプリ → Top Bar のタブ
-
-AIはvariantを意味、sizeをtask密度、stateを実際のsystem stateから選びます。Viewport名だけでvariantやcomponentを分岐しません。
+5件以上の恒常的destinationをgroup化する場合だけSidebarを選びます。少数peer viewはTabs、page内navigationはTable of Contents、overlayはDrawer、commandはMenuを選びます。
 
 ## Examples
 
 ```tsx
-<Sidebar>
-  <Sidebar.WorkspaceSwitcher />
+<Sidebar ariaLabel="Primary">
+  <Sidebar.Header><WorkspaceSwitcher /></Sidebar.Header>
   <Sidebar.Group label="Workspace">
-    <Sidebar.Item icon={<ZapIcon />} active>ダッシュボード</Sidebar.Item>
-    <Sidebar.Item icon={<FolderIcon />} badge={12}>プロジェクト</Sidebar.Item>
+    <NavigationItem href="/dashboard" current>ダッシュボード</NavigationItem>
+    <NavigationItem href="/projects">プロジェクト</NavigationItem>
   </Sidebar.Group>
   <Sidebar.Footer><UserMenu /></Sidebar.Footer>
 </Sidebar>
@@ -211,9 +139,25 @@ AIはvariantを意味、sizeをtask密度、stateを実際のsystem stateから�
 
 ## Implementation Notes
 
-- React packageは今後追加します。現在はsemantic contract、HTML showcase、token binding候補を正本として扱います。
-- Native element、ref forwarding、controlled state、event名はpackage実装時にこのcontractへ同期します。
+`Sidebar.Group`はlabelとchildren、`Sidebar.Footer`はchildrenを受け取ります。Rootはnative `nav`属性を透過し、`ref`を`HTMLElement`へforwardします。Parentが同じSidebar nodeをApp ShellまたはDrawerへ配置します。
+
+### React API Freeze
+
+```ts
+type SidebarProps = HTMLAttributes<HTMLElement> & {
+  children: ReactNode
+  ariaLabel?: string // "Primary"
+  ref?: ForwardedRef<HTMLElement>
+}
+
+type SidebarGroupProps = {
+  label?: string
+  children: ReactNode // NavigationItem instances
+}
+
+type SidebarFooterProps = { children: ReactNode }
+```
 
 ## Open Questions
 
-- React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。
+Contract上のopen questionはありません。React実装、App Shell／Drawer integration、visual regression完了後にstableへ昇格します。

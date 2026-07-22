@@ -1,376 +1,122 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready", "policyVersion": "0.1.0", "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/sidebar.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/sidebar.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "accessibility.aria", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "negativeExamples", "design/reviews/components.sidebar.2026-07-22-components-sidebar-02.review.json"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["tokenBindings", "tokenRefs", "index.html#sidebar-component"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/sidebar.md#responsive-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#sidebar", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.sidebar.2026-07-22-components-sidebar-02.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": ["React実装", "App Shell／Drawer integration tests", "visual regression baseline"]
+  },
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["nav"],
+    "slots": ["header", "group", "group-label", "list", "navigation-item", "footer"],
+    "attributes": ["aria-label", "aria-labelledby", "data-meridian-state", "data-*"],
+    "stateModel": ["data-meridian-state"],
+    "events": [],
+    "relations": ["named-navigation-landmark", "list-hierarchy", "composes-navigation-item", "shell-owned-placement"],
+    "provenance": ["component", "instance", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["5件以上の恒常的なapp destinationを、複数groupまたはworkspace contextとともに提示する。"],
+    "avoidWhen": ["少数のpeer view、page内目次、temporary action list、またはmobile overlayそのものを表す。"],
+    "alternatives": ["Tabs", "Top Bar", "Table of Contents", "Menu", "Drawer"]
+  },
+  "negativeExamples": [
+    { "pattern": "Sidebarへrole=menuまたは子へrole=menuitemを付ける。", "reason": "通常のapp navigationへmenu widgetのfocus modelを誤って要求するため。", "ruleIds": ["NO_POSITIVE_TABINDEX"] },
+    { "pattern": "Sidebar自身がmobile overlay、focus trap、開閉triggerを所有する。", "reason": "Navigationの意味とDrawer/App Shellのplacement責務が混ざるため。", "ruleIds": ["FOCUS_VISIBLE_REQUIRED"] }
+  ],
+  "requiredScenarios": ["default", "default-variant", "named-landmark", "grouped-list", "current-item", "with-footer", "long-label", "narrow-container"],
   "id": "sidebar",
   "name": "Sidebar",
   "status": "draft",
   "category": "navigation",
-  "description": "アプリの主ナビゲーション。ワークスペース切替・グループ・ユーザーメニューを含む。",
-  "source": {
-    "humanDoc": "components/sidebar.md",
-    "registry": "js/components-registry.js#sidebar"
-  },
+  "description": "恒常的なapp destinationをgroup化して提示する、名前付きnavigation landmark。",
+  "source": { "humanDoc": "components/sidebar.md", "registry": "js/components-registry.js#sidebar" },
   "intent": {
-    "whenToUse": [
-      "5 個以上の恒常的なナビゲーション先を持つアプリ"
-    ],
-    "whenNotToUse": [
-      "3〜4 ページの単純なアプリ → Top Bar のタブ"
-    ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "whenToUse": ["5件以上の恒常的destinationを持つapp。", "Workspace switcher、group、footer actionをprimary navigationと同じ領域で構成する。"],
+    "whenNotToUse": ["3〜4件のpeer viewはTabsまたはTop Barを使う。", "Page内section navigationはTable of Contentsを使う。", "Mobile overlay containerはDrawerを使う。", "Commandや一時actionはMenuを使う。"],
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "root",
-      "required": true,
-      "description": "Navigation landmark or grouped navigation container."
-    },
-    {
-      "part": "item",
-      "required": true,
-      "description": "Destination or view selector."
-    },
-    {
-      "part": "current-indicator",
-      "required": false,
-      "description": "Non-color cue for the current location or selection."
-    },
-    {
-      "part": "metadata",
-      "required": false,
-      "description": "Count, icon, or supporting context."
-    }
+    { "part": "root", "required": true, "description": "Accessible nameを持つnative nav landmark。" },
+    { "part": "header", "required": false, "description": "Workspace switcherなどnavigation contextを示す領域。" },
+    { "part": "group", "required": true, "description": "Optional labelとulを持つdestination group。" },
+    { "part": "navigation-item", "required": true, "description": "li内へ置くNavigation Item。Current pageは全Sidebarで1件。" },
+    { "part": "footer", "required": false, "description": "User menuやsettingsなど恒常的な補助control領域。" }
   ],
   "variants": {
     "default": {
-      "intent": "標準文脈。",
-      "tokenRefs": {},
+      "intent": "App ShellまたはDrawer内で同じnavigation DOMを提示する唯一のvariant。",
+      "tokenRefs": { "background": "--sidebar-bg", "border": "--border", "width": "--sidebar-w" },
       "states": {}
     }
   },
   "sizes": {},
   "states": [
-    {
-      "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
-      "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
-      ]
-    }
+    { "id": "default", "description": "全labelとgroup hierarchyを表示する通常状態。", "requiredBehavior": ["Named nav landmarkを維持", "Native Tab順とlist hierarchyを維持", "Current pageを1件だけ含む"] }
   ],
   "props": [
-    {
-      "name": "children",
-      "type": "ReactNode",
-      "required": true,
-      "default": null,
-      "description": "Componentの主要content。"
-    }
+    { "name": "children", "type": "ReactNode", "required": true, "default": null, "description": "Sidebar.Header、Sidebar.Group、Sidebar.Footerのcomposition。" },
+    { "name": "ariaLabel", "type": "string", "required": false, "default": "Primary", "description": "Page内の他navigation landmarkと区別するaccessible name。" },
+    { "name": "ref", "type": "ForwardedRef<HTMLElement>", "required": false, "default": null, "description": "Native nav elementへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--bg-subtle",
-      "--border",
-      "--border-muted",
-      "--fg",
-      "--fg-muted",
-      "--focus-ring",
-      "--primary",
-      "--primary-subtle",
-      "--sidebar-bg",
-      "--sidebar-item-active-bg",
-      "--surface",
-      "--surface-muted"
-    ],
-    "density": [
-      "--ctl-md"
-    ],
-    "spacing": [
-      "--sp-2"
-    ],
-    "motion": [
-      "--dur-fast"
-    ],
-    "layout": [
-      "--sidebar-w"
-    ],
-    "radius": [
-      "--radius-full"
-    ],
-    "typography": [
-      "--text-small"
-    ]
+    "componentColor": ["--sidebar-bg"],
+    "semanticColor": ["--bg-subtle", "--border", "--border-muted", "--fg-subtle"],
+    "layout": ["--sidebar-w"],
+    "spacing": ["--sp-1", "--sp-2", "--sp-3"],
+    "typography": ["--text-micro"]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.sidebar-bg.value",
-        "source": "--sidebar-bg",
-        "scope": "component",
-        "componentToken": "--sidebar-bg",
-        "aliases": "--bg-subtle",
-        "trigger": "semantic-divergence",
-        "reason": "Dark themeでは常設navigationをcanvasへ統合し、Lightではsubtle面として区別する。"
-      },
-      {
-        "slot": "token.bg-subtle.value",
-        "source": "--bg-subtle",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Sidebarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sidebar-item-active-bg.value",
-        "source": "--sidebar-item-active-bg",
-        "scope": "component",
-        "componentToken": "--sidebar-item-active-bg",
-        "aliases": "--primary-subtle",
-        "trigger": "component-anatomy",
-        "reason": "Sidebar itemのcurrent state slotをcomponent contractで固定する。"
-      },
-      {
-        "slot": "token.primary-subtle.value",
-        "source": "--primary-subtle",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Sidebarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sidebar-w.value",
-        "source": "--sidebar-w",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Sidebarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Sidebarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.surface.value",
-        "source": "--surface",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Sidebarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.surface-muted.value",
-        "source": "--surface-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Sidebarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Sidebarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-muted.value",
-        "source": "--fg-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Sidebarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary.value",
-        "source": "--primary",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Sidebarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.focus-ring.value",
-        "source": "--focus-ring",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Sidebarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.ctl-md.value",
-        "source": "--ctl-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Sidebarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sp-2.value",
-        "source": "--sp-2",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Sidebarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.dur-fast.value",
-        "source": "--dur-fast",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Sidebarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border-muted.value",
-        "source": "--border-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "SidebarのHTML showcaseで実際に参照する公開token。"
-      },
-      {
-        "slot": "token.radius-full.value",
-        "source": "--radius-full",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "SidebarのHTML showcaseで実際に参照する公開token。"
-      },
-      {
-        "slot": "token.text-small.value",
-        "source": "--text-small",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "SidebarのHTML showcaseで実際に参照する公開token。"
-      }
+      { "slot": "root.background", "source": "--sidebar-bg", "scope": "component", "componentToken": "--sidebar-bg", "aliases": "--bg-subtle", "trigger": "semantic-divergence", "reason": "Lightではcanvasから分離し、Darkではcanvasへ統合する常設navigation surface。" },
+      { "slot": "root.border-inline-end", "source": "--border", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Main contentとの境界を示す。" },
+      { "slot": "root.inline-size", "source": "--sidebar-w", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "App Shellが参照する標準Sidebar幅。" },
+      { "slot": "root.padding", "source": "--sp-3", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Navigation contentとsurface edgeを分離する。" },
+      { "slot": "root.section-gap", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Header、groups、footer間のrhythm。" },
+      { "slot": "group.list-gap", "source": "--sp-1", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Navigation Item間の密度を保つ。" },
+      { "slot": "group-label.foreground", "source": "--fg-subtle", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Destinationより弱いsection label。" },
+      { "slot": "group-label.typography", "source": "--text-micro", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Compactなnavigation metadata role。" },
+      { "slot": "group-label.padding-inline", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Navigation Item labelとのinline alignment。" },
+      { "slot": "footer.border-block-start", "source": "--border-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Primary destinationsとaccount controlsを分離する。" },
+      { "slot": "footer.padding-block-start", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Footer boundary後のspacing。" },
+      { "slot": "root.shadow", "source": "none", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "Inline Sidebarはborderで階層を示しelevationを持たない。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.sidebar"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
-    "requirements": [
-      "Keyboardとpointerで同じ機能を実行できる。",
-      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
-    ],
-    "aria": [
-      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
-    ],
-    "focus": [
-      "focus-visibleで--focus-ringを使う。",
-      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
-    ]
+    "requirements": ["Rootはaccessible nameを持つnav。", "Destination groupはul/li hierarchyを持つ。", "Current pageはSidebar全体で1件だけaria-current=pageを持つ。", "Icon-onlyへ自動collapseせず可視labelを維持する。"],
+    "aria": ["Native navへrole=navigationを重ねない。", "Page内に複数navがある場合は一意なlabelを付ける。", "通常navigationへmenu/menuitem roleを付けない。"],
+    "focus": ["Tab / Shift+Tabでnative document順に移動する。", "Sidebar内部のscrollはfocused itemを完全に隠さない。", "Drawer配置時のinitial focus、trap、Escape、focus returnはDrawer/App Shellが所有する。"]
   },
   "keyboardInteractions": [
-    {
-      "key": "Tab",
-      "action": "順序どおりにfocusを移動する。"
-    }
+    { "key": "Tab / Shift+Tab", "action": "Native document順でSidebar内外のlinksとcontrolsを移動する。" },
+    { "key": "Enter / Space", "action": "Focused native linkまたはbutton固有のactivationを実行する。Sidebar独自のarrow-key modelは追加しない。" }
   ],
   "usagePatterns": [
-    {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "5 個以上の恒常的なナビゲーション先を持つアプリ",
-      "recommended": [
-        "アクティブ項目は primary-subtle 背景+primary テキストで示す。"
-      ],
-      "avoid": [
-        "3〜4 ページの単純なアプリ → Top Bar のタブ"
-      ]
-    }
+    { "id": "grouped-navigation", "title": "Grouped primary navigation", "description": "複数の恒常的destination group。", "recommended": ["ul/li内にNavigation Itemを置く", "3件以上の意味あるgroupだけlabelを付ける"], "avoid": ["Visual indentationだけでhierarchyを表す", "Current itemを複数設定する"] },
+    { "id": "responsive-placement", "title": "Responsive placement", "description": "同じSidebarをApp ShellまたはDrawerへ配置する。", "recommended": ["Visibilityとoverlay behaviorをparentへ委譲", "同じariaLabelとlist DOMを維持"], "avoid": ["Mobile専用Sidebar API", "Sidebar自身のfocus trap"] }
   ],
   "responsiveBehavior": {
-    "desktop": {
-      "summary": "DesktopでのSidebar。",
-      "rules": [
-        "恒常navigationとして固定領域を使い、main contentを覆わない。",
-        "Collapsed stateでもlabelへ到達できる。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
-    },
-    "mobile": {
-      "summary": "MobileでのSidebar。",
-      "rules": [
-        "同じnavigation contractをDrawerまたはcompact barで提示し、別component APIへ分岐しない。",
-        "開閉controlと現在地を常に認識できるようにする。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
-    },
-    "touch": {
-      "summary": "Touch入力でのSidebar。",
-      "rules": [
-        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
-    }
+    "desktop": { "summary": "App Shellのinline columnへ配置しmain contentを覆わない。", "rules": ["Widthは--sidebar-w", "Root内部だけ縦scroll可能", "全可視labelを維持"], "avoid": ["Navigation上へmain contentを重ねる", "Icon-only自動collapse"] },
+    "mobile": { "summary": "同じSidebar DOMをDrawer内へ配置する。", "rules": ["Drawer triggerはaria-controlsとaria-expandedを所有", "Open/close、Escape、focus returnはDrawer/App Shell責務", "Navigation後のcloseもparentが決定"], "avoid": ["Sidebar rootへdialog semanticsを付ける", "Viewportでdestinationを削除"] },
+    "touch": { "summary": "Child controlのtarget sizeとvisible labelを維持する。", "rules": ["最低24px target", "Primary navigationは44px推奨", "Hover非依存"], "avoid": ["Swipeだけで開閉", "Tooltipだけでdestination labelを提供"] }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM",
-    "FOCUS_VISIBLE_REQUIRED",
-    "NO_POSITIVE_TABINDEX",
-    "TARGET_SIZE_MINIMUM",
-    "INTERACTIVE_NAME_REQUIRED"
-  ],
-  "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
-  ],
+  "rules": ["INTERACTIVE_NAME_REQUIRED", "FOCUS_VISIBLE_REQUIRED", "TARGET_SIZE_MINIMUM", "NO_POSITIVE_TABINDEX", "NO_RAW_HEX_COLOR", "SPACING_FROM_TOKENS_ONLY"],
+  "qualityChecks": ["Rootが名前付きnavである。", "Groupがul/li hierarchyを持つ。", "menu/menuitem/roving tabindexを使わない。", "Current pageが1件だけ。", "Narrow containerでもdocument横overflowを起こさない。", "Drawer placementの責務がparentへ分離されている。"],
   "examples": [
-    {
-      "id": "default",
-      "description": "Sidebarの標準例。",
-      "code": "<Sidebar>\n  <Sidebar.WorkspaceSwitcher />\n  <Sidebar.Group label=\"Workspace\">\n    <Sidebar.Item icon={<ZapIcon />} active>ダッシュボード</Sidebar.Item>\n    <Sidebar.Item icon={<FolderIcon />} badge={12}>プロジェクト</Sidebar.Item>\n  </Sidebar.Group>\n  <Sidebar.Footer><UserMenu /></Sidebar.Footer>\n</Sidebar>"
-    }
+    { "id": "default", "description": "Group化されたprimary navigation。", "code": "<Sidebar ariaLabel=\"Primary\"><Sidebar.Header><WorkspaceSwitcher /></Sidebar.Header><Sidebar.Group label=\"Workspace\"><NavigationItem href=\"/dashboard\" current>ダッシュボード</NavigationItem><NavigationItem href=\"/projects\">プロジェクト</NavigationItem></Sidebar.Group><Sidebar.Footer><UserMenu /></Sidebar.Footer></Sidebar>" }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "openQuestions": []
 }
