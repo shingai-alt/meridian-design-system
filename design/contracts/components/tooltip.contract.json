@@ -1,379 +1,128 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready", "policyVersion": "0.1.0", "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/tooltip.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/tooltip.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "accessibility.aria", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "negativeExamples", "design/reviews/components.tooltip.2026-07-22-components-tooltip-02.review.json"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["tokenBindings", "tokenRefs", "index.html#tooltipc"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/tooltip.md#responsive-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#tooltip", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.tooltip.2026-07-22-components-tooltip-02.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": ["React実装", "hover/focus/Escape interaction tests", "visual regression baseline"]
+  },
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["span"],
+    "slots": ["trigger", "content"],
+    "attributes": ["role", "id", "aria-describedby", "data-state", "data-placement"],
+    "stateModel": ["data-meridian-state", "data-placement"],
+    "events": ["pointerenter", "pointerleave", "focus", "blur", "keydown", "openchange"],
+    "relations": ["trigger-description", "stable-id", "non-interactive-surface"],
+    "provenance": ["component", "instance", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["既に単独で理解できるtriggerへ短い補助説明やshortcutを加える。"],
+    "avoidWhen": ["内容が操作に必須、長文、interactive、またはtouchだけでも到達必須である。"],
+    "alternatives": ["Popover", "Form Field helper text", "Dialog", "visible text"]
+  },
+  "negativeExamples": [
+    { "pattern": "Tooltip内へlinkやbuttonを置く。", "reason": "Tooltipはfocusを受けずinteractive contentを所有しないため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "Tooltipだけに操作名やvalidation instructionを置く。", "reason": "Touchや支援技術で必須情報へ到達できない可能性があるため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] }
+  ],
+  "requiredScenarios": ["default", "hover", "focus", "escape-dismiss", "viewport-collision", "default-variant"],
   "id": "tooltip",
   "name": "Tooltip",
   "status": "draft",
   "category": "core",
-  "description": "ホバー・フォーカス時に補足情報を表示する。重要情報は入れない。",
-  "source": {
-    "humanDoc": "components/tooltip.md",
-    "registry": "js/components-registry.js#tooltip"
-  },
+  "description": "Focusまたはhover中のtriggerへ、短い非interactive補足情報を関連付けるpopup。",
+  "source": { "humanDoc": "components/tooltip.md", "registry": "js/components-registry.js#tooltip" },
   "intent": {
-    "whenToUse": [
-      "Icon Button のラベル補足",
-      "ショートカットキーの提示"
-    ],
-    "whenNotToUse": [
-      "操作に必須の情報(タッチでは表示されない)",
-      "長い説明 → Popover"
-    ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "whenToUse": ["Icon Buttonの可視Tooltipを提供する。", "既に理解可能なcontrolへshortcutや短い補足を加える。"],
+    "whenNotToUse": ["操作名、error、instructionなど必須情報の唯一の提供経路。", "Link、Button、form controlを含むinteractive popup。", "複数文または構造化された長い説明。", "Touch tapだけで開く補助UI。"],
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "surface",
-      "required": true,
-      "description": "Floating or modal surface."
-    },
-    {
-      "part": "header",
-      "required": false,
-      "description": "Title and context."
-    },
-    {
-      "part": "content",
-      "required": true,
-      "description": "Information or controls owned by the surface."
-    },
-    {
-      "part": "actions",
-      "required": false,
-      "description": "Confirmation, navigation, or dismiss controls."
-    },
-    {
-      "part": "trigger",
-      "required": false,
-      "description": "Element that opens the surface and receives restored focus."
-    }
+    { "part": "trigger", "required": true, "description": "単一のfocusable element。自身のaccessible nameをTooltipなしでも持つ。" },
+    { "part": "surface", "required": true, "description": "role=tooltipを持つ非focusable popup。" },
+    { "part": "content", "required": true, "description": "短いplain text。interactive descendantを持たない。" }
   ],
   "variants": {
     "default": {
-      "intent": "標準文脈。",
-      "tokenRefs": {},
-      "states": {}
+      "intent": "短い補助説明をinverse surfaceで表示する唯一のvariant。",
+      "tokenRefs": { "background": "--tooltip-bg", "foreground": "--bg", "radius": "--radius-xs", "shadow": "--shadow-md" },
+      "states": { "hover": { "visibility": "visible" }, "focus": { "visibility": "visible" } }
     }
   },
   "sizes": {},
   "states": [
-    {
-      "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
-      "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
-      ]
-    }
+    { "id": "default", "description": "Triggerがhoverもfocusもされずsurfaceを表示しない。", "requiredBehavior": ["Tooltip nodeは関係を保てるが視覚的にhidden", "triggerのaccessible nameは単独で成立"] },
+    { "id": "hover", "description": "Pointerがtriggerまたはsurface上にあり、delay後に表示する。", "requiredBehavior": ["既定400ms後に開く", "triggerとsurfaceの両方からpointerが離れたら即時に閉じる"] },
+    { "id": "focus", "description": "Triggerがkeyboard focusを持つ間に表示する。", "requiredBehavior": ["focus後に表示", "Escapeまたはblurで閉じる", "focusはtriggerに保持"] }
   ],
   "props": [
-    {
-      "name": "open",
-      "type": "boolean",
-      "required": false,
-      "default": null,
-      "description": "Controlled open state。"
-    },
-    {
-      "name": "onOpenChange",
-      "type": "(open: boolean) => void",
-      "required": false,
-      "default": null,
-      "description": "Open state変更を通知する。"
-    }
+    { "name": "children", "type": "ReactElement", "required": true, "default": null, "description": "単一のfocusable trigger。aria-describedbyとevent handlerを合成する。" },
+    { "name": "content", "type": "string", "required": true, "default": null, "description": "短い非interactive説明。" },
+    { "name": "placement", "type": "\"top\" | \"right\" | \"bottom\" | \"left\"", "required": false, "default": "top", "description": "希望位置。Collision時は反転またはshiftできる。" },
+    { "name": "delayDuration", "type": "number", "required": false, "default": "400", "description": "Pointer hoverから表示までのmilliseconds。Keyboard focusにも不必要な長い遅延を加えない。" },
+    { "name": "open", "type": "boolean", "required": false, "default": null, "description": "Controlled open state。" },
+    { "name": "defaultOpen", "type": "boolean", "required": false, "default": "false", "description": "Uncontrolled initial state。TestとShowcase用途を含む。" },
+    { "name": "onOpenChange", "type": "(open: boolean) => void", "required": false, "default": null, "description": "Open state変更通知。Escape、blur、pointer transitionを同じstateへ同期する。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--bg",
-      "--border",
-      "--fg",
-      "--fg-muted",
-      "--focus-ring",
-      "--overlay",
-      "--surface-inverse",
-      "--surface-overlay",
-      "--tooltip-bg"
-    ],
-    "spacing": [
-      "--sp-4"
-    ],
-    "radius": [
-      "--radius-md",
-      "--radius-xs"
-    ],
-    "motion": [
-      "--dur-normal"
-    ],
-    "shadow": [
-      "--shadow-md",
-      "--shadow-overlay"
-    ],
-    "typography": [
-      "--text-micro"
-    ]
+    "componentColor": ["--tooltip-bg"],
+    "semanticColor": ["--surface-inverse", "--bg"],
+    "spacing": ["--sp-1", "--sp-2"],
+    "radius": ["--radius-xs"],
+    "motion": ["--dur-fast", "--ease-standard"],
+    "shadow": ["--shadow-md"],
+    "typography": ["--text-micro"]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.tooltip-bg.value",
-        "source": "--tooltip-bg",
-        "scope": "component",
-        "componentToken": "--tooltip-bg",
-        "aliases": "--surface-inverse",
-        "trigger": "component-anatomy",
-        "reason": "Tooltipのinverse surface anatomyをcomponent境界で固定する。"
-      },
-      {
-        "slot": "token.surface-inverse.value",
-        "source": "--surface-inverse",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tooltipの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.radius-xs.value",
-        "source": "--radius-xs",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tooltipの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.shadow-md.value",
-        "source": "--shadow-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tooltipの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.surface-overlay.value",
-        "source": "--surface-overlay",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tooltipの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tooltipの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-muted.value",
-        "source": "--fg-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tooltipの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tooltipの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.overlay.value",
-        "source": "--overlay",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tooltipの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.shadow-overlay.value",
-        "source": "--shadow-overlay",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tooltipの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.focus-ring.value",
-        "source": "--focus-ring",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tooltipの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sp-4.value",
-        "source": "--sp-4",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tooltipの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.radius-md.value",
-        "source": "--radius-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tooltipの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.dur-normal.value",
-        "source": "--dur-normal",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Tooltipの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.bg.value",
-        "source": "--bg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "TooltipのHTML showcaseで実際に参照する公開token。"
-      },
-      {
-        "slot": "token.text-micro.value",
-        "source": "--text-micro",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "TooltipのHTML showcaseで実際に参照する公開token。"
-      }
+      { "slot": "surface.background", "source": "--tooltip-bg", "scope": "component", "componentToken": "--tooltip-bg", "aliases": "--surface-inverse", "trigger": "component-anatomy", "reason": "Tooltip固有のinverse surfaceを公開境界へ固定する。" },
+      { "slot": "content.foreground", "source": "--bg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Inverse surface上の高contrast foregroundとしてtheme canvas roleを使う。" },
+      { "slot": "surface.padding-block", "source": "--sp-1", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "短い補足文のblock padding。" },
+      { "slot": "surface.padding-inline", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "短い補足文のinline padding。" },
+      { "slot": "surface.trigger-gap", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Triggerとsurfaceの視覚分離。" },
+      { "slot": "surface.radius", "source": "--radius-xs", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "小型floating surfaceのshape。" },
+      { "slot": "surface.shadow", "source": "--shadow-md", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Triggerから浮いたlayerであることを示す。" },
+      { "slot": "content.typography", "source": "--text-micro", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "短い補足用の最小公開text role。" },
+      { "slot": "surface.motion-duration", "source": "--dur-fast", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Opacity transitionを短く保つ。" },
+      { "slot": "surface.motion-easing", "source": "--ease-standard", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "System標準easingを使う。" },
+      { "slot": "surface.pointer-events.closed", "source": "none", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "Hidden surfaceがtrigger操作を遮らないようにする。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.tooltip"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
-    "requirements": [
-      "Keyboardとpointerで同じ機能を実行できる。",
-      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
-    ],
-    "aria": [
-      "Surfaceにrole=\"tooltip\"、triggerにaria-describedbyを使う。"
-    ],
-    "focus": [
-      "focus-visibleで--focus-ringを使う。",
-      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
-    ]
+    "requirements": ["TriggerはTooltipなしでも空でないaccessible nameを持つ。", "Tooltipは短い補足だけを含みfocusable descendantを持たない。", "Pointerとkeyboardの両方で同じ内容を表示できる。"],
+    "aria": ["Surfaceはrole=tooltipとstable idを持つ。", "Triggerはsurface idをaria-describedbyで参照する。", "open stateをaria-expandedで表さない。"],
+    "focus": ["Surfaceへfocusを移さない。", "Escape dismissal後もfocusをtriggerへ保持する。", "blurで閉じる。"]
   },
   "keyboardInteractions": [
-    {
-      "key": "Escape",
-      "action": "Tooltipを閉じてtriggerへfocusを保つ。"
-    }
+    { "key": "Tab / Shift+Tab", "action": "Native順序でtriggerへ移動し、focus時にTooltipを表示する。" },
+    { "key": "Escape", "action": "Tooltipを閉じ、focusをtriggerへ保持する。" }
   ],
   "usagePatterns": [
-    {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "Icon Button のラベル補足",
-      "recommended": [
-        "表示遅延は 400ms 程度、消える動きは即時にする。"
-      ],
-      "avoid": [
-        "操作に必須の情報(タッチでは表示されない)"
-      ]
-    },
-    {
-      "id": "recommended-2",
-      "title": "Secondary context",
-      "description": "ショートカットキーの提示",
-      "recommended": [
-        "フォーカスでも表示し、Esc で閉じられるようにする。"
-      ],
-      "avoid": [
-        "長い説明 → Popover"
-      ]
-    }
+    { "id": "icon-button-label", "title": "Icon Button label", "description": "Glyphの意味を可視化する。", "recommended": ["Icon Buttonのlabelと同じ短い文字列を表示する。"], "avoid": ["Tooltipだけをaccessible nameのsourceにする。"] },
+    { "id": "shortcut", "title": "Shortcut hint", "description": "既知actionへ補助shortcutを示す。", "recommended": ["操作名の後にshortcutを短く示す。"], "avoid": ["操作方法の長い説明を入れる。"] }
   ],
   "responsiveBehavior": {
-    "desktop": {
-      "summary": "DesktopでのTooltip。",
-      "rules": [
-        "Triggerへ位置付け、viewport端ではplacementを反転またはshiftする。",
-        "Pointerとkeyboardの両方で同じ内容へ到達できる。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
-    },
-    "mobile": {
-      "summary": "MobileでのTooltip。",
-      "rules": [
-        "Hover起点を使わずtapまたはfocusで開き、狭い幅ではsheet presentationを選べる。",
-        "Triggerとsurfaceを同時に画面外へ追い出さない。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
-    },
-    "touch": {
-      "summary": "Touch入力でのTooltip。",
-      "rules": [
-        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
-    }
+    "desktop": { "summary": "Trigger近傍へ配置しviewport collisionを解決する。", "rules": ["Hoverとfocusの両方で到達可能", "端ではplacementを反転またはshift", "surfaceはtriggerまたは自身のhover中に維持"], "avoid": ["Viewport外へ切る", "Hoverだけで開く"] },
+    "mobile": { "summary": "Tooltipをtouch必須情報の経路にしない。", "rules": ["Keyboard focusが存在する環境では同じcontractを維持", "必須説明は常時visible textまたはPopoverへ移す"], "avoid": ["Tapをtrigger本来のactionより先に消費する", "Tooltipをsheetへ自動変形する"] },
+    "touch": { "summary": "TouchではTooltipをprogressive enhancementとして扱う。", "rules": ["Trigger自体が単独で理解可能", "Touchだけで必要な内容は別経路を提供"], "avoid": ["Long pressだけに依存する", "TapでTooltipを開くためactionを二段階にする"] }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM",
-    "FOCUS_VISIBLE_REQUIRED",
-    "NO_POSITIVE_TABINDEX",
-    "TARGET_SIZE_MINIMUM",
-    "INTERACTIVE_NAME_REQUIRED"
-  ],
-  "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
-  ],
+  "rules": ["INTERACTIVE_NAME_REQUIRED", "FOCUS_VISIBLE_REQUIRED", "NO_POSITIVE_TABINDEX", "NO_RAW_HEX_COLOR", "SPACING_FROM_TOKENS_ONLY"],
+  "qualityChecks": ["aria-describedbyが存在するTooltip idを参照する。", "Escapeで閉じてもtrigger focusを失わない。", "Surfaceにfocusable descendantがない。", "Light/DarkとStandard/Highでcontent contrastを満たす。", "Viewport端でclippingしない。"],
   "examples": [
-    {
-      "id": "default",
-      "description": "Tooltipの標準例。",
-      "code": "<Tooltip content=\"変更を保存 ⌘S\">\n  <IconButton aria-label=\"保存\"><SaveIcon /></IconButton>\n</Tooltip>"
-    }
+    { "id": "icon-button", "description": "Icon Buttonへ短い可視labelを付ける。", "code": "<Tooltip content=\"フィルターを開く\"><IconButton label=\"フィルターを開く\" icon={<FilterIcon />} /></Tooltip>" },
+    { "id": "shortcut", "description": "既知commandへshortcutを補足する。", "code": "<Tooltip content=\"変更を保存 ⌘S\"><Button>保存</Button></Tooltip>" }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "openQuestions": []
 }

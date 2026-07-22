@@ -1,0 +1,41 @@
+{
+  "$schema": "../../schemas/review-record.schema.json", "schemaVersion": "0.1.0",
+  "itemId": "components.navigation-item", "cycleId": "2026-07-22-components-navigation-item-02", "supersedesCycleId": "2026-07-13-components-navigation-item-01", "reviewType": "follow-up", "status": "complete", "startedAt": "2026-07-22", "completedAt": "2026-07-22",
+  "reviewedSources": ["design/research-policy.json", "design/implementation-readiness.json", "components/navigation-item.md", "design/contracts/components/navigation-item.contract.json", "js/components-registry.js", "js/ui-builders.js", "index.html", "test/component-specs.test.js"],
+  "research": {
+    "status": "complete", "scope": { "itemId": "components.navigation-item", "summary": "永続navigation itemのnative link、list ownership、current state、keyboard modelを確定する。" },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "cross-platform-behavior"],
+    "questions": ["通常のapplication navigationにmenu roleが必要か。", "Current page、badge、parent listの責務をどう分離するか。"],
+    "evidence": [
+      { "id": "wai-disclosure-navigation", "title": "WAI-ARIA APG: Disclosure Navigation with Top-Level Links", "url": "https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation-hybrid/", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "通常navigationはmenu roleを必要とせずnav/list/native linkを使い、aria-currentで現在pageを示す。", "supportedDecisions": ["native-destination-link", "parent-ownership"] },
+      { "id": "wcag-target-size", "title": "WCAG 2.2 Understanding SC 2.5.8: Target Size (Minimum)", "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Navigation targetは24 CSS px minimumを満たし主要touch navigationでは44px推奨を重ねる。", "supportedDecisions": ["responsive-target"] }
+    ],
+    "synthesis": "Navigation Itemをparent nav/list内のnative anchorへ限定し、menu role、roving tabindex、submenu ownershipを除外した。",
+    "decisionImpact": "Contract 0.2.0、Showcase、current state、React API freeze、token bindingをnative link modelへ同期した。", "notRequiredReason": null
+  },
+  "decisions": [
+    { "id": "native-destination-link", "summary": "Rootをhref必須のnative anchorへ固定する。", "rationale": "Navigation、context menu、copy link、Tab/Enterを保持するため。" },
+    { "id": "parent-ownership", "summary": "nav/list/disclosure/drawer closeをparentへ委譲する。", "rationale": "単一itemへlandmarkやmenu widget責務を重複させないため。" },
+    { "id": "current-contract", "summary": "current=trueをaria-current=page、surface、weightへ同期する。", "rationale": "現在地をprogrammaticかつ非色cueで示すため。" },
+    { "id": "responsive-target", "summary": "同じanchor APIで24px minimum、主要touch navigationは44px推奨を維持する。", "rationale": "PC/SP専用itemを作らず操作性を保つため。" }
+  ],
+  "differences": [
+    { "classification": "missing-contract", "description": "旧APIはchildrenだけでhref、current、icon、badge、refが未確定だった。", "action": "Native anchor propsと6項目のAPI freezeを確定した。", "status": "resolved" },
+    { "classification": "cross-layer-conflict", "description": "activeがpressed stateとcurrent pageの両方を指していた。", "action": "Stateをcurrentへ改名しaria-currentと同期した。", "status": "resolved" },
+    { "classification": "implementation-stale", "description": "Showcaseがraw pxとinline styleを使っていた。", "action": "Dedicated builderとtokenized CSSへ更新した。", "status": "resolved" }
+  ],
+  "changes": [
+    { "path": "components/navigation-item.md", "summary": "Native destination boundaryとAPI freezeを確定。" },
+    { "path": "design/contracts/components/navigation-item.contract.json", "summary": "Contract 0.2.0、runtime、complete bindingsを追加。" },
+    { "path": "js/ui-builders.js", "summary": "Current/badge/native link Showcaseを追加。" },
+    { "path": "index.html", "summary": "Navigation Item固有state CSSをtoken化。" },
+    { "path": "test/component-specs.test.js", "summary": "Native link、current、menu role禁止の回帰testを追加。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js", "status": "passed", "notes": "API、native link、current relationを検証。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "Desktop/mobileとtheme/contrast/densityでcurrent、focus、label overflow、consoleを確認。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、generated artifacts、全unit testsを検証。" }
+  ],
+  "openQuestions": [{ "question": "React実装とvisual regressionを完了しstableへ昇格する。", "owner": "components.navigation-item", "exitCriteria": "Native anchor integration、current、long label、badge、全context baselineがCIで通ること。" }],
+  "acknowledgedImpacts": ["2026-07-22-components-link-01", "2026-07-13-foundations-iconography-01", "2026-07-13-foundations-layout-01"], "impactedItems": ["components.sidebar"], "nextRecommendedItems": ["components.sidebar"]
+}

@@ -106,12 +106,12 @@ def({id:'avatar',name:'Avatar',group:'Core',desc:'ユーザー・チームを表
  code:p=>`<Avatar name="${esc(p.name||'新谷')}" size="${p.size||'md'}" />\n<AvatarStack max={3} users={members} />`,related:['user-menu']});
 
 def({id:'tooltip',name:'Tooltip',group:'Core',desc:'ホバー・フォーカス時に補足情報を表示する。重要情報は入れない。',
- states:['default'],when:['Icon Button のラベル補足','ショートカットキーの提示'],
- notWhen:['操作に必須の情報(タッチでは表示されない)','長い説明 → Popover'],
- usage:['表示遅延は 400ms 程度、消える動きは即時にする。','フォーカスでも表示し、Esc で閉じられるようにする。'],
- tokens:['--tooltip-bg','--radius-xs','--shadow-md'],
- keys:[['Esc','ツールチップを閉じる']],
- render:()=>tooltipEl(),code:()=>`<Tooltip content="変更を保存 ⌘S">\n  <IconButton aria-label="保存"><SaveIcon /></IconButton>\n</Tooltip>`,related:['popover','icon-button']});
+ states:['default','hover','focus'],texts:[['content','Content','変更を保存 ⌘S'],['anchor','Trigger label','保存']],when:['Icon Buttonの可視label','既知commandのshortcut提示'],
+ notWhen:['必須情報の唯一の経路','interactiveまたは長い内容 → Popover','touch tapだけで開く情報'],
+ usage:['既定400ms後に表示しpointer leaveでは即時に閉じる。','Focusでも表示しEscapeで閉じ、focusはtriggerへ保持する。','Surfaceへfocusable contentを置かない。'],
+ tokens:['--tooltip-bg','--bg','--sp-1','--sp-2','--radius-xs','--shadow-md','--text-micro'],
+ keys:[['Escape','Tooltipを閉じ、trigger focusを保持']],
+ render:p=>tooltipEl(p),code:p=>`<Tooltip content="${esc(p.content||'変更を保存 ⌘S')}">\n  <Button>${esc(p.anchor||'保存')}</Button>\n</Tooltip>`,related:['popover','icon-button']});
 
 def({id:'divider',name:'Divider',group:'Core',desc:'コンテンツのグループを分ける水平・垂直の境界線。',
  when:['意味の切れ目を明示する場合'],notWhen:['余白で十分に区切れる場合 — 線を足す前に spacing を検討する'],
@@ -248,10 +248,11 @@ def({id:'top-bar',name:'Top Bar',group:'Navigation',desc:'現在地(パンくず
  render:()=>topBarDemo(),code:()=>`<TopBar>\n  <Breadcrumb items={crumbs} />\n  <TopBar.Spacer />\n  <SearchField shortcut="⌘K" />\n  <NotificationButton />\n  <UserMenu />\n</TopBar>`,related:['breadcrumb','sidebar']});
 
 def({id:'breadcrumb',name:'Breadcrumb',group:'Navigation',desc:'階層内の現在地を示し、上位階層へ戻る導線を提供する。',
+ states:['default','hover','focus','current'],
  when:['3 階層以上の構造を持つ画面'],notWhen:['フラットな構造 — 現在地はページタイトルで十分'],
- usage:['最後の項目(現在地)はリンクにしない。','長い場合は中間を省略し「…」メニューにまとめる。'],
- a11y:['nav[aria-label="Breadcrumb"] でランドマーク化する'],
- render:()=>crumbsEl(),code:()=>`<Breadcrumb\n  items={[\n    { label: "Workspace", href: "/" },\n    { label: "Projects", href: "/projects" },\n    { label: "Meridian" },\n  ]}\n/>`,related:['top-bar']});
+ usage:['nav > ol > liで階層を表し、最後の現在地はlinkにしない。','Narrow viewportでは同じDOMを横scrollし、itemを削らない。'],
+ a11y:['Navigation landmarkを命名する。','Current liへaria-current="page"、separatorへaria-hiddenを設定する。'],
+ render:p=>crumbsEl(p),code:()=>`<Breadcrumb\n  items={[\n    { label: "Workspace", href: "/" },\n    { label: "Projects", href: "/projects" },\n    { label: "Meridian" },\n  ]}\n/>`,related:['top-bar','link']});
 
 def({id:'tabs',name:'Tabs',group:'Navigation',desc:'同一コンテキスト内のビュー切り替え。URL に状態を持たせる。',
  states:['default'],
@@ -280,10 +281,11 @@ def({id:'command-menu',name:'Command Menu',group:'Navigation',desc:'⌘K で開�
  render:()=>cmdMenuDemo(),code:()=>`<CommandMenu shortcut="cmd+k">\n  <CommandMenu.Group heading="最近">\n    <CommandMenu.Item icon={<PlusIcon />} shortcut="⌘N">\n      新しいプロジェクト\n    </CommandMenu.Item>\n  </CommandMenu.Group>\n</CommandMenu>`,related:['search-field','dialog']});
 
 def({id:'navigation-item',name:'Navigation Item',group:'Navigation',desc:'Sidebar 内の 1 項目。アイコン・ラベル・バッジ・ネストを持つ。',
- states:['default','hover','active'],
- usage:['アクティブ状態は aria-current="page" で表す。','バッジは未読・件数など動的な情報に限る。'],
- render:p=>`<nav aria-label="セクション" style="width:220px;display:flex;flex-direction:column;gap:2px"><a href="#/projects" class="tsb-item ${p.state==='active'?'on':''} ${simCls(p.state)}" ${p.state==='active'?'aria-current="page"':''}>${I.folder} プロジェクト<span class="nbadge" style="margin-left:auto;font-size:9.5px;background:var(--primary-subtle);color:var(--primary);padding:0 6px;border-radius:var(--radius-full)">12</span></a><a href="#/members" class="tsb-item">${I.users} メンバー</a></nav>`,
- code:()=>`<Sidebar.Item icon={<FolderIcon />} badge={12} active>\n  プロジェクト\n</Sidebar.Item>`,related:['sidebar']});
+ states:['default','hover','focus','current'],flags:[['showBadge','Badge']],texts:[['label','Label','プロジェクト']],
+ when:['Sidebarなど永続navigation内の単一destination'],notWhen:['本文中の遷移 → Link','Action → Button','Submenu開閉 → Disclosure Button'],
+ usage:['Current pageはaria-current="page"とsurface/weightを同期する。','Native anchorとTab順を保ちrole="menuitem"を追加しない。','Badgeは未読・件数など短いmetadataに限る。'],
+ render:p=>navigationItemEl(p),
+ code:p=>`<NavigationItem\n  href="/projects"\n  icon={<FolderIcon />}${p.showBadge?'\n  badge={12}':''}${p.state==='current'?'\n  current':''}\n>\n  ${esc(p.label||'プロジェクト')}\n</NavigationItem>`,related:['sidebar','link','tooltip']});
 
 def({id:'product-switcher',name:'Product Switcher',group:'Navigation',desc:'組織内の複数プロダクト・ワークスペースを切り替えるメニュー。',
  usage:['現在のプロダクトにチェックを付ける。','切替は即時遷移とし、確認ダイアログを挟まない。'],

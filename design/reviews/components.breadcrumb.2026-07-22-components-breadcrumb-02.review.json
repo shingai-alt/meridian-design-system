@@ -1,0 +1,41 @@
+{
+  "$schema": "../../schemas/review-record.schema.json", "schemaVersion": "0.1.0",
+  "itemId": "components.breadcrumb", "cycleId": "2026-07-22-components-breadcrumb-02", "supersedesCycleId": "2026-07-13-components-breadcrumb-01", "reviewType": "follow-up", "status": "complete", "startedAt": "2026-07-22", "completedAt": "2026-07-22",
+  "reviewedSources": ["design/research-policy.json", "design/implementation-readiness.json", "components/breadcrumb.md", "design/contracts/components/breadcrumb.contract.json", "js/components-registry.js", "js/ui-builders.js", "index.html", "test/component-specs.test.js"],
+  "research": {
+    "status": "complete", "scope": { "itemId": "components.breadcrumb", "summary": "Breadcrumbのlandmark、ordered hierarchy、current item、native links、narrow viewportを確定する。" },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "cross-platform-behavior"],
+    "questions": ["Current itemをlinkにするか、aria-currentをどこへ置くか。", "Narrow viewportでhierarchyを失わずどう表示するか。"],
+    "evidence": [
+      { "id": "wai-apg-breadcrumb", "title": "WAI-ARIA APG: Breadcrumb Pattern", "url": "https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Breadcrumbは親pageへのhierarchical linksでnamed navigation landmarkを使い、current linkにはaria-current=pageを設定する。", "supportedDecisions": ["landmark-list-contract", "non-link-current"] },
+      { "id": "wcag-target-size", "title": "WCAG 2.2 Understanding SC 2.5.8: Target Size (Minimum)", "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Ancestor linkに24 CSS px minimum heightを与え隣接targetの重なりを避ける。", "supportedDecisions": ["narrow-viewport-contract"] }
+    ],
+    "synthesis": "Breadcrumbをnav > ol > liへ固定し、ancestorをnative link、最後を非link current text、narrow viewportをhorizontal scrollにした。",
+    "decisionImpact": "Contract 0.2.0、Showcase、React API freeze、responsiveとtoken bindingを同じhierarchyへ同期した。", "notRequiredReason": null
+  },
+  "decisions": [
+    { "id": "landmark-list-contract", "summary": "Named nav landmarkとordered listを固定する。", "rationale": "Navigation purposeとhierarchyをprogrammaticに伝えるため。" },
+    { "id": "non-link-current", "summary": "最後を非link textとしcurrent liへaria-current=pageを設定する。", "rationale": "現在地と遷移先を視覚・semanticに区別するため。" },
+    { "id": "narrow-viewport-contract", "summary": "Viewportだけでitemを削らず1行horizontal scrollで全hierarchyを保持する。", "rationale": "DOM、reading order、navigation destinationをPC/SPで同一にするため。" },
+    { "id": "complete-token-binding", "summary": "Link/current/separator/focus/targetの全slotを公開tokenへ結線する。", "rationale": "React実装時のraw valueとsemantic driftを防ぐため。" }
+  ],
+  "differences": [
+    { "classification": "missing-contract", "description": "旧APIはchildrenだけでitems invariant、landmark label、refが未確定だった。", "action": "items/ariaLabel/refとruntime hierarchyを固定した。", "status": "resolved" },
+    { "classification": "cross-layer-conflict", "description": "旧Showcaseはlist semanticsを持たずseparator SVGが読み上げ対象になり得た。", "action": "nav > ol > li、aria-hidden separator、非link currentへ修正した。", "status": "resolved" },
+    { "classification": "implementation-stale", "description": "旧ellipsis menuはinteraction contractがなくmobileのitem削除条件も曖昧だった。", "action": "v0.2.0では全hierarchyをhorizontal scrollで保持すると確定した。", "status": "resolved" }
+  ],
+  "changes": [
+    { "path": "components/breadcrumb.md", "summary": "Hierarchy、current、narrow viewport、API freezeを確定。" },
+    { "path": "design/contracts/components/breadcrumb.contract.json", "summary": "Contract 0.2.0、runtime、complete bindingsを追加。" },
+    { "path": "js/ui-builders.js", "summary": "nav/ol/li/native link/current Showcaseへ更新。" },
+    { "path": "index.html", "summary": "Focus、target、horizontal overflowをtokenized CSSへ追加。" },
+    { "path": "test/component-specs.test.js", "summary": "Landmark、list、link count、current、separatorの回帰testを追加。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js", "status": "passed", "notes": "API、landmark/list/current semanticsを検証。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "Desktop/mobileとtheme/contrast/densityでfocus、horizontal overflow、current、consoleを確認。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、generated artifacts、全unit testsを検証。" }
+  ],
+  "openQuestions": [{ "question": "React実装とvisual regressionを完了しstableへ昇格する。", "owner": "components.breadcrumb", "exitCriteria": "Items invariant、native navigation、narrow viewport、全context baselineがCIで通ること。" }],
+  "acknowledgedImpacts": ["2026-07-22-components-link-01"], "impactedItems": ["components.top-bar"], "nextRecommendedItems": ["components.top-bar"]
+}

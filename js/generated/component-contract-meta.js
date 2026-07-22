@@ -1410,10 +1410,14 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "3 階層以上の構造を持つ画面"
+        "3階層以上のpage hierarchyで現在地を示す。",
+        "親または祖先pageへ直接戻る経路を提供する。"
       ],
       "whenNotToUse": [
-        "フラットな構造 — 現在地はページタイトルで十分"
+        "Flatなinformation architecture。",
+        "訪問履歴を戻る操作。",
+        "Process stepやprogress表示。",
+        "同一page内のsection切替。"
       ],
       "principles": [
         1,
@@ -1427,22 +1431,27 @@ const COMPONENT_CONTRACTS={
       {
         "part": "root",
         "required": true,
-        "description": "Navigation landmark or grouped navigation container."
+        "description": "Accessible nameを持つnav landmark。"
       },
       {
-        "part": "item",
+        "part": "list",
         "required": true,
-        "description": "Destination or view selector."
+        "description": "Generalからspecificへ並ぶordered list。"
       },
       {
-        "part": "current-indicator",
-        "required": false,
-        "description": "Non-color cue for the current location or selection."
+        "part": "ancestor-link",
+        "required": true,
+        "description": "最後より前のitemにあるnative anchor。"
       },
       {
-        "part": "metadata",
-        "required": false,
-        "description": "Count, icon, or supporting context."
+        "part": "current-item",
+        "required": true,
+        "description": "最後にある非link text。aria-current=pageを持つlist item。"
+      },
+      {
+        "part": "separator",
+        "required": true,
+        "description": "Visual-only separator。Accessibility treeから隠す。"
       }
     ],
     "variants": [
@@ -1452,111 +1461,177 @@ const COMPONENT_CONTRACTS={
     "states": [
       {
         "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "description": "Ancestor linkの通常状態。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "hrefを持つnative anchor",
+          "Ordered hierarchyを維持"
+        ]
+      },
+      {
+        "id": "hover",
+        "description": "Ancestor linkのpointer hover。",
+        "requiredBehavior": [
+          "Foregroundとunderlineで補助feedback",
+          "Hierarchyを変えない"
+        ]
+      },
+      {
+        "id": "focus",
+        "description": "Ancestor linkのkeyboard focus。",
+        "requiredBehavior": [
+          "focus-visible ringを表示",
+          "Horizontal scroll container内でも完全に隠さない"
+        ]
+      },
+      {
+        "id": "current",
+        "description": "Trail最後の現在地。",
+        "requiredBehavior": [
+          "非link text",
+          "list itemへaria-current=page",
+          "他itemより強いforegroundとweight"
         ]
       }
     ],
     "props": [
       {
-        "name": "children",
-        "type": "ReactNode",
+        "name": "items",
+        "type": "readonly BreadcrumbItem[]",
         "required": true,
         "default": null,
-        "description": "Componentの主要content。"
+        "description": "Generalからspecific順。最後はhrefなしのcurrent item、それ以前はhref必須。"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "default": "Breadcrumb",
+        "description": "Navigation landmarkのaccessible name。Page内の他navと区別する。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLElement>",
+        "required": false,
+        "default": null,
+        "description": "Native nav elementへforwardするref。"
       }
     ],
     "tokenRefs": {
       "semanticColor": [
-        "--surface",
-        "--border",
+        "--fg-subtle",
         "--fg",
-        "--surface-muted",
-        "--fg-muted",
-        "--primary",
-        "--primary-subtle",
         "--focus-ring"
       ],
       "density": [
-        "--ctl-md"
+        "--text-label",
+        "--ctl-xs"
       ],
       "spacing": [
-        "--sp-2"
+        "--sp-1",
+        "--sp-15"
       ],
       "motion": [
-        "--dur-fast"
+        "--dur-fast",
+        "--ease-standard"
+      ],
+      "radius": [
+        "--radius-xs"
       ]
     },
     "accessibility": {
       "requirements": [
-        "nav[aria-label=\"Breadcrumb\"] でランドマーク化する",
-        "Keyboardとpointerで同じ機能を実行できる。",
-        "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-        "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        "nav landmarkへaria-labelまたはaria-labelledbyを付ける。",
+        "Hierarchyをol/liで表す。",
+        "Ancestorはnative link、currentは非link textにする。",
+        "Separatorをaccessibility treeから除外する。"
       ],
       "aria": [
-        "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        "Current list itemへaria-current=pageを設定する。",
+        "Currentが非linkならaria-currentはoptionalだがMeridianでは一貫して設定する。",
+        "Role=navigationをnavへ重ねない。"
       ],
       "focus": [
-        "focus-visibleで--focus-ringを使う。",
-        "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        "Ancestor linkだけがTab stop。",
+        "focus-visible ringを表示する。",
+        "Narrow viewportのhorizontal scrollでもfocused linkを完全に隠さない。"
       ]
     },
     "keyboardInteractions": [
       {
-        "key": "Tab",
-        "action": "順序どおりにfocusを移動する。"
+        "key": "Tab / Shift+Tab",
+        "action": "Ancestor link間をnative document順で移動する。"
+      },
+      {
+        "key": "Enter",
+        "action": "Focused ancestor linkへnative navigationする。"
       }
     ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "3 階層以上の構造を持つ画面",
+        "id": "page-hierarchy",
+        "title": "Page hierarchy",
+        "description": "Generalからcurrent pageまでのtrail。",
         "recommended": [
-          "最後の項目(現在地)はリンクにしない。"
+          "3階層以上で使用",
+          "最後を非link current itemにする"
         ],
         "avoid": [
-          "フラットな構造 — 現在地はページタイトルで十分"
+          "Browser historyの再現",
+          "Page titleの代替"
+        ]
+      },
+      {
+        "id": "narrow-viewport",
+        "title": "Narrow viewport",
+        "description": "全hierarchyを保ったまま横方向へoverflowする。",
+        "recommended": [
+          "Current itemを末尾に保持",
+          "Keyboard focusをscroll into view"
+        ],
+        "avoid": [
+          "CSSだけで中間itemをaccessibility treeから消す",
+          "Current itemを省略"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのBreadcrumb。",
+        "summary": "Page title前に全hierarchyを1行で示す。",
         "rules": [
-          "Contentと周辺layoutに応じたintrinsic sizeを使う。",
-          "Viewportだけを理由にdensityを変更しない。"
+          "Generalからspecific順",
+          "Ancestorはhover/focus feedback",
+          "Currentは最後"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "複数行wrapで順序を読みづらくする"
         ]
       },
       "mobile": {
-        "summary": "MobileでのBreadcrumb。",
+        "summary": "同じDOMを横scrollしcurrent itemを保持する。",
         "rules": [
-          "意味とDOM順を変えず、wrapとavailable widthで適応する。",
-          "省略した情報へ別経路から到達できるようにする。"
+          "No wrap",
+          "Overflow-inline auto",
+          "Focused linkをscroll into view"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "Viewportだけでitemを削除",
+          "Currentをiconだけにする"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのBreadcrumb。",
+        "summary": "Ancestor linkは24px minimum targetと間隔を持つ。",
         "rules": [
-          "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-          "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+          "Inline link例外に依存せず24px高さを確保",
+          "Hover非依存",
+          "Horizontal scrollとtapを両立"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "隣接linkのtarget重なり",
+          "Swipeだけで親へ戻る"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "button": {
     "id": "button",
@@ -6672,10 +6747,14 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "Sidebarや永続navigation内で現在地と遷移先を示すとき。"
+        "Sidebarやproduct navigation内で単一destinationを示す。",
+        "現在表示中のpageをaria-currentで示す。"
       ],
       "whenNotToUse": [
-        "本文中の単独遷移にはLink、状態切替にはButtonを使う。"
+        "本文中の単独遷移はLinkを使う。",
+        "Action実行はButtonを使う。",
+        "Submenu開閉は別のDisclosure Buttonを使う。",
+        "同一page内のview selectionはTabsを使う。"
       ],
       "principles": [
         1,
@@ -6689,22 +6768,27 @@ const COMPONENT_CONTRACTS={
       {
         "part": "root",
         "required": true,
-        "description": "Navigation landmark or grouped navigation container."
+        "description": "hrefを持つnative anchor。Parentのnav/listは所有しない。"
       },
       {
-        "part": "item",
+        "part": "icon",
+        "required": false,
+        "description": "Labelを補強するdecorative icon。aria-hidden。"
+      },
+      {
+        "part": "label",
         "required": true,
-        "description": "Destination or view selector."
+        "description": "Destinationを具体的に表す可視text。"
+      },
+      {
+        "part": "badge",
+        "required": false,
+        "description": "未読や件数の短いmetadata。Labelの後ろに配置する。"
       },
       {
         "part": "current-indicator",
         "required": false,
-        "description": "Non-color cue for the current location or selection."
-      },
-      {
-        "part": "metadata",
-        "required": false,
-        "description": "Count, icon, or supporting context."
+        "description": "aria-currentと同期する面・weightの非色依存cue。"
       }
     ],
     "variants": [
@@ -6714,23 +6798,35 @@ const COMPONENT_CONTRACTS={
     "states": [
       {
         "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "description": "遷移可能で現在地ではない。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "native linkとしてTab focusとEnter activationを持つ",
+          "可視labelを保つ"
         ]
       },
       {
         "id": "hover",
-        "description": "Pointer hoverの補助変化。意味をhoverだけに依存させない。",
+        "description": "Pointer hoverの補助feedback。",
         "requiredBehavior": [
-          "Pointer hoverの補助変化。意味をhoverだけに依存させない。"
+          "surfaceとforegroundをtokenで変える",
+          "hoverだけにdestinationやcurrentを依存しない"
         ]
       },
       {
-        "id": "active",
-        "description": "押下または実行中の瞬間的feedback。",
+        "id": "focus",
+        "description": "Keyboard focusがある。",
         "requiredBehavior": [
-          "押下または実行中の瞬間的feedback。"
+          "focus-visible ringを表示",
+          "sticky sidebar内でも完全に隠さない"
+        ]
+      },
+      {
+        "id": "current",
+        "description": "Link先が現在表示中のpage。",
+        "requiredBehavior": [
+          "aria-current=pageを設定",
+          "backgroundとfont weightを併用",
+          "通常どおりlinkとして再読み込み可能"
         ]
       }
     ],
@@ -6740,101 +6836,166 @@ const COMPONENT_CONTRACTS={
         "type": "ReactNode",
         "required": true,
         "default": null,
-        "description": "Componentの主要content。"
+        "description": "Destinationを示す可視label。"
+      },
+      {
+        "name": "href",
+        "type": "string",
+        "required": true,
+        "default": null,
+        "description": "Native anchor destination。"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "default": null,
+        "description": "Labelを補強するdecorative icon。"
+      },
+      {
+        "name": "badge",
+        "type": "ReactNode",
+        "required": false,
+        "default": null,
+        "description": "件数または未読metadata。"
+      },
+      {
+        "name": "current",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "trueでaria-current=pageとcurrent visualを同期する。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLAnchorElement>",
+        "required": false,
+        "default": null,
+        "description": "Native anchorへforwardするref。"
       }
     ],
     "tokenRefs": {
+      "componentColor": [
+        "--sidebar-item-active-bg"
+      ],
       "semanticColor": [
-        "--border",
-        "--fg",
         "--fg-muted",
-        "--focus-ring",
+        "--fg",
+        "--surface-muted",
         "--primary",
         "--primary-subtle",
-        "--surface",
-        "--surface-muted"
+        "--focus-ring"
       ],
       "density": [
-        "--ctl-md"
+        "--ctl-sm",
+        "--text-label",
+        "--text-micro"
       ],
       "spacing": [
+        "--sp-1",
         "--sp-2"
       ],
       "motion": [
-        "--dur-fast"
+        "--dur-fast",
+        "--ease-standard"
       ],
       "radius": [
+        "--radius-sm",
         "--radius-full"
       ]
     },
     "accessibility": {
       "requirements": [
-        "Keyboardとpointerで同じ機能を実行できる。",
-        "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-        "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        "hrefを持つnative anchorを使う。",
+        "可視labelからaccessible nameを得る。",
+        "Currentはaria-currentと非色cueを併用する。",
+        "Parentはnavとlist semanticsを所有する。"
       ],
       "aria": [
-        "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        "current=trueだけaria-current=pageを設定する。",
+        "Decorative iconはaria-hidden。",
+        "role=menuitemを追加しない。"
       ],
       "focus": [
-        "focus-visibleで--focus-ringを使う。",
-        "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        "Native Tab順を維持する。",
+        "focus-visible ringを表示する。",
+        "Sidebar scroll container内でfocused itemを完全に隠さない。"
       ]
     },
     "keyboardInteractions": [
       {
-        "key": "Tab",
-        "action": "順序どおりにfocusを移動する。"
+        "key": "Tab / Shift+Tab",
+        "action": "Native document順でNavigation Item間を移動する。"
+      },
+      {
+        "key": "Enter",
+        "action": "Native anchor navigationを実行する。"
       }
     ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "Sidebarや永続navigation内で現在地と遷移先を示すとき。",
+        "id": "sidebar-destination",
+        "title": "Sidebar destination",
+        "description": "永続navigation内のpage link。",
         "recommended": [
-          "アクティブ状態は aria-current=\"page\" で表す。"
+          "Parentのul/li構造内へ配置",
+          "Current pageは1件だけ"
         ],
         "avoid": [
-          "本文中の単独遷移にはLink、状態切替にはButtonを使う。"
+          "Navigation Item自体にnav landmarkを作る",
+          "Arrow key必須のmenu widgetにする"
+        ]
+      },
+      {
+        "id": "badge",
+        "title": "Destination metadata",
+        "description": "未読または件数を補足する。",
+        "recommended": [
+          "短いcountを末尾に置く"
+        ],
+        "avoid": [
+          "長いstatus textやactionをbadgeへ入れる"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのNavigation Item。",
+        "summary": "Sidebar幅内でlabelを優先しcurrentを明示する。",
         "rules": [
-          "Contentと周辺layoutに応じたintrinsic sizeを使う。",
-          "Viewportだけを理由にdensityを変更しない。"
+          "Native Tab navigation",
+          "Hoverは補助feedback",
+          "長いlabelは1行ellipsisだがaccessible nameは保持"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "menu roleとroving tabindex"
         ]
       },
       "mobile": {
-        "summary": "MobileでのNavigation Item。",
+        "summary": "Drawer内でも同じanchor APIとDOM順を維持する。",
         "rules": [
-          "意味とDOM順を変えず、wrapとavailable widthで適応する。",
-          "省略した情報へ別経路から到達できるようにする。"
+          "Available widthに収める",
+          "Navigation後のdrawer closeはparent責務",
+          "Labelをiconだけへ置換しない"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "Mobile専用item API",
+          "Current labelの省略"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのNavigation Item。",
+        "summary": "Touch中心ではparent densityで44px targetを選べる。",
         "rules": [
-          "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-          "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+          "最低24px target",
+          "主要navigationでは44px推奨",
+          "Hover非依存"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "隣接targetの重なり",
+          "Swipeだけのnavigation"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "notification-center": {
     "id": "notification-center",
@@ -11803,12 +11964,14 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "Icon Button のラベル補足",
-        "ショートカットキーの提示"
+        "Icon Buttonの可視Tooltipを提供する。",
+        "既に理解可能なcontrolへshortcutや短い補足を加える。"
       ],
       "whenNotToUse": [
-        "操作に必須の情報(タッチでは表示されない)",
-        "長い説明 → Popover"
+        "操作名、error、instructionなど必須情報の唯一の提供経路。",
+        "Link、Button、form controlを含むinteractive popup。",
+        "複数文または構造化された長い説明。",
+        "Touch tapだけで開く補助UI。"
       ],
       "principles": [
         1,
@@ -11820,29 +11983,19 @@ const COMPONENT_CONTRACTS={
     },
     "anatomy": [
       {
-        "part": "surface",
+        "part": "trigger",
         "required": true,
-        "description": "Floating or modal surface."
+        "description": "単一のfocusable element。自身のaccessible nameをTooltipなしでも持つ。"
       },
       {
-        "part": "header",
-        "required": false,
-        "description": "Title and context."
+        "part": "surface",
+        "required": true,
+        "description": "role=tooltipを持つ非focusable popup。"
       },
       {
         "part": "content",
         "required": true,
-        "description": "Information or controls owned by the surface."
-      },
-      {
-        "part": "actions",
-        "required": false,
-        "description": "Confirmation, navigation, or dismiss controls."
-      },
-      {
-        "part": "trigger",
-        "required": false,
-        "description": "Element that opens the surface and receives restored focus."
+        "description": "短いplain text。interactive descendantを持たない。"
       }
     ],
     "variants": [
@@ -11852,13 +12005,59 @@ const COMPONENT_CONTRACTS={
     "states": [
       {
         "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "description": "Triggerがhoverもfocusもされずsurfaceを表示しない。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "Tooltip nodeは関係を保てるが視覚的にhidden",
+          "triggerのaccessible nameは単独で成立"
+        ]
+      },
+      {
+        "id": "hover",
+        "description": "Pointerがtriggerまたはsurface上にあり、delay後に表示する。",
+        "requiredBehavior": [
+          "既定400ms後に開く",
+          "triggerとsurfaceの両方からpointerが離れたら即時に閉じる"
+        ]
+      },
+      {
+        "id": "focus",
+        "description": "Triggerがkeyboard focusを持つ間に表示する。",
+        "requiredBehavior": [
+          "focus後に表示",
+          "Escapeまたはblurで閉じる",
+          "focusはtriggerに保持"
         ]
       }
     ],
     "props": [
+      {
+        "name": "children",
+        "type": "ReactElement",
+        "required": true,
+        "default": null,
+        "description": "単一のfocusable trigger。aria-describedbyとevent handlerを合成する。"
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "default": null,
+        "description": "短い非interactive説明。"
+      },
+      {
+        "name": "placement",
+        "type": "\"top\" | \"right\" | \"bottom\" | \"left\"",
+        "required": false,
+        "default": "top",
+        "description": "希望位置。Collision時は反転またはshiftできる。"
+      },
+      {
+        "name": "delayDuration",
+        "type": "number",
+        "required": false,
+        "default": "400",
+        "description": "Pointer hoverから表示までのmilliseconds。Keyboard focusにも不必要な長い遅延を加えない。"
+      },
       {
         "name": "open",
         "type": "boolean",
@@ -11867,38 +12066,41 @@ const COMPONENT_CONTRACTS={
         "description": "Controlled open state。"
       },
       {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Uncontrolled initial state。TestとShowcase用途を含む。"
+      },
+      {
         "name": "onOpenChange",
         "type": "(open: boolean) => void",
         "required": false,
         "default": null,
-        "description": "Open state変更を通知する。"
+        "description": "Open state変更通知。Escape、blur、pointer transitionを同じstateへ同期する。"
       }
     ],
     "tokenRefs": {
-      "semanticColor": [
-        "--bg",
-        "--border",
-        "--fg",
-        "--fg-muted",
-        "--focus-ring",
-        "--overlay",
-        "--surface-inverse",
-        "--surface-overlay",
+      "componentColor": [
         "--tooltip-bg"
       ],
+      "semanticColor": [
+        "--surface-inverse",
+        "--bg"
+      ],
       "spacing": [
-        "--sp-4"
+        "--sp-1",
+        "--sp-2"
       ],
       "radius": [
-        "--radius-md",
         "--radius-xs"
       ],
       "motion": [
-        "--dur-normal"
+        "--dur-fast",
+        "--ease-standard"
       ],
       "shadow": [
-        "--shadow-md",
-        "--shadow-overlay"
+        "--shadow-md"
       ],
       "typography": [
         "--text-micro"
@@ -11906,83 +12108,92 @@ const COMPONENT_CONTRACTS={
     },
     "accessibility": {
       "requirements": [
-        "Keyboardとpointerで同じ機能を実行できる。",
-        "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-        "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        "TriggerはTooltipなしでも空でないaccessible nameを持つ。",
+        "Tooltipは短い補足だけを含みfocusable descendantを持たない。",
+        "Pointerとkeyboardの両方で同じ内容を表示できる。"
       ],
       "aria": [
-        "Surfaceにrole=\"tooltip\"、triggerにaria-describedbyを使う。"
+        "Surfaceはrole=tooltipとstable idを持つ。",
+        "Triggerはsurface idをaria-describedbyで参照する。",
+        "open stateをaria-expandedで表さない。"
       ],
       "focus": [
-        "focus-visibleで--focus-ringを使う。",
-        "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        "Surfaceへfocusを移さない。",
+        "Escape dismissal後もfocusをtriggerへ保持する。",
+        "blurで閉じる。"
       ]
     },
     "keyboardInteractions": [
       {
+        "key": "Tab / Shift+Tab",
+        "action": "Native順序でtriggerへ移動し、focus時にTooltipを表示する。"
+      },
+      {
         "key": "Escape",
-        "action": "Tooltipを閉じてtriggerへfocusを保つ。"
+        "action": "Tooltipを閉じ、focusをtriggerへ保持する。"
       }
     ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "Icon Button のラベル補足",
+        "id": "icon-button-label",
+        "title": "Icon Button label",
+        "description": "Glyphの意味を可視化する。",
         "recommended": [
-          "表示遅延は 400ms 程度、消える動きは即時にする。"
+          "Icon Buttonのlabelと同じ短い文字列を表示する。"
         ],
         "avoid": [
-          "操作に必須の情報(タッチでは表示されない)"
+          "Tooltipだけをaccessible nameのsourceにする。"
         ]
       },
       {
-        "id": "recommended-2",
-        "title": "Secondary context",
-        "description": "ショートカットキーの提示",
+        "id": "shortcut",
+        "title": "Shortcut hint",
+        "description": "既知actionへ補助shortcutを示す。",
         "recommended": [
-          "フォーカスでも表示し、Esc で閉じられるようにする。"
+          "操作名の後にshortcutを短く示す。"
         ],
         "avoid": [
-          "長い説明 → Popover"
+          "操作方法の長い説明を入れる。"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのTooltip。",
+        "summary": "Trigger近傍へ配置しviewport collisionを解決する。",
         "rules": [
-          "Triggerへ位置付け、viewport端ではplacementを反転またはshiftする。",
-          "Pointerとkeyboardの両方で同じ内容へ到達できる。"
+          "Hoverとfocusの両方で到達可能",
+          "端ではplacementを反転またはshift",
+          "surfaceはtriggerまたは自身のhover中に維持"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "Viewport外へ切る",
+          "Hoverだけで開く"
         ]
       },
       "mobile": {
-        "summary": "MobileでのTooltip。",
+        "summary": "Tooltipをtouch必須情報の経路にしない。",
         "rules": [
-          "Hover起点を使わずtapまたはfocusで開き、狭い幅ではsheet presentationを選べる。",
-          "Triggerとsurfaceを同時に画面外へ追い出さない。"
+          "Keyboard focusが存在する環境では同じcontractを維持",
+          "必須説明は常時visible textまたはPopoverへ移す"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "Tapをtrigger本来のactionより先に消費する",
+          "Tooltipをsheetへ自動変形する"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのTooltip。",
+        "summary": "TouchではTooltipをprogressive enhancementとして扱う。",
         "rules": [
-          "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-          "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+          "Trigger自体が単独で理解可能",
+          "Touchだけで必要な内容は別経路を提供"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "Long pressだけに依存する",
+          "TapでTooltipを開くためactionを二段階にする"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "top-bar": {
     "id": "top-bar",

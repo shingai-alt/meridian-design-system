@@ -331,6 +331,63 @@ test('Link showcase keeps destination semantics and communicates non-default out
   assert.match(indexSource, /\.linkc:focus-visible,\.linkc\.sim-focus\{text-decoration-line:underline/);
 });
 
+test('Tooltip is implementation-ready as a non-interactive description popup', () => {
+  const tooltip = contracts.find((contract) => contract.id === 'tooltip');
+  assert.equal(tooltip.contractVersion, '0.2.0');
+  assert.equal(tooltip.implementationReadiness.status, 'ready');
+  assert.deepEqual(tooltip.props.map(({ name }) => name), [
+    'children', 'content', 'placement', 'delayDuration', 'open', 'defaultOpen', 'onOpenChange',
+  ]);
+  assert.deepEqual(tooltip.states.map(({ id }) => id), ['default', 'hover', 'focus']);
+  assert.ok(tooltip.runtime.relations.includes('trigger-description'));
+  assert.ok(tooltip.runtime.relations.includes('non-interactive-surface'));
+  assert.equal(tooltip.tokenBindings.coverage, 'complete');
+  assert.deepEqual(tooltip.openQuestions, []);
+
+  const component = renderedComponents.find(({ id }) => id === 'tooltip');
+  const focused = component.render({ ...renderProps(component), state: 'focus', content: '変更を保存 ⌘S' });
+  assert.match(focused, /data-component="tooltip"[^>]+data-meridian-state="focus"/);
+  assert.match(focused, /aria-describedby="([^\"]+)"/);
+  assert.match(focused, /role="tooltip" class="tooltipc-surface"/);
+  assert.doesNotMatch(focused, /role="tooltip"[^>]*tabindex=/);
+});
+
+test('Navigation Item is implementation-ready as a native destination link', () => {
+  const navigationItem = contracts.find((contract) => contract.id === 'navigation-item');
+  assert.equal(navigationItem.contractVersion, '0.2.0');
+  assert.equal(navigationItem.implementationReadiness.status, 'ready');
+  assert.deepEqual(navigationItem.props.map(({ name }) => name), ['children', 'href', 'icon', 'badge', 'current', 'ref']);
+  assert.deepEqual(navigationItem.states.map(({ id }) => id), ['default', 'hover', 'focus', 'current']);
+  assert.deepEqual(navigationItem.runtime.rootElements, ['a']);
+  assert.ok(navigationItem.runtime.relations.includes('native-anchor-props-passthrough'));
+  assert.equal(navigationItem.tokenBindings.coverage, 'complete');
+
+  const component = renderedComponents.find(({ id }) => id === 'navigation-item');
+  const current = component.render({ ...renderProps(component), state: 'current', showBadge: true });
+  assert.match(current, /<nav[^>]+aria-label="セクション"><ul><li><a href="#[^"]+"/);
+  assert.match(current, /aria-current="page"/);
+  assert.match(current, /class="navitem-badge">12/);
+  assert.doesNotMatch(current, /role="menuitem"/);
+});
+
+test('Breadcrumb is implementation-ready with landmark, list, and non-link current item', () => {
+  const breadcrumb = contracts.find((contract) => contract.id === 'breadcrumb');
+  assert.equal(breadcrumb.contractVersion, '0.2.0');
+  assert.equal(breadcrumb.implementationReadiness.status, 'ready');
+  assert.deepEqual(breadcrumb.props.map(({ name }) => name), ['items', 'ariaLabel', 'ref']);
+  assert.deepEqual(breadcrumb.runtime.rootElements, ['nav']);
+  assert.ok(breadcrumb.runtime.relations.includes('ordered-hierarchy'));
+  assert.equal(breadcrumb.tokenBindings.coverage, 'complete');
+
+  const component = renderedComponents.find(({ id }) => id === 'breadcrumb');
+  const html = component.render({ ...renderProps(component), state: 'focus' });
+  assert.match(html, /<nav[^>]+aria-label="Breadcrumb"><ol>/);
+  assert.equal((html.match(/<li/g) ?? []).length, 3);
+  assert.equal((html.match(/<a href=/g) ?? []).length, 2);
+  assert.match(html, /<li aria-current="page"><span class="cur">Meridian<\/span><\/li>/);
+  assert.match(html, /class="crumb-separator" aria-hidden="true"/);
+});
+
 test('all component showcases render every declared state and variant as valid tokenized HTML', () => {
   for (const component of renderedComponents) {
     const cases = [renderProps(component)];

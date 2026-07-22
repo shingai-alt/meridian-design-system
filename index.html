@@ -295,10 +295,14 @@ input[type="range"].sliderc::-webkit-slider-thumb{appearance:none;width:14px;hei
 .seg button{padding:0 var(--sp-25);height:calc(var(--ctl-sm) - 6px);border-radius:var(--radius-xs);font-size:var(--text-small);font-weight:500;color:var(--fg-muted);transition:all var(--dur-fast) var(--ease-standard)}
 .seg button:hover{color:var(--fg)}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:var(--shadow-xs);font-weight:550}
-.crumbs{display:flex;align-items:center;gap:var(--sp-15);font-size:var(--text-label);color:var(--fg-subtle)}
-.crumbs a{color:var(--fg-subtle)}
-.crumbs a:hover{color:var(--fg);text-decoration:none}
+.crumbs{max-width:100%;overflow-x:auto;font-size:var(--text-label);color:var(--fg-subtle);scrollbar-width:thin}
+.crumbs ol{display:flex;align-items:center;gap:var(--sp-15);width:max-content;min-width:100%;list-style:none;margin:0;padding:0}
+.crumbs li{display:flex;align-items:center;gap:var(--sp-15);white-space:nowrap}
+.crumbs a{display:inline-flex;align-items:center;min-height:var(--ctl-xs);padding-inline:var(--sp-1);border-radius:var(--radius-xs);color:var(--fg-subtle);transition:color var(--dur-fast) var(--ease-standard)}
+.crumbs a:hover,.crumbs a.sim-hover{color:var(--fg);text-decoration:underline}
+.crumbs a:focus-visible,.crumbs a.sim-focus{color:var(--fg);outline:2px solid var(--focus-ring);outline-offset:2px}
 .crumbs .cur{color:var(--fg);font-weight:550}
+.crumb-separator{display:inline-flex;color:var(--fg-subtle)}
 
 /* alert/banner/toast */
 .alertc{display:flex;gap:var(--sp-25);padding:var(--sp-3) var(--sp-4);border-radius:var(--radius-md);border:1px solid;font-size:var(--text-label);align-items:flex-start}
@@ -485,9 +489,17 @@ input[type="range"].sliderc::-webkit-slider-thumb{appearance:none;width:14px;hei
 .tpl-main{min-width:0}
 .tpl-top{display:flex;align-items:center;gap:var(--sp-2);height:48px;padding:0 var(--sp-4);border-bottom:1px solid var(--border);background:var(--surface)}
 .tpl-body{padding:var(--sp-5)}
-.tsb-item{display:flex;align-items:center;gap:var(--sp-2);padding:5px var(--sp-2);border-radius:var(--radius-sm);color:var(--fg-muted);font-size:var(--text-label);cursor:default}
-.tsb-item.on{background:var(--sidebar-item-active-bg);color:var(--primary);font-weight:550}
-.tsb-item:hover{background:var(--surface-muted);text-decoration:none}
+.tooltipc{position:relative;display:inline-block}
+.tooltipc-surface{position:absolute;z-index:10;inset-block-end:calc(100% + var(--sp-2));inset-inline-start:50%;translate:-50% 0;padding:var(--sp-1) var(--sp-2);border-radius:var(--radius-xs);background:var(--tooltip-bg);color:var(--bg);font-size:var(--text-micro);line-height:1.4;white-space:nowrap;box-shadow:var(--shadow-md);opacity:0;visibility:hidden;pointer-events:none;transition:opacity var(--dur-fast) var(--ease-standard)}
+.tooltipc:hover .tooltipc-surface,.tooltipc:focus-within .tooltipc-surface,.tooltipc[data-meridian-state="hover"] .tooltipc-surface,.tooltipc[data-meridian-state="focus"] .tooltipc-surface{opacity:1;visibility:visible;pointer-events:auto}
+.navitem-demo{width:100%}
+.navitem-demo ul{display:flex;flex-direction:column;gap:var(--sp-1);list-style:none;margin:0;padding:0}
+.navitemc{display:flex;align-items:center;gap:var(--sp-2);height:var(--ctl-sm);padding-inline:var(--sp-2);border-radius:var(--radius-sm);color:var(--fg-muted);font-size:var(--text-label);transition:background var(--dur-fast) var(--ease-standard),color var(--dur-fast) var(--ease-standard)}
+.navitemc:hover,.navitemc.sim-hover{background:var(--surface-muted);color:var(--fg);text-decoration:none}
+.navitemc:focus-visible,.navitemc.sim-focus{outline:2px solid var(--focus-ring);outline-offset:2px}
+.navitemc[aria-current="page"]{background:var(--sidebar-item-active-bg);color:var(--primary);font-weight:550}
+.navitem-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.navitem-badge{margin-inline-start:auto;padding-inline:var(--sp-1);border-radius:var(--radius-full);background:var(--primary-subtle);color:var(--primary);font-size:var(--text-micro);font-weight:600}
 .tsb-hd{font-size:var(--text-micro);font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--fg-subtle);padding:var(--sp-3) var(--sp-2) var(--sp-1)}
 
 /* footer */

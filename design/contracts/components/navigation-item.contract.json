@@ -1,326 +1,139 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready", "policyVersion": "0.1.0", "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/navigation-item.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/navigation-item.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "accessibility.aria", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "negativeExamples", "design/reviews/components.navigation-item.2026-07-22-components-navigation-item-02.review.json"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["tokenBindings", "tokenRefs", "index.html#navigation-item"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/navigation-item.md#responsive-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#navigation-item", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.navigation-item.2026-07-22-components-navigation-item-02.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": ["React実装", "native navigation integration tests", "visual regression baseline"]
+  },
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["a"],
+    "slots": ["icon", "label", "badge"],
+    "attributes": ["href", "aria-current", "target", "rel", "download", "aria-*", "data-*"],
+    "stateModel": ["aria-current", "data-meridian-state"],
+    "events": ["click", "focus", "blur"],
+    "relations": ["native-anchor-props-passthrough", "parent-navigation-list", "current-page"],
+    "provenance": ["component", "instance", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["Sidebarなど永続navigationのlist内で単一destinationを表す。"],
+    "avoidWhen": ["本文中のlink、command、view selection、またはsubmenu disclosureである。"],
+    "alternatives": ["Link", "Button", "Tabs", "Disclosure Button"]
+  },
+  "negativeExamples": [
+    { "pattern": "Navigation Itemをdiv role=menuitemで実装する。", "reason": "通常のsite/app navigationにmenu widget keyboard modelを誤って要求するため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "current itemを色だけで示す。", "reason": "現在地がprogrammaticに伝わらず色覚にも依存するため。", "ruleIds": ["CONTRAST_AA_MINIMUM"] }
+  ],
+  "requiredScenarios": ["default", "hover", "focus", "current", "default-variant", "with-icon", "with-badge", "long-label"],
   "id": "navigation-item",
   "name": "Navigation Item",
   "status": "draft",
   "category": "navigation",
-  "description": "Sidebar 内の 1 項目。アイコン・ラベル・バッジ・ネストを持つ。",
-  "source": {
-    "humanDoc": "components/navigation-item.md",
-    "registry": "js/components-registry.js#navigation-item"
-  },
+  "description": "永続navigationのlist内で、単一destinationと現在地を表すnative link。",
+  "source": { "humanDoc": "components/navigation-item.md", "registry": "js/components-registry.js#navigation-item" },
   "intent": {
-    "whenToUse": [
-      "Sidebarや永続navigation内で現在地と遷移先を示すとき。"
-    ],
-    "whenNotToUse": [
-      "本文中の単独遷移にはLink、状態切替にはButtonを使う。"
-    ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "whenToUse": ["Sidebarやproduct navigation内で単一destinationを示す。", "現在表示中のpageをaria-currentで示す。"],
+    "whenNotToUse": ["本文中の単独遷移はLinkを使う。", "Action実行はButtonを使う。", "Submenu開閉は別のDisclosure Buttonを使う。", "同一page内のview selectionはTabsを使う。"],
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "root",
-      "required": true,
-      "description": "Navigation landmark or grouped navigation container."
-    },
-    {
-      "part": "item",
-      "required": true,
-      "description": "Destination or view selector."
-    },
-    {
-      "part": "current-indicator",
-      "required": false,
-      "description": "Non-color cue for the current location or selection."
-    },
-    {
-      "part": "metadata",
-      "required": false,
-      "description": "Count, icon, or supporting context."
-    }
+    { "part": "root", "required": true, "description": "hrefを持つnative anchor。Parentのnav/listは所有しない。" },
+    { "part": "icon", "required": false, "description": "Labelを補強するdecorative icon。aria-hidden。" },
+    { "part": "label", "required": true, "description": "Destinationを具体的に表す可視text。" },
+    { "part": "badge", "required": false, "description": "未読や件数の短いmetadata。Labelの後ろに配置する。" },
+    { "part": "current-indicator", "required": false, "description": "aria-currentと同期する面・weightの非色依存cue。" }
   ],
   "variants": {
     "default": {
-      "intent": "標準文脈。",
-      "tokenRefs": {},
-      "states": {}
+      "intent": "Sidebarと永続navigationで使う唯一のvisual model。",
+      "tokenRefs": { "foreground": "--fg-muted", "currentForeground": "--primary", "currentBackground": "--sidebar-item-active-bg" },
+      "states": { "hover": { "background": "--surface-muted", "foreground": "--fg" }, "current": { "background": "--sidebar-item-active-bg", "foreground": "--primary" } }
     }
   },
   "sizes": {},
   "states": [
-    {
-      "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
-      "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
-      ]
-    },
-    {
-      "id": "hover",
-      "description": "Pointer hoverの補助変化。意味をhoverだけに依存させない。",
-      "requiredBehavior": [
-        "Pointer hoverの補助変化。意味をhoverだけに依存させない。"
-      ]
-    },
-    {
-      "id": "active",
-      "description": "押下または実行中の瞬間的feedback。",
-      "requiredBehavior": [
-        "押下または実行中の瞬間的feedback。"
-      ]
-    }
+    { "id": "default", "description": "遷移可能で現在地ではない。", "requiredBehavior": ["native linkとしてTab focusとEnter activationを持つ", "可視labelを保つ"] },
+    { "id": "hover", "description": "Pointer hoverの補助feedback。", "requiredBehavior": ["surfaceとforegroundをtokenで変える", "hoverだけにdestinationやcurrentを依存しない"] },
+    { "id": "focus", "description": "Keyboard focusがある。", "requiredBehavior": ["focus-visible ringを表示", "sticky sidebar内でも完全に隠さない"] },
+    { "id": "current", "description": "Link先が現在表示中のpage。", "requiredBehavior": ["aria-current=pageを設定", "backgroundとfont weightを併用", "通常どおりlinkとして再読み込み可能"] }
   ],
   "props": [
-    {
-      "name": "children",
-      "type": "ReactNode",
-      "required": true,
-      "default": null,
-      "description": "Componentの主要content。"
-    }
+    { "name": "children", "type": "ReactNode", "required": true, "default": null, "description": "Destinationを示す可視label。" },
+    { "name": "href", "type": "string", "required": true, "default": null, "description": "Native anchor destination。" },
+    { "name": "icon", "type": "ReactNode", "required": false, "default": null, "description": "Labelを補強するdecorative icon。" },
+    { "name": "badge", "type": "ReactNode", "required": false, "default": null, "description": "件数または未読metadata。" },
+    { "name": "current", "type": "boolean", "required": false, "default": "false", "description": "trueでaria-current=pageとcurrent visualを同期する。" },
+    { "name": "ref", "type": "ForwardedRef<HTMLAnchorElement>", "required": false, "default": null, "description": "Native anchorへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--border",
-      "--fg",
-      "--fg-muted",
-      "--focus-ring",
-      "--primary",
-      "--primary-subtle",
-      "--surface",
-      "--surface-muted"
-    ],
-    "density": [
-      "--ctl-md"
-    ],
-    "spacing": [
-      "--sp-2"
-    ],
-    "motion": [
-      "--dur-fast"
-    ],
-    "radius": [
-      "--radius-full"
-    ]
+    "componentColor": ["--sidebar-item-active-bg"],
+    "semanticColor": ["--fg-muted", "--fg", "--surface-muted", "--primary", "--primary-subtle", "--focus-ring"],
+    "density": ["--ctl-sm", "--text-label", "--text-micro"],
+    "spacing": ["--sp-1", "--sp-2"],
+    "motion": ["--dur-fast", "--ease-standard"],
+    "radius": ["--radius-sm", "--radius-full"]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.surface.value",
-        "source": "--surface",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Navigation Itemの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Navigation Itemの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Navigation Itemの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.surface-muted.value",
-        "source": "--surface-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Navigation Itemの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-muted.value",
-        "source": "--fg-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Navigation Itemの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary.value",
-        "source": "--primary",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Navigation Itemの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.primary-subtle.value",
-        "source": "--primary-subtle",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Navigation Itemの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.focus-ring.value",
-        "source": "--focus-ring",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Navigation Itemの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.ctl-md.value",
-        "source": "--ctl-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Navigation Itemの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sp-2.value",
-        "source": "--sp-2",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Navigation Itemの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.dur-fast.value",
-        "source": "--dur-fast",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Navigation Itemの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.radius-full.value",
-        "source": "--radius-full",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Navigation ItemのHTML showcaseで実際に参照する公開token。"
-      }
+      { "slot": "root.foreground.default", "source": "--fg-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "永続navigationの通常destinationを本文より一段弱くする。" },
+      { "slot": "root.background.default", "source": "transparent", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "非current itemへ不要なsurfaceを加えない。" },
+      { "slot": "root.background.hover", "source": "--surface-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Pointer feedbackを静的surfaceと区別する。" },
+      { "slot": "root.foreground.hover", "source": "--fg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Hover時にdestination labelを強める。" },
+      { "slot": "root.background.current", "source": "--sidebar-item-active-bg", "scope": "component", "componentToken": "--sidebar-item-active-bg", "aliases": "--primary-subtle", "trigger": "component-anatomy", "reason": "Sidebar固有のcurrent surfaceをcomponent境界で調整する。" },
+      { "slot": "root.foreground.current", "source": "--primary", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Current destinationをbrand semanticで示す。" },
+      { "slot": "root.focus-ring", "source": "--focus-ring", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Keyboard focusを周辺surfaceから識別する。" },
+      { "slot": "root.height", "source": "--ctl-sm", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Sidebar densityに対応する標準target height。" },
+      { "slot": "root.padding-inline", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Iconとedgeのinline余白。" },
+      { "slot": "root.gap", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Icon、label、badgeの間隔。" },
+      { "slot": "root.radius", "source": "--radius-sm", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Interactive rowのsystem shape。" },
+      { "slot": "label.typography", "source": "--text-label", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Navigation label role。" },
+      { "slot": "badge.background", "source": "--primary-subtle", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Metadataをcurrent foregroundと調和させる。" },
+      { "slot": "badge.foreground", "source": "--primary", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Badgeのreadable foreground。" },
+      { "slot": "badge.padding-inline", "source": "--sp-1", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "短いcountの余白。" },
+      { "slot": "badge.radius", "source": "--radius-full", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Metadata pillのshape。" },
+      { "slot": "badge.typography", "source": "--text-micro", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "短いmetadata role。" },
+      { "slot": "root.motion-duration", "source": "--dur-fast", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "State transitionを短く保つ。" },
+      { "slot": "root.motion-easing", "source": "--ease-standard", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "System標準easingを使う。" },
+      { "slot": "root.text-decoration.hover", "source": "none", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "Row surface自体がlink affordanceを示すためunderlineを追加しない。" },
+      { "slot": "root.shadow", "source": "none", "scope": "literal", "componentToken": null, "aliases": null, "trigger": null, "reason": "Navigation rowの階層は背景と文字強調で示し、elevationを付与しない。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.navigation-item"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
-    "requirements": [
-      "Keyboardとpointerで同じ機能を実行できる。",
-      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
-    ],
-    "aria": [
-      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
-    ],
-    "focus": [
-      "focus-visibleで--focus-ringを使う。",
-      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
-    ]
+    "requirements": ["hrefを持つnative anchorを使う。", "可視labelからaccessible nameを得る。", "Currentはaria-currentと非色cueを併用する。", "Parentはnavとlist semanticsを所有する。"],
+    "aria": ["current=trueだけaria-current=pageを設定する。", "Decorative iconはaria-hidden。", "role=menuitemを追加しない。"],
+    "focus": ["Native Tab順を維持する。", "focus-visible ringを表示する。", "Sidebar scroll container内でfocused itemを完全に隠さない。"]
   },
   "keyboardInteractions": [
-    {
-      "key": "Tab",
-      "action": "順序どおりにfocusを移動する。"
-    }
+    { "key": "Tab / Shift+Tab", "action": "Native document順でNavigation Item間を移動する。" },
+    { "key": "Enter", "action": "Native anchor navigationを実行する。" }
   ],
   "usagePatterns": [
-    {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "Sidebarや永続navigation内で現在地と遷移先を示すとき。",
-      "recommended": [
-        "アクティブ状態は aria-current=\"page\" で表す。"
-      ],
-      "avoid": [
-        "本文中の単独遷移にはLink、状態切替にはButtonを使う。"
-      ]
-    }
+    { "id": "sidebar-destination", "title": "Sidebar destination", "description": "永続navigation内のpage link。", "recommended": ["Parentのul/li構造内へ配置", "Current pageは1件だけ"], "avoid": ["Navigation Item自体にnav landmarkを作る", "Arrow key必須のmenu widgetにする"] },
+    { "id": "badge", "title": "Destination metadata", "description": "未読または件数を補足する。", "recommended": ["短いcountを末尾に置く"], "avoid": ["長いstatus textやactionをbadgeへ入れる"] }
   ],
   "responsiveBehavior": {
-    "desktop": {
-      "summary": "DesktopでのNavigation Item。",
-      "rules": [
-        "Contentと周辺layoutに応じたintrinsic sizeを使う。",
-        "Viewportだけを理由にdensityを変更しない。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
-    },
-    "mobile": {
-      "summary": "MobileでのNavigation Item。",
-      "rules": [
-        "意味とDOM順を変えず、wrapとavailable widthで適応する。",
-        "省略した情報へ別経路から到達できるようにする。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
-    },
-    "touch": {
-      "summary": "Touch入力でのNavigation Item。",
-      "rules": [
-        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
-    }
+    "desktop": { "summary": "Sidebar幅内でlabelを優先しcurrentを明示する。", "rules": ["Native Tab navigation", "Hoverは補助feedback", "長いlabelは1行ellipsisだがaccessible nameは保持"], "avoid": ["menu roleとroving tabindex"] },
+    "mobile": { "summary": "Drawer内でも同じanchor APIとDOM順を維持する。", "rules": ["Available widthに収める", "Navigation後のdrawer closeはparent責務", "Labelをiconだけへ置換しない"], "avoid": ["Mobile専用item API", "Current labelの省略"] },
+    "touch": { "summary": "Touch中心ではparent densityで44px targetを選べる。", "rules": ["最低24px target", "主要navigationでは44px推奨", "Hover非依存"], "avoid": ["隣接targetの重なり", "Swipeだけのnavigation"] }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM",
-    "FOCUS_VISIBLE_REQUIRED",
-    "NO_POSITIVE_TABINDEX",
-    "TARGET_SIZE_MINIMUM",
-    "INTERACTIVE_NAME_REQUIRED"
-  ],
-  "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
-  ],
+  "rules": ["INTERACTIVE_NAME_REQUIRED", "FOCUS_VISIBLE_REQUIRED", "TARGET_SIZE_MINIMUM", "NO_POSITIVE_TABINDEX", "NO_RAW_HEX_COLOR"],
+  "qualityChecks": ["Rootがhrefを持つaである。", "Currentはaria-current=pageとvisual cueを持つ。", "Parent list semanticsを壊さない。", "全densityで24px minimumを満たす。", "Long labelがbadgeを押し出さずoverflowしない。"],
   "examples": [
-    {
-      "id": "default",
-      "description": "Navigation Itemの標準例。",
-      "code": "<Sidebar.Item icon={<FolderIcon />} badge={12} active>\n  プロジェクト\n</Sidebar.Item>"
-    }
+    { "id": "current", "description": "現在表示中のdestination。", "code": "<NavigationItem href=\"/projects\" icon={<FolderIcon />} badge={12} current>プロジェクト</NavigationItem>" },
+    { "id": "default", "description": "通常のdestination。", "code": "<NavigationItem href=\"/members\" icon={<UsersIcon />}>メンバー</NavigationItem>" }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "openQuestions": []
 }

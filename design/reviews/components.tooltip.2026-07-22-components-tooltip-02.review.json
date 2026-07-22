@@ -1,0 +1,41 @@
+{
+  "$schema": "../../schemas/review-record.schema.json", "schemaVersion": "0.1.0",
+  "itemId": "components.tooltip", "cycleId": "2026-07-22-components-tooltip-02", "supersedesCycleId": "2026-07-13-components-tooltip-01", "reviewType": "follow-up", "status": "complete", "startedAt": "2026-07-22", "completedAt": "2026-07-22",
+  "reviewedSources": ["design/research-policy.json", "design/implementation-readiness.json", "components/tooltip.md", "design/contracts/components/tooltip.contract.json", "js/components-registry.js", "js/ui-builders.js", "index.html", "test/component-specs.test.js"],
+  "research": {
+    "status": "complete", "scope": { "itemId": "components.tooltip", "summary": "Tooltipの非interactive境界、trigger relation、focus、Escape、touchでの選択条件を確定する。" },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior"],
+    "questions": ["Tooltipが所有できるcontentとfocus behaviorは何か。", "Hoverのないtouch環境で必須情報をどう扱うか。"],
+    "evidence": [
+      { "id": "wai-apg-tooltip", "title": "WAI-ARIA APG: Tooltip Pattern", "url": "https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Tooltipはfocus/hoverで表示する非focusable popupで、Escape dismissal、trigger focus保持、role=tooltip、aria-describedby relationを持つ。", "supportedDecisions": ["non-interactive-boundary", "trigger-relation"] },
+      { "id": "wcag-target-size", "title": "WCAG 2.2 Understanding SC 2.5.8: Target Size (Minimum)", "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html", "sourceType": "official-guideline", "authority": "primary", "accessedAt": "2026-07-22", "summary": "Tooltipではなくtrigger componentがpointer target minimumを所有する。", "supportedDecisions": ["touch-progressive-enhancement"] }
+    ],
+    "synthesis": "Tooltipを短い非interactive descriptionに限定し、必須情報とtouch-only interactionをPopoverまたはvisible textへ分離した。",
+    "decisionImpact": "Contract 0.2.0、Showcase、React API freeze、token bindingを同じfocus/hover/Escape modelへ同期した。", "notRequiredReason": null
+  },
+  "decisions": [
+    { "id": "non-interactive-boundary", "summary": "Tooltipを短い非interactive補足へ限定する。", "rationale": "Surfaceはfocusを受けず、interactive contentはPopoverの責務だから。" },
+    { "id": "trigger-relation", "summary": "Stable id、role=tooltip、aria-describedby、focus保持、Escape dismissalを固定する。", "rationale": "Pointerとkeyboardで同じdescriptionへ到達するため。" },
+    { "id": "touch-progressive-enhancement", "summary": "TouchでTooltipを必須情報の経路や二段階tapにしない。", "rationale": "Trigger本来のactionを阻害せずhover非依存を保つため。" },
+    { "id": "complete-token-binding", "summary": "Inverse surface、spacing、type、shadow、motionの全slotを公開tokenへ結線する。", "rationale": "React実装時のraw value補完を不要にするため。" }
+  ],
+  "differences": [
+    { "classification": "cross-layer-conflict", "description": "旧仕様はmobileでtapまたはsheetへ変形するとし非interactive境界と矛盾していた。", "action": "Touchではprogressive enhancementとし必須内容をPopover/visible textへ委譲した。", "status": "resolved" },
+    { "classification": "missing-contract", "description": "公開APIとfocus/Escape runtimeが未確定だった。", "action": "Contract 0.2.0とReact API freezeへ固定した。", "status": "resolved" },
+    { "classification": "implementation-stale", "description": "Showcaseがinline raw valueと常時visible surfaceを使っていた。", "action": "Tokenized classとdefault/hover/focus stateへ更新した。", "status": "resolved" }
+  ],
+  "changes": [
+    { "path": "components/tooltip.md", "summary": "責務、touch境界、API freezeを確定。" },
+    { "path": "design/contracts/components/tooltip.contract.json", "summary": "Contract 0.2.0、runtime、complete bindings、readiness evidenceを追加。" },
+    { "path": "js/ui-builders.js", "summary": "Stable relationとstateを持つShowcaseへ更新。" },
+    { "path": "index.html", "summary": "Tooltip surfaceをtokenized CSSへ移行。" },
+    { "path": "test/component-specs.test.js", "summary": "非interactive runtimeとAPIの回帰testを追加。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js", "status": "passed", "notes": "Contract/Showcase/API/semantic同期を検証。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "Desktop/mobile、theme/contrast/densityでvisibility、clipping、focus、consoleを確認。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、generated artifacts、全unit testsを検証。" }
+  ],
+  "openQuestions": [{ "question": "React実装とvisual regressionを完了しstableへ昇格する。", "owner": "components.tooltip", "exitCriteria": "Hover/focus/Escape、collision、全context baselineがCIで通ること。" }],
+  "acknowledgedImpacts": ["2026-07-22-components-icon-button-01", "2026-07-13-foundations-accessibility-01", "2026-07-13-foundations-content-01", "2026-07-13-foundations-elevation-01", "2026-07-13-foundations-iconography-01", "2026-07-13-tokens-component-01"], "impactedItems": [], "nextRecommendedItems": ["components.sidebar"]
+}

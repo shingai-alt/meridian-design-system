@@ -928,7 +928,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.tooltip.2026-07-13-components-tooltip-01.review.json"
+          "reviewRecord": "design/reviews/components.tooltip.2026-07-22-components-tooltip-02.review.json"
         },
         {
           "id": "components.divider",
@@ -1228,7 +1228,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.breadcrumb.2026-07-13-components-breadcrumb-01.review.json"
+          "reviewRecord": "design/reviews/components.breadcrumb.2026-07-22-components-breadcrumb-02.review.json"
         },
         {
           "id": "components.segmented-control",
@@ -1308,7 +1308,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.navigation-item.2026-07-13-components-navigation-item-01.review.json"
+          "reviewRecord": "design/reviews/components.navigation-item.2026-07-22-components-navigation-item-02.review.json"
         },
         {
           "id": "components.product-switcher",
