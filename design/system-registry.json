@@ -676,7 +676,9 @@
           "order": 5,
           "route": "components/dialog",
           "dependsOn": [
-            "tokens.json-tokens"
+            "tokens.json-tokens",
+            "components.button",
+            "components.icon-button"
           ],
           "sources": [
             "components/dialog.md",
@@ -688,7 +690,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.dialog.2026-07-13-components-dialog-01.review.json"
+          "reviewRecord": "design/reviews/components.dialog.2026-07-22-components-dialog-02.review.json"
         },
         {
           "id": "components.badge",

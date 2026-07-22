@@ -430,6 +430,60 @@ test('Top Bar is implementation-ready as a header with child-owned semantics', (
   assert.doesNotMatch(sticky, /role="(?:navigation|toolbar|banner)"/);
 });
 
+test('Dialog is implementation-ready as a native modal with safe confirmation focus policy', () => {
+  const dialog = contracts.find((contract) => contract.id === 'dialog');
+  assert.equal(dialog.status, 'draft');
+  assert.equal(dialog.contractVersion, '0.2.0');
+  assert.equal(dialog.implementationReadiness.status, 'ready');
+  assert.deepEqual(Object.keys(dialog.variants), ['default', 'danger']);
+  assert.deepEqual(dialog.states.map(({ id }) => id), ['open', 'closed', 'submitting', 'error']);
+  assert.deepEqual(dialog.props.map(({ name }) => name), [
+    'trigger', 'title', 'description', 'children', 'footer', 'variant', 'role', 'open',
+    'defaultOpen', 'onOpenChange', 'initialFocusRef', 'closeLabel', 'ref',
+  ]);
+  assert.deepEqual(dialog.runtime.rootElements, ['dialog']);
+  assert.ok(dialog.runtime.relations.includes('modal-inert-background'));
+  assert.ok(dialog.runtime.relations.includes('safe-initial-focus'));
+  assert.ok(dialog.runtime.relations.includes('contained-tab-sequence'));
+  assert.ok(dialog.runtime.relations.includes('focus-return'));
+  assert.equal(dialog.tokenBindings.coverage, 'complete');
+  assert.deepEqual(dialog.tokenBindings.unboundSlots, []);
+  assert.deepEqual(dialog.openQuestions, []);
+
+  const component = renderedComponents.find(({ id }) => id === 'dialog');
+  const opened = component.render({ ...renderProps(component), state: 'open', variant: 'default' });
+  const closed = component.render({ ...renderProps(component), state: 'closed', variant: 'default' });
+  const danger = component.render({ ...renderProps(component), state: 'open', variant: 'danger', scenario: 'danger-confirmation' });
+  const submitting = component.render({ ...renderProps(component), state: 'submitting', variant: 'default' });
+  const error = component.render({ ...renderProps(component), state: 'error', variant: 'default' });
+  const simple = component.render({ ...renderProps(component), state: 'open', scenario: 'simple-message' });
+  assert.match(opened, /<button[^>]+aria-haspopup="dialog"[^>]+aria-controls="dialog-\d+"[^>]+aria-expanded="true"/);
+  assert.match(opened, /<dialog[^>]+data-component="dialog"[^>]+aria-labelledby="dialog-\d+-title"[^>]+aria-describedby="dialog-\d+-description"[^>]+open/);
+  assert.match(opened, /<h3[^>]+id="dialog-\d+-title"[^>]+tabindex="-1"/);
+  assert.match(opened, /<button[^>]+data-icononly[^>]+aria-label="閉じる"/);
+  assert.doesNotMatch(opened, /aria-modal=/);
+  assert.doesNotMatch(opened, /\srole="dialog"/);
+  assert.doesNotMatch(opened, /tabindex="[1-9]/);
+  assert.match(closed, /aria-expanded="false"/);
+  assert.doesNotMatch(closed, /<dialog[^>]+\sopen(?:\s|>)/);
+  assert.match(danger, /data-runtime-role="alertdialog"/);
+  assert.match(danger, /data-variant="danger"/);
+  assert.match(danger, />キャンセル<\/span>/);
+  assert.match(danger, />完全に削除<\/span>/);
+  assert.match(danger, /class="dft"[^]*>キャンセル<\/span>[^]*>完全に削除<\/span>/);
+  assert.match(submitting, /data-state="submitting"/);
+  assert.match(submitting, /aria-busy="true" aria-disabled="true"/);
+  assert.match(error, /data-state="error"/);
+  assert.match(error, /aria-invalid="true"/);
+  assert.match(error, /プロジェクト名を入力してください。/);
+  assert.match(simple, /data-dialog-scenario="simple-message"/);
+  assert.match(indexSource, /\.dialogc::backdrop\{background:var\(--overlay\)\}/);
+  assert.match(indexSource, /\.dialogc\{[^}]*inline-size:min\(var\(--dialog-w-md\),calc\(100vi - var\(--sp-8\)\)\)/);
+  assert.doesNotMatch(indexSource, /\.dialogc\{[^}]*display:none/);
+  const inviteDialog = renderedComponents.find(({ id }) => id === 'invite-member-dialog');
+  assert.match(inviteDialog.render(renderProps(inviteDialog)), /<div class="dialogc"/);
+});
+
 test('Drawer is implementation-ready as a native modal dialog with trigger and focus lifecycle', () => {
   const drawer = contracts.find((contract) => contract.id === 'drawer');
   assert.equal(drawer.contractVersion, '0.2.0');
@@ -513,7 +567,10 @@ test('showcases demonstrate the defining semantic relationships of complex patte
   assert.match(render('tabs'), /aria-controls="[^"]+"/);
   assert.match(render('combobox', { state: 'open' }), /role="combobox"[^>]+aria-expanded="true"/);
   assert.match(render('combobox', { state: 'open' }), /role="listbox"/);
-  assert.match(render('dialog'), /role="dialog"[^>]+aria-modal="true"[^>]+aria-labelledby=/);
+  const dialog = render('dialog');
+  assert.match(dialog, /<button[^>]+aria-haspopup="dialog"[^>]+aria-controls="dialog-\d+"[^>]+aria-expanded="true"/);
+  assert.match(dialog, /<dialog[^>]+data-component="dialog"[^>]+aria-labelledby="dialog-\d+-title"[^>]+open/);
+  assert.doesNotMatch(dialog, /aria-modal=/);
   assert.match(render('file-tree'), /role="tree"/);
   assert.match(render('file-tree'), /role="treeitem"[^>]+aria-expanded=/);
   assert.match(render('table'), /<caption\s+class="sr-only">/);

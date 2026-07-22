@@ -312,14 +312,14 @@ def({id:'banner',name:'Banner',group:'Feedback',desc:'アプリ全体に関わ�
  usage:['同時に 1 枚まで。閉じた状態を記憶する。','行動が必要な場合は右端にボタンを 1 つだけ置く。'],
  render:()=>bannerEl(),code:()=>`<Banner tone="info" dismissible action={{ label: "詳細", href: "/changelog" }}>\n  v2.4 リリース: Dynamic color API が利用可能になりました。\n</Banner>`,related:['alert','toast']});
 
-def({id:'dialog',name:'Dialog',group:'Feedback',desc:'ユーザーの判断・入力を求めるモーダル。フォーカスを閉じ込める。',
+def({id:'dialog',name:'Dialog',group:'Feedback',desc:'現在の作業を一時的に中断し、短い判断または入力を完了させるmodal window。',
  variants:['default','danger'],
- when:['短い入力・確認(作成・削除の確認)'],notWhen:['多量の入力・参照 → 専用ページ / Drawer','単なる通知 → Toast'],
- usage:['タイトルは動詞で(「プロジェクトを削除」)。','主要アクションは右端、キャンセルはその左。','破壊的操作は名称の再入力など摩擦を意図的に足す。'],
- keys:[['Esc','閉じる'],['Tab','ダイアログ内を循環(フォーカストラップ)'],['Enter','主要アクション']],
- a11y:['role="dialog" + aria-modal="true" + aria-labelledby','開いたら最初のコントロールへ、閉じたら起点へフォーカスを戻す'],
- render:p=>dialogDemo({tone:p.variant==='danger'?'danger':''}),
- code:p=>`<Dialog open={open} onClose={close}>\n  <Dialog.Title>プロジェクトを${p.variant==='danger'?'削除':'作成'}</Dialog.Title>\n  <Dialog.Body>…</Dialog.Body>\n  <Dialog.Footer>\n    <Button variant="ghost" onClick={close}>キャンセル</Button>\n    <Button variant="${p.variant==='danger'?'danger':'primary'}">${p.variant==='danger'?'完全に削除':'作成'}</Button>\n  </Dialog.Footer>\n</Dialog>`,related:['drawer','toast','invite-member-dialog']});
+ when:['現在の作業を中断して回答が必要な短い確認・単一目的form','不可逆または高影響actionのreview / confirmation'],notWhen:['補助task → Drawer / Popover','長いworkflow → 専用page','response不要の結果 → Toast / Alert'],
+ usage:['Native dialogをshowModal()で開き、背景を実際にinertにする。','Dangerでは最も安全なactionへinitial focusを置く。','Backdrop clickは既定で閉じず、visible closeとCancelを残す。'],
+ keys:[['Tab / Shift+Tab','Open中はDialog内のtabbable element間を循環する。'],['Escape','Close requestを発行し、close後にtriggerへfocusを戻す。']],
+ a11y:['可視titleで命名し、短いdescriptionだけをaria-describedbyへ接続','開いたら適切な内部要素へ、閉じたらtriggerへfocusを戻す','alertdialogは短い重要messageへ即時responseが必要な場合だけ明示'],
+ render:p=>dialogDemo(p),
+ code:p=>`<Dialog\n  trigger={<Button variant="${p.variant==='danger'?'danger':'primary'}">${p.variant==='danger'?'削除':'作成'}</Button>}\n  title="プロジェクトを${p.variant==='danger'?'削除':'作成'}"\n  variant="${p.variant||'default'}"\n  ${p.variant==='danger'?'initialFocusRef={cancelRef}\n  ':''}footer={<>\n    <Button ${p.variant==='danger'?'ref={cancelRef} ':''}variant="secondary">キャンセル</Button>\n    <Button variant="${p.variant==='danger'?'danger':'primary'}" type="submit">${p.variant==='danger'?'完全に削除':'作成'}</Button>\n  </>}\n>\n  …\n</Dialog>`,related:['drawer','popover','toast','alert','invite-member-dialog']});
 
 def({id:'drawer',name:'Drawer',group:'Feedback',desc:'現在の画面文脈を視覚的に残しながら、画面端へ一時的な補助taskをmodal表示するside-aligned dialog。',
  usage:['Native dialogをshowModal()で開き背景を実際にinertにする。','Drawerがmodal lifecycle、childrenがcontent semanticsを所有する。','Close後はtriggerへfocusを戻す。'],

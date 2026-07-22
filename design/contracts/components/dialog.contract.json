@@ -1,333 +1,229 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready",
+    "policyVersion": "0.1.0",
+    "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/dialog.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/dialog.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "accessibility.aria", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "negativeExamples", "design/reviews/components.dialog.2026-07-22-components-dialog-02.review.json"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["tokenBindings", "tokenRefs", "index.html#dialogc"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/dialog.md#responsive-viewport-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#dialog", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.dialog.2026-07-22-components-dialog-02.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": ["React実装", "native dialog lifecycle integration tests", "visual regression baseline"]
+  },
   "id": "dialog",
   "name": "Dialog",
   "status": "draft",
   "category": "feedback",
-  "description": "ユーザーの判断・入力を求めるモーダル。フォーカスを閉じ込める。",
+  "description": "現在の作業を一時的に中断し、短い判断または入力を完了させるmodal window。",
   "source": {
     "humanDoc": "components/dialog.md",
     "registry": "js/components-registry.js#dialog"
   },
   "intent": {
     "whenToUse": [
-      "短い入力・確認(作成・削除の確認)"
+      "現在の作業を中断して回答が必要な、短い確認または単一目的のform。",
+      "削除、法的同意、金融取引など、実行前のreviewまたは確認が必要な高影響action。",
+      "続行不能な短い重要messageへ即時responseを求める場合。"
     ],
     "whenNotToUse": [
-      "多量の入力・参照 → 専用ページ / Drawer",
-      "単なる通知 → Toast"
+      "背景を参照しながら行う補助task、quick edit、filterはDrawerまたはPopoverを使う。",
+      "長いform、multi-step workflow、固有URLが必要なtaskは専用pageを使う。",
+      "判断を要求しない一時的な結果はToast、文脈内で残す情報はAlertを使う。",
+      "通常の保存や軽微な操作へ毎回確認を挟まず、可能ならUndoを優先する。"
     ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "surface",
-      "required": true,
-      "description": "Floating or modal surface."
-    },
-    {
-      "part": "header",
-      "required": false,
-      "description": "Title and context."
-    },
-    {
-      "part": "content",
-      "required": true,
-      "description": "Information or controls owned by the surface."
-    },
-    {
-      "part": "actions",
-      "required": false,
-      "description": "Confirmation, navigation, or dismiss controls."
-    },
-    {
-      "part": "trigger",
-      "required": false,
-      "description": "Element that opens the surface and receives restored focus."
-    }
+    { "part": "trigger", "required": true, "description": "Dialogを開き、close後にfocusを受け取るfocusable control。" },
+    { "part": "backdrop", "required": true, "description": "背景が操作不能であることを視覚化する。" },
+    { "part": "surface", "required": true, "description": "showModal()でtop layerへ表示するnative dialog。" },
+    { "part": "title", "required": true, "description": "aria-labelledbyでsurfaceを命名する可視heading。" },
+    { "part": "close-control", "required": true, "description": "常に可視でaccessible nameを持つIcon Button。" },
+    { "part": "description", "required": false, "description": "aria-describedbyへ接続できる短く単純な目的説明。" },
+    { "part": "body", "required": true, "description": "Messageまたはform content。必要な場合だけ内部scrollする。" },
+    { "part": "footer", "required": true, "description": "少なくともdismiss経路を含むaction領域。" }
   ],
   "variants": {
-    "default": {
-      "intent": "標準文脈。",
-      "tokenRefs": {},
-      "states": {}
-    },
-    "danger": {
-      "intent": "破壊的または回復困難な操作・状態。",
-      "tokenRefs": {},
-      "states": {}
-    }
+    "default": { "intent": "通常の短いformまたは確認。", "tokenRefs": {}, "states": {} },
+    "danger": { "intent": "不可逆または回復困難なactionの最終確認。", "tokenRefs": {}, "states": {} }
   },
   "sizes": {},
   "states": [
     {
-      "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
-      "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
-      ]
+      "id": "open",
+      "description": "Native dialogをshowModal()でtop layerへ表示した状態。",
+      "requiredBehavior": ["背景contentをinertにする", "Initial focusをDialog内へ移す", "Tab sequenceをDialog内に保持する", "triggerのaria-expandedをtrueにする"]
+    },
+    {
+      "id": "closed",
+      "description": "Surfaceを表示せずtriggerだけが通常のdocument順にある状態。",
+      "requiredBehavior": ["Dialog open attributeを残さない", "triggerのaria-expandedをfalseにする", "Close直後はtriggerまたは論理的な次のfocus先へ戻す"]
+    },
+    {
+      "id": "submitting",
+      "description": "Actionを処理中で二重実行を防ぐ状態。",
+      "requiredBehavior": ["Dialogを開いたままprogressを伝える", "Primary actionの二重実行を防ぐ", "Cancel可否を処理の実態と一致させる"]
+    },
+    {
+      "id": "error",
+      "description": "Submitが失敗し修正を必要とする状態。",
+      "requiredBehavior": ["Dialogを開いたままerrorをtextで特定する", "最初のinvalid fieldまたはerror summaryへfocusを移す", "再試行または修正経路を残す"]
     }
   ],
   "props": [
-    {
-      "name": "variant",
-      "type": "\"default\" | \"danger\"",
-      "required": false,
-      "default": "default",
-      "description": "意味と優先度を選ぶ。"
-    },
-    {
-      "name": "open",
-      "type": "boolean",
-      "required": false,
-      "default": null,
-      "description": "Controlled open state。"
-    },
-    {
-      "name": "onOpenChange",
-      "type": "(open: boolean) => void",
-      "required": false,
-      "default": null,
-      "description": "Open state変更を通知する。"
-    }
+    { "name": "trigger", "type": "ReactElement", "required": true, "default": null, "description": "単一のfocusable trigger。aria-haspopup、aria-controls、aria-expanded、open handlerを合成する。" },
+    { "name": "title", "type": "ReactNode", "required": true, "default": null, "description": "Dialogを命名する可視title。" },
+    { "name": "description", "type": "ReactNode", "required": false, "default": null, "description": "短く単純なaccessible description。構造化content全体には使わない。" },
+    { "name": "children", "type": "ReactNode", "required": true, "default": null, "description": "Dialog body content。" },
+    { "name": "footer", "type": "ReactNode", "required": true, "default": null, "description": "Cancelまたは同等のdismiss actionを含むfooter。" },
+    { "name": "variant", "type": "\"default\" | \"danger\"", "required": false, "default": "default", "description": "Contentとprimary actionのimpact policy。Surface toneは変えない。" },
+    { "name": "role", "type": "\"dialog\" | \"alertdialog\"", "required": false, "default": "dialog", "description": "短い重要messageへ即時responseが必要な場合だけalertdialogを明示する。" },
+    { "name": "open", "type": "boolean", "required": false, "default": null, "description": "Controlled open state。Native open attributeは直接toggleせずshowModal()/close()へ同期する。" },
+    { "name": "defaultOpen", "type": "boolean", "required": false, "default": "false", "description": "Uncontrolled initial open state。" },
+    { "name": "onOpenChange", "type": "(open: boolean) => void", "required": false, "default": null, "description": "Trigger、Escape、close control、actionを同じopen stateへ通知する。" },
+    { "name": "initialFocusRef", "type": "RefObject<HTMLElement | null>", "required": false, "default": null, "description": "Open時の明示的focus先。Dangerでは最も安全なactionを指定する。" },
+    { "name": "closeLabel", "type": "string", "required": false, "default": "閉じる", "description": "Close Icon Buttonのaccessible name。" },
+    { "name": "ref", "type": "ForwardedRef<HTMLDialogElement>", "required": false, "default": null, "description": "Native dialog elementへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--surface",
-      "--border",
-      "--fg",
-      "--surface-overlay",
-      "--fg-muted",
-      "--overlay",
-      "--focus-ring"
-    ],
-    "spacing": [
-      "--sp-4"
-    ],
-    "radius": [
-      "--radius-md"
-    ],
-    "motion": [
-      "--dur-normal"
-    ],
-    "shadow": [
-      "--shadow-overlay"
-    ]
+    "semanticColor": ["--surface-overlay", "--fg", "--fg-muted", "--border", "--border-muted", "--overlay", "--focus-ring"],
+    "spacing": ["--sp-2", "--sp-3", "--sp-4", "--sp-5", "--sp-8"],
+    "radius": ["--radius-xl"],
+    "sizing": ["--dialog-w-md"],
+    "motion": ["--dur-normal", "--ease-enter"],
+    "shadow": ["--shadow-overlay"]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.surface.value",
-        "source": "--surface",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Dialogの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Dialogの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Dialogの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.surface-overlay.value",
-        "source": "--surface-overlay",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Dialogの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-muted.value",
-        "source": "--fg-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Dialogの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.overlay.value",
-        "source": "--overlay",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Dialogの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.shadow-overlay.value",
-        "source": "--shadow-overlay",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Dialogの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.focus-ring.value",
-        "source": "--focus-ring",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Dialogの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sp-4.value",
-        "source": "--sp-4",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Dialogの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.radius-md.value",
-        "source": "--radius-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Dialogの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.dur-normal.value",
-        "source": "--dur-normal",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Dialogの公開visual contractで用途tokenとして共有する。"
-      }
+      { "slot": "surface.background", "source": "--surface-overlay", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Modal contentをbackground surfaceから分離する。" },
+      { "slot": "surface.foreground", "source": "--fg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Titleとbodyの基本foreground。" },
+      { "slot": "surface.border", "source": "--border", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Surface edgeを背景から分離する。" },
+      { "slot": "surface.inline-size", "source": "--dialog-w-md", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Short formとconfirmationの標準max width。" },
+      { "slot": "surface.radius", "source": "--radius-xl", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Modal overlayのshape policy。" },
+      { "slot": "surface.shadow", "source": "--shadow-overlay", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Top-layer surfaceを背景から分離する。" },
+      { "slot": "backdrop.background", "source": "--overlay", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "背景がmodal中に操作不能であることを視覚化する。" },
+      { "slot": "header.padding-block", "source": "--sp-4", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Titleとsurface edgeを分離する。" },
+      { "slot": "header.padding-inline", "source": "--sp-5", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Titleとclose targetの標準inset。" },
+      { "slot": "header.gap", "source": "--sp-3", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Titleとclose controlを分離する。" },
+      { "slot": "body.padding-block", "source": "--sp-4", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Messageとform contentの標準inset。" },
+      { "slot": "body.padding-inline", "source": "--sp-5", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Body contentのsurface inset。" },
+      { "slot": "footer.padding-block", "source": "--sp-3", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Action targetをborderから分離する。" },
+      { "slot": "footer.padding-inline", "source": "--sp-5", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Footer actionのsurface inset。" },
+      { "slot": "footer.gap", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Cancelとprimary targetを分離する。" },
+      { "slot": "footer.border", "source": "--border-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Scrollable bodyとactionsを区切る。" },
+      { "slot": "description.foreground", "source": "--fg-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Supporting messageをtitleより弱くする。" },
+      { "slot": "motion.duration", "source": "--dur-normal", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Modal entryの標準duration。" },
+      { "slot": "motion.easing", "source": "--ease-enter", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Top-layer entryの標準curve。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.dialog"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
     "requirements": [
-      "role=\"dialog\" + aria-modal=\"true\" + aria-labelledby",
-      "開いたら最初のコントロールへ、閉じたら起点へフォーカスを戻す",
-      "Keyboardとpointerで同じ機能を実行できる。",
-      "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-      "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+      "Native dialogをshowModal()で開き、背景contentを実際にinertにする。",
+      "Visible title、常時visibleなclose control、footerのdismiss action、24px minimum targetを持つ。",
+      "High-impact submissionはreversible、checked、confirmedの少なくとも一つを満たす。"
     ],
     "aria": [
-      "role=\"dialog\"、aria-modal、accessible titleを持ち、focusを管理する。"
+      "Dialogはaria-labelledbyで可視titleから命名する。",
+      "Triggerはaria-haspopup=dialog、aria-controls、aria-expandedを同期する。",
+      "aria-describedbyは短く単純なdescriptionだけへ接続し、構造化bodyへは既定で付けない。",
+      "role=alertdialogは短い重要messageへ即時responseが必要な場合だけ明示する。"
     ],
     "focus": [
-      "focus-visibleで--focus-ringを使う。",
-      "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+      "Open時はinitialFocusRef、先頭の意味あるcontrol、またはtabindex=-1のstatic title/contentへfocusを移す。",
+      "Dangerでは最も安全なactionへinitial focusを置き、destructive primaryへ自動focusしない。",
+      "Tab / Shift+Tabをmodal内に保持し、close後はtriggerまたは論理的な次の要素へ戻す。",
+      "Positive tabindexを使わず、focused fieldやerrorをsticky footerで完全に隠さない。"
     ]
   },
   "keyboardInteractions": [
-    {
-      "key": "Tab / Shift+Tab",
-      "action": "Dialog内でfocusを循環する。"
-    },
-    {
-      "key": "Escape",
-      "action": "Dismiss可能なDialogを閉じる。"
-    }
+    { "key": "Tab / Shift+Tab", "action": "Open中はDialog内のtabbable element間を循環する。" },
+    { "key": "Escape", "action": "Close requestを発行し、close後にtriggerへfocusを戻す。" }
   ],
   "usagePatterns": [
     {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "短い入力・確認(作成・削除の確認)",
-      "recommended": [
-        "タイトルは動詞で(「プロジェクトを削除」)。"
-      ],
-      "avoid": [
-        "多量の入力・参照 → 専用ページ / Drawer"
-      ]
+      "id": "short-form",
+      "title": "Short single-purpose form",
+      "description": "現在の作業を短時間中断して一つの入力を完了する。",
+      "recommended": ["Visible titleとCancelを持つ", "Failure時はopenのままerrorを修正できる"],
+      "avoid": ["長いformやmulti-step workflowを詰め込む"]
+    },
+    {
+      "id": "high-impact-confirmation",
+      "title": "High-impact confirmation",
+      "description": "不可逆または重大なactionをreviewして確定する。",
+      "recommended": ["対象と結果、recovery可否を明示する", "最も安全なactionへinitial focusを置く"],
+      "avoid": ["通常のsaveへ確認を常用する", "Danger primaryへinitial focusを置く"]
     }
   ],
   "responsiveBehavior": {
     "desktop": {
-      "summary": "DesktopでのDialog。",
-      "rules": [
-        "Dialogは内容に応じたmax-widthを持ち、背景文脈を保つ。",
-        "Focusをsurface内で管理し、閉じたらtriggerへ戻す。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
+      "summary": "中央配置し、短いtaskへ必要な幅だけを使う。",
+      "rules": ["Inline sizeは--dialog-w-mdを上限にcontentへ適応する", "Block sizeをdynamic viewport内へ制限しbodyだけをscrollする", "Modal中は背景を操作不能にする"],
+      "avoid": ["補助taskのために大きなsurfaceを使う", "Nested modalを常用する"]
     },
     "mobile": {
-      "summary": "MobileでのDialog。",
-      "rules": [
-        "Viewportに収まらない固定幅を使わず、必要に応じてfull-screenまたはbottom-aligned presentationへ切り替える。",
-        "Safe areaとsoftware keyboardを考慮し、primary actionを見失わせない。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
+      "summary": "同じAPIとdialog semanticsのままviewport inset内へ縮める。",
+      "rules": ["100viと100dvb、safe areaへ収める", "Software keyboardでもfocused field、error、footer actionへscrollできる", "Headerとfooterを到達可能に保つ"],
+      "avoid": ["Fixed 400pxで横overflowを起こす", "別componentやBottom sheetへ意味を変える"]
     },
     "touch": {
-      "summary": "Touch入力でのDialog。",
-      "rules": [
-        "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-        "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
+      "summary": "Visible closeとfooter actionを単一pointerで操作できる。",
+      "rules": ["全targetは24px minimum、主要actionは44px以上推奨", "Backdrop tapを既定のdismiss経路にしない", "Swipeを追加してもcloseとEscapeを残す"],
+      "avoid": ["Backdrop tapまたはswipeだけで閉じる", "隣接する小さなtarget"]
     }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM",
-    "FOCUS_VISIBLE_REQUIRED",
-    "NO_POSITIVE_TABINDEX",
-    "TARGET_SIZE_MINIMUM",
-    "INTERACTIVE_NAME_REQUIRED"
-  ],
+  "rules": ["NO_RAW_HEX_COLOR", "SPACING_FROM_TOKENS_ONLY", "RADIUS_FROM_TOKENS_ONLY", "CONTRAST_AA_MINIMUM", "FOCUS_VISIBLE_REQUIRED", "NO_POSITIVE_TABINDEX", "TARGET_SIZE_MINIMUM", "INTERACTIVE_NAME_REQUIRED"],
   "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
+    "Dialog / Drawer / Popover / Toast / Alertの選択境界が明確",
+    "React API、native lifecycle、focus strategyが確定",
+    "全visual slotが公開tokenへ結線",
+    "Default / Danger、open / closed / submitting / errorを検証",
+    "Light / Dark × Standard / Highと3 density、Desktop / Mobileで確認"
   ],
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["dialog"],
+    "slots": ["trigger", "backdrop", "surface", "title", "close-control", "description", "body", "footer"],
+    "attributes": ["open", "role", "aria-labelledby", "aria-describedby", "aria-haspopup", "aria-controls", "aria-expanded", "data-state", "data-variant", "data-*"],
+    "stateModel": ["native dialog open state", "data-state", "data-variant"],
+    "events": ["click", "cancel", "close", "keydown", "submit", "openchange"],
+    "relations": ["trigger-dialog", "visible-title-name", "optional-simple-description", "modal-inert-background", "contained-tab-sequence", "safe-initial-focus", "focus-return"],
+    "provenance": ["component", "instance", "state", "variant", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["現在の作業を中断し、短い判断または単一目的の入力を完了しないと先へ進めない。"],
+    "avoidWhen": ["補助task、長いworkflow、response不要のmessage、Undo可能な軽微なactionである。"],
+    "alternatives": ["Drawer", "Popover", "dedicated page", "Toast", "Alert", "Undo"]
+  },
+  "negativeExamples": [
+    { "pattern": "div role=dialogへaria-modal=trueだけを付け、背景を操作可能なままにする。", "reason": "ARIA宣言と実際のmodalityが一致せず、支援技術利用者から背景だけを隠すため。", "ruleIds": ["FOCUS_VISIBLE_REQUIRED"] },
+    { "pattern": "Native dialogのopen属性をReact renderだけで追加・削除する。", "reason": "close/cancel event、top layer、document blockingを壊すため。", "ruleIds": ["FOCUS_VISIBLE_REQUIRED"] },
+    { "pattern": "Danger primary actionへinitial focusを置く。", "reason": "不可逆actionの誤実行を誘発し、最も安全な選択を既定にできないため。", "ruleIds": ["FOCUS_VISIBLE_REQUIRED"] },
+    { "pattern": "Backdrop tapまたはswipeだけでDialogを閉じる。", "reason": "Keyboard、touch、支援技術で一貫したdismiss経路を失うため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED", "TARGET_SIZE_MINIMUM"] },
+    { "pattern": "List、table、複数paragraphをまとめてaria-describedbyへ接続する。", "reason": "構造を一続きの文字列として読み上げ、内容理解とnavigationを妨げるため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] }
+  ],
+  "requiredScenarios": ["open", "closed", "default", "danger", "default-form", "danger-confirmation", "submitting", "error", "simple-message", "narrow-viewport"],
   "examples": [
     {
-      "id": "default",
-      "description": "Dialogの標準例。",
-      "code": "<Dialog open={open} onClose={close}>\n  <Dialog.Title>プロジェクトを作成</Dialog.Title>\n  <Dialog.Body>…</Dialog.Body>\n  <Dialog.Footer>\n    <Button variant=\"ghost\" onClick={close}>キャンセル</Button>\n    <Button variant=\"primary\">作成</Button>\n  </Dialog.Footer>\n</Dialog>"
+      "id": "default-form",
+      "description": "短い単一目的form。",
+      "code": "<Dialog trigger={<Button>プロジェクトを作成</Button>} title=\"プロジェクトを作成\" footer={<><Button variant=\"secondary\">キャンセル</Button><Button type=\"submit\">作成</Button></>}>\n  <ProjectForm />\n</Dialog>"
+    },
+    {
+      "id": "danger-confirmation",
+      "description": "最も安全なactionへinitial focusを置く高影響確認。",
+      "code": "<Dialog trigger={<Button variant=\"danger\">削除</Button>} title=\"プロジェクトを削除\" description=\"Meridian Docs は復元できません。\" variant=\"danger\" role=\"alertdialog\" initialFocusRef={cancelRef} footer={<><Button ref={cancelRef} variant=\"secondary\">キャンセル</Button><Button variant=\"danger\">完全に削除</Button></>}>\n  <ProjectNameConfirmation />\n</Dialog>"
     }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "openQuestions": []
 }

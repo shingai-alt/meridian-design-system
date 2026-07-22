@@ -1,0 +1,126 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.dialog",
+  "cycleId": "2026-07-22-components-dialog-02",
+  "supersedesCycleId": "2026-07-13-components-dialog-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-22",
+  "completedAt": "2026-07-22",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/implementation-readiness.json",
+    "components/dialog.md",
+    "design/contracts/components/dialog.contract.json",
+    "components/drawer.md",
+    "design/contracts/components/drawer.contract.json",
+    "components/button.md",
+    "design/contracts/components/button.contract.json",
+    "components/icon-button.md",
+    "design/contracts/components/icon-button.contract.json",
+    "js/components-registry.js",
+    "js/ui-builders.js",
+    "index.html",
+    "test/component-specs.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "components.dialog",
+      "summary": "Dialogのnative modal lifecycle、Dialog/Alert Dialogのsemantic boundary、高影響actionのerror prevention、initial focus、responsive presentationを確定する。"
+    },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior"],
+    "questions": [
+      "Dialogとalertdialogをどの条件で使い分けるか。",
+      "Native dialogのstate、Escape、focus containment/returnをReact APIへどう固定するか。",
+      "不可逆actionでinitial focusと確認摩擦をどう選ぶか。"
+    ],
+    "evidence": [
+      {
+        "id": "wai-dialog-modal",
+        "title": "WAI-ARIA APG: Dialog (Modal) Pattern",
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "Modal外のinert、initial focus、contained Tab sequence、Escape、focus return、visible close control、structured contentのdescription方針を示す。",
+        "supportedDecisions": ["native-modal-lifecycle", "safe-focus-policy", "description-policy"]
+      },
+      {
+        "id": "wai-alert-dialog",
+        "title": "WAI-ARIA APG: Alert and Message Dialogs Pattern",
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "Alert dialogを短い重要messageでworkflowを中断しresponseを得るspecial-case dialogとして定義し、実際にmodalである場合だけaria-modalを使う。",
+        "supportedDecisions": ["semantic-role-boundary"]
+      },
+      {
+        "id": "html-dialog",
+        "title": "HTML Standard: The dialog element",
+        "url": "https://html.spec.whatwg.org/dev/interactive-elements.html#the-dialog-element",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "showModal()、requestClose()、close()をtop layer、close request、cancel/close eventのnative lifecycleとして定義する。",
+        "supportedDecisions": ["native-modal-lifecycle"]
+      },
+      {
+        "id": "wcag-error-prevention",
+        "title": "WCAG 2.2 Understanding 3.3.4: Error Prevention (Legal, Financial, Data)",
+        "url": "https://www.w3.org/WAI/WCAG22/Understanding/error-prevention-legal-financial-data",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "高影響submissionへreversible、checked、confirmedの少なくとも一つを求め、通常編集への過剰な確認とは区別する。",
+        "supportedDecisions": ["high-impact-confirmation"]
+      }
+    ],
+    "synthesis": "Dialogを短いmodal decision/inputへ限定し、native lifecycle、明示的role、safe initial focus、簡潔なdescription、高影響actionの確認policyを単一Contractへ統合した。",
+    "decisionImpact": "Contract 0.2.0、React API Freeze、Default/DangerとDialog/Alert Dialogの独立軸、Showcase、token binding、downstream Invite Member Dialogを更新対象として確定した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    { "id": "selection-boundary", "summary": "Dialogを短い判断・単一目的入力へ限定し、Drawer、Popover、page、Toast、Alert、Undoと分離する。", "rationale": "Modal interruptionを必要な場面だけへ限定するため。" },
+    { "id": "native-modal-lifecycle", "summary": "Rootをnative dialogへ固定し、showModal()/requestClose()/close()とcontrolled stateを同期する。", "rationale": "Top layer、background inert、cancel/close eventをplatform semanticsへ委譲するため。" },
+    { "id": "semantic-role-boundary", "summary": "Danger variantとalertdialog roleを独立させる。", "rationale": "Action impactと、短い重要messageによる即時割り込みを混同しないため。" },
+    { "id": "safe-focus-policy", "summary": "DangerではCancelなど最も安全なactionへinitial focusを置く。", "rationale": "不可逆actionの誤実行を防ぎ、APGのfocus guidanceへ従うため。" },
+    { "id": "description-policy", "summary": "aria-describedbyは短い単純なdescriptionだけへ接続する。", "rationale": "Listや複数paragraphの構造を一続きの文字列へ潰さないため。" },
+    { "id": "high-impact-confirmation", "summary": "確認摩擦を高影響actionに限定し、reversible/checked/confirmedを選ぶ。", "rationale": "安全性を保ちながら通常操作への過剰な確認を避けるため。" },
+    { "id": "complete-token-binding", "summary": "Surface、backdrop、regions、width、shape、motionのvisual slotを公開tokenへ結線する。", "rationale": "React実装時の未決visual decisionを残さないため。" }
+  ],
+  "differences": [
+    { "classification": "cross-layer-conflict", "description": "旧Showcaseは複数scenarioを静的に表示しながらdiv role=dialogとaria-modal=trueで実際には存在しないmodalityを宣言していた。", "action": "Native dialog openによる静的表示へ変更し、aria-modalはproduction showModal lifecycleだけの責務へ戻した。", "status": "resolved" },
+    { "classification": "missing-contract", "description": "Trigger、description、children、footer、controlled/uncontrolled state、role、initial focus、close label、refのReact APIが未確定だった。", "action": "Contract 0.2.0とReact API Freezeへ固定した。", "status": "resolved" },
+    { "classification": "cross-layer-conflict", "description": "旧danger variantはdestructive tone、confirmation policy、alertdialog semanticsを一つに扱っていた。", "action": "Variant、role、safe initial focus、error prevention policyを独立軸へ分離した。", "status": "resolved" },
+    { "classification": "implementation-stale", "description": "旧Showcaseはopen/closed/submitting/error、related trigger、visible close、responsive containmentを示していなかった。", "action": "Required scenario、native markup、state evidence、viewport-safe stageへ更新した。", "status": "resolved" }
+  ],
+  "changes": [
+    { "path": "components/dialog.md", "summary": "Selection boundary、native lifecycle、role/focus policy、API Freeze、高影響action規則を確定。" },
+    { "path": "design/contracts/components/dialog.contract.json", "summary": "Contract 0.2.0、runtime、complete bindings、readiness evidenceを追加。" },
+    { "path": "js/ui-builders.js", "summary": "Related trigger、native dialog、visible title/close、open/closed/submitting/errorを持つShowcaseへ更新。" },
+    { "path": "index.html", "summary": "Backdrop、center placement、scroll regions、viewport-safe sizingをtokenized CSSへ移行。" },
+    { "path": "test/component-specs.test.js", "summary": "Native dialog、trigger relation、state、API、safe focus policyの回帰testを追加。" },
+    { "path": "design/system-registry.json", "summary": "Button/Icon Button依存と最新review cycleを台帳へ接続。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js", "status": "passed", "notes": "24件が通過し、Contract、Showcase、React API Freeze、native dialog、trigger relation、全stateの同期を確認した。" },
+    { "command": "Automated browser viewport QA", "status": "passed", "notes": "1280×720と390×844で11 scenario、named native dialog、open/closed、Default/Danger、error、theme/contrast matrix、3 density、横overflowなし、最小target 26px以上、console errorなしを確認した。Static Showcaseはaria-modalを宣言せず、showModal/inert/focus lifecycleはReact integrationのstable exit criteriaとする。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、review cycles、generated artifacts、10/74 implementation-ready gateを含む全156テストが通過した。" }
+  ],
+  "openQuestions": [
+    { "question": "React実装、native dialog lifecycle integration、visual regressionを完了しstableへ昇格する。", "owner": "components.dialog", "exitCriteria": "showModal/requestClose/close、inert、focus loop/return、全context baselineがCIで通ること。" }
+  ],
+  "acknowledgedImpacts": [
+    "2026-07-13-foundations-accessibility-01",
+    "2026-07-13-foundations-content-01",
+    "2026-07-13-foundations-elevation-01",
+    "2026-07-13-foundations-layout-01",
+    "2026-07-13-foundations-motion-01",
+    "2026-07-13-foundations-radius-01"
+  ],
+  "impactedItems": ["components.invite-member-dialog"],
+  "nextRecommendedItems": ["components.invite-member-dialog"]
+}

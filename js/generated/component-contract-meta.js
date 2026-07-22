@@ -3787,11 +3787,15 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "短い入力・確認(作成・削除の確認)"
+        "現在の作業を中断して回答が必要な、短い確認または単一目的のform。",
+        "削除、法的同意、金融取引など、実行前のreviewまたは確認が必要な高影響action。",
+        "続行不能な短い重要messageへ即時responseを求める場合。"
       ],
       "whenNotToUse": [
-        "多量の入力・参照 → 専用ページ / Drawer",
-        "単なる通知 → Toast"
+        "背景を参照しながら行う補助task、quick edit、filterはDrawerまたはPopoverを使う。",
+        "長いform、multi-step workflow、固有URLが必要なtaskは専用pageを使う。",
+        "判断を要求しない一時的な結果はToast、文脈内で残す情報はAlertを使う。",
+        "通常の保存や軽微な操作へ毎回確認を挟まず、可能ならUndoを優先する。"
       ],
       "principles": [
         1,
@@ -3803,29 +3807,44 @@ const COMPONENT_CONTRACTS={
     },
     "anatomy": [
       {
+        "part": "trigger",
+        "required": true,
+        "description": "Dialogを開き、close後にfocusを受け取るfocusable control。"
+      },
+      {
+        "part": "backdrop",
+        "required": true,
+        "description": "背景が操作不能であることを視覚化する。"
+      },
+      {
         "part": "surface",
         "required": true,
-        "description": "Floating or modal surface."
+        "description": "showModal()でtop layerへ表示するnative dialog。"
       },
       {
-        "part": "header",
-        "required": false,
-        "description": "Title and context."
-      },
-      {
-        "part": "content",
+        "part": "title",
         "required": true,
-        "description": "Information or controls owned by the surface."
+        "description": "aria-labelledbyでsurfaceを命名する可視heading。"
       },
       {
-        "part": "actions",
-        "required": false,
-        "description": "Confirmation, navigation, or dismiss controls."
+        "part": "close-control",
+        "required": true,
+        "description": "常に可視でaccessible nameを持つIcon Button。"
       },
       {
-        "part": "trigger",
+        "part": "description",
         "required": false,
-        "description": "Element that opens the surface and receives restored focus."
+        "description": "aria-describedbyへ接続できる短く単純な目的説明。"
+      },
+      {
+        "part": "body",
+        "required": true,
+        "description": "Messageまたはform content。必要な場合だけ内部scrollする。"
+      },
+      {
+        "part": "footer",
+        "required": true,
+        "description": "少なくともdismiss経路を含むaction領域。"
       }
     ],
     "variants": [
@@ -3835,54 +3854,162 @@ const COMPONENT_CONTRACTS={
     "sizes": [],
     "states": [
       {
-        "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "id": "open",
+        "description": "Native dialogをshowModal()でtop layerへ表示した状態。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "背景contentをinertにする",
+          "Initial focusをDialog内へ移す",
+          "Tab sequenceをDialog内に保持する",
+          "triggerのaria-expandedをtrueにする"
+        ]
+      },
+      {
+        "id": "closed",
+        "description": "Surfaceを表示せずtriggerだけが通常のdocument順にある状態。",
+        "requiredBehavior": [
+          "Dialog open attributeを残さない",
+          "triggerのaria-expandedをfalseにする",
+          "Close直後はtriggerまたは論理的な次のfocus先へ戻す"
+        ]
+      },
+      {
+        "id": "submitting",
+        "description": "Actionを処理中で二重実行を防ぐ状態。",
+        "requiredBehavior": [
+          "Dialogを開いたままprogressを伝える",
+          "Primary actionの二重実行を防ぐ",
+          "Cancel可否を処理の実態と一致させる"
+        ]
+      },
+      {
+        "id": "error",
+        "description": "Submitが失敗し修正を必要とする状態。",
+        "requiredBehavior": [
+          "Dialogを開いたままerrorをtextで特定する",
+          "最初のinvalid fieldまたはerror summaryへfocusを移す",
+          "再試行または修正経路を残す"
         ]
       }
     ],
     "props": [
       {
+        "name": "trigger",
+        "type": "ReactElement",
+        "required": true,
+        "default": null,
+        "description": "単一のfocusable trigger。aria-haspopup、aria-controls、aria-expanded、open handlerを合成する。"
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": true,
+        "default": null,
+        "description": "Dialogを命名する可視title。"
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "default": null,
+        "description": "短く単純なaccessible description。構造化content全体には使わない。"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true,
+        "default": null,
+        "description": "Dialog body content。"
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": true,
+        "default": null,
+        "description": "Cancelまたは同等のdismiss actionを含むfooter。"
+      },
+      {
         "name": "variant",
         "type": "\"default\" | \"danger\"",
         "required": false,
         "default": "default",
-        "description": "意味と優先度を選ぶ。"
+        "description": "Contentとprimary actionのimpact policy。Surface toneは変えない。"
+      },
+      {
+        "name": "role",
+        "type": "\"dialog\" | \"alertdialog\"",
+        "required": false,
+        "default": "dialog",
+        "description": "短い重要messageへ即時responseが必要な場合だけalertdialogを明示する。"
       },
       {
         "name": "open",
         "type": "boolean",
         "required": false,
         "default": null,
-        "description": "Controlled open state。"
+        "description": "Controlled open state。Native open attributeは直接toggleせずshowModal()/close()へ同期する。"
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Uncontrolled initial open state。"
       },
       {
         "name": "onOpenChange",
         "type": "(open: boolean) => void",
         "required": false,
         "default": null,
-        "description": "Open state変更を通知する。"
+        "description": "Trigger、Escape、close control、actionを同じopen stateへ通知する。"
+      },
+      {
+        "name": "initialFocusRef",
+        "type": "RefObject<HTMLElement | null>",
+        "required": false,
+        "default": null,
+        "description": "Open時の明示的focus先。Dangerでは最も安全なactionを指定する。"
+      },
+      {
+        "name": "closeLabel",
+        "type": "string",
+        "required": false,
+        "default": "閉じる",
+        "description": "Close Icon Buttonのaccessible name。"
+      },
+      {
+        "name": "ref",
+        "type": "ForwardedRef<HTMLDialogElement>",
+        "required": false,
+        "default": null,
+        "description": "Native dialog elementへforwardするref。"
       }
     ],
     "tokenRefs": {
       "semanticColor": [
-        "--surface",
-        "--border",
-        "--fg",
         "--surface-overlay",
+        "--fg",
         "--fg-muted",
+        "--border",
+        "--border-muted",
         "--overlay",
         "--focus-ring"
       ],
       "spacing": [
-        "--sp-4"
+        "--sp-2",
+        "--sp-3",
+        "--sp-4",
+        "--sp-5",
+        "--sp-8"
       ],
       "radius": [
-        "--radius-md"
+        "--radius-xl"
+      ],
+      "sizing": [
+        "--dialog-w-md"
       ],
       "motion": [
-        "--dur-normal"
+        "--dur-normal",
+        "--ease-enter"
       ],
       "shadow": [
         "--shadow-overlay"
@@ -3890,78 +4017,99 @@ const COMPONENT_CONTRACTS={
     },
     "accessibility": {
       "requirements": [
-        "role=\"dialog\" + aria-modal=\"true\" + aria-labelledby",
-        "開いたら最初のコントロールへ、閉じたら起点へフォーカスを戻す",
-        "Keyboardとpointerで同じ機能を実行できる。",
-        "Focus indicatorを常に視認でき、sticky layerで完全に隠さない。",
-        "Targetは24px minimumを満たし、主要touch操作は原則44px以上にする。"
+        "Native dialogをshowModal()で開き、背景contentを実際にinertにする。",
+        "Visible title、常時visibleなclose control、footerのdismiss action、24px minimum targetを持つ。",
+        "High-impact submissionはreversible、checked、confirmedの少なくとも一つを満たす。"
       ],
       "aria": [
-        "role=\"dialog\"、aria-modal、accessible titleを持ち、focusを管理する。"
+        "Dialogはaria-labelledbyで可視titleから命名する。",
+        "Triggerはaria-haspopup=dialog、aria-controls、aria-expandedを同期する。",
+        "aria-describedbyは短く単純なdescriptionだけへ接続し、構造化bodyへは既定で付けない。",
+        "role=alertdialogは短い重要messageへ即時responseが必要な場合だけ明示する。"
       ],
       "focus": [
-        "focus-visibleで--focus-ringを使う。",
-        "Positive tabindexを使わず、DOMとvisualの順序を一致させる。"
+        "Open時はinitialFocusRef、先頭の意味あるcontrol、またはtabindex=-1のstatic title/contentへfocusを移す。",
+        "Dangerでは最も安全なactionへinitial focusを置き、destructive primaryへ自動focusしない。",
+        "Tab / Shift+Tabをmodal内に保持し、close後はtriggerまたは論理的な次の要素へ戻す。",
+        "Positive tabindexを使わず、focused fieldやerrorをsticky footerで完全に隠さない。"
       ]
     },
     "keyboardInteractions": [
       {
         "key": "Tab / Shift+Tab",
-        "action": "Dialog内でfocusを循環する。"
+        "action": "Open中はDialog内のtabbable element間を循環する。"
       },
       {
         "key": "Escape",
-        "action": "Dismiss可能なDialogを閉じる。"
+        "action": "Close requestを発行し、close後にtriggerへfocusを戻す。"
       }
     ],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "短い入力・確認(作成・削除の確認)",
+        "id": "short-form",
+        "title": "Short single-purpose form",
+        "description": "現在の作業を短時間中断して一つの入力を完了する。",
         "recommended": [
-          "タイトルは動詞で(「プロジェクトを削除」)。"
+          "Visible titleとCancelを持つ",
+          "Failure時はopenのままerrorを修正できる"
         ],
         "avoid": [
-          "多量の入力・参照 → 専用ページ / Drawer"
+          "長いformやmulti-step workflowを詰め込む"
+        ]
+      },
+      {
+        "id": "high-impact-confirmation",
+        "title": "High-impact confirmation",
+        "description": "不可逆または重大なactionをreviewして確定する。",
+        "recommended": [
+          "対象と結果、recovery可否を明示する",
+          "最も安全なactionへinitial focusを置く"
+        ],
+        "avoid": [
+          "通常のsaveへ確認を常用する",
+          "Danger primaryへinitial focusを置く"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのDialog。",
+        "summary": "中央配置し、短いtaskへ必要な幅だけを使う。",
         "rules": [
-          "Dialogは内容に応じたmax-widthを持ち、背景文脈を保つ。",
-          "Focusをsurface内で管理し、閉じたらtriggerへ戻す。"
+          "Inline sizeは--dialog-w-mdを上限にcontentへ適応する",
+          "Block sizeをdynamic viewport内へ制限しbodyだけをscrollする",
+          "Modal中は背景を操作不能にする"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "補助taskのために大きなsurfaceを使う",
+          "Nested modalを常用する"
         ]
       },
       "mobile": {
-        "summary": "MobileでのDialog。",
+        "summary": "同じAPIとdialog semanticsのままviewport inset内へ縮める。",
         "rules": [
-          "Viewportに収まらない固定幅を使わず、必要に応じてfull-screenまたはbottom-aligned presentationへ切り替える。",
-          "Safe areaとsoftware keyboardを考慮し、primary actionを見失わせない。"
+          "100viと100dvb、safe areaへ収める",
+          "Software keyboardでもfocused field、error、footer actionへscrollできる",
+          "Headerとfooterを到達可能に保つ"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "Fixed 400pxで横overflowを起こす",
+          "別componentやBottom sheetへ意味を変える"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのDialog。",
+        "summary": "Visible closeとfooter actionを単一pointerで操作できる。",
         "rules": [
-          "Pointer targetは24px minimumを満たし、touch中心の主要操作は原則44px以上にする。",
-          "Hoverだけに情報や操作を依存させず、連打とdragには同等の非gesture操作を用意する。"
+          "全targetは24px minimum、主要actionは44px以上推奨",
+          "Backdrop tapを既定のdismiss経路にしない",
+          "Swipeを追加してもcloseとEscapeを残す"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "Backdrop tapまたはswipeだけで閉じる",
+          "隣接する小さなtarget"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "divider": {
     "id": "divider",
