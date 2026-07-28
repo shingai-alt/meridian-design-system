@@ -912,7 +912,7 @@
             "index.html",
             "test/component-specs.test.js"
           ],
-          "reviewRecord": "design/reviews/components.avatar.2026-07-13-components-avatar-01.review.json"
+          "reviewRecord": "design/reviews/components.avatar.2026-07-22-components-avatar-02.review.json"
         },
         {
           "id": "components.tooltip",

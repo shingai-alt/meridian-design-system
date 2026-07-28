@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "pattern-selection",
+    "id": "fixture_patterns_issue_triage",
+    "status": "approved-fixture"
+  },
+  "selections": [
+    {
+      "patternRef": "filterable-status-list",
+      "responsibilityRefs": ["responsibility_triage_queue"],
+      "rationale": "Keep filtering, status evidence, and the primary triage action in one reviewable responsibility."
+    }
+  ]
+}

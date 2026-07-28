@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../schemas/adapter-dependency-audit.schema.json",
+  "schemaVersion": "0.1.0",
+  "kind": "adapter-dependency-audit",
+  "id": "external-adapter-dependency-audit-2026-07-27",
+  "status": "open-findings",
+  "queriedAt": "2026-07-27T05:55:29Z",
+  "source": {
+    "provider": "npm audit",
+    "npmVersion": "10.9.2",
+    "invocation": "npm audit --json",
+    "registry": "https://registry.npmjs.org/",
+    "packageLockRef": "spikes/external-adapters/package-lock.json",
+    "packageLockSha256": "cc4af2e77338c34512b9ede88bae9cea0136ae9e32a77096f9d18fb3d56a090b",
+    "rawResultRef": "design/evidence/adapter-browser/npm-audit.raw.json",
+    "rawResultSha256": "58884f7171efd6deb28b486f661fd7348276d60d9196dd3357c6d2fde028f86b"
+  },
+  "summary": {
+    "info": 0,
+    "low": 0,
+    "moderate": 3,
+    "high": 0,
+    "critical": 0,
+    "total": 3,
+    "productionDependencies": 221,
+    "developmentDependencies": 414,
+    "totalDependencies": 653
+  },
+  "findings": [
+    {
+      "id": "ghsa-frvp-7c67-39w9",
+      "advisoryUrl": "https://github.com/advisories/GHSA-frvp-7c67-39w9",
+      "severity": "moderate",
+      "title": "Node.js Adapter for Hono path traversal in serve-static on Windows via encoded backslash",
+      "candidateRefs": ["shadcn-ui"],
+      "dependencyChain": [
+        "shadcn@4.8.3",
+        "@modelcontextprotocol/sdk",
+        "@hono/node-server<2.0.5"
+      ],
+      "reportedVulnerabilityCount": 3,
+      "directRuntimeExposure": false,
+      "platformScope": "The underlying advisory concerns Windows path handling in @hono/node-server serve-static.",
+      "boundary": "The shadcn CLI is a pinned development-only registry inspection tool in the isolated Spike and must not ship in a generated application runtime.",
+      "resolution": "open",
+      "action": "Monitor for a compatible shadcn release that resolves the transitive chain; retain isolation and do not apply npm audit's incompatible downgrade suggestion automatically."
+    }
+  ],
+  "selectionImpact": "The finding is not an application-runtime vulnerability in this Spike, but it remains a supply-chain maintenance cost for the shadcn registry workflow and must be represented in the final weighted comparison."
+}

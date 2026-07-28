@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "screen-responsibilities",
+    "id": "fixture_responsibilities_issue_triage",
+    "status": "approved-fixture"
+  },
+  "responsibilities": [
+    {
+      "id": "responsibility_triage_queue",
+      "name": "Review and prioritize the issue queue",
+      "requirementRefs": ["fixture_req_filter", "fixture_req_prioritize"]
+    }
+  ]
+}

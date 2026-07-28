@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/screen-responsibilities.schema.json",
+  "title": "Meridian Screen Responsibilities",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "source", "responsibilities"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/meta" },
+    "source": { "$ref": "#/$defs/source" },
+    "responsibilities": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/responsibility" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "digest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+    "idList": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "status", "revision", "createdAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" },
+        "kind": { "const": "screen-responsibilities" },
+        "id": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["draft", "ready-for-review", "approved", "superseded"] },
+        "revision": { "type": "integer", "minimum": 1 },
+        "createdAt": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["designBriefRef", "designBriefDigest", "requirementAllocationRef", "requirementAllocationDigest"],
+      "properties": {
+        "designBriefRef": { "$ref": "#/$defs/nonEmpty" },
+        "designBriefDigest": { "$ref": "#/$defs/digest" },
+        "requirementAllocationRef": { "$ref": "#/$defs/nonEmpty" },
+        "requirementAllocationDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "responsibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "responsibility", "primaryTask", "supportsRequirementRefs", "notResponsibleFor", "entryConditions", "completionConditions"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/nonEmpty" },
+        "responsibility": { "$ref": "#/$defs/nonEmpty" },
+        "primaryTask": { "$ref": "#/$defs/nonEmpty" },
+        "supportsRequirementRefs": { "$ref": "#/$defs/idList" },
+        "notResponsibleFor": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "entryConditions": { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" } },
+        "completionConditions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmpty" } }
+      }
+    }
+  }
+}

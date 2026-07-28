@@ -1,0 +1,187 @@
+{
+  "$schema": "../../schemas/ui-generation-research-decision.schema.json",
+  "schemaVersion": "0.1.0",
+  "kind": "ui-generation-research-decision",
+  "id": "ui-generation-project-config",
+  "title": "Project design configuration format and inspection boundary",
+  "status": "decision-ready",
+  "category": "schema-contract",
+  "question": "Which configuration boundary should declare Meridian project inspection inputs and Design System adapters?",
+  "scope": {
+    "milestone": "M1.1",
+    "summary": "Choose a versioned, inspectable project configuration format without hiding UI Generation ownership inside package metadata or heuristic inference.",
+    "inScope": ["Schema validation", "Zero-dependency loading", "Project discovery", "Design token interoperability", "Separation from package publication metadata", "Human editability"],
+    "outOfScope": ["Remote configuration services", "Editor-specific settings", "Final external Design System adapter selection"]
+  },
+  "triggers": ["new-architecture", "new-api", "uncertainty", "benchmark-needed"],
+  "constraints": [
+    "Explicit configuration must remain distinguishable from inferred findings.",
+    "The loader must not require a new runtime dependency for the initial Node implementation.",
+    "Configuration paths must remain repository-relative.",
+    "Project-existing Design System adapters must remain higher priority than external defaults."
+  ],
+  "criteria": [
+    { "id": "schema-validation", "name": "Schema validation", "description": "Supports a versioned strict contract and deterministic machine validation.", "weight": 25, "measurement": "contract-analysis" },
+    { "id": "runtime-cost", "name": "Runtime and dependency cost", "description": "Can be loaded by the current Node tooling without adding a parser dependency or executable configuration.", "weight": 20, "measurement": "spike" },
+    { "id": "separation", "name": "Responsibility separation", "description": "Keeps UI Generation configuration separate from package publication and runtime module semantics.", "weight": 20, "measurement": "contract-analysis" },
+    { "id": "discoverability", "name": "Discoverability", "description": "Has one predictable project-root location and can link directly to its schema.", "weight": 15, "measurement": "spike" },
+    { "id": "interoperability", "name": "Interoperability", "description": "Aligns with JSON-based repository metadata and DTCG token interchange without custom coercion.", "weight": 10, "measurement": "document-review" },
+    { "id": "human-editing", "name": "Human editing", "description": "Can be reviewed and edited without generated code or hidden defaults.", "weight": 10, "measurement": "manual-evaluation" }
+  ],
+  "candidates": [
+    {
+      "id": "json-sidecar",
+      "name": "Dedicated meridian.design.json sidecar",
+      "version": "0.1.0",
+      "officialUrl": "https://json-schema.org/draft/2020-12",
+      "disposition": "shortlisted",
+      "license": "Format specifications are public; Meridian schema and loader remain repository-owned.",
+      "evidenceRefs": ["json-schema-2020-12", "dtcg-format-2025-10"],
+      "assessments": [
+        { "criterionId": "schema-validation", "score": 5, "confidence": "high", "evidenceRefs": ["json-schema-2020-12"], "spikeRefs": ["project-config-format-spike"], "notes": "The checked-in strict Draft 2020-12 schema validates the complete configuration." },
+        { "criterionId": "runtime-cost", "score": 5, "confidence": "high", "evidenceRefs": [], "spikeRefs": ["project-config-format-spike"], "notes": "Node parses JSON without an added dependency and the local validator already supports the used keywords." },
+        { "criterionId": "separation", "score": 5, "confidence": "high", "evidenceRefs": ["node-package-metadata"], "spikeRefs": ["project-config-format-spike"], "notes": "The sidecar does not alter package runtime or publication metadata." },
+        { "criterionId": "discoverability", "score": 5, "confidence": "high", "evidenceRefs": [], "spikeRefs": ["project-config-format-spike"], "notes": "One project-root filename and a $schema reference provide a deterministic entry point." },
+        { "criterionId": "interoperability", "score": 5, "confidence": "high", "evidenceRefs": ["dtcg-format-2025-10"], "spikeRefs": ["project-config-format-spike"], "notes": "Both configuration and the chosen token interchange boundary are JSON-based." },
+        { "criterionId": "human-editing", "score": 4, "confidence": "medium", "evidenceRefs": [], "spikeRefs": ["project-config-format-spike"], "notes": "The file is explicit and reviewable, with more punctuation than YAML but no implicit scalar coercion." }
+      ],
+      "limitations": ["JSON does not support comments.", "Long adapter declarations are more verbose than YAML."],
+      "eliminationReason": null
+    },
+    {
+      "id": "package-json-field",
+      "name": "Custom meridian field in package.json",
+      "version": null,
+      "officialUrl": "https://nodejs.org/api/packages.html",
+      "disposition": "candidate",
+      "license": "Uses standard package metadata containers; Meridian would own the custom field contract.",
+      "evidenceRefs": ["node-package-metadata", "npm-package-json"],
+      "assessments": [
+        { "criterionId": "schema-validation", "score": 3, "confidence": "medium", "evidenceRefs": ["npm-package-json"], "spikeRefs": ["project-config-format-spike"], "notes": "The custom field can be validated, but whole-file ownership and third-party package schema composition are less direct." },
+        { "criterionId": "runtime-cost", "score": 5, "confidence": "high", "evidenceRefs": ["node-package-metadata"], "spikeRefs": ["project-config-format-spike"], "notes": "Node parses package.json without another dependency." },
+        { "criterionId": "separation", "score": 1, "confidence": "high", "evidenceRefs": ["node-package-metadata", "npm-package-json"], "spikeRefs": ["project-config-format-spike"], "notes": "UI design inspection becomes coupled to package identity, dependency, publication, and module metadata." },
+        { "criterionId": "discoverability", "score": 4, "confidence": "high", "evidenceRefs": ["node-package-metadata"], "spikeRefs": ["project-config-format-spike"], "notes": "package.json is discoverable but monorepos can contain several competing package boundaries." },
+        { "criterionId": "interoperability", "score": 3, "confidence": "medium", "evidenceRefs": ["npm-package-json"], "spikeRefs": ["project-config-format-spike"], "notes": "JSON is interoperable, but the custom field is irrelevant or noisy to non-Node projects." },
+        { "criterionId": "human-editing", "score": 4, "confidence": "medium", "evidenceRefs": ["npm-package-json"], "spikeRefs": ["project-config-format-spike"], "notes": "The field is editable but competes with unrelated package configuration." }
+      ],
+      "limitations": ["Couples UI Generation to Node package structure.", "Ambiguous ownership in monorepos and non-package project roots."],
+      "eliminationReason": null
+    },
+    {
+      "id": "yaml-sidecar",
+      "name": "Dedicated meridian.design.yaml sidecar",
+      "version": "YAML 1.2.2",
+      "officialUrl": "https://yaml.org/spec/1.2.2/",
+      "disposition": "candidate",
+      "license": "YAML specification permits copying; an implementation parser would introduce its own license and update surface.",
+      "evidenceRefs": ["yaml-1-2-2"],
+      "assessments": [
+        { "criterionId": "schema-validation", "score": 3, "confidence": "medium", "evidenceRefs": ["yaml-1-2-2", "json-schema-2020-12"], "spikeRefs": ["project-config-format-spike"], "notes": "A parsed YAML value can be validated, but syntax parsing and schema validation are separate failure surfaces." },
+        { "criterionId": "runtime-cost", "score": 2, "confidence": "high", "evidenceRefs": ["yaml-1-2-2"], "spikeRefs": ["project-config-format-spike"], "notes": "The current Node runtime has no built-in YAML parser, so Meridian would add and govern a parser dependency." },
+        { "criterionId": "separation", "score": 5, "confidence": "high", "evidenceRefs": ["yaml-1-2-2"], "spikeRefs": ["project-config-format-spike"], "notes": "A dedicated sidecar keeps project design configuration separate from package metadata." },
+        { "criterionId": "discoverability", "score": 5, "confidence": "high", "evidenceRefs": ["yaml-1-2-2"], "spikeRefs": ["project-config-format-spike"], "notes": "A fixed project-root sidecar is deterministic." },
+        { "criterionId": "interoperability", "score": 3, "confidence": "medium", "evidenceRefs": ["yaml-1-2-2", "dtcg-format-2025-10"], "spikeRefs": ["project-config-format-spike"], "notes": "YAML is cross-language, but DTCG sources and Meridian contracts still cross a JSON conversion boundary." },
+        { "criterionId": "human-editing", "score": 5, "confidence": "medium", "evidenceRefs": ["yaml-1-2-2"], "spikeRefs": ["project-config-format-spike"], "notes": "YAML is concise and supports comments, while indentation and scalar rules require parser-aware editing." }
+      ],
+      "limitations": ["Requires a parser dependency and security/update review.", "Introduces another serialization format beside existing Meridian JSON contracts."],
+      "eliminationReason": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "json-schema-2020-12",
+      "title": "JSON Schema Draft 2020-12",
+      "url": "https://json-schema.org/draft/2020-12",
+      "sourceType": "standard",
+      "authority": "primary",
+      "publisher": "JSON Schema",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["json-sidecar", "package-json-field", "yaml-sidecar"],
+      "criterionRefs": ["schema-validation", "discoverability"],
+      "summary": "Draft 2020-12 defines the schema dialect and validation vocabulary used by Meridian's strict machine contracts.",
+      "limitations": ["JSON Schema does not choose the surrounding project configuration location."]
+    },
+    {
+      "id": "node-package-metadata",
+      "title": "Node.js Modules: Packages",
+      "url": "https://nodejs.org/api/packages.html",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "Node.js",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["json-sidecar", "package-json-field"],
+      "criterionRefs": ["runtime-cost", "separation", "discoverability"],
+      "summary": "Node documents package.json as the boundary for package identity, module type, imports, exports, and package entry points.",
+      "limitations": ["Node documentation does not prohibit unrelated custom fields."]
+    },
+    {
+      "id": "npm-package-json",
+      "title": "package.json",
+      "url": "https://docs.npmjs.com/files/package.json/",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "npm",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["package-json-field"],
+      "criterionRefs": ["separation", "discoverability", "human-editing"],
+      "summary": "npm defines package.json as package metadata covering identity, versions, dependencies, entry points, publication, and platform constraints.",
+      "limitations": ["npm permits additional fields and does not define Meridian ownership."]
+    },
+    {
+      "id": "yaml-1-2-2",
+      "title": "YAML 1.2.2 Specification",
+      "url": "https://yaml.org/spec/1.2.2/",
+      "sourceType": "standard",
+      "authority": "primary",
+      "publisher": "YAML Language Development Team",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["yaml-sidecar"],
+      "criterionRefs": ["schema-validation", "runtime-cost", "discoverability", "interoperability", "human-editing"],
+      "summary": "YAML 1.2.2 defines a human-oriented, cross-language serialization format with indentation-based structure and standard schemas.",
+      "limitations": ["The specification does not provide a parser in the Node standard library."]
+    },
+    {
+      "id": "dtcg-format-2025-10",
+      "title": "Design Tokens Format Module 2025.10",
+      "url": "https://www.designtokens.org/tr/2025.10/format/",
+      "sourceType": "standard",
+      "authority": "primary",
+      "publisher": "Design Tokens Community Group",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["json-sidecar", "yaml-sidecar"],
+      "criterionRefs": ["interoperability"],
+      "summary": "The stable token interchange report uses JSON and recommends .tokens or .tokens.json files for typed design token exchange.",
+      "limitations": ["The token format does not prescribe a complete project inspection configuration."]
+    }
+  ],
+  "spikes": [
+    {
+      "id": "project-config-format-spike",
+      "title": "Project configuration and inspector comparative spike",
+      "status": "complete",
+      "candidateRefs": ["json-sidecar", "package-json-field", "yaml-sidecar"],
+      "hypothesis": "A dedicated JSON sidecar can provide strict validation, deterministic loading, evidence-backed inspection, and project-first adapter resolution without a new parser dependency.",
+      "fixtureRefs": ["meridian.design.json", "examples/ui-generation/meridian.project-context.json"],
+      "commands": ["node --test test/project-inspector.test.js", "npm run check:project"],
+      "measurements": ["Schema validation", "Added runtime dependencies", "Deterministic regeneration", "Explicit versus inferred provenance", "Project-first adapter selection", "Missing path rejection"],
+      "findings": [
+        "The JSON sidecar validates with the existing local Draft 2020-12 subset and loads through the Node standard library.",
+        "The generated Project Context is byte-deterministic and binds the configuration digest.",
+        "package.json remains evidence for package and module facts instead of becoming the UI Generation configuration owner.",
+        "YAML would require a new parser dependency before any project inspection can run.",
+        "The spike selects an available project adapter even when an external candidate has a numerically higher priority."
+      ],
+      "artifactRefs": ["meridian.design.json", "schemas/meridian-design-config.schema.json", "schemas/project-context.schema.json", "scripts/lib/project-inspector.mjs", "test/project-inspector.test.js", "examples/ui-generation/meridian.project-context.json"]
+    }
+  ],
+  "decision": {
+    "status": "recommended",
+    "recommendedCandidateId": "json-sidecar",
+    "rationale": "The dedicated JSON sidecar is the only candidate that combines strict existing-schema validation, zero new runtime dependencies, a predictable root entry point, and separation from package publication metadata.",
+    "tradeoffs": ["JSON is more verbose than YAML and does not support comments.", "Projects must add one Meridian-specific root file.", "A future non-JSON authoring layer must still compile to this validated contract."],
+    "rejectedCandidateIds": ["package-json-field", "yaml-sidecar"],
+    "unresolvedItems": ["Human approval is required before the 0.1.0 config filename and shape become a stable public contract."],
+    "revisitTriggers": ["Node gains a standard safe YAML parser", "A cross-tool project design configuration standard emerges", "Non-Node projects cannot adopt the JSON sidecar without material duplication", "The config grows beyond a reviewable project-level boundary"],
+    "approval": null
+  }
+}

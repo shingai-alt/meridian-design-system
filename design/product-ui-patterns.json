@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "0.1.0",
+  "kind": "product-ui-pattern-registry",
+  "principles": [
+    "Patternは特定Componentの配置名ではなく、利用者が目的を達成するための再利用可能な行動構造として定義する。",
+    "Pattern選定はTask、Risk、Volume、Permission、State transitionから行い、利用するDesign System Adapterから独立させる。",
+    "WAI-ARIA APGはWidget semanticsとKeyboard behaviorの根拠として使い、Product UI Pattern taxonomyの代替にはしない。",
+    "Patternは適用条件、非適用条件、必要Behavior、Evidenceを持ち、見た目の類似だけでは選定しない。"
+  ],
+  "structuralDimensions": [
+    "task-model",
+    "information-architecture",
+    "navigation",
+    "disclosure",
+    "action-model",
+    "screen-boundary"
+  ],
+  "directionPolicy": {
+    "minimum": 2,
+    "maximum": 3,
+    "minimumPairwiseDifferences": 2,
+    "humanApprovalRole": "design-owner"
+  },
+  "patterns": [
+    {
+      "id": "batch-entity-creation",
+      "name": "Batch Entity Creation",
+      "problem": "複数の対象を共通ルールと対象別属性で作成し、対象間を比較しながら問題を修正する。",
+      "taskModel": "create",
+      "applicableWhen": ["複数対象を一度に作成する", "対象ごとに異なる属性がある", "行単位のvalidationまたは部分成功がある"],
+      "avoidWhen": ["対象が常に1件である", "対象別属性がない", "自動provisioningだけで完了する"],
+      "requiredBehaviors": ["対象と属性の対応を比較できる", "問題を対象単位で修正できる", "成功済み対象を再実行から除外できる"],
+      "evidenceRefs": ["evidence_carbon_patterns", "evidence_carbon_create", "evidence_team_invitation"],
+      "maturity": "candidate"
+    },
+    {
+      "id": "review-before-commit",
+      "name": "Review Before Commit",
+      "problem": "高影響または取り消しにくい操作の対象と結果を実行前に確認する。",
+      "taskModel": "review",
+      "applicableWhen": ["誤操作の影響が大きい", "複数の入力をまとめて確定する", "Permissionまたは費用への影響がある"],
+      "avoidWhen": ["操作が低リスクで即時に取り消せる", "確認画面が入力内容を繰り返すだけで誤り発見を助けない"],
+      "requiredBehaviors": ["対象と主要属性を要約する", "高影響事項を明示する", "修正経路と一度だけ実行する確定操作を提供する"],
+      "evidenceRefs": ["evidence_govuk_patterns", "evidence_team_invitation"],
+      "maturity": "candidate"
+    },
+    {
+      "id": "asynchronous-partial-result",
+      "name": "Asynchronous Partial Result",
+      "problem": "複数対象への非同期操作で成功、処理中、失敗が混在する結果を理解し、安全に回復する。",
+      "taskModel": "monitor",
+      "applicableWhen": ["処理が非同期である", "対象ごとに結果が異なり得る", "失敗対象だけを再実行する必要がある"],
+      "avoidWhen": ["処理が同期的かつ原子的である", "対象別結果を利用者が処理できない"],
+      "requiredBehaviors": ["全体結果と対象別状態を分けて示す", "状態を色だけに依存しない", "失敗対象だけの回復操作を提供する"],
+      "evidenceRefs": ["evidence_carbon_patterns", "evidence_apg", "evidence_team_invitation"],
+      "maturity": "candidate"
+    },
+    {
+      "id": "status-management-list",
+      "name": "Status Management List",
+      "problem": "同種Entityの現在状態、期限、利用可能な管理操作を一つの継続的な管理文脈で扱う。",
+      "taskModel": "monitor",
+      "applicableWhen": ["多数のEntityを状態で比較する", "期限または非同期状態がある", "状態に応じて可能な操作が変わる"],
+      "avoidWhen": ["状態比較が不要である", "単発の完了確認だけで十分である"],
+      "requiredBehaviors": ["状態名と期限を比較できる", "Permissionに応じた操作境界を説明する", "再送や取消などの対象を明示する"],
+      "evidenceRefs": ["evidence_govuk_patterns", "evidence_uswds_patterns", "evidence_team_invitation"],
+      "maturity": "candidate"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence_govuk_patterns",
+      "type": "official-design-system",
+      "title": "GOV.UK Design System Patterns",
+      "url": "https://design-system.service.gov.uk/patterns/",
+      "observation": "Patternを特定のuser-focused taskとpage typeに対するbest-practice solutionとし、複数Componentを文脈へ適応して使う。",
+      "accessedAt": "2026-07-27"
+    },
+    {
+      "id": "evidence_uswds_patterns",
+      "type": "official-design-system",
+      "title": "U.S. Web Design System Patterns",
+      "url": "https://designsystem.digital.gov/patterns/",
+      "observation": "Patternをcommon user interactionに対する実践的なguidelineとbest practiceとして構成する。",
+      "accessedAt": "2026-07-27"
+    },
+    {
+      "id": "evidence_carbon_patterns",
+      "type": "official-design-system",
+      "title": "Carbon Design System Patterns",
+      "url": "https://carbondesignsystem.com/patterns/overview/",
+      "observation": "Patternをuser goalのためのbest-practice solutionとし、ComponentとTemplateの再利用可能な組合せ、sequence、flowを扱う。",
+      "accessedAt": "2026-07-27"
+    },
+    {
+      "id": "evidence_carbon_create",
+      "type": "official-design-system",
+      "title": "Carbon Create Flows",
+      "url": "https://carbondesignsystem.com/community/patterns/create-flows/",
+      "observation": "作成対象の複雑さと文脈維持の必要性に応じてInline、Modal、Side panel、Tearsheet、Full pageを使い分ける。",
+      "accessedAt": "2026-07-27"
+    },
+    {
+      "id": "evidence_apg",
+      "type": "standard",
+      "title": "WAI-ARIA Authoring Practices Guide",
+      "url": "https://www.w3.org/WAI/ARIA/apg/about/introduction/",
+      "observation": "APGはWidgetのsemanticsとkeyboard modelを提供するが、包括的Design Systemやproduction-ready codeではない。",
+      "accessedAt": "2026-07-27"
+    },
+    {
+      "id": "evidence_team_invitation",
+      "type": "internal-pilot",
+      "title": "Meridian Team Invitation Phase 1 Pilot",
+      "url": null,
+      "observation": "Batch page、multi-step dialog、inline rowsはTask Model、情報構造、Partial successの扱いで異なり、色やComponent variantだけの差ではない。",
+      "accessedAt": "2026-07-27"
+    }
+  ]
+}

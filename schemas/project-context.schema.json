@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/project-context.schema.json",
+  "title": "Meridian UI Generation Project Context",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "project", "inspection", "findings", "unresolved", "adapterSelection", "qualityRequirements"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/meta" },
+    "project": { "$ref": "#/$defs/project" },
+    "inspection": { "$ref": "#/$defs/inspection" },
+    "findings": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/finding" } },
+    "unresolved": { "type": "array", "items": { "$ref": "#/$defs/unresolved" } },
+    "adapterSelection": { "$ref": "#/$defs/adapterSelection" },
+    "qualityRequirements": { "$ref": "#/$defs/qualityRequirements" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "path": { "type": "string", "pattern": "^[a-zA-Z0-9.][a-zA-Z0-9._/-]*$" },
+    "stringList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmpty" } },
+    "category": { "enum": ["package-manager", "runtime", "framework", "styling", "language", "token-format", "theme", "component-system", "form-system", "table-system", "icon-system", "catalog", "adapter"] },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "status", "revision", "createdAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" },
+        "kind": { "const": "project-context" },
+        "id": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["current", "stale", "invalid"] },
+        "revision": { "type": "integer", "minimum": 1 },
+        "createdAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+      }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "root", "configRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/nonEmpty" },
+        "root": { "const": "." },
+        "configRef": { "$ref": "#/$defs/path" }
+      }
+    },
+    "inspection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inspectorVersion", "configDigest", "asOf", "scannedPaths", "excludedPaths"],
+      "properties": {
+        "inspectorVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "configDigest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+        "asOf": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "scannedPaths": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } },
+        "excludedPaths": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/path" } }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sourceType", "observation"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "sourceType": { "enum": ["config", "package-manifest", "source", "schema", "registry", "token-source", "generated-artifact"] },
+        "observation": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "category", "values", "provenance", "confidence", "evidence"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "category": { "$ref": "#/$defs/category" },
+        "values": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "provenance": { "enum": ["explicit", "inferred"] },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+      }
+    },
+    "unresolved": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "category", "question", "impact", "blocking", "evidencePaths"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "category": { "$ref": "#/$defs/category" },
+        "question": { "$ref": "#/$defs/nonEmpty" },
+        "impact": { "$ref": "#/$defs/nonEmpty" },
+        "blocking": { "type": "boolean" },
+        "evidencePaths": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/path" } }
+      }
+    },
+    "adapterCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "configuredStatus", "availability", "priority", "evidencePaths", "unresolvedReasons"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["project", "external"] },
+        "configuredStatus": { "enum": ["available", "candidate", "disabled"] },
+        "availability": { "enum": ["available", "candidate", "unavailable", "disabled"] },
+        "priority": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "evidencePaths": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/path" } },
+        "unresolvedReasons": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "adapterSelection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "candidates", "selectedAdapterId", "reason"],
+      "properties": {
+        "policy": { "const": "project-existing-first" },
+        "candidates": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/adapterCandidate" } },
+        "selectedAdapterId": { "type": ["string", "null"] },
+        "reason": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "qualityRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiredViewports", "requiredStates"],
+      "properties": {
+        "requiredViewports": { "type": "array", "minItems": 3, "uniqueItems": true, "items": { "enum": ["desktop", "tablet", "mobile"] } },
+        "requiredStates": { "type": "array", "minItems": 5, "uniqueItems": true, "items": { "enum": ["default", "loading", "empty", "error", "permission"] } }
+      }
+    }
+  }
+}

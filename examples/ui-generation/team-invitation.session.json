@@ -1,0 +1,133 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "ui-generation-session",
+    "id": "session_team_invitation",
+    "status": "active",
+    "state": "created",
+    "revision": 7,
+    "createdAt": "2026-07-27T02:00:00Z",
+    "updatedAt": "2026-07-27T02:05:00Z"
+  },
+  "project": {
+    "id": "meridian_design_system",
+    "rootRef": "."
+  },
+  "artifacts": [
+    {
+      "id": "request_team_invitation",
+      "type": "user_request",
+      "path": "examples/ui-generation/team-invitation.request.json",
+      "schemaVersion": "0.1.0",
+      "digest": "sha256-f2f440be8a38f3401dbf530b1c0dbc9cd52f5cd2daf3179efb8d48df7c27306e",
+      "revision": 1,
+      "ownership": "canonical",
+      "status": "current"
+    },
+    {
+      "id": "project_context_meridian_design_system",
+      "type": "project_context",
+      "path": "examples/ui-generation/meridian.project-context.json",
+      "schemaVersion": "0.1.0",
+      "digest": "sha256-3ff075d53b01d44a14725fbf96112b5196a55dc304b699858f251a58e84525d8",
+      "revision": 1,
+      "ownership": "evidence",
+      "status": "current"
+    },
+    {
+      "id": "brief_team_invitation",
+      "type": "design_brief",
+      "path": "examples/ui-generation/team-invitation.design-brief.json",
+      "schemaVersion": "0.1.0",
+      "digest": "sha256-409421d022df2fdc56bc927ec8ee80f35aafe604ffa4ab343fecbf7c0f027957",
+      "revision": 1,
+      "ownership": "canonical",
+      "status": "current"
+    },
+    {
+      "id": "allocation_team_invitation",
+      "type": "requirement_allocation",
+      "path": "examples/ui-generation/team-invitation.requirement-allocation.json",
+      "schemaVersion": "0.1.0",
+      "digest": "sha256-9210588b54dafc3e048a935b66af24e6c2cc0fcff7281a471e3dd7bcbef2c245",
+      "revision": 1,
+      "ownership": "canonical",
+      "status": "current"
+    },
+    {
+      "id": "responsibilities_team_invitation",
+      "type": "screen_responsibilities",
+      "path": "examples/ui-generation/team-invitation.screen-responsibilities.json",
+      "schemaVersion": "0.1.0",
+      "digest": "sha256-3937d0d2c42b441915a96d25284f07048347b53bdcdb99d509ac4ca9413acf11",
+      "revision": 1,
+      "ownership": "canonical",
+      "status": "current"
+    },
+    {
+      "id": "patterns_team_invitation",
+      "type": "pattern_selection",
+      "path": "examples/ui-generation/team-invitation.pattern-selection.json",
+      "schemaVersion": "0.1.0",
+      "digest": "sha256-631ebe111b816d610ea8b922268270cc2e04122d96c5ea3aff101975e86e29f5",
+      "revision": 1,
+      "ownership": "canonical",
+      "status": "current"
+    },
+    {
+      "id": "directions_team_invitation",
+      "type": "direction_set",
+      "path": "examples/ui-generation/team-invitation.direction-set.json",
+      "schemaVersion": "0.1.0",
+      "digest": "sha256-633f6b862f73ab888245416145191049cd20278ab187516ab39b925a90955fbe",
+      "revision": 1,
+      "ownership": "canonical",
+      "status": "current"
+    }
+  ],
+  "approvals": [],
+  "transitionHistory": [
+    {
+      "id": "initialize_session",
+      "from": null,
+      "to": "created",
+      "actorType": "system",
+      "actorId": "meridian-ui-generation",
+      "occurredAt": "2026-07-27T02:00:00Z",
+      "approvalRef": null,
+      "inputArtifactDigests": [
+        {
+          "artifactId": "request_team_invitation",
+          "digest": "sha256-f2f440be8a38f3401dbf530b1c0dbc9cd52f5cd2daf3179efb8d48df7c27306e"
+        }
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "id": "project_config_decision_approval",
+      "kind": "research",
+      "message": "The project configuration format is decision-ready but requires Human Approval before inspect_project may become a formal Session transition.",
+      "artifactRefs": ["project_context_meridian_design_system"],
+      "blocksTransitions": ["inspect_project"],
+      "status": "open"
+    },
+    {
+      "id": "brief_human_approval",
+      "kind": "approval",
+      "message": "The Team Invitation Design Brief is ready for review but requires Product Owner approval before direction planning may become a formal Session state.",
+      "artifactRefs": ["brief_team_invitation"],
+      "blocksTransitions": ["approve_brief"],
+      "status": "open"
+    },
+    {
+      "id": "direction_human_approval",
+      "kind": "approval",
+      "message": "The structural Direction Set is ready for review but requires Design Owner selection before component capability planning may become a formal Session state.",
+      "artifactRefs": ["allocation_team_invitation", "responsibilities_team_invitation", "patterns_team_invitation", "directions_team_invitation"],
+      "blocksTransitions": ["approve_direction"],
+      "status": "open"
+    }
+  ],
+  "supersedesSessionId": null
+}

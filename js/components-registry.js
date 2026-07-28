@@ -104,12 +104,15 @@ def({id:'tag',name:'Tag',group:'Core',desc:'ユーザーが付与した属性を
  donts:[[()=>'<span class="tagc" role="button" tabindex="0" aria-pressed="true">Active</span>','Tag rootをselection controlにしない。']],
  render:p=>tagEl({...p,removable:p.variant==='removable'}),code:p=>p.variant==='removable'?`<Tag label="${esc(p.label||'design-system')}" onRemove={removeTag} removeLabel="${esc(p.removeLabel||'design-systemを削除')}" />`:`<Tag label="${esc(p.label||'design-system')}" />`,related:['badge','combobox','icon-button']});
 
-def({id:'avatar',name:'Avatar',group:'Core',desc:'ユーザー・チームを表す円形の識別子。イニシャルまたは画像。',
- sizes:['xs','sm','md','lg'],texts:[['name','Name','新谷']],
- when:['担当者・作成者の表示','メンバーリスト'],notWhen:['装飾目的のアイコン'],
- usage:['画像が無い場合はイニシャルにフォールバックする。','重ね表示(AvatarStack)は 3〜4 個で省略し「+N」を付ける。'],
- render:p=>`<div class="rowflex">${avatar(p)}<span class="avstack">${avatar({name:'SN',size:p.size})}${avatar({name:'YK',size:p.size})}${avatar({name:'MT',size:p.size})}${avatar({name:'+3',size:p.size})}</span></div>`,
- code:p=>`<Avatar name="${esc(p.name||'新谷')}" size="${p.size||'md'}" />\n<AvatarStack max={3} users={members} />`,related:['user-menu']});
+def({id:'avatar',name:'Avatar',group:'Core',desc:'1つの人物、チーム、resourceを画像または明示fallbackで表す非interactiveな視覚識別子。',
+ sizes:['xs','sm','md','lg'],states:['default','loading','loaded','error'],texts:[['fallback','Fallback','SN'],['alt','Alternative text','新谷 尚史']],
+ when:['人物、チーム、resourceを一覧やsummaryで補助的に識別する。','画像を取得できない間も、呼び出し側が決めた短いfallbackで同じ対象を識別する。'],
+ notWhen:['対象名の唯一の可視表現にはTextを使う。','presence、availability、system statusにはStatus IndicatorまたはBadgeを使う。','クリック、menu opening、selectionをAvatar rootへ持たせず、Button、Icon Button、User Menuなどの親controlを使う。','重なり、人数省略、+N、集合全体の要約はAvatarではなく親collection/compositionが所有する。'],
+ usage:['altとfallbackを必須にし、fallbackをnameから自動生成しない。','隣接する可視名や親control名と重複する場合はaltを空文字にする。','Avatar rootは非interactiveに保ち、collection summaryと+Nは親が所有する。'],
+ dos:[[()=>`${avatar({fallback:'SN',alt:'',size:'sm'})}<span>新谷 尚史</span>`,'隣接可視名がある場合はAvatarをdecorativeにする。'],[()=>avatar({fallback:'SN',alt:'新谷 尚史',size:'md',state:'error'}),'画像がなくても同じalternative textを維持する。'],[()=>`<button type="button" class="btn" data-variant="secondary" data-size="lg">${avatar({fallback:'SN',alt:'',size:'sm'})}<span class="btn-label">新谷のメニューを開く</span></button>`,'操作とaccessible nameは親native controlへ置く。']],
+ donts:[[()=>'<span class="avatar" role="button" tabindex="0">SN</span>','Avatar rootへinteractionを追加しない。'],[()=>'<span class="avatar"><span>+3</span></span>','collection truncationを単一Avatarとして表さない。']],
+ render:p=>{const scenario=p.scenario||p.state||'default',size=p.size||'md',fallback=p.fallback||'SN',alt=scenario==='decorative-image'||scenario==='adjacent-name'||scenario==='interactive-parent'?'':p.alt||'新谷 尚史';if(scenario==='loaded'||scenario==='informative-image'||scenario==='decorative-image')return avatar({src:AVATAR_DEMO_SRC,fallback,alt,size,state:'loaded'});if(scenario==='loading'||scenario==='error')return avatar({fallback,alt,size,state:scenario});if(scenario==='adjacent-name')return `<span class="rowflex">${avatar({fallback,alt:'',size})}<span>新谷 尚史</span></span>`;if(scenario==='interactive-parent')return `<button type="button" class="btn" data-variant="secondary" data-size="lg">${avatar({fallback,alt:'',size:'sm'})}<span class="btn-label">新谷のメニューを開く</span></button>`;return avatar({fallback,alt,size,state:'default'});},
+ code:p=>`<Avatar\n  src={user.photoUrl}\n  alt="${esc(p.alt??'')}"\n  fallback="${esc(p.fallback||'SN')}"\n  size="${p.size||'md'}"\n/>`,related:['text','status-indicator','badge','button','icon-button','user-menu']});
 
 def({id:'tooltip',name:'Tooltip',group:'Core',desc:'ホバー・フォーカス時に補足情報を表示する。重要情報は入れない。',
  states:['default','hover','focus'],texts:[['content','Content','変更を保存 ⌘S'],['anchor','Trigger label','保存']],when:['Icon Buttonの可視label','既知commandのshortcut提示'],

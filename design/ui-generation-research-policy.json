@@ -1,0 +1,111 @@
+{
+  "$schema": "../schemas/ui-generation-research-policy.schema.json",
+  "schemaVersion": "0.1.0",
+  "appliesTo": [
+    "architecture",
+    "schema-contract",
+    "dependency",
+    "design-system-adapter",
+    "runtime",
+    "browser-quality",
+    "accessibility",
+    "governance",
+    "security",
+    "licensing"
+  ],
+  "sourcePolicy": {
+    "priority": [
+      "Normative standards and regulations",
+      "Official accessibility and platform guidance",
+      "Official project documentation, repositories, licenses, and security advisories",
+      "Peer-reviewed research",
+      "Secondary analysis for discovery and triangulation"
+    ],
+    "allowedTypes": [
+      "standard",
+      "official-guideline",
+      "official-documentation",
+      "official-repository",
+      "license",
+      "security-advisory",
+      "research-paper",
+      "secondary-analysis"
+    ],
+    "minimumPrimaryPerCandidate": 1,
+    "secondarySourceRule": "Secondary analysis may identify candidates or risks but cannot be the sole evidence for a decision-ready candidate."
+  },
+  "comparison": {
+    "requiredFor": [
+      "architecture",
+      "schema-contract",
+      "dependency",
+      "design-system-adapter",
+      "runtime",
+      "browser-quality",
+      "accessibility",
+      "governance",
+      "security",
+      "licensing"
+    ],
+    "minimumCandidates": 2,
+    "eliminationRequiresReason": true
+  },
+  "scoring": {
+    "requiredTotalWeight": 100,
+    "minimumScore": 0,
+    "maximumScore": 5,
+    "scoreMeaning": [
+      { "score": 0, "meaning": "Does not satisfy the criterion or introduces a blocking incompatibility." },
+      { "score": 1, "meaning": "Satisfies only a small part of the criterion with major unresolved risk." },
+      { "score": 2, "meaning": "Partially satisfies the criterion and needs significant Meridian-owned work." },
+      { "score": 3, "meaning": "Satisfies the criterion with manageable limitations." },
+      { "score": 4, "meaning": "Strongly satisfies the criterion with minor limitations." },
+      { "score": 5, "meaning": "Fully satisfies the criterion with direct evidence and no material limitation." }
+    ]
+  },
+  "spikes": {
+    "requiredFor": [
+      "architecture",
+      "dependency",
+      "design-system-adapter",
+      "runtime",
+      "browser-quality",
+      "accessibility"
+    ],
+    "comparisonSpikeRequired": true,
+    "completedEvidenceRequired": true
+  },
+  "approval": {
+    "requiredFor": [
+      "architecture",
+      "schema-contract",
+      "dependency",
+      "design-system-adapter",
+      "runtime",
+      "browser-quality",
+      "accessibility",
+      "governance",
+      "security",
+      "licensing"
+    ],
+    "humanOnly": true,
+    "decisionReadyBeforeApproval": true
+  },
+  "freshness": {
+    "defaultWindowDays": 365,
+    "ecosystemWindowDays": 90,
+    "licenseWindowDays": 30
+  },
+  "invariants": [
+    "Researching records may remain incomplete but cannot claim a recommendation or approval.",
+    "Decision-ready candidates are assessed against the same weighted criteria.",
+    "Every non-eliminated candidate has current primary evidence.",
+    "Categories that require implementation evidence include a completed comparative spike.",
+    "An eliminated candidate records a concrete reason.",
+    "AI may prepare a recommendation but cannot approve a UI Generation research decision.",
+    "Approved decisions retain rejected alternatives, tradeoffs, unresolved items, and revisit triggers.",
+    "A secondary source cannot be the sole basis for a decision-ready candidate.",
+    "Scores summarize evidence and do not replace evidence or human judgment.",
+    "Research decisions are append-only; a changed decision supersedes the previous record."
+  ]
+}

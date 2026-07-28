@@ -1,0 +1,76 @@
+{
+  "$schema": "./schemas/meridian-design-config.schema.json",
+  "schemaVersion": "0.1.0",
+  "project": {
+    "id": "meridian_design_system",
+    "name": "Meridian Design System",
+    "root": "."
+  },
+  "inspection": {
+    "asOf": "2026-07-27",
+    "includePaths": ["package.json", "packages", "src", "js", "components", "design", "tokens", "schemas"],
+    "excludePaths": [".git", "node_modules", "examples/generated"],
+    "packageManifestPaths": ["package.json", "packages/html-runtime/package.json", "packages/react/package.json"]
+  },
+  "technology": {
+    "runtime": { "mode": "explicit", "values": ["framework-agnostic-html-runtime", "node-build-tooling"] },
+    "frameworks": { "mode": "explicit", "values": ["framework-agnostic-primary", "react-pilot"] },
+    "styling": { "mode": "explicit", "values": ["css-custom-properties", "plain-css"] },
+    "languages": { "mode": "explicit", "values": ["javascript-es-modules", "typescript-react-pilot", "json"] }
+  },
+  "designSystem": {
+    "selectionPolicy": "project-existing-first",
+    "adapters": [
+      {
+        "id": "meridian_html_runtime",
+        "kind": "project",
+        "status": "available",
+        "priority": 10,
+        "root": "packages/html-runtime",
+        "packageName": "@meridian/html-runtime",
+        "componentSources": ["packages/html-runtime/src", "packages/html-runtime/styles", "design/contracts/components"],
+        "tokenSources": ["tokens/src", "tokens/build"],
+        "themeSources": ["tokens/build"],
+        "iconSources": ["design/iconography.json", "js/generated/iconography-meta.js"],
+        "catalogSources": ["design/system-registry.json", "design/harness/generated/component-registry.json"]
+      },
+      {
+        "id": "meridian_react_pilot",
+        "kind": "project",
+        "status": "candidate",
+        "priority": 20,
+        "root": "packages/react",
+        "packageName": "@meridian/react",
+        "componentSources": ["packages/react/src"],
+        "tokenSources": ["tokens/build"],
+        "themeSources": ["tokens/build"],
+        "iconSources": ["design/iconography.json"],
+        "catalogSources": ["design/system-registry.json"]
+      }
+    ],
+    "tokens": {
+      "format": "dtcg-2025.10",
+      "sources": ["tokens/src"],
+      "generatedOutputs": ["tokens/build"]
+    },
+    "themes": {
+      "modes": ["light", "dark"],
+      "contrastModes": ["standard", "high"],
+      "densityModes": ["compact", "default", "comfortable"],
+      "sources": ["tokens/src", "tokens/build"]
+    },
+    "components": {
+      "contractRoots": ["design/contracts/components"],
+      "implementationRoots": ["packages/html-runtime/src", "packages/html-runtime/styles", "js"],
+      "catalogRefs": ["design/system-registry.json", "design/harness/generated/component-registry.json"]
+    },
+    "icons": {
+      "registryRefs": ["design/iconography.json"],
+      "implementationRoots": ["js/generated/iconography-meta.js"]
+    }
+  },
+  "quality": {
+    "requiredViewports": ["desktop", "tablet", "mobile"],
+    "requiredStates": ["default", "loading", "empty", "error", "permission"]
+  }
+}

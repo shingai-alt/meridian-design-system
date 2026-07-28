@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/direction-set.schema.json",
+  "title": "Meridian Structural Direction Set",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "source", "comparisonCriteria", "directions", "recommendation", "review"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/meta" },
+    "source": { "$ref": "#/$defs/source" },
+    "comparisonCriteria": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmpty" } },
+    "directions": { "type": "array", "minItems": 2, "maxItems": 3, "items": { "$ref": "#/$defs/direction" } },
+    "recommendation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["directionRef", "rationale", "confidence"],
+      "properties": {
+        "directionRef": { "$ref": "#/$defs/id" },
+        "rationale": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "requiredRole", "approval"],
+      "properties": {
+        "status": { "enum": ["pending", "approved", "revision-requested", "no-go"] },
+        "requiredRole": { "const": "design-owner" },
+        "approval": { "type": ["object", "null"] }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "digest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+    "idList": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "status", "revision", "createdAt", "updatedAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" },
+        "kind": { "const": "direction-set" },
+        "id": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["draft", "ready-for-review", "approved", "revision-requested", "no-go", "superseded"] },
+        "revision": { "type": "integer", "minimum": 1 },
+        "createdAt": { "$ref": "#/$defs/nonEmpty" },
+        "updatedAt": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["designBriefRef", "designBriefDigest", "requirementAllocationRef", "requirementAllocationDigest", "screenResponsibilitiesRef", "screenResponsibilitiesDigest", "patternSelectionRef", "patternSelectionDigest"],
+      "properties": {
+        "designBriefRef": { "$ref": "#/$defs/nonEmpty" },
+        "designBriefDigest": { "$ref": "#/$defs/digest" },
+        "requirementAllocationRef": { "$ref": "#/$defs/nonEmpty" },
+        "requirementAllocationDigest": { "$ref": "#/$defs/digest" },
+        "screenResponsibilitiesRef": { "$ref": "#/$defs/nonEmpty" },
+        "screenResponsibilitiesDigest": { "$ref": "#/$defs/digest" },
+        "patternSelectionRef": { "$ref": "#/$defs/nonEmpty" },
+        "patternSelectionDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "direction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "hypothesis", "structure", "responsibilityPlacement", "requirementRefs", "benefits", "risks", "invalidWhen"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "$ref": "#/$defs/nonEmpty" },
+        "hypothesis": { "$ref": "#/$defs/nonEmpty" },
+        "structure": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["taskModel", "informationArchitecture", "navigation", "disclosure", "actionModel", "screenBoundary"],
+          "properties": {
+            "taskModel": { "$ref": "#/$defs/nonEmpty" },
+            "informationArchitecture": { "$ref": "#/$defs/nonEmpty" },
+            "navigation": { "$ref": "#/$defs/nonEmpty" },
+            "disclosure": { "$ref": "#/$defs/nonEmpty" },
+            "actionModel": { "$ref": "#/$defs/nonEmpty" },
+            "screenBoundary": { "$ref": "#/$defs/nonEmpty" }
+          }
+        },
+        "responsibilityPlacement": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["responsibilityRef", "container", "sequence"],
+            "properties": {
+              "responsibilityRef": { "$ref": "#/$defs/id" },
+              "container": { "$ref": "#/$defs/nonEmpty" },
+              "sequence": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "requirementRefs": { "$ref": "#/$defs/idList" },
+        "benefits": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "risks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "invalidWhen": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmpty" } }
+      }
+    }
+  }
+}

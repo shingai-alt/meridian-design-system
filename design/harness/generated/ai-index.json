@@ -1,7 +1,7 @@
 {
   "schemaVersion": "0.1.0",
-  "translationPackDigest": "sha256-8830490d5e9146574daffc9d640d8cdb778eea9dd8e4be5e3176c8755ac0b532",
-  "runtimeVersion": "0.1.0",
+  "translationPackDigest": "sha256-c1a2391c5daceea35375ef3e98425d061c71c9de4948b61831d88553f546a79b",
+  "runtimeVersion": "0.2.0",
   "components": [
     {
       "id": "button",
@@ -1921,6 +1921,753 @@
         "relations": [
           "caption",
           "column-headers"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      }
+    },
+    {
+      "id": "dialog",
+      "name": "Dialog",
+      "status": "draft",
+      "contractVersion": "0.2.0",
+      "source": "design/contracts/components/dialog.contract.json",
+      "sourceDigest": "sha256-4b625e5c8add0372320f640c9c771f9f54100699aae68c7653ba21d0ce16eccd",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "description": "現在の作業を一時的に中断し、短い判断または入力を完了させるmodal window。",
+      "whenToUse": [
+        "現在の作業を中断して回答が必要な、短い確認または単一目的のform。",
+        "削除、法的同意、金融取引など、実行前のreviewまたは確認が必要な高影響action。",
+        "続行不能な短い重要messageへ即時responseを求める場合。"
+      ],
+      "whenNotToUse": [
+        "背景を参照しながら行う補助task、quick edit、filterはDrawerまたはPopoverを使う。",
+        "長いform、multi-step workflow、固有URLが必要なtaskは専用pageを使う。",
+        "判断を要求しない一時的な結果はToast、文脈内で残す情報はAlertを使う。",
+        "通常の保存や軽微な操作へ毎回確認を挟まず、可能ならUndoを優先する。"
+      ],
+      "alternatives": [
+        "背景を参照しながら行う補助task、quick edit、filterはDrawerまたはPopoverを使う。",
+        "長いform、multi-step workflow、固有URLが必要なtaskは専用pageを使う。",
+        "判断を要求しない一時的な結果はToast、文脈内で残す情報はAlertを使う。",
+        "通常の保存や軽微な操作へ毎回確認を挟まず、可能ならUndoを優先する。"
+      ],
+      "anatomy": [
+        {
+          "part": "trigger",
+          "required": true,
+          "description": "Dialogを開き、close後にfocusを受け取るfocusable control。"
+        },
+        {
+          "part": "backdrop",
+          "required": true,
+          "description": "背景が操作不能であることを視覚化する。"
+        },
+        {
+          "part": "surface",
+          "required": true,
+          "description": "showModal()でtop layerへ表示するnative dialog。"
+        },
+        {
+          "part": "title",
+          "required": true,
+          "description": "aria-labelledbyでsurfaceを命名する可視heading。"
+        },
+        {
+          "part": "close-control",
+          "required": true,
+          "description": "常に可視でaccessible nameを持つIcon Button。"
+        },
+        {
+          "part": "description",
+          "required": false,
+          "description": "aria-describedbyへ接続できる短く単純な目的説明。"
+        },
+        {
+          "part": "body",
+          "required": true,
+          "description": "Messageまたはform content。必要な場合だけ内部scrollする。"
+        },
+        {
+          "part": "footer",
+          "required": true,
+          "description": "少なくともdismiss経路を含むaction領域。"
+        }
+      ],
+      "variants": [
+        "default",
+        "danger"
+      ],
+      "states": [
+        {
+          "id": "open",
+          "description": "Native dialogをshowModal()でtop layerへ表示した状態。",
+          "requiredBehavior": [
+            "背景contentをinertにする",
+            "Initial focusをDialog内へ移す",
+            "Tab sequenceをDialog内に保持する",
+            "triggerのaria-expandedをtrueにする"
+          ]
+        },
+        {
+          "id": "closed",
+          "description": "Surfaceを表示せずtriggerだけが通常のdocument順にある状態。",
+          "requiredBehavior": [
+            "Dialog open attributeを残さない",
+            "triggerのaria-expandedをfalseにする",
+            "Close直後はtriggerまたは論理的な次のfocus先へ戻す"
+          ]
+        },
+        {
+          "id": "submitting",
+          "description": "Actionを処理中で二重実行を防ぐ状態。",
+          "requiredBehavior": [
+            "Dialogを開いたままprogressを伝える",
+            "Primary actionの二重実行を防ぐ",
+            "Cancel可否を処理の実態と一致させる"
+          ]
+        },
+        {
+          "id": "error",
+          "description": "Submitが失敗し修正を必要とする状態。",
+          "requiredBehavior": [
+            "Dialogを開いたままerrorをtextで特定する",
+            "最初のinvalid fieldまたはerror summaryへfocusを移す",
+            "再試行または修正経路を残す"
+          ]
+        }
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "trigger",
+          "type": "ReactElement",
+          "required": true,
+          "default": null,
+          "description": "単一のfocusable trigger。aria-haspopup、aria-controls、aria-expanded、open handlerを合成する。"
+        },
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "Dialogを命名する可視title。"
+        },
+        {
+          "name": "description",
+          "type": "ReactNode",
+          "required": false,
+          "default": null,
+          "description": "短く単純なaccessible description。構造化content全体には使わない。"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "Dialog body content。"
+        },
+        {
+          "name": "footer",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "Cancelまたは同等のdismiss actionを含むfooter。"
+        },
+        {
+          "name": "variant",
+          "type": "\"default\" | \"danger\"",
+          "required": false,
+          "default": "default",
+          "description": "Contentとprimary actionのimpact policy。Surface toneは変えない。"
+        },
+        {
+          "name": "role",
+          "type": "\"dialog\" | \"alertdialog\"",
+          "required": false,
+          "default": "dialog",
+          "description": "短い重要messageへ即時responseが必要な場合だけalertdialogを明示する。"
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false,
+          "default": null,
+          "description": "Controlled open state。Native open attributeは直接toggleせずshowModal()/close()へ同期する。"
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Uncontrolled initial open state。"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false,
+          "default": null,
+          "description": "Trigger、Escape、close control、actionを同じopen stateへ通知する。"
+        },
+        {
+          "name": "initialFocusRef",
+          "type": "RefObject<HTMLElement | null>",
+          "required": false,
+          "default": null,
+          "description": "Open時の明示的focus先。Dangerでは最も安全なactionを指定する。"
+        },
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "required": false,
+          "default": "閉じる",
+          "description": "Close Icon Buttonのaccessible name。"
+        },
+        {
+          "name": "ref",
+          "type": "ForwardedRef<HTMLDialogElement>",
+          "required": false,
+          "default": null,
+          "description": "Native dialog elementへforwardするref。"
+        }
+      ],
+      "accessibility": {
+        "requirements": [
+          "Native dialogをshowModal()で開き、背景contentを実際にinertにする。",
+          "Visible title、常時visibleなclose control、footerのdismiss action、24px minimum targetを持つ。",
+          "High-impact submissionはreversible、checked、confirmedの少なくとも一つを満たす。"
+        ],
+        "aria": [
+          "Dialogはaria-labelledbyで可視titleから命名する。",
+          "Triggerはaria-haspopup=dialog、aria-controls、aria-expandedを同期する。",
+          "aria-describedbyは短く単純なdescriptionだけへ接続し、構造化bodyへは既定で付けない。",
+          "role=alertdialogは短い重要messageへ即時responseが必要な場合だけ明示する。"
+        ],
+        "focus": [
+          "Open時はinitialFocusRef、先頭の意味あるcontrol、またはtabindex=-1のstatic title/contentへfocusを移す。",
+          "Dangerでは最も安全なactionへinitial focusを置き、destructive primaryへ自動focusしない。",
+          "Tab / Shift+Tabをmodal内に保持し、close後はtriggerまたは論理的な次の要素へ戻す。",
+          "Positive tabindexを使わず、focused fieldやerrorをsticky footerで完全に隠さない。"
+        ]
+      },
+      "keyboardInteractions": [
+        {
+          "key": "Tab / Shift+Tab",
+          "action": "Open中はDialog内のtabbable element間を循環する。"
+        },
+        {
+          "key": "Escape",
+          "action": "Close requestを発行し、close後にtriggerへfocusを戻す。"
+        }
+      ],
+      "prohibitedRules": [
+        "NO_RAW_HEX_COLOR",
+        "SPACING_FROM_TOKENS_ONLY",
+        "RADIUS_FROM_TOKENS_ONLY",
+        "CONTRAST_AA_MINIMUM",
+        "FOCUS_VISIBLE_REQUIRED",
+        "NO_POSITIVE_TABINDEX",
+        "TARGET_SIZE_MINIMUM",
+        "INTERACTIVE_NAME_REQUIRED"
+      ],
+      "allowedTokenCategories": [
+        "semanticColor",
+        "spacing",
+        "radius",
+        "sizing",
+        "motion",
+        "shadow"
+      ],
+      "selectionRules": {
+        "useWhen": [
+          "現在の作業を中断し、短い判断または単一目的の入力を完了しないと先へ進めない。"
+        ],
+        "avoidWhen": [
+          "補助task、長いworkflow、response不要のmessage、Undo可能な軽微なactionである。"
+        ],
+        "alternatives": [
+          "Drawer",
+          "Popover",
+          "dedicated page",
+          "Toast",
+          "Alert",
+          "Undo"
+        ]
+      },
+      "negativeExamples": [
+        {
+          "pattern": "div role=dialogへaria-modal=trueだけを付け、背景を操作可能なままにする。",
+          "reason": "ARIA宣言と実際のmodalityが一致せず、支援技術利用者から背景だけを隠すため。",
+          "ruleIds": [
+            "FOCUS_VISIBLE_REQUIRED"
+          ]
+        },
+        {
+          "pattern": "Native dialogのopen属性をReact renderだけで追加・削除する。",
+          "reason": "close/cancel event、top layer、document blockingを壊すため。",
+          "ruleIds": [
+            "FOCUS_VISIBLE_REQUIRED"
+          ]
+        },
+        {
+          "pattern": "Danger primary actionへinitial focusを置く。",
+          "reason": "不可逆actionの誤実行を誘発し、最も安全な選択を既定にできないため。",
+          "ruleIds": [
+            "FOCUS_VISIBLE_REQUIRED"
+          ]
+        },
+        {
+          "pattern": "Backdrop tapまたはswipeだけでDialogを閉じる。",
+          "reason": "Keyboard、touch、支援技術で一貫したdismiss経路を失うため。",
+          "ruleIds": [
+            "INTERACTIVE_NAME_REQUIRED",
+            "TARGET_SIZE_MINIMUM"
+          ]
+        },
+        {
+          "pattern": "List、table、複数paragraphをまとめてaria-describedbyへ接続する。",
+          "reason": "構造を一続きの文字列として読み上げ、内容理解とnavigationを妨げるため。",
+          "ruleIds": [
+            "INTERACTIVE_NAME_REQUIRED"
+          ]
+        }
+      ],
+      "requiredScenarios": [
+        "open",
+        "closed",
+        "default",
+        "danger",
+        "default-form",
+        "danger-confirmation",
+        "submitting",
+        "error",
+        "simple-message",
+        "narrow-viewport"
+      ],
+      "examples": [
+        {
+          "id": "default-form",
+          "description": "短い単一目的form。",
+          "code": "<Dialog trigger={<Button>プロジェクトを作成</Button>} title=\"プロジェクトを作成\" footer={<><Button variant=\"secondary\">キャンセル</Button><Button type=\"submit\">作成</Button></>}>\n  <ProjectForm />\n</Dialog>"
+        },
+        {
+          "id": "danger-confirmation",
+          "description": "最も安全なactionへinitial focusを置く高影響確認。",
+          "code": "<Dialog trigger={<Button variant=\"danger\">削除</Button>} title=\"プロジェクトを削除\" description=\"Meridian Docs は復元できません。\" variant=\"danger\" role=\"alertdialog\" initialFocusRef={cancelRef} footer={<><Button ref={cancelRef} variant=\"secondary\">キャンセル</Button><Button variant=\"danger\">完全に削除</Button></>}>\n  <ProjectNameConfirmation />\n</Dialog>"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.2.0 <1.0.0",
+        "rootElements": [
+          "dialog"
+        ],
+        "slots": [
+          "trigger",
+          "backdrop",
+          "surface",
+          "title",
+          "close-control",
+          "description",
+          "body",
+          "footer"
+        ],
+        "attributes": [
+          "open",
+          "role",
+          "aria-labelledby",
+          "aria-describedby",
+          "aria-haspopup",
+          "aria-controls",
+          "aria-expanded",
+          "data-state",
+          "data-variant",
+          "data-*"
+        ],
+        "stateModel": [
+          "native dialog open state",
+          "data-state",
+          "data-variant"
+        ],
+        "events": [
+          "click",
+          "cancel",
+          "close",
+          "keydown",
+          "submit",
+          "openchange"
+        ],
+        "relations": [
+          "trigger-dialog",
+          "visible-title-name",
+          "optional-simple-description",
+          "modal-inert-background",
+          "contained-tab-sequence",
+          "safe-initial-focus",
+          "focus-return"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      }
+    },
+    {
+      "id": "description-list",
+      "name": "Description List",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/description-list.contract.json",
+      "sourceDigest": "sha256-7e43cd1a895449f07e7290bca04162ab55e570e6d7ce14310a61e53f9330e3b3",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "description": "キーと値のペアを縦に並べる詳細表示。",
+      "whenToUse": [
+        "1つの対象の属性をkey/valueで参照するとき。"
+      ],
+      "whenNotToUse": [
+        "複数対象を列比較する場合はTableを使う。"
+      ],
+      "alternatives": [
+        "複数対象を列比較する場合はTableを使う。"
+      ],
+      "anatomy": [
+        {
+          "part": "root",
+          "required": true,
+          "description": "Collection container with an explicit reading order."
+        },
+        {
+          "part": "item",
+          "required": true,
+          "description": "Repeated row, event, node, message, or entry."
+        },
+        {
+          "part": "primary-content",
+          "required": true,
+          "description": "Main scannable value."
+        },
+        {
+          "part": "metadata",
+          "required": false,
+          "description": "Secondary state, time, owner, or count."
+        },
+        {
+          "part": "actions",
+          "required": false,
+          "description": "Item-level operations with independent names."
+        }
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        {
+          "id": "default",
+          "description": "通常状態。意味、label、valueを省略しない。",
+          "requiredBehavior": [
+            "通常状態。意味、label、valueを省略しない。"
+          ]
+        }
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "Componentの主要content。"
+        }
+      ],
+      "accessibility": {
+        "requirements": [
+          "表示専用rootを不要にtab順へ追加しない。",
+          "状態は色だけで表さずtext、icon、shapeを併用する。"
+        ],
+        "aria": [
+          "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        ],
+        "focus": [
+          "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+        ]
+      },
+      "keyboardInteractions": [],
+      "prohibitedRules": [
+        "NO_RAW_HEX_COLOR",
+        "SPACING_FROM_TOKENS_ONLY",
+        "RADIUS_FROM_TOKENS_ONLY",
+        "CONTRAST_AA_MINIMUM"
+      ],
+      "allowedTokenCategories": [
+        "semanticColor",
+        "density",
+        "spacing",
+        "typography"
+      ],
+      "selectionRules": {
+        "useWhen": [
+          "一つの対象について複数の名前付き属性を順に参照する。"
+        ],
+        "avoidWhen": [
+          "複数対象の同じ属性を列方向に比較する。"
+        ],
+        "alternatives": [
+          "Table",
+          "Key Value Row"
+        ]
+      },
+      "negativeExamples": [
+        {
+          "pattern": "Termとvalueを意味のないdivだけで並べる。",
+          "reason": "名前と値のprogrammaticな関係を失うため。",
+          "ruleIds": [
+            "CONTRAST_AA_MINIMUM"
+          ]
+        }
+      ],
+      "requiredScenarios": [
+        "default",
+        "long-value",
+        "empty-value",
+        "narrow-viewport"
+      ],
+      "examples": [
+        {
+          "id": "default",
+          "description": "Description Listの標準例。",
+          "code": "<DescriptionList>\n  <DescriptionList.Item label=\"リージョン\">ap-northeast-1</DescriptionList.Item>\n</DescriptionList>"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.2.0 <1.0.0",
+        "rootElements": [
+          "dl"
+        ],
+        "slots": [
+          "term",
+          "description"
+        ],
+        "attributes": [
+          "aria-label",
+          "data-*"
+        ],
+        "stateModel": [
+          "data-meridian-state"
+        ],
+        "events": [],
+        "relations": [
+          "term-description",
+          "reading-order"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      }
+    },
+    {
+      "id": "workflow-step",
+      "name": "Workflow Step",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/workflow-step.contract.json",
+      "sourceDigest": "sha256-c7b7b6407f2565f48fae9b08d6eef3aa9c9793f67db83145c23d270dcfa56358",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "description": "複数ステップ処理の進行表示。完了・実行中・未着手を区別する。",
+      "whenToUse": [
+        "順序のある少数stepの現在位置と結果を示すとき。"
+      ],
+      "whenNotToUse": [
+        "時刻やtool入出力まで確認する場合はExecution Timelineを使う。"
+      ],
+      "alternatives": [
+        "時刻やtool入出力まで確認する場合はExecution Timelineを使う。"
+      ],
+      "anatomy": [
+        {
+          "part": "root",
+          "required": true,
+          "description": "Progress or execution status boundary."
+        },
+        {
+          "part": "indicator",
+          "required": true,
+          "description": "Current state, track, or active step."
+        },
+        {
+          "part": "label",
+          "required": true,
+          "description": "Accessible status text."
+        },
+        {
+          "part": "value",
+          "required": false,
+          "description": "Numeric progress, duration, or quota."
+        },
+        {
+          "part": "action",
+          "required": false,
+          "description": "Stop, retry, or inspect action."
+        }
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        {
+          "id": "default",
+          "description": "通常状態。意味、label、valueを省略しない。",
+          "requiredBehavior": [
+            "通常状態。意味、label、valueを省略しない。"
+          ]
+        },
+        {
+          "id": "current",
+          "description": "利用者が現在取り組んでいるstep。",
+          "requiredBehavior": [
+            "aria-current=stepと可視textまたはindicatorで現在地を示す。"
+          ]
+        },
+        {
+          "id": "success",
+          "description": "完了済みstep。",
+          "requiredBehavior": [
+            "完了を色だけでなく記号またはtextでも示す。"
+          ]
+        },
+        {
+          "id": "disabled",
+          "description": "まだ到達できないstep。",
+          "requiredBehavior": [
+            "aria-disabledと低い視覚強度を併用し、現在地として扱わない。"
+          ]
+        },
+        {
+          "id": "error",
+          "description": "修正または再試行が必要なstep。",
+          "requiredBehavior": [
+            "問題と次の行動を色以外でも識別できるようにする。"
+          ]
+        }
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "Componentの主要content。"
+        }
+      ],
+      "accessibility": {
+        "requirements": [
+          "表示専用rootを不要にtab順へ追加しない。",
+          "状態は色だけで表さずtext、icon、shapeを併用する。"
+        ],
+        "aria": [
+          "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        ],
+        "focus": [
+          "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+        ]
+      },
+      "keyboardInteractions": [],
+      "prohibitedRules": [
+        "NO_RAW_HEX_COLOR",
+        "SPACING_FROM_TOKENS_ONLY",
+        "RADIUS_FROM_TOKENS_ONLY",
+        "CONTRAST_AA_MINIMUM",
+        "STATE_NOT_COLOR_ONLY"
+      ],
+      "allowedTokenCategories": [
+        "semanticColor",
+        "spacing",
+        "radius",
+        "motion",
+        "typography"
+      ],
+      "selectionRules": {
+        "useWhen": [
+          "順序のある少数stepについて現在地、完了、未到達を示す。"
+        ],
+        "avoidWhen": [
+          "時刻、log、tool入出力を含む実行履歴を示す。"
+        ],
+        "alternatives": [
+          "Execution Timeline",
+          "Progress"
+        ]
+      },
+      "negativeExamples": [
+        {
+          "pattern": "現在stepを色だけで区別する。",
+          "reason": "色を認識できない利用者へ現在地が伝わらないため。",
+          "ruleIds": [
+            "STATE_NOT_COLOR_ONLY"
+          ]
+        }
+      ],
+      "requiredScenarios": [
+        "default",
+        "current",
+        "success",
+        "disabled",
+        "error",
+        "narrow-viewport"
+      ],
+      "examples": [
+        {
+          "id": "default",
+          "description": "Workflow Stepの標準例。",
+          "code": "<WorkflowSteps\n  steps={steps}\n  current={2}\n  onRetry={retryStep}\n/>"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.2.0 <1.0.0",
+        "rootElements": [
+          "li"
+        ],
+        "slots": [
+          "indicator",
+          "label",
+          "description"
+        ],
+        "attributes": [
+          "aria-current",
+          "aria-disabled",
+          "data-*"
+        ],
+        "stateModel": [
+          "data-meridian-state"
+        ],
+        "events": [],
+        "relations": [
+          "ordered-step",
+          "current-step",
+          "visible-status-text"
         ],
         "provenance": [
           "component",

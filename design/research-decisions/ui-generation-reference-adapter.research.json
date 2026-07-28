@@ -1,0 +1,600 @@
+{
+  "$schema": "../../schemas/ui-generation-research-decision.schema.json",
+  "schemaVersion": "0.1.0",
+  "kind": "ui-generation-research-decision",
+  "id": "ui-generation-reference-adapter",
+  "title": "Initial external Design System reference adapter",
+  "status": "researching",
+  "category": "design-system-adapter",
+  "question": "Which external Design System foundation best supports Meridian's first exchangeable reference adapter for SaaS, administration, and business-tool UI generation?",
+  "scope": {
+    "milestone": "M4",
+    "summary": "Compare external React-oriented foundations without making any candidate the Meridian source of truth.",
+    "inScope": [
+      "Accessibility and keyboard behavior",
+      "SaaS and administration component coverage",
+      "AI-readable distribution and registry models",
+      "Token and theme mapping",
+      "Internationalization and RTL",
+      "Data-intensive UI capability",
+      "License and vendor lock-in",
+      "Adapter implementation effort"
+    ],
+    "outOfScope": [
+      "Final Meridian-owned React component implementation",
+      "Production approval before comparative spikes",
+      "Non-web native UI frameworks"
+    ]
+  },
+  "triggers": [
+    "new-architecture",
+    "new-dependency",
+    "ecosystem-change",
+    "accessibility-or-safety",
+    "licensing",
+    "benchmark-needed"
+  ],
+  "constraints": [
+    "Project-existing Design Systems remain higher priority than the selected default adapter.",
+    "The Capability Plan must not contain vendor component names.",
+    "The initial adapter must not become the Meridian design source of truth.",
+    "A final recommendation requires Team Invitation and Issue Triage comparative spikes."
+  ],
+  "criteria": [
+    {
+      "id": "accessibility",
+      "name": "Accessibility and keyboard behavior",
+      "description": "Native semantics, WAI-ARIA behavior, focus management, keyboard interaction, and assistive-technology evidence.",
+      "weight": 18,
+      "measurement": "browser-evaluation"
+    },
+    {
+      "id": "component-coverage",
+      "name": "SaaS and administration component coverage",
+      "description": "Coverage of forms, overlays, navigation, collections, tables, and business application states.",
+      "weight": 15,
+      "measurement": "contract-analysis"
+    },
+    {
+      "id": "ai-readability",
+      "name": "AI readability and generation safety",
+      "description": "Availability of inspectable source, schemas, registries, predictable APIs, and provenance-friendly distribution.",
+      "weight": 14,
+      "measurement": "spike"
+    },
+    {
+      "id": "token-portability",
+      "name": "Token and theme portability",
+      "description": "Ability to map project or DTCG semantic tokens without making vendor styling the source of truth.",
+      "weight": 12,
+      "measurement": "spike"
+    },
+    {
+      "id": "adapter-fit",
+      "name": "Capability Adapter fit",
+      "description": "Ability to resolve a vendor-neutral Capability Plan into versioned component usage and report unsupported capabilities.",
+      "weight": 10,
+      "measurement": "spike"
+    },
+    {
+      "id": "internationalization",
+      "name": "Internationalization and RTL",
+      "description": "Locale-sensitive behavior, RTL support, input modality support, and long-content resilience.",
+      "weight": 8,
+      "measurement": "browser-evaluation"
+    },
+    {
+      "id": "data-intensive-ui",
+      "name": "Data-intensive UI capability",
+      "description": "Support for comparison, selection, sorting, row actions, high density, and large collections.",
+      "weight": 8,
+      "measurement": "spike"
+    },
+    {
+      "id": "license-lock-in",
+      "name": "License and vendor lock-in",
+      "description": "License clarity, paid feature boundaries, source ownership, migration cost, and dependency concentration.",
+      "weight": 6,
+      "measurement": "document-review"
+    },
+    {
+      "id": "performance",
+      "name": "Performance and delivery cost",
+      "description": "Bundle, runtime, installation, update, and generated-code maintenance implications.",
+      "weight": 4,
+      "measurement": "benchmark"
+    },
+    {
+      "id": "maintenance",
+      "name": "Documentation and maintenance",
+      "description": "Official documentation quality, release visibility, upgrade path, and long-term maintenance signals.",
+      "weight": 3,
+      "measurement": "document-review"
+    },
+    {
+      "id": "design-tooling",
+      "name": "Design tooling interoperability",
+      "description": "Availability of design resources and a credible path to Figma or other design-tool integration.",
+      "weight": 2,
+      "measurement": "document-review"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "shadcn-ui",
+      "name": "shadcn/ui",
+      "version": "CLI 4.8.3; registry snapshot 2026-07-27",
+      "officialUrl": "https://ui.shadcn.com/docs",
+      "disposition": "candidate",
+      "license": "MIT for the official source; installed registry items and their dependencies require item-level verification.",
+      "evidenceRefs": ["shadcn-introduction", "shadcn-registry", "shadcn-rtl", "shadcn-eject", "shadcn-vite"],
+      "assessments": [],
+      "limitations": [
+        "Open-code ownership shifts update and drift management to the consuming project.",
+        "Advanced data-grid behavior requires an additional approved composition or dependency."
+      ],
+      "eliminationReason": null
+    },
+    {
+      "id": "radix-primitives",
+      "name": "Radix Primitives",
+      "version": "radix-ui 1.6.7",
+      "officialUrl": "https://www.radix-ui.com/primitives/docs/overview/introduction",
+      "disposition": "candidate",
+      "license": "MIT; exact package and version must be recorded by the adapter.",
+      "evidenceRefs": ["radix-introduction", "radix-accessibility", "radix-releases"],
+      "assessments": [],
+      "limitations": [
+        "Provides accessible primitives rather than a complete visual Design System.",
+        "Does not provide a complete data-intensive application component set."
+      ],
+      "eliminationReason": null
+    },
+    {
+      "id": "react-aria",
+      "name": "React Aria Components",
+      "version": "react-aria-components 1.19.0",
+      "officialUrl": "https://react-spectrum.adobe.com/react-aria/getting-started.html",
+      "disposition": "candidate",
+      "license": "Apache-2.0; exact package and version must be recorded by the adapter.",
+      "evidenceRefs": ["react-aria-getting-started", "react-aria-package", "react-spectrum-repository"],
+      "assessments": [],
+      "limitations": [
+        "Provides behavior and accessibility without a finished visual language.",
+        "Requires Meridian-owned styling and composition work."
+      ],
+      "eliminationReason": null
+    },
+    {
+      "id": "material-ui",
+      "name": "Material UI and MUI X",
+      "version": "@mui/material 9.2.0; @mui/x-data-grid 9.10.1",
+      "officialUrl": "https://mui.com/material-ui/getting-started/",
+      "disposition": "candidate",
+      "license": "Material UI is MIT; MUI X Community is MIT while Pro and Premium features use commercial licenses.",
+      "evidenceRefs": ["mui-overview", "mui-x-licensing", "mui-localization", "mui-pricing-2026"],
+      "assessments": [],
+      "limitations": [
+        "Material visual and API conventions may increase adaptation cost for Meridian profiles.",
+        "Some advanced data capabilities require commercial MUI X plans."
+      ],
+      "eliminationReason": null
+    },
+    {
+      "id": "carbon",
+      "name": "Carbon Design System",
+      "version": "@carbon/react 1.112.0",
+      "officialUrl": "https://carbondesignsystem.com/",
+      "disposition": "candidate",
+      "license": "Apache-2.0; exact package, Sass toolchain, font, and any community extension must be recorded by the adapter.",
+      "evidenceRefs": ["carbon-repository", "carbon-components", "carbon-data-table", "carbon-data-table-a11y", "carbon-themes"],
+      "assessments": [],
+      "limitations": [
+        "Carbon visual conventions and Sass integration create adaptation cost for non-Carbon project profiles.",
+        "Complete RTL and first-party large-collection virtualization support were not established by the reviewed evidence."
+      ],
+      "eliminationReason": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "shadcn-introduction",
+      "title": "Introduction - shadcn/ui",
+      "url": "https://ui.shadcn.com/docs",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "shadcn",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["shadcn-ui"],
+      "criterionRefs": ["ai-readability", "adapter-fit", "maintenance"],
+      "summary": "The official documentation defines shadcn/ui as an open-code component distribution approach with composable interfaces and AI-readable source.",
+      "limitations": [
+        "Documentation claims require comparative implementation evidence before scoring."
+      ]
+    },
+    {
+      "id": "shadcn-registry",
+      "title": "Registry - shadcn/ui",
+      "url": "https://ui.shadcn.com/docs/registry",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "shadcn",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["shadcn-ui"],
+      "criterionRefs": ["ai-readability", "adapter-fit"],
+      "summary": "The official registry supports schema-validated distribution of components, hooks, pages, configuration, rules, and other files.",
+      "limitations": [
+        "Registry compatibility does not prove UI capability or accessibility quality."
+      ]
+    },
+    {
+      "id": "shadcn-rtl",
+      "title": "RTL Support - shadcn/ui",
+      "url": "https://ui.shadcn.com/docs/changelog/2026-01-rtl",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "shadcn",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["shadcn-ui"],
+      "criterionRefs": ["internationalization", "maintenance"],
+      "summary": "The CLI converts physical utilities and directional props to logical RTL-aware output and publishes RTL examples for components.",
+      "limitations": ["Third-party registry items and table engines still require independent RTL verification."]
+    },
+    {
+      "id": "shadcn-eject",
+      "title": "shadcn eject",
+      "url": "https://ui.shadcn.com/docs/changelog/2026-05-shadcn-eject",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "shadcn",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["shadcn-ui"],
+      "criterionRefs": ["ai-readability", "token-portability", "license-lock-in", "maintenance"],
+      "summary": "CLI 4.8.3 can inline shared Tailwind utilities and remove the shadcn runtime CSS dependency, preserving project ownership of generated source.",
+      "limitations": ["Source ownership transfers merge, drift, and security update responsibility to the project."]
+    },
+    {
+      "id": "shadcn-vite",
+      "title": "Vite installation - shadcn/ui",
+      "url": "https://ui.shadcn.com/docs/installation/vite",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "shadcn",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["shadcn-ui"],
+      "criterionRefs": ["ai-readability", "token-portability", "performance", "maintenance"],
+      "summary": "The official Vite integration uses React with TypeScript, Tailwind CSS v4 through @tailwindcss/vite, and an explicit @ alias; the parity Spike follows this build boundary with exact-pinned packages.",
+      "limitations": [
+        "Successful source compilation does not by itself establish assistive-technology conformance or select shadcn as the reference adapter."
+      ]
+    },
+    {
+      "id": "radix-introduction",
+      "title": "Introduction - Radix Primitives",
+      "url": "https://www.radix-ui.com/primitives/docs/overview/introduction",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "WorkOS",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["radix-primitives"],
+      "criterionRefs": ["accessibility", "adapter-fit", "token-portability"],
+      "summary": "Radix describes an unstyled, accessible, typed, incrementally adoptable primitive layer with controlled and uncontrolled APIs.",
+      "limitations": [
+        "The documentation does not establish complete SaaS component coverage."
+      ]
+    },
+    {
+      "id": "radix-accessibility",
+      "title": "Accessibility - Radix Primitives",
+      "url": "https://www.radix-ui.com/primitives/docs/overview/accessibility",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "WorkOS",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["radix-primitives"],
+      "criterionRefs": ["accessibility"],
+      "summary": "Radix documents WAI-ARIA-oriented roles, labels, keyboard navigation, and focus management for its primitives.",
+      "limitations": [
+        "Meridian must still verify generated compositions in its target browser and assistive-technology matrix."
+      ]
+    },
+    {
+      "id": "radix-releases",
+      "title": "Radix Primitives Releases",
+      "url": "https://www.radix-ui.com/primitives/docs/overview/releases",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "WorkOS",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["radix-primitives"],
+      "criterionRefs": ["accessibility", "performance", "maintenance"],
+      "summary": "The July 2026 releases document active ARIA-reference, focus, form-event, tree-shaking, and React compatibility fixes.",
+      "limitations": ["Release activity does not fill missing data-collection capabilities."]
+    },
+    {
+      "id": "react-aria-getting-started",
+      "title": "Getting Started - React Aria",
+      "url": "https://react-spectrum.adobe.com/react-aria/getting-started.html",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "Adobe",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["react-aria"],
+      "criterionRefs": ["accessibility", "internationalization", "adapter-fit", "token-portability"],
+      "summary": "React Aria provides unstyled components and hooks with accessibility, internationalization, interactions, and behavior across input modalities.",
+      "limitations": [
+        "Official claims require Meridian-specific composition and browser verification."
+      ]
+    },
+    {
+      "id": "react-aria-package",
+      "title": "react-aria-components package",
+      "url": "https://www.npmjs.com/package/react-aria-components",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "Adobe",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["react-aria"],
+      "criterionRefs": ["component-coverage", "accessibility", "internationalization", "maintenance"],
+      "summary": "Version 1.19.0 exposes over 50 unstyled components with adaptive interaction, accessibility, internationalization, RTL, and Apache-2.0 licensing.",
+      "limitations": ["Package metadata and documentation claims do not replace candidate-specific browser evaluation."]
+    },
+    {
+      "id": "react-spectrum-repository",
+      "title": "Adobe React Spectrum repository",
+      "url": "https://github.com/adobe/react-spectrum",
+      "sourceType": "official-repository",
+      "authority": "primary",
+      "publisher": "Adobe",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["react-aria"],
+      "criterionRefs": ["accessibility", "internationalization", "maintenance", "license-lock-in"],
+      "summary": "The official repository documents Apache-2.0 licensing, screen-reader and device testing, adaptive input support, over 30 languages, RTL, and active releases.",
+      "limitations": ["Virtualization and advanced collection APIs still need pinned stability checks."]
+    },
+    {
+      "id": "mui-overview",
+      "title": "Material UI Overview",
+      "url": "https://mui.com/material-ui/getting-started/",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "MUI",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["material-ui"],
+      "criterionRefs": ["component-coverage", "maintenance", "design-tooling"],
+      "summary": "Material UI provides a comprehensive production-oriented React component library with theming and design resources.",
+      "limitations": [
+        "The overview does not measure adaptation cost to Meridian visual profiles."
+      ]
+    },
+    {
+      "id": "mui-x-licensing",
+      "title": "MUI X Licensing",
+      "url": "https://mui.com/x/introduction/licensing/",
+      "sourceType": "license",
+      "authority": "primary",
+      "publisher": "MUI",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["material-ui"],
+      "criterionRefs": ["data-intensive-ui", "license-lock-in"],
+      "summary": "MUI X separates MIT Community packages from commercially licensed Pro and Premium capabilities.",
+      "limitations": [
+        "Pricing and feature boundaries are ecosystem-sensitive and must be rechecked before approval."
+      ]
+    },
+    {
+      "id": "mui-localization",
+      "title": "Material UI Localization",
+      "url": "https://mui.com/material-ui/guides/localization/",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "MUI",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["material-ui"],
+      "criterionRefs": ["internationalization", "token-portability"],
+      "summary": "Material UI supplies locale packs through theme configuration and documents RTL support; MUI X Data Grid has a separate localization boundary.",
+      "limitations": ["Material UI and Data Grid locale inputs must be synchronized by the adapter."]
+    },
+    {
+      "id": "mui-pricing-2026",
+      "title": "Upcoming Changes to MUI X Pricing and Licensing in 2026",
+      "url": "https://mui.com/blog/2026-mui-x-price-changes/",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "MUI",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["material-ui"],
+      "criterionRefs": ["license-lock-in", "maintenance"],
+      "summary": "MUI documents 2026 Pro and Premium price changes, application-based licensing, Enterprise support boundaries, and v9 license-key changes.",
+      "limitations": ["Pricing and plan entitlements can change and require revalidation immediately before approval."]
+    },
+    {
+      "id": "carbon-repository",
+      "title": "Carbon Design System repository",
+      "url": "https://github.com/carbon-design-system/carbon",
+      "sourceType": "official-repository",
+      "authority": "primary",
+      "publisher": "IBM",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["carbon"],
+      "criterionRefs": ["maintenance", "license-lock-in", "component-coverage"],
+      "summary": "The repository publishes Carbon under Apache-2.0 with React packages, migration guides, security policy, and active 2026 releases.",
+      "limitations": ["Repository activity does not prove project-specific RTL or visual adaptation quality."]
+    },
+    {
+      "id": "carbon-components",
+      "title": "Carbon Components Overview",
+      "url": "https://carbondesignsystem.com/components/overview/components/",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "IBM",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["carbon"],
+      "criterionRefs": ["component-coverage", "maintenance"],
+      "summary": "Carbon provides a broad enterprise component catalog including forms, overlays, navigation, status, pagination, and data tables.",
+      "limitations": ["Some components and community assets use feature flags or separate maturity boundaries."]
+    },
+    {
+      "id": "carbon-data-table",
+      "title": "Carbon Data Table Usage",
+      "url": "https://carbondesignsystem.com/components/data-table/usage/",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "IBM",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["carbon"],
+      "criterionRefs": ["data-intensive-ui", "component-coverage"],
+      "summary": "Carbon Data Table documents sorting, selection, expansion, row and batch actions, pagination, toolbar filtering, and five densities.",
+      "limitations": ["The reviewed guidance does not establish first-party virtualization or a narrow-viewport master-detail strategy."]
+    },
+    {
+      "id": "carbon-data-table-a11y",
+      "title": "Carbon Data Table Accessibility",
+      "url": "https://carbondesignsystem.com/components/data-table/accessibility/",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "IBM",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["carbon"],
+      "criterionRefs": ["accessibility", "data-intensive-ui"],
+      "summary": "Carbon documents keyboard sorting, table-control operation, accessible naming, aria-sort, automated checks, and manual screen-reader testing.",
+      "limitations": ["Meridian must still verify the generated composition and selected version."]
+    },
+    {
+      "id": "carbon-themes",
+      "title": "Carbon Themes",
+      "url": "https://carbondesignsystem.com/elements/themes/overview/",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "IBM",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["carbon"],
+      "criterionRefs": ["token-portability", "performance"],
+      "summary": "Carbon exposes role-based theme tokens and Sass/CSS-variable output across White, Gray 10, Gray 90, and Gray 100 themes.",
+      "limitations": ["A DTCG-to-Carbon semantic map and Sass build integration remain adapter work."]
+    },
+    {
+      "id": "dtcg-format",
+      "title": "Design Tokens Format Module 2025.10",
+      "url": "https://www.w3.org/community/reports/design-tokens/CG-FINAL-format-20251028/",
+      "sourceType": "standard",
+      "authority": "primary",
+      "publisher": "W3C Design Tokens Community Group",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["shadcn-ui", "radix-primitives", "react-aria", "material-ui", "carbon"],
+      "criterionRefs": ["token-portability"],
+      "summary": "The stable community report defines a vendor-neutral interchange format for typed design tokens, aliases, and tool extensions.",
+      "limitations": [
+        "Each adapter still needs an explicit mapping from DTCG semantic roles to vendor styling APIs."
+      ]
+    }
+  ],
+  "spikes": [
+    {
+      "id": "team-invitation-adapter-spike",
+      "title": "Team Invitation comparative adapter spike",
+      "status": "in-progress",
+      "candidateRefs": ["shadcn-ui", "radix-primitives", "react-aria", "material-ui", "carbon"],
+      "hypothesis": "The same approved Team Invitation Capability Plan can be resolved through each candidate without changing Screen Responsibility or Requirement Allocation.",
+      "fixtureRefs": ["examples/ui-generation/team-invitation.requirement-allocation.json", "design/adapter-benchmark.json"],
+      "commands": [
+        "node --test test/adapter-benchmark.test.js",
+        "npm run evaluate:adapter-spike",
+        "node --test test/adapter-browser-evidence.test.js",
+        "node scripts/validate-system.mjs"
+      ],
+      "measurements": [
+        "Capability coverage",
+        "Generated code size",
+        "Token mapping coverage",
+        "Keyboard and focus behavior",
+        "Desktop, Tablet, and Mobile browser findings"
+      ],
+      "findings": [
+        "All candidates are assessed against the same nine Team Invitation capabilities.",
+        "Responsive reflow is generator-owned instead of being falsely attributed to a component package.",
+        "Radix requires the most Meridian-owned form and collection composition; React Aria and shadcn cover the contract without a paid boundary; MUI and Carbon provide more finished visuals.",
+        "The isolated pinned implementation completed Desktop, Tablet RTL, and Mobile forced-colors automation for all five candidates with no critical or major automated finding after one responsive repair loop.",
+        "The shadcn candidate materializes all nine captured new-york-v4 registry TSX files unchanged and compiles them with the pinned Tailwind v4 Vite toolchain before the shared browser matrix.",
+        "Tablet RTL initially made narrow table columns illegible without horizontal overflow; the generator-owned responsive boundary was repaired to use the shared card presentation at 820 pixels and below.",
+        "VoiceOver, browser UI zoom, and Windows High Contrast remain manual selection blockers; automated results do not establish accessibility conformance."
+      ],
+      "artifactRefs": [
+        "design/adapter-benchmark.json",
+        "schemas/adapter-benchmark.schema.json",
+        "scripts/lib/adapter-benchmark.mjs",
+        "test/adapter-benchmark.test.js",
+        "design/adapter-browser-evaluation-plan.json",
+        "design/evidence/adapter-browser/manifest.json",
+        "design/evidence/adapter-browser/dependency-audit.json",
+        "design/evidence/adapter-browser/shadcn-registry-snapshot.json",
+        "spikes/external-adapters/package-lock.json",
+        "spikes/external-adapters/src/pilots.mjs",
+        "test/adapter-browser-evidence.test.js"
+      ]
+    },
+    {
+      "id": "issue-triage-adapter-spike",
+      "title": "Issue Triage comparative adapter spike",
+      "status": "in-progress",
+      "candidateRefs": ["shadcn-ui", "radix-primitives", "react-aria", "material-ui", "carbon"],
+      "hypothesis": "The candidates can support a data-intensive Master-Detail or Task Queue pilot without vendor-specific concepts entering the Capability Plan.",
+      "fixtureRefs": ["design/adapter-benchmark.json"],
+      "commands": [
+        "node --test test/adapter-benchmark.test.js",
+        "npm run evaluate:adapter-spike",
+        "node --test test/adapter-browser-evidence.test.js",
+        "node scripts/validate-system.mjs"
+      ],
+      "measurements": [
+        "Sorting, selection, row action, and detail disclosure coverage",
+        "High-density and long Japanese behavior",
+        "License boundary for advanced data capabilities",
+        "Adapter-specific unresolved capabilities"
+      ],
+      "findings": [
+        "All candidates are assessed against the same twelve data-intensive capabilities.",
+        "MUI supplies the most direct native coverage but exposes a commercial detail-panel boundary.",
+        "Carbon supplies strong table, density, and accessibility coverage but RTL and virtualization remain unresolved.",
+        "Radix lacks first-party sorting, pagination, virtualization, and collection keyboard behavior.",
+        "React Aria and shadcn avoid paid blockers but require more Meridian-owned visual or composition work.",
+        "All five pinned implementations completed sort, selection, detail, pagination, focus restoration, RTL, forced-colors, and responsive automated journeys across the three required viewports.",
+        "The automated spike records candidate-specific build footprints, but manual assistive-technology and platform High Contrast evidence remains required."
+      ],
+      "artifactRefs": [
+        "design/adapter-benchmark.json",
+        "schemas/adapter-benchmark.schema.json",
+        "scripts/lib/adapter-benchmark.mjs",
+        "test/adapter-benchmark.test.js",
+        "design/adapter-browser-evaluation-plan.json",
+        "design/evidence/adapter-browser/manifest.json",
+        "design/evidence/adapter-browser/dependency-audit.json",
+        "spikes/external-adapters/package-lock.json",
+        "spikes/external-adapters/src/pilots.mjs",
+        "test/adapter-browser-evidence.test.js"
+      ]
+    }
+  ],
+  "decision": {
+    "status": "pending",
+    "recommendedCandidateId": null,
+    "rationale": "",
+    "tradeoffs": [],
+    "rejectedCandidateIds": [],
+    "unresolvedItems": [
+      "The benchmark capability boundary is research-only until the M5 Capability Plan and Adapter contract are approved.",
+      "The isolated automated comparison is complete, but VoiceOver plus Chrome manual journeys are pending for both Pilots and every candidate.",
+      "Browser UI zoom at 200 percent and Windows High Contrast remain pending; CSS zoom and forced-colors emulation are supporting evidence only.",
+      "Dependency audit findings and candidate-specific bundle footprints must be included in the final weighted comparison.",
+      "No candidate may be recommended or selected from automated evidence alone."
+    ],
+    "revisitTriggers": [
+      "React major version changes",
+      "Candidate license or pricing changes",
+      "Critical accessibility regression",
+      "Adapter capability coverage falls below the approved threshold",
+      "A non-React production target becomes a committed requirement"
+    ],
+    "approval": null
+  }
+}

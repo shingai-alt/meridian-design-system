@@ -1,0 +1,2886 @@
+{
+  "$schema": "../../schemas/adapter-token-mapping.schema.json",
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "adapter-token-mapping",
+    "id": "meridian_project_adapter_token_mapping_v1",
+    "generatedAt": "2026-07-27T08:30:00Z"
+  },
+  "source": {
+    "adapterRegistry": {
+      "ref": "design/adapter-registry.json",
+      "digest": "sha256-e0571158c477608df3975076bfb0fa39ff53f5f78d727e2f97fc1e4873476bf2"
+    },
+    "cssOutput": {
+      "ref": "tokens/build/tokens.css",
+      "digest": "sha256-9d04b47c17cbe0e0cc924d3bae98c875ede3817e39a13d0b63f0ebb20c29c55b"
+    },
+    "contexts": [
+      {
+        "id": "light-standard",
+        "theme": "light",
+        "contrast": "standard",
+        "ref": "tokens/build/meridian.tokens.json",
+        "digest": "sha256-74532fd60829d731e8e99550ba0536c74ed0b40e462184892b6383e22eb98121"
+      },
+      {
+        "id": "dark-standard",
+        "theme": "dark",
+        "contrast": "standard",
+        "ref": "tokens/build/meridian.dark.tokens.json",
+        "digest": "sha256-df61b521c1aa7770201dfa55d11ebbbb4a0d4481daadae72fe5f6f45dd7d391b"
+      },
+      {
+        "id": "light-high",
+        "theme": "light",
+        "contrast": "high",
+        "ref": "tokens/build/meridian.high-contrast.tokens.json",
+        "digest": "sha256-e4e5fa0f6ab06e82a92c0d83363f5607c8a7e0a928c4fcf482f6654d21efb716"
+      },
+      {
+        "id": "dark-high",
+        "theme": "dark",
+        "contrast": "high",
+        "ref": "tokens/build/meridian.dark.high-contrast.tokens.json",
+        "digest": "sha256-f8f5de8ffcdec149404909fec597f14c35fdf67d223acb919f02a65827b8554b"
+      }
+    ]
+  },
+  "adapters": [
+    {
+      "adapterRef": "meridian_html_runtime",
+      "tokenStrategy": "native",
+      "status": "complete",
+      "runtime": {
+        "packageRef": "packages/html-runtime/package.json",
+        "packageDigest": "sha256-e2c70f45183c0b6eb17fbee671bd6252fc7b03a2a3ad7e240d79cc0fcdf69c43",
+        "packageName": "@meridian/html-runtime",
+        "version": "0.2.0",
+        "implementationRef": "packages/html-runtime/src/index.mjs",
+        "implementationDigest": "sha256-0c4c7dad96696b0e4ccce375d5428da03e73e5bf03ff6ffc7333ed174360e992",
+        "catalogRef": "design/harness/generated/component-registry.json",
+        "catalogDigest": "sha256-1efe7d1e6aab2c77684d281bc3a586c2ed908252f14f8792649840e33f49b02c"
+      },
+      "targets": [
+        {
+          "targetRef": "alert",
+          "contractRef": "design/contracts/components/alert.contract.json",
+          "contractDigest": "sha256-ccf075cc8124b19d9a09c73ce4fc2dbd29de39c70bbf18d19df401828700bf9c",
+          "contractVersion": "0.1.0",
+          "contractStatus": "draft",
+          "runtimeRange": ">=0.1.0 <1.0.0",
+          "runtimeImplemented": true,
+          "runtimeCompatible": true,
+          "requiredOutputRefs": [
+            "--border",
+            "--danger-fg",
+            "--danger-subtle",
+            "--fg",
+            "--fg-muted",
+            "--info-fg",
+            "--info-subtle",
+            "--radius-md",
+            "--sp-3",
+            "--success-fg",
+            "--success-subtle",
+            "--surface",
+            "--warning-fg",
+            "--warning-subtle"
+          ]
+        },
+        {
+          "targetRef": "button",
+          "contractRef": "design/contracts/components/button.contract.json",
+          "contractDigest": "sha256-60ed8b6727e5e2fa27b3cafafa920980664f710064ddee9929692f21e0884229",
+          "contractVersion": "0.2.0",
+          "contractStatus": "draft",
+          "runtimeRange": ">=0.1.0 <1.0.0",
+          "runtimeImplemented": true,
+          "runtimeCompatible": true,
+          "requiredOutputRefs": [
+            "--button-icon-size-lg",
+            "--button-icon-size-md",
+            "--button-icon-size-sm",
+            "--button-icon-size-xl",
+            "--button-icon-size-xs",
+            "--button-primary-bg",
+            "--button-primary-bg-active",
+            "--button-primary-bg-hover",
+            "--button-primary-fg",
+            "--button-spinner-stroke",
+            "--control-bg",
+            "--control-bg-active",
+            "--control-bg-hover",
+            "--control-border",
+            "--control-border-hover",
+            "--ctl-lg",
+            "--ctl-md",
+            "--ctl-sm",
+            "--ctl-xl",
+            "--ctl-xs",
+            "--danger",
+            "--danger-active",
+            "--danger-hover",
+            "--danger-on-solid",
+            "--disabled",
+            "--dur-fast",
+            "--dur-loop",
+            "--ease-standard",
+            "--fg",
+            "--fg-disabled",
+            "--focus-ring",
+            "--primary",
+            "--primary-active",
+            "--primary-fg",
+            "--primary-hover",
+            "--primary-muted",
+            "--primary-subtle",
+            "--radius-sm",
+            "--sp-1",
+            "--sp-15",
+            "--sp-2",
+            "--sp-25",
+            "--sp-3",
+            "--sp-4",
+            "--sp-5",
+            "--surface",
+            "--surface-muted",
+            "--text-body",
+            "--text-label",
+            "--text-micro",
+            "--text-small"
+          ]
+        },
+        {
+          "targetRef": "description-list",
+          "contractRef": "design/contracts/components/description-list.contract.json",
+          "contractDigest": "sha256-85d38b1055059a6768a137742eaea7aa9fd5f54839b61e7cbd018bb8f9f30324",
+          "contractVersion": "0.1.0",
+          "contractStatus": "draft",
+          "runtimeRange": ">=0.2.0 <1.0.0",
+          "runtimeImplemented": true,
+          "runtimeCompatible": true,
+          "requiredOutputRefs": [
+            "--border",
+            "--border-muted",
+            "--cell-y",
+            "--fg",
+            "--fg-muted",
+            "--focus-ring",
+            "--row-h",
+            "--sp-1",
+            "--sp-2",
+            "--sp-3",
+            "--surface",
+            "--surface-muted",
+            "--table-row-hover",
+            "--text-label"
+          ]
+        },
+        {
+          "targetRef": "dialog",
+          "contractRef": "design/contracts/components/dialog.contract.json",
+          "contractDigest": "sha256-437d5d4ad5e9c9188e3aee78a6ed5188b7cfe59e951cb0cb409bcf332b187301",
+          "contractVersion": "0.2.0",
+          "contractStatus": "draft",
+          "runtimeRange": ">=0.2.0 <1.0.0",
+          "runtimeImplemented": true,
+          "runtimeCompatible": true,
+          "requiredOutputRefs": [
+            "--border",
+            "--border-muted",
+            "--ctl-lg",
+            "--dialog-w-md",
+            "--dur-normal",
+            "--ease-enter",
+            "--fg",
+            "--fg-muted",
+            "--focus-ring",
+            "--overlay",
+            "--radius-md",
+            "--radius-xl",
+            "--shadow-overlay",
+            "--sp-2",
+            "--sp-3",
+            "--sp-4",
+            "--sp-5",
+            "--sp-8",
+            "--surface-muted",
+            "--surface-overlay"
+          ]
+        },
+        {
+          "targetRef": "form-field",
+          "contractRef": "design/contracts/components/form-field.contract.json",
+          "contractDigest": "sha256-a1209680a1f4791f2894f5e6ab81a097423327ef35bc1853ea03bc1035e4c630",
+          "contractVersion": "0.1.0",
+          "contractStatus": "draft",
+          "runtimeRange": ">=0.1.0 <1.0.0",
+          "runtimeImplemented": true,
+          "runtimeCompatible": true,
+          "requiredOutputRefs": [
+            "--border",
+            "--fg",
+            "--fg-muted",
+            "--surface"
+          ]
+        },
+        {
+          "targetRef": "select",
+          "contractRef": "design/contracts/components/select.contract.json",
+          "contractDigest": "sha256-501d789bc8603fbf57c122e20eac2bc10a36465c7801a3f5977d0f06cc716c4d",
+          "contractVersion": "0.1.0",
+          "contractStatus": "draft",
+          "runtimeRange": ">=0.1.0 <1.0.0",
+          "runtimeImplemented": true,
+          "runtimeCompatible": true,
+          "requiredOutputRefs": [
+            "--border",
+            "--border-strong",
+            "--ctl-lg",
+            "--ctl-md",
+            "--ctl-sm",
+            "--dur-fast",
+            "--fg",
+            "--fg-muted",
+            "--focus-ring",
+            "--primary",
+            "--primary-subtle",
+            "--radius-sm",
+            "--sp-2",
+            "--surface",
+            "--surface-muted",
+            "--text-label"
+          ]
+        },
+        {
+          "targetRef": "status-indicator",
+          "contractRef": "design/contracts/components/status-indicator.contract.json",
+          "contractDigest": "sha256-370b5c969b1de28a5064560d75e5a0b36d4c6b4f3690f7e4c5140e08867c6976",
+          "contractVersion": "0.1.0",
+          "contractStatus": "draft",
+          "runtimeRange": ">=0.1.0 <1.0.0",
+          "runtimeImplemented": true,
+          "runtimeCompatible": true,
+          "requiredOutputRefs": [
+            "--border",
+            "--danger-fg",
+            "--danger-subtle",
+            "--fg",
+            "--fg-muted",
+            "--info-fg",
+            "--info-subtle",
+            "--radius-md",
+            "--sp-3",
+            "--success-fg",
+            "--success-subtle",
+            "--surface",
+            "--warning-fg",
+            "--warning-subtle"
+          ]
+        },
+        {
+          "targetRef": "table",
+          "contractRef": "design/contracts/components/table.contract.json",
+          "contractDigest": "sha256-cccca3c2e36eda1c153e44f98c27fdec77b84143601dd0de32e791a4554abc8b",
+          "contractVersion": "0.1.0",
+          "contractStatus": "draft",
+          "runtimeRange": ">=0.1.0 <1.0.0",
+          "runtimeImplemented": true,
+          "runtimeCompatible": true,
+          "requiredOutputRefs": [
+            "--border",
+            "--border-muted",
+            "--cell-y",
+            "--fg",
+            "--fg-muted",
+            "--fg-subtle",
+            "--focus-ring",
+            "--row-h",
+            "--surface",
+            "--surface-muted",
+            "--table-row-hover"
+          ]
+        },
+        {
+          "targetRef": "text-field",
+          "contractRef": "design/contracts/components/text-field.contract.json",
+          "contractDigest": "sha256-68082012d5aa260180a3e0676077295c7796d89efc715ef009a89262d5cd3a20",
+          "contractVersion": "0.1.0",
+          "contractStatus": "draft",
+          "runtimeRange": ">=0.1.0 <1.0.0",
+          "runtimeImplemented": true,
+          "runtimeCompatible": true,
+          "requiredOutputRefs": [
+            "--border",
+            "--ctl-lg",
+            "--ctl-md",
+            "--ctl-sm",
+            "--danger",
+            "--dur-fast",
+            "--fg",
+            "--fg-disabled",
+            "--fg-muted",
+            "--fg-subtle",
+            "--focus-ring",
+            "--input-bg",
+            "--input-border",
+            "--input-border-focus",
+            "--input-placeholder",
+            "--input-x",
+            "--primary",
+            "--radius-sm",
+            "--sp-2",
+            "--surface",
+            "--text-label"
+          ]
+        },
+        {
+          "targetRef": "validation-message",
+          "contractRef": "design/contracts/components/validation-message.contract.json",
+          "contractDigest": "sha256-b983fc59fd8e762e1a2f9bba7170bd7cb543e7e1c7aa0161248fe086e5cbb436",
+          "contractVersion": "0.1.0",
+          "contractStatus": "draft",
+          "runtimeRange": ">=0.1.0 <1.0.0",
+          "runtimeImplemented": true,
+          "runtimeCompatible": true,
+          "requiredOutputRefs": [
+            "--border",
+            "--danger-fg",
+            "--danger-subtle",
+            "--fg",
+            "--fg-muted",
+            "--info-fg",
+            "--info-subtle",
+            "--radius-md",
+            "--sp-3",
+            "--success-fg",
+            "--success-subtle",
+            "--surface",
+            "--text-small",
+            "--warning-fg",
+            "--warning-subtle"
+          ]
+        },
+        {
+          "targetRef": "workflow-step",
+          "contractRef": "design/contracts/components/workflow-step.contract.json",
+          "contractDigest": "sha256-35f8e10344c6a6718591ea1ceeae1cf6ec4f8f30679a2603bed1041328978ef8",
+          "contractVersion": "0.1.0",
+          "contractStatus": "draft",
+          "runtimeRange": ">=0.2.0 <1.0.0",
+          "runtimeImplemented": true,
+          "runtimeCompatible": true,
+          "requiredOutputRefs": [
+            "--border",
+            "--danger",
+            "--dur-normal",
+            "--fg",
+            "--fg-muted",
+            "--fg-subtle",
+            "--primary",
+            "--radius-full",
+            "--sp-2",
+            "--success",
+            "--surface",
+            "--surface-muted",
+            "--text-label",
+            "--text-small",
+            "--warning"
+          ]
+        }
+      ],
+      "mappings": [
+        {
+          "outputRef": "--border",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.border",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.border",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.border",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.border",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "description-list",
+            "dialog",
+            "form-field",
+            "select",
+            "status-indicator",
+            "table",
+            "text-field",
+            "validation-message",
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--border-muted",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.border-muted",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.border-muted",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.border-muted",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.border-muted",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "description-list",
+            "dialog",
+            "table"
+          ]
+        },
+        {
+          "outputRef": "--border-strong",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.border-strong",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.border-strong",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.border-strong",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.border-strong",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "select"
+          ]
+        },
+        {
+          "outputRef": "--button-icon-size-lg",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.button.icon.size.lg",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.button.icon.size.lg",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.button.icon.size.lg",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.button.icon.size.lg",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--button-icon-size-md",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.button.icon.size.md",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.button.icon.size.md",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.button.icon.size.md",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.button.icon.size.md",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--button-icon-size-sm",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.button.icon.size.sm",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.button.icon.size.sm",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.button.icon.size.sm",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.button.icon.size.sm",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--button-icon-size-xl",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.button.icon.size.xl",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.button.icon.size.xl",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.button.icon.size.xl",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.button.icon.size.xl",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--button-icon-size-xs",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.button.icon.size.xs",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.button.icon.size.xs",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.button.icon.size.xs",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.button.icon.size.xs",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--button-primary-bg",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.button.primary.background.default",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.button.primary.background.default",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.button.primary.background.default",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.button.primary.background.default",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--button-primary-bg-active",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.button.primary.background.active",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.button.primary.background.active",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.button.primary.background.active",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.button.primary.background.active",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--button-primary-bg-hover",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.button.primary.background.hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.button.primary.background.hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.button.primary.background.hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.button.primary.background.hover",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--button-primary-fg",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.button.primary.foreground.default",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.button.primary.foreground.default",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.button.primary.foreground.default",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.button.primary.foreground.default",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--button-spinner-stroke",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.button.spinner.stroke",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.button.spinner.stroke",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.button.spinner.stroke",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.button.spinner.stroke",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--cell-y",
+          "strategy": "contextual",
+          "modifiers": [
+            "density"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.default.cell-y",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.compact.cell-y",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.comfortable.cell-y",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "description-list",
+            "table"
+          ]
+        },
+        {
+          "outputRef": "--control-bg",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.control-background",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.control-background",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.control-background",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.control-background",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--control-bg-active",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.control-background-active",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.control-background-active",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.control-background-active",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.control-background-active",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--control-bg-hover",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.control-background-hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.control-background-hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.control-background-hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.control-background-hover",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--control-border",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.control-border",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.control-border",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.control-border",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.control-border",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--control-border-hover",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.control-border-hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.control-border-hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.control-border-hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.control-border-hover",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--ctl-lg",
+          "strategy": "contextual",
+          "modifiers": [
+            "density"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.default.ctl-lg",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.compact.ctl-lg",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.comfortable.ctl-lg",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "dialog",
+            "select",
+            "text-field"
+          ]
+        },
+        {
+          "outputRef": "--ctl-md",
+          "strategy": "contextual",
+          "modifiers": [
+            "density"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.default.ctl-md",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.compact.ctl-md",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.comfortable.ctl-md",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "select",
+            "text-field"
+          ]
+        },
+        {
+          "outputRef": "--ctl-sm",
+          "strategy": "contextual",
+          "modifiers": [
+            "density"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.default.ctl-sm",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.compact.ctl-sm",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.comfortable.ctl-sm",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "select",
+            "text-field"
+          ]
+        },
+        {
+          "outputRef": "--ctl-xl",
+          "strategy": "contextual",
+          "modifiers": [
+            "density"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.default.ctl-xl",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.compact.ctl-xl",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.comfortable.ctl-xl",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--ctl-xs",
+          "strategy": "contextual",
+          "modifiers": [
+            "density"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.default.ctl-xs",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.compact.ctl-xs",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.comfortable.ctl-xs",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--danger",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.danger",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.danger",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.danger",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.danger",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "text-field",
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--danger-active",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.danger-active",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.danger-active",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.danger-active",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.danger-active",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--danger-fg",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.danger-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.danger-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.danger-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.danger-foreground",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "status-indicator",
+            "validation-message"
+          ]
+        },
+        {
+          "outputRef": "--danger-hover",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.danger-hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.danger-hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.danger-hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.danger-hover",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--danger-on-solid",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.danger-on-solid",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.danger-on-solid",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.danger-on-solid",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.danger-on-solid",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--danger-subtle",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.danger-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.danger-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.danger-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.danger-subtle",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "status-indicator",
+            "validation-message"
+          ]
+        },
+        {
+          "outputRef": "--dialog-w-md",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "layout.dimension.dialog-w-md",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "dialog"
+          ]
+        },
+        {
+          "outputRef": "--disabled",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.disabled",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.disabled",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.disabled",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.disabled",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--dur-fast",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "motion.duration.fast",
+              "tokenType": "duration"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "select",
+            "text-field"
+          ]
+        },
+        {
+          "outputRef": "--dur-loop",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "motion.duration.loop",
+              "tokenType": "duration"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--dur-normal",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "motion.duration.normal",
+              "tokenType": "duration"
+            }
+          ],
+          "usedByTargetRefs": [
+            "dialog",
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--ease-enter",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "motion.easing.enter",
+              "tokenType": "cubicBezier"
+            }
+          ],
+          "usedByTargetRefs": [
+            "dialog"
+          ]
+        },
+        {
+          "outputRef": "--ease-standard",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "motion.easing.standard",
+              "tokenType": "cubicBezier"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--fg",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.foreground",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "button",
+            "description-list",
+            "dialog",
+            "form-field",
+            "select",
+            "status-indicator",
+            "table",
+            "text-field",
+            "validation-message",
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--fg-disabled",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.foreground-disabled",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.foreground-disabled",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.foreground-disabled",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.foreground-disabled",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "text-field"
+          ]
+        },
+        {
+          "outputRef": "--fg-muted",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.foreground-muted",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.foreground-muted",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.foreground-muted",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.foreground-muted",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "description-list",
+            "dialog",
+            "form-field",
+            "select",
+            "status-indicator",
+            "table",
+            "text-field",
+            "validation-message",
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--fg-subtle",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.foreground-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.foreground-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.foreground-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.foreground-subtle",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "table",
+            "text-field",
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--focus-ring",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.focus-ring",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.focus-ring",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.focus-ring",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.focus-ring",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "description-list",
+            "dialog",
+            "select",
+            "table",
+            "text-field"
+          ]
+        },
+        {
+          "outputRef": "--info-fg",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.info-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.info-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.info-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.info-foreground",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "status-indicator",
+            "validation-message"
+          ]
+        },
+        {
+          "outputRef": "--info-subtle",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.info-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.info-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.info-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.info-subtle",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "status-indicator",
+            "validation-message"
+          ]
+        },
+        {
+          "outputRef": "--input-bg",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.input.background.default",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.input.background.default",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.input.background.default",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.input.background.default",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "text-field"
+          ]
+        },
+        {
+          "outputRef": "--input-border",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.input.border.default",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.input.border.default",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.input.border.default",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.input.border.default",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "text-field"
+          ]
+        },
+        {
+          "outputRef": "--input-border-focus",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.input.border.focus",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.input.border.focus",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.input.border.focus",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.input.border.focus",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "text-field"
+          ]
+        },
+        {
+          "outputRef": "--input-placeholder",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.input.placeholder",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.input.placeholder",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.input.placeholder",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.input.placeholder",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "text-field"
+          ]
+        },
+        {
+          "outputRef": "--input-x",
+          "strategy": "contextual",
+          "modifiers": [
+            "density"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.default.input-x",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.compact.input-x",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.comfortable.input-x",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "text-field"
+          ]
+        },
+        {
+          "outputRef": "--overlay",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.overlay",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.overlay",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.overlay",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.overlay",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "dialog"
+          ]
+        },
+        {
+          "outputRef": "--primary",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.primary",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.primary",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.primary",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.primary",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "select",
+            "text-field",
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--primary-active",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.primary-active",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.primary-active",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.primary-active",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.primary-active",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--primary-fg",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.primary-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.primary-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.primary-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.primary-foreground",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--primary-hover",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.primary-hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.primary-hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.primary-hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.primary-hover",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--primary-muted",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.primary-muted",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.primary-muted",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.primary-muted",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.primary-muted",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--primary-subtle",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.primary-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.primary-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.primary-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.primary-subtle",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "select"
+          ]
+        },
+        {
+          "outputRef": "--radius-full",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "radius.full",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--radius-md",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "radius.md",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "dialog",
+            "status-indicator",
+            "validation-message"
+          ]
+        },
+        {
+          "outputRef": "--radius-sm",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "radius.sm",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "select",
+            "text-field"
+          ]
+        },
+        {
+          "outputRef": "--radius-xl",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "radius.xl",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "dialog"
+          ]
+        },
+        {
+          "outputRef": "--row-h",
+          "strategy": "contextual",
+          "modifiers": [
+            "density"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.default.row-h",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.compact.row-h",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.comfortable.row-h",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "description-list",
+            "table"
+          ]
+        },
+        {
+          "outputRef": "--shadow-overlay",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "shadow.level.overlay",
+              "tokenType": "shadow"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "shadow.level.overlay",
+              "tokenType": "shadow"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "shadow.level.overlay",
+              "tokenType": "shadow"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "shadow.level.overlay",
+              "tokenType": "shadow"
+            }
+          ],
+          "usedByTargetRefs": [
+            "dialog"
+          ]
+        },
+        {
+          "outputRef": "--sp-1",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "spacing.1",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "description-list"
+          ]
+        },
+        {
+          "outputRef": "--sp-15",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "spacing.15",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--sp-2",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "spacing.2",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "description-list",
+            "dialog",
+            "select",
+            "text-field",
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--sp-25",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "spacing.25",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--sp-3",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "spacing.3",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "button",
+            "description-list",
+            "dialog",
+            "status-indicator",
+            "validation-message"
+          ]
+        },
+        {
+          "outputRef": "--sp-4",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "spacing.4",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "dialog"
+          ]
+        },
+        {
+          "outputRef": "--sp-5",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "spacing.5",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "dialog"
+          ]
+        },
+        {
+          "outputRef": "--sp-8",
+          "strategy": "direct",
+          "modifiers": [],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "spacing.8",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "dialog"
+          ]
+        },
+        {
+          "outputRef": "--success",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.success",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.success",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.success",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.success",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--success-fg",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.success-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.success-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.success-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.success-foreground",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "status-indicator",
+            "validation-message"
+          ]
+        },
+        {
+          "outputRef": "--success-subtle",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.success-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.success-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.success-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.success-subtle",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "status-indicator",
+            "validation-message"
+          ]
+        },
+        {
+          "outputRef": "--surface",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.surface",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.surface",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.surface",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.surface",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "button",
+            "description-list",
+            "form-field",
+            "select",
+            "status-indicator",
+            "table",
+            "text-field",
+            "validation-message",
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--surface-muted",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.surface-muted",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.surface-muted",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.surface-muted",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.surface-muted",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "description-list",
+            "dialog",
+            "select",
+            "table",
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--surface-overlay",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.surface-overlay",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.surface-overlay",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.surface-overlay",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.surface-overlay",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "dialog"
+          ]
+        },
+        {
+          "outputRef": "--table-row-hover",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "component.table.row.background.hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "component.table.row.background.hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "component.table.row.background.hover",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "component.table.row.background.hover",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "description-list",
+            "table"
+          ]
+        },
+        {
+          "outputRef": "--text-body",
+          "strategy": "contextual",
+          "modifiers": [
+            "density"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.default.text-body",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.compact.text-body",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.comfortable.text-body",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--text-label",
+          "strategy": "contextual",
+          "modifiers": [
+            "density"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.default.text-label",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.compact.text-label",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.comfortable.text-label",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "description-list",
+            "select",
+            "text-field",
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--text-micro",
+          "strategy": "contextual",
+          "modifiers": [
+            "density"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.default.text-micro",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.compact.text-micro",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.comfortable.text-micro",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button"
+          ]
+        },
+        {
+          "outputRef": "--text-small",
+          "strategy": "contextual",
+          "modifiers": [
+            "density"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.default.text-small",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.compact.text-small",
+              "tokenType": "dimension"
+            },
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "density.comfortable.text-small",
+              "tokenType": "dimension"
+            }
+          ],
+          "usedByTargetRefs": [
+            "button",
+            "validation-message",
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--warning",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.warning",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.warning",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.warning",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.warning",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "workflow-step"
+          ]
+        },
+        {
+          "outputRef": "--warning-fg",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.warning-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.warning-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.warning-foreground",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.warning-foreground",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "status-indicator",
+            "validation-message"
+          ]
+        },
+        {
+          "outputRef": "--warning-subtle",
+          "strategy": "contextual",
+          "modifiers": [
+            "theme",
+            "contrast"
+          ],
+          "sources": [
+            {
+              "contextRef": "light-standard",
+              "tokenPath": "color.semantic.warning-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-standard",
+              "tokenPath": "color.semantic.warning-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "light-high",
+              "tokenPath": "color.semantic.warning-subtle",
+              "tokenType": "color"
+            },
+            {
+              "contextRef": "dark-high",
+              "tokenPath": "color.semantic.warning-subtle",
+              "tokenType": "color"
+            }
+          ],
+          "usedByTargetRefs": [
+            "alert",
+            "status-indicator",
+            "validation-message"
+          ]
+        }
+      ],
+      "unmappedOutputRefs": [],
+      "incompatibilities": []
+    }
+  ]
+}

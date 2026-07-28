@@ -1,0 +1,148 @@
+{
+  "$schema": "../../schemas/capability-plan.schema.json",
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "capability-plan",
+    "id": "capabilities_team_invitation",
+    "status": "blocked",
+    "revision": 1,
+    "createdAt": "2026-07-27T07:00:00Z"
+  },
+  "source": {
+    "directionSetRef": "examples/ui-generation/team-invitation.direction-set.json",
+    "directionSetDigest": "sha256-633f6b862f73ab888245416145191049cd20278ab187516ab39b925a90955fbe",
+    "taxonomyRef": "design/capability-taxonomy.json",
+    "taxonomyDigest": "sha256-32fc7741056f4a2516555000c09bed080e68afc46a1dd43433792d06fa1f74c0"
+  },
+  "direction": {
+    "directionRef": "direction_dedicated_stages",
+    "selectionBasis": "recommendation",
+    "approvalDigest": null
+  },
+  "requirements": [
+    {
+      "id": "capability_recipient_email",
+      "capabilityRef": "input.text",
+      "responsibilityRefs": ["responsibility_compose"],
+      "requirementRefs": ["req_compose", "req_wrong_recipient", "req_duplicate_send"],
+      "requiredSemantics": ["programmatic-label", "value-editing", "error-association"],
+      "requiredStates": ["default", "error", "disabled"],
+      "priority": "required",
+      "rationale": "Each recipient email must remain independently editable and expose duplicate or format errors before review."
+    },
+    {
+      "id": "capability_recipient_role",
+      "capabilityRef": "input.choice",
+      "responsibilityRefs": ["responsibility_compose"],
+      "requirementRefs": ["req_compose", "req_recipient_role", "req_excess_privilege"],
+      "requiredSemantics": ["programmatic-label", "single-selection", "keyboard-selection"],
+      "requiredStates": ["default", "error", "disabled"],
+      "priority": "required",
+      "rationale": "Each recipient must receive exactly one permitted role through a labelled keyboard-operable choice."
+    },
+    {
+      "id": "capability_recipient_batch",
+      "capabilityRef": "collection.editable",
+      "responsibilityRefs": ["responsibility_compose"],
+      "requirementRefs": ["req_compose", "req_batch_limit", "req_responsive", "req_wrong_recipient"],
+      "requiredSemantics": ["ordered-items", "item-labelling", "add-remove", "item-validation"],
+      "requiredStates": ["default", "error", "disabled"],
+      "priority": "required",
+      "rationale": "Up to ten recipient-role pairs require stable ordering, row identity, validation, add, and remove operations at every viewport."
+    },
+    {
+      "id": "capability_inline_correction",
+      "capabilityRef": "feedback.field-validation",
+      "responsibilityRefs": ["responsibility_compose"],
+      "requirementRefs": ["req_wrong_recipient", "req_duplicate_send"],
+      "requiredSemantics": ["error-association", "corrective-guidance"],
+      "requiredStates": ["default", "error"],
+      "priority": "required",
+      "rationale": "Invalid or duplicate recipients require local, associated guidance without losing the rest of the batch."
+    },
+    {
+      "id": "capability_review_confirmation",
+      "capabilityRef": "disclosure.confirmation",
+      "responsibilityRefs": ["responsibility_review"],
+      "requirementRefs": ["req_send", "req_owner_only", "req_wrong_recipient", "req_excess_privilege"],
+      "requiredSemantics": ["labelled-boundary", "focus-management", "confirm-cancel", "consequence-summary"],
+      "requiredStates": ["default", "loading", "error"],
+      "priority": "required",
+      "rationale": "The final commit must summarize recipients, roles, and high-impact consequences before the only send action."
+    },
+    {
+      "id": "capability_primary_actions",
+      "capabilityRef": "action.trigger",
+      "responsibilityRefs": ["responsibility_manage", "responsibility_compose", "responsibility_review", "responsibility_result"],
+      "requirementRefs": ["req_send", "req_manage", "req_owner_only", "req_async", "req_responsive", "req_duplicate_send"],
+      "requiredSemantics": ["accessible-name", "native-activation", "disabled-state", "busy-state"],
+      "requiredStates": ["default", "loading", "disabled"],
+      "priority": "required",
+      "rationale": "Continue, send, resend, cancel, and retry actions require named native activation with permission and duplicate-submit protection."
+    },
+    {
+      "id": "capability_invitation_statuses",
+      "capabilityRef": "data.status-list",
+      "responsibilityRefs": ["responsibility_manage", "responsibility_result"],
+      "requirementRefs": ["req_manage", "req_owner_only", "req_async", "req_expiry", "req_responsive", "req_duplicate_send"],
+      "requiredSemantics": ["collection-labelling", "state-text", "row-action-name", "reading-order"],
+      "requiredStates": ["default", "loading", "empty", "error", "permission", "pending"],
+      "priority": "required",
+      "rationale": "Pending and per-recipient outcomes must remain comparable with expiry, permission-aware actions, and non-color status text."
+    },
+    {
+      "id": "capability_result_feedback",
+      "capabilityRef": "feedback.section-status",
+      "responsibilityRefs": ["responsibility_result"],
+      "requirementRefs": ["req_async", "req_duplicate_send"],
+      "requiredSemantics": ["status-boundary", "non-color-cue", "recovery-action"],
+      "requiredStates": ["default", "loading", "error", "success", "pending"],
+      "priority": "required",
+      "rationale": "Partial success and failures require an announced outcome that preserves successes and routes only failed recipients to recovery."
+    },
+    {
+      "id": "capability_stage_progress",
+      "capabilityRef": "navigation.task-progress",
+      "responsibilityRefs": ["responsibility_compose", "responsibility_review", "responsibility_result"],
+      "requirementRefs": ["req_responsive", "req_duplicate_send"],
+      "requiredSemantics": ["current-step", "ordered-steps", "transition-state"],
+      "requiredStates": ["default", "disabled", "success"],
+      "priority": "required",
+      "rationale": "The selected dedicated staged direction requires users to distinguish composition, review, and result without re-entering completed actions."
+    }
+  ],
+  "coverage": {
+    "requiredRequirementRefs": [
+      "req_compose",
+      "req_send",
+      "req_manage",
+      "req_owner_only",
+      "req_batch_limit",
+      "req_recipient_role",
+      "req_async",
+      "req_expiry",
+      "req_responsive",
+      "req_wrong_recipient",
+      "req_excess_privilege",
+      "req_duplicate_send"
+    ],
+    "coveredRequirementRefs": [
+      "req_compose",
+      "req_send",
+      "req_manage",
+      "req_owner_only",
+      "req_batch_limit",
+      "req_recipient_role",
+      "req_async",
+      "req_expiry",
+      "req_responsive",
+      "req_wrong_recipient",
+      "req_excess_privilege",
+      "req_duplicate_send"
+    ],
+    "uncoveredRequirementRefs": []
+  },
+  "blockers": [
+    "Direction Set requires Design Owner approval before this recommendation-based plan can become ready."
+  ]
+}

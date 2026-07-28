@@ -1,0 +1,82 @@
+{
+  "$schema": "../schemas/visual-profile-registry.schema.json",
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "visual-profile-registry",
+    "id": "meridian_ui_generation_visual_profiles",
+    "version": 1,
+    "status": "active",
+    "updatedAt": "2026-07-27T12:00:00Z"
+  },
+  "selectionPolicy": {
+    "defaultProfileRef": "calm-utility",
+    "requiresExplicitManifestSelection": true,
+    "adapterIndependent": true,
+    "structuralMutationAllowed": false
+  },
+  "profiles": [
+    {
+      "id": "calm-utility",
+      "title": "Calm Utility",
+      "intent": "長時間利用するSaaS・管理画面を、静かな階層と無理のない密度で明瞭にする。",
+      "bestFor": [
+        "一般的なSaaS設定と管理",
+        "確認を伴う段階的タスク",
+        "フォームと要約が混在する業務フロー"
+      ],
+      "avoidWhen": [
+        "一画面で極端に多い行を高速処理する必要がある",
+        "ブランド表現自体が主要な製品価値である"
+      ],
+      "presentation": {
+        "density": "comfortable",
+        "sectionRhythm": "balanced",
+        "surfaceEmphasis": "quiet",
+        "dataEmphasis": "balanced",
+        "workspaceExpression": "restrained"
+      }
+    },
+    {
+      "id": "dense-operations",
+      "title": "Dense Operations",
+      "intent": "監視・分類・反復操作を行う運用画面で、証拠と操作対象を高密度に比較できるようにする。",
+      "bestFor": [
+        "トリアージとキュー処理",
+        "多数行の比較と反復操作",
+        "運用状況の監視と例外対応"
+      ],
+      "avoidWhen": [
+        "初見利用者向けの説明が中心である",
+        "不可逆操作の熟慮に広い余白が必要である"
+      ],
+      "presentation": {
+        "density": "compact",
+        "sectionRhythm": "tight",
+        "surfaceEmphasis": "structured",
+        "dataEmphasis": "high",
+        "workspaceExpression": "operational"
+      }
+    },
+    {
+      "id": "expressive-workspace",
+      "title": "Expressive Workspace",
+      "intent": "創作・探索型の製品で、機能階層を保ちながらブランドらしい空間と主要成果を強調する。",
+      "bestFor": [
+        "創作と探索を中心にしたWorkspace",
+        "成果物のプレビューが主要情報である",
+        "ブランドの個性が理解を助ける製品"
+      ],
+      "avoidWhen": [
+        "高密度な監視と比較が中心である",
+        "装飾が業務判断の証拠を弱める"
+      ],
+      "presentation": {
+        "density": "spacious",
+        "sectionRhythm": "expansive",
+        "surfaceEmphasis": "expressive",
+        "dataEmphasis": "supporting",
+        "workspaceExpression": "branded"
+      }
+    }
+  ]
+}

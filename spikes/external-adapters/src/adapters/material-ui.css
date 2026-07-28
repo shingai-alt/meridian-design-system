@@ -1,0 +1,25 @@
+.adapter-material-ui .MuiFormControl-root {
+  min-width: 0;
+}
+
+.adapter-material-ui .mui-field {
+  display: inline-flex;
+}
+
+.adapter-material-ui .MuiFormControlLabel-root {
+  margin-inline-start: 0;
+}
+
+.adapter-material-ui .mui-checkbox-compact {
+  margin: 0;
+}
+
+.adapter-material-ui .MuiDataGrid-root {
+  border-color: #dfe5ed;
+  background: white;
+}
+
+.adapter-material-ui .MuiDataGrid-cell {
+  white-space: normal;
+  line-height: 1.35;
+}

@@ -1,332 +1,176 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.2.0",
+  "implementationReadiness": {
+    "status": "ready",
+    "policyVersion": "0.1.0",
+    "reviewedAt": "2026-07-22",
+    "criteria": [
+      { "id": "intent-boundary", "status": "passed", "evidence": ["intent", "selectionRules", "components/avatar.md#when-to-use"] },
+      { "id": "public-api", "status": "passed", "evidence": ["props", "runtime.compatibility", "components/avatar.md#react-api-freeze"] },
+      { "id": "runtime-semantics", "status": "passed", "evidence": ["runtime", "states", "keyboardInteractions"] },
+      { "id": "accessibility", "status": "passed", "evidence": ["accessibility", "negativeExamples", "rules"] },
+      { "id": "token-binding", "status": "passed", "evidence": ["variants", "sizes", "tokenBindings"] },
+      { "id": "responsive-behavior", "status": "passed", "evidence": ["responsiveBehavior", "components/avatar.md#responsive-behavior"] },
+      { "id": "showcase-scenarios", "status": "passed", "evidence": ["requiredScenarios", "js/components-registry.js#avatar", "js/ui-builders.js"] },
+      { "id": "validation-evidence", "status": "passed", "evidence": ["design/reviews/components.avatar.2026-07-22-components-avatar-02.review.json", "test/component-specs.test.js"] }
+    ],
+    "remainingToStable": [
+      "React componentをContract 0.2.0どおりに実装する。",
+      "画像load/error遷移を含むunit/integration testと全theme matrixのvisual regressionをCIへ追加する。"
+    ]
+  },
   "id": "avatar",
   "name": "Avatar",
   "status": "draft",
   "category": "core",
-  "description": "ユーザー・チームを表す円形の識別子。イニシャルまたは画像。",
-  "source": {
-    "humanDoc": "components/avatar.md",
-    "registry": "js/components-registry.js#avatar"
-  },
+  "description": "1つの人物、チーム、resourceを画像または明示fallbackで表す非interactiveな視覚識別子。",
+  "source": { "humanDoc": "components/avatar.md", "registry": "js/components-registry.js#avatar" },
   "intent": {
     "whenToUse": [
-      "担当者・作成者の表示",
-      "メンバーリスト"
+      "人物、チーム、resourceを一覧やsummaryで補助的に識別する。",
+      "画像を取得できない間も、呼び出し側が決めた短いfallbackで同じ対象を識別する。"
     ],
     "whenNotToUse": [
-      "装飾目的のアイコン"
+      "対象名の唯一の可視表現にはTextを使う。",
+      "presence、availability、system statusにはStatus IndicatorまたはBadgeを使う。",
+      "クリック、menu opening、selectionをAvatar rootへ持たせず、Button、Icon Button、User Menuなどの親controlを使う。",
+      "重なり、人数省略、+N、集合全体の要約はAvatarではなく親collection/compositionが所有する。"
     ],
-    "principles": [
-      1,
-      2,
-      3,
-      5,
-      6
-    ]
+    "principles": [1, 2, 3, 5, 6]
   },
   "anatomy": [
-    {
-      "part": "root",
-      "required": true,
-      "description": "Semantic display root."
-    },
-    {
-      "part": "content",
-      "required": true,
-      "description": "Primary perceivable content."
-    },
-    {
-      "part": "supporting",
-      "required": false,
-      "description": "Optional metadata or visual reinforcement."
-    }
+    { "part": "root", "required": true, "description": "意味やfocusを追加しない非interactiveなspan root。" },
+    { "part": "image", "required": false, "description": "srcがloadedのときだけ表示するnative img。altをそのまま渡す。" },
+    { "part": "fallback", "required": true, "description": "no-src、loading、errorで表示するcaller-providedの1〜2 grapheme cluster。自動生成しない。" }
   ],
   "variants": {
     "default": {
-      "intent": "標準文脈。",
-      "tokenRefs": {},
+      "intent": "単一対象の画像またはfallbackを同じ円形geometryで表示する。",
+      "tokenRefs": { "background": "--primary-muted", "foreground": "--primary", "border": "--border", "radius": "--radius-full" },
       "states": {}
     }
   },
   "sizes": {
-    "xs": {
-      "controlHeight": "--ctl-xs",
-      "paddingInline": [
-        "--sp-2",
-        "--sp-2"
-      ],
-      "gap": "--sp-2",
-      "textToken": "--text-label",
-      "iconSize": "12"
-    },
-    "sm": {
-      "controlHeight": "--ctl-sm",
-      "paddingInline": [
-        "--sp-2",
-        "--sp-2"
-      ],
-      "gap": "--sp-2",
-      "textToken": "--text-label",
-      "iconSize": "14"
-    },
-    "md": {
-      "controlHeight": "--ctl-md",
-      "paddingInline": [
-        "--sp-2",
-        "--sp-2"
-      ],
-      "gap": "--sp-2",
-      "textToken": "--text-label",
-      "iconSize": "16"
-    },
-    "lg": {
-      "controlHeight": "--ctl-lg",
-      "paddingInline": [
-        "--sp-2",
-        "--sp-2"
-      ],
-      "gap": "--sp-2",
-      "textToken": "--text-label",
-      "iconSize": "18"
-    }
+    "xs": { "controlHeight": "--ctl-xs", "paddingInline": ["0", "0"], "gap": "0", "textToken": "--text-micro" },
+    "sm": { "controlHeight": "--ctl-sm", "paddingInline": ["0", "0"], "gap": "0", "textToken": "--text-micro" },
+    "md": { "controlHeight": "--ctl-md", "paddingInline": ["0", "0"], "gap": "0", "textToken": "--text-small" },
+    "lg": { "controlHeight": "--ctl-lg", "paddingInline": ["0", "0"], "gap": "0", "textToken": "--text-label" }
   },
   "states": [
-    {
-      "id": "default",
-      "description": "通常状態。意味、label、valueを省略しない。",
-      "requiredBehavior": [
-        "通常状態。意味、label、valueを省略しない。"
-      ]
-    }
+    { "id": "default", "description": "srcがなくfallbackを表示する。", "requiredBehavior": ["altが空ならfallbackをaccessibility treeから除外し、空でなければ同じaltでimg roleを提供する。"] },
+    { "id": "loading", "description": "画像取得中にfallbackを表示する。", "requiredBehavior": ["layoutを変えず、画像の代わりに同じfallback semanticsを維持する。"] },
+    { "id": "loaded", "description": "取得済み画像をnative imgで表示する。", "requiredBehavior": ["img altへpropをそのまま渡し、object-fit coverでgeometryを保つ。"] },
+    { "id": "error", "description": "画像取得に失敗しfallbackへ戻る。", "requiredBehavior": ["fallbackへ切り替え、error textやretry UIはAvatar自身に追加しない。"] }
   ],
   "props": [
-    {
-      "name": "size",
-      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
-      "required": false,
-      "default": "md",
-      "description": "Density内の相対sizeを選ぶ。"
-    },
-    {
-      "name": "name",
-      "type": "string",
-      "required": false,
-      "default": null,
-      "description": "Name"
-    }
+    { "name": "src", "type": "string | undefined", "required": false, "default": null, "description": "人物・チーム・resource画像のURL。未指定時はfallbackを表示する。" },
+    { "name": "alt", "type": "string", "required": true, "default": null, "description": "画像のtext alternative。隣接する可視名や親control名と重複する場合は明示的に空文字を渡す。" },
+    { "name": "fallback", "type": "string", "required": true, "default": null, "description": "呼び出し側がlocaleと対象文脈から決める1〜2 grapheme cluster。nameから自動生成・切り詰めしない。" },
+    { "name": "size", "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"", "required": false, "default": "md", "description": "非interactiveな識別子geometry。選択値はviewportから暗黙変更せず、各値はsystem densityへ追従する。" },
+    { "name": "ref", "type": "ForwardedRef<HTMLSpanElement>", "required": false, "default": null, "description": "非interactive root spanへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": [
-      "--surface",
-      "--border",
-      "--fg",
-      "--fg-muted"
-    ],
-    "density": [
-      "--ctl-xs",
-      "--ctl-sm",
-      "--ctl-md",
-      "--ctl-lg",
-      "--text-label"
-    ],
-    "spacing": [
-      "--sp-2"
-    ]
+    "semanticColor": ["--primary-muted", "--primary", "--border"],
+    "density": ["--ctl-xs", "--ctl-sm", "--ctl-md", "--ctl-lg", "--text-micro", "--text-small", "--text-label"],
+    "radius": ["--radius-full"]
   },
   "tokenBindings": {
-    "coverage": "partial",
+    "coverage": "complete",
     "bindings": [
-      {
-        "slot": "token.surface.value",
-        "source": "--surface",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.border.value",
-        "source": "--border",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg.value",
-        "source": "--fg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.fg-muted.value",
-        "source": "--fg-muted",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.ctl-xs.value",
-        "source": "--ctl-xs",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.ctl-sm.value",
-        "source": "--ctl-sm",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.ctl-md.value",
-        "source": "--ctl-md",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.ctl-lg.value",
-        "source": "--ctl-lg",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.text-label.value",
-        "source": "--text-label",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
-      },
-      {
-        "slot": "token.sp-2.value",
-        "source": "--sp-2",
-        "scope": "semantic",
-        "componentToken": null,
-        "aliases": null,
-        "trigger": null,
-        "reason": "Avatarの公開visual contractで用途tokenとして共有する。"
-      }
+      { "slot": "all.root.background", "source": "--primary-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "fallbackの補助識別面をbrand系subtle surfaceへ揃える。" },
+      { "slot": "all.fallback.foreground", "source": "--primary", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "fallback文字をsubtle面上で判別可能にする。" },
+      { "slot": "all.root.border", "source": "--border", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "背景や画像色に依存せず円形境界を識別する。" },
+      { "slot": "all.root.radius", "source": "--radius-full", "scope": "reference", "componentToken": null, "aliases": null, "trigger": "intrinsic-component-value", "reason": "Avatarの円形shapeをsystem radiusへ結線する。" },
+      { "slot": "size.xs.inline-block", "source": "--ctl-xs", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "xs Avatarをsystem densityの最小geometryへ揃える。" },
+      { "slot": "size.sm.inline-block", "source": "--ctl-sm", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "sm Avatarをsystem densityのcompact geometryへ揃える。" },
+      { "slot": "size.md.inline-block", "source": "--ctl-md", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "md Avatarをsystem densityの標準geometryへ揃える。" },
+      { "slot": "size.lg.inline-block", "source": "--ctl-lg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "lg Avatarをsystem densityのlarge geometryへ揃える。" },
+      { "slot": "size.xs-sm.fallback-font-size", "source": "--text-micro", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "小型円内のfallbackをsystem micro scaleへ揃える。" },
+      { "slot": "size.md.fallback-font-size", "source": "--text-small", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "標準円内のfallbackをsystem small scaleへ揃える。" },
+      { "slot": "size.lg.fallback-font-size", "source": "--text-label", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "large円内のfallbackをsystem label scaleへ揃える。" }
     ],
-    "unboundSlots": [
-      {
-        "slot": "implementation.visual-state-audit",
-        "reason": "React package実装時にDOM、state selector、全visual slotの最終bindingを照合する。",
-        "owner": "components.avatar"
-      }
-    ]
+    "unboundSlots": []
   },
   "accessibility": {
     "requirements": [
-      "表示専用rootを不要にtab順へ追加しない。",
-      "状態は色だけで表さずtext、icon、shapeを併用する。"
+      "Avatar rootは非interactiveでtab stop、button role、click handlerを持たない。",
+      "単独で対象を伝えるinformative Avatarは空でないaltを持つ。",
+      "隣接する可視名または親controlのaccessible nameと重複するAvatarはaltを空文字にする。",
+      "fallback文字列をaccessible nameとして推測せず、空でないaltだけをfallbackのaria-labelへ使う。",
+      "画像、fallback、load/errorの切替で対象のtext alternativeを変えない。"
     ],
     "aria": [
-      "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+      "loaded時はnative img altを使う。",
+      "informative fallbackだけrole=imgとaria-label=altを持つ。",
+      "decorative fallbackはaria-hidden=trueにする。",
+      "title、aria-live、aria-busy、aria-pressed、aria-selectedをAvatarへ追加しない。"
     ],
-    "focus": [
-      "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
-    ]
+    "focus": ["Avatarはfocusを受け取らない。操作文脈では親native controlだけがfocusを所有する。"]
   },
   "keyboardInteractions": [],
   "usagePatterns": [
     {
-      "id": "recommended-1",
-      "title": "Primary context",
-      "description": "担当者・作成者の表示",
-      "recommended": [
-        "画像が無い場合はイニシャルにフォールバックする。"
-      ],
-      "avoid": [
-        "装飾目的のアイコン"
-      ]
+      "id": "adjacent-name",
+      "title": "Adjacent visible name",
+      "description": "可視名を補助する装飾Avatar。",
+      "recommended": ["alt=\"\"を渡し、Textまたは親controlを唯一の名前にする。"],
+      "avoid": ["同じ人物名を画像と隣接Textで二重に読み上げる。"]
     },
     {
-      "id": "recommended-2",
-      "title": "Secondary context",
-      "description": "メンバーリスト",
-      "recommended": [
-        "重ね表示(AvatarStack)は 3〜4 個で省略し「+N」を付ける。"
-      ],
-      "avoid": [
-        "装飾目的のアイコン"
-      ]
+      "id": "standalone-identity",
+      "title": "Standalone identity",
+      "description": "Avatar自身が対象を伝えるinformative image。",
+      "recommended": ["対象を簡潔に識別するlocalized altを渡す。", "loading/errorでも同じaltを維持する。"],
+      "avoid": ["fallback文字列やfile nameからaltを自動生成する。"]
+    },
+    {
+      "id": "collection-boundary",
+      "title": "Collection composition",
+      "description": "複数Avatarの重なり、+N、集合要約は親が管理する。",
+      "recommended": ["子Avatarはalt=\"\"とし、親collectionへ対象名と残数を含む要約を付ける。"],
+      "avoid": ["+NをAvatarのfallbackとして表す。", "Avatar APIへmaxやusersを追加する。"]
     }
   ],
   "responsiveBehavior": {
-    "desktop": {
-      "summary": "DesktopでのAvatar。",
-      "rules": [
-        "Contentと周辺layoutに応じたintrinsic sizeを使う。",
-        "Viewportだけを理由にdensityを変更しない。"
-      ],
-      "avoid": [
-        "Hoverだけで状態や操作を伝えない。"
-      ]
-    },
-    "mobile": {
-      "summary": "MobileでのAvatar。",
-      "rules": [
-        "意味とDOM順を変えず、wrapとavailable widthで適応する。",
-        "省略した情報へ別経路から到達できるようにする。"
-      ],
-      "avoid": [
-        "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
-      ]
-    },
-    "touch": {
-      "summary": "Touch入力でのAvatar。",
-      "rules": [
-        "表示専用rootをtab順へ追加しない。",
-        "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
-      ],
-      "avoid": [
-        "小さな隣接targetやgestureだけの操作を作らない。"
-      ]
-    }
+    "desktop": { "summary": "固定された4 sizeから文脈に合うものを明示選択する。", "rules": ["画像とfallbackで同じgeometryを維持する。", "集合のoverlapとspacingは親layoutが管理する。"], "avoid": ["hoverだけで対象名を提供する。"] },
+    "mobile": { "summary": "同じ意味、alt、fallback、size APIを保つ。", "rules": ["viewportだけを理由にaltやfallbackを省略しない。", "必要なら親layoutが別sizeを明示指定する。"], "avoid": ["mobile専用Avatarを複製する。"] },
+    "touch": { "summary": "Avatarはtargetではなく、親controlがtarget sizeを所有する。", "rules": ["操作可能に見せる場合はAvatarをButtonやUser Menu trigger内へ配置する。", "主要touch操作の親controlは原則44px以上にする。"], "avoid": ["20〜40pxのAvatar rootへ直接onClickを付ける。"] }
   },
-  "rules": [
-    "NO_RAW_HEX_COLOR",
-    "SPACING_FROM_TOKENS_ONLY",
-    "RADIUS_FROM_TOKENS_ONLY",
-    "CONTRAST_AA_MINIMUM"
-  ],
+  "rules": ["NO_RAW_HEX_COLOR", "RADIUS_FROM_TOKENS_ONLY", "CONTRAST_AA_MINIMUM", "NO_POSITIVE_TABINDEX", "INTERACTIVE_NAME_REQUIRED"],
   "qualityChecks": [
-    "When to use / not useの境界が明確",
-    "PC / SP / touchで同じsemantic contractを維持",
-    "公開tokenだけを参照",
-    "Keyboardとaccessible nameを検証",
-    "Light / Dark × Standard / Highと3 densityで確認"
+    "srcなし、loading、loaded、errorでgeometryとtext alternativeが一貫する。",
+    "informativeとdecorativeのDOMが明確に分かれ、titleを使わない。",
+    "4 sizeのrootとfallback typographyが公開Component tokenへ結線される。",
+    "AvatarStack、+N、status、interactionをAvatar APIに含めない。",
+    "Light/Dark × Standard/High、3 density、mobile、各sizeでShowcaseを確認する。"
   ],
   "examples": [
-    {
-      "id": "default",
-      "description": "Avatarの標準例。",
-      "code": "<Avatar name=\"新谷\" size=\"md\" />\n<AvatarStack max={3} users={members} />"
-    }
+    { "id": "adjacent-name", "description": "隣接名が対象を伝えるdecorative Avatar。", "code": "<Avatar src={user.photoUrl} alt=\"\" fallback=\"SN\" size=\"sm\" />" },
+    { "id": "standalone", "description": "単独で対象を伝えるinformative Avatar。", "code": "<Avatar src={user.photoUrl} alt=\"新谷 尚史\" fallback=\"SN\" size=\"md\" />" }
   ],
-  "openQuestions": [
-    "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-  ]
+  "runtime": {
+    "compatibility": ">=0.1.0 <1.0.0",
+    "rootElements": ["span"],
+    "slots": ["image", "fallback"],
+    "attributes": ["id", "className", "aria-*", "data-*"],
+    "stateModel": ["data-meridian-variant", "data-meridian-state"],
+    "events": ["load", "error"],
+    "relations": ["native-img-when-loaded", "fallback-when-unavailable", "caller-owned-alt", "caller-owned-fallback", "parent-owned-interaction", "parent-owned-collection-summary", "native-global-props-passthrough"],
+    "provenance": ["component", "instance", "variant", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["人物、チーム、resourceを画像または短いfallbackで補助的に識別する。", "同じgeometryのまま画像取得前後を表現する。"],
+    "avoidWhen": ["対象名の唯一の可視表現が必要ならTextを使う。", "status/presenceならStatus IndicatorまたはBadgeを使う。", "interactionならButton、Icon Button、User Menuなどの親controlを使う。", "複数対象の要約なら親collection/compositionを使う。"],
+    "alternatives": ["text", "status-indicator", "badge", "button", "icon-button", "user-menu"]
+  },
+  "negativeExamples": [
+    { "pattern": "name propからslice(0, 2)でfallbackを自動生成する。", "reason": "locale、grapheme cluster、呼称の規則をAvatarが推測できないため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "隣接する可視名と同じaltを設定する。", "reason": "同じ対象名を二重に読み上げるため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "Avatar rootへonClick、role=button、tabIndexを付ける。", "reason": "20〜40pxの非interactive識別子へaction semanticsを混在させるため。", "ruleIds": ["NO_POSITIVE_TABINDEX", "INTERACTIVE_NAME_REQUIRED"] },
+    { "pattern": "+NをAvatar fallbackとして描画する。", "reason": "単一対象の識別とcollection truncationを混同し、代替テキストのownerが不明になるため。", "ruleIds": ["INTERACTIVE_NAME_REQUIRED"] }
+  ],
+  "requiredScenarios": ["default", "loading", "loaded", "error", "informative-image", "decorative-image", "explicit-fallback", "adjacent-name", "interactive-parent", "xs", "sm", "md", "lg", "mobile"],
+  "openQuestions": []
 }

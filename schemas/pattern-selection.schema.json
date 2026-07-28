@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/pattern-selection.schema.json",
+  "title": "Meridian Pattern Selection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "source", "selections", "unresolved"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/meta" },
+    "source": { "$ref": "#/$defs/source" },
+    "selections": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/selection" } },
+    "unresolved": { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "digest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+    "idList": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "status", "revision", "createdAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" },
+        "kind": { "const": "pattern-selection" },
+        "id": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["draft", "ready-for-review", "approved", "superseded"] },
+        "revision": { "type": "integer", "minimum": 1 },
+        "createdAt": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requirementAllocationRef", "requirementAllocationDigest", "screenResponsibilitiesRef", "screenResponsibilitiesDigest", "registryRef"],
+      "properties": {
+        "requirementAllocationRef": { "$ref": "#/$defs/nonEmpty" },
+        "requirementAllocationDigest": { "$ref": "#/$defs/digest" },
+        "screenResponsibilitiesRef": { "$ref": "#/$defs/nonEmpty" },
+        "screenResponsibilitiesDigest": { "$ref": "#/$defs/digest" },
+        "registryRef": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "patternRef", "responsibilityRefs", "requirementRefs", "rationale", "evidenceRefs", "rejectedAlternatives"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "patternRef": { "$ref": "#/$defs/id" },
+        "responsibilityRefs": { "$ref": "#/$defs/idList" },
+        "requirementRefs": { "$ref": "#/$defs/idList" },
+        "rationale": { "$ref": "#/$defs/nonEmpty" },
+        "evidenceRefs": { "$ref": "#/$defs/idList" },
+        "rejectedAlternatives": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["patternRef", "reason"],
+            "properties": {
+              "patternRef": { "$ref": "#/$defs/id" },
+              "reason": { "$ref": "#/$defs/nonEmpty" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

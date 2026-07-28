@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/layout-recipe-registry.schema.json",
+  "title": "Meridian Named Layout Recipe Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "meta", "presets", "recipes"],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "meta": { "$ref": "#/$defs/meta" },
+    "presets": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/preset" }
+    },
+    "recipes": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "$ref": "#/$defs/recipe" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9.-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "version", "status"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" },
+        "kind": { "const": "layout-recipe-registry" },
+        "id": { "$ref": "#/$defs/id" },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "status": { "enum": ["draft", "stable"] }
+      }
+    },
+    "preset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "category", "valueRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "category": { "enum": ["gap", "max-width", "columns", "breakpoint"] },
+        "valueRef": { "type": "string", "pattern": "^(--[a-z0-9-]+|layout-policy\\.[a-z0-9.-]+)$" }
+      }
+    },
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "allowedValues", "defaultValue"],
+      "properties": {
+        "name": { "$ref": "#/$defs/id" },
+        "allowedValues": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "defaultValue": { "$ref": "#/$defs/id" }
+      }
+    },
+    "recipe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "className", "purpose", "options", "preservesDomOrder"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["stack", "cluster", "grid", "section", "responsive-switch"] },
+        "className": { "type": "string", "pattern": "^mrd-layout-[a-z0-9-]+$" },
+        "purpose": { "$ref": "#/$defs/nonEmpty" },
+        "options": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/option" }
+        },
+        "preservesDomOrder": { "const": true }
+      }
+    }
+  }
+}

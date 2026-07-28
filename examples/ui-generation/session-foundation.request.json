@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "0.1.0",
+  "kind": "ui-generation-request",
+  "id": "request_session_foundation",
+  "locale": "ja-JP",
+  "request": "Meridianの正式なUI生成機能として、交換可能なDesign System Adapterを使う再現・検証可能なworkflowを構築する。",
+  "submittedAt": "2026-07-27"
+}

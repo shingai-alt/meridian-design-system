@@ -1,4 +1,9 @@
 node_modules/
 .playwright-mcp/
 packages/*/dist/
+spikes/external-adapters/dist/
+spikes/external-adapters/dist-registry-parity/
+spikes/external-adapters/registry-parity/generated/
+spikes/external-adapters/.vite/
+spikes/external-adapters/test-results/
 .claude/scheduled_tasks.lock

@@ -94,10 +94,10 @@
     { "name": "ref", "type": "ForwardedRef<HTMLDialogElement>", "required": false, "default": null, "description": "Native dialog elementへforwardするref。" }
   ],
   "tokenRefs": {
-    "semanticColor": ["--surface-overlay", "--fg", "--fg-muted", "--border", "--border-muted", "--overlay", "--focus-ring"],
+    "semanticColor": ["--surface-overlay", "--surface-muted", "--fg", "--fg-muted", "--border", "--border-muted", "--overlay", "--focus-ring"],
     "spacing": ["--sp-2", "--sp-3", "--sp-4", "--sp-5", "--sp-8"],
-    "radius": ["--radius-xl"],
-    "sizing": ["--dialog-w-md"],
+    "radius": ["--radius-md", "--radius-xl"],
+    "sizing": ["--ctl-lg", "--dialog-w-md"],
     "motion": ["--dur-normal", "--ease-enter"],
     "shadow": ["--shadow-overlay"]
   },
@@ -121,6 +121,9 @@
       { "slot": "footer.gap", "source": "--sp-2", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Cancelとprimary targetを分離する。" },
       { "slot": "footer.border", "source": "--border-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Scrollable bodyとactionsを区切る。" },
       { "slot": "description.foreground", "source": "--fg-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Supporting messageをtitleより弱くする。" },
+      { "slot": "close-control.size", "source": "--ctl-lg", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Densityへ追従しながらclose controlの到達可能なtarget sizeを維持する。" },
+      { "slot": "close-control.radius", "source": "--radius-md", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Close controlのhover surfaceを既存control shapeへ揃える。" },
+      { "slot": "close-control.hover-background", "source": "--surface-muted", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Foreground colorだけに依存せずhover affordanceを示す。" },
       { "slot": "motion.duration", "source": "--dur-normal", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Modal entryの標準duration。" },
       { "slot": "motion.easing", "source": "--ease-enter", "scope": "semantic", "componentToken": null, "aliases": null, "trigger": null, "reason": "Top-layer entryの標準curve。" }
     ],
@@ -191,14 +194,14 @@
     "Light / Dark × Standard / Highと3 density、Desktop / Mobileで確認"
   ],
   "runtime": {
-    "compatibility": ">=0.1.0 <1.0.0",
+    "compatibility": ">=0.2.0 <1.0.0",
     "rootElements": ["dialog"],
     "slots": ["trigger", "backdrop", "surface", "title", "close-control", "description", "body", "footer"],
     "attributes": ["open", "role", "aria-labelledby", "aria-describedby", "aria-haspopup", "aria-controls", "aria-expanded", "data-state", "data-variant", "data-*"],
     "stateModel": ["native dialog open state", "data-state", "data-variant"],
     "events": ["click", "cancel", "close", "keydown", "submit", "openchange"],
     "relations": ["trigger-dialog", "visible-title-name", "optional-simple-description", "modal-inert-background", "contained-tab-sequence", "safe-initial-focus", "focus-return"],
-    "provenance": ["component", "instance", "state", "variant", "contract-version", "runtime-version", "decision"]
+    "provenance": ["component", "instance", "variant", "state", "contract-version", "runtime-version", "decision"]
   },
   "selectionRules": {
     "useWhen": ["現在の作業を中断し、短い判断または単一目的の入力を完了しないと先へ進めない。"],

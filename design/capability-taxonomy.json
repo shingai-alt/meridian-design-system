@@ -1,0 +1,72 @@
+{
+  "$schema": "../schemas/capability-taxonomy.schema.json",
+  "schemaVersion": "0.1.0",
+  "kind": "capability-taxonomy",
+  "id": "meridian_ui_capabilities_v1",
+  "status": "active",
+  "capabilities": [
+    {
+      "id": "action.trigger",
+      "category": "action",
+      "intent": "A named user action can be invoked once, exposes unavailable and in-progress states, and remains keyboard operable.",
+      "requiredSemantics": ["accessible-name", "native-activation", "disabled-state", "busy-state"],
+      "allowedResolutionKinds": ["component", "composition"]
+    },
+    {
+      "id": "input.text",
+      "category": "input",
+      "intent": "A user can enter and edit a labelled textual value with field-level validation.",
+      "requiredSemantics": ["programmatic-label", "value-editing", "error-association"],
+      "allowedResolutionKinds": ["component", "composition"]
+    },
+    {
+      "id": "input.choice",
+      "category": "input",
+      "intent": "A user can choose one value from a labelled finite set using keyboard and pointer input.",
+      "requiredSemantics": ["programmatic-label", "single-selection", "keyboard-selection"],
+      "allowedResolutionKinds": ["component", "composition"]
+    },
+    {
+      "id": "collection.editable",
+      "category": "collection",
+      "intent": "A bounded repeated set of related inputs can be added, removed, validated, and reviewed in a stable order.",
+      "requiredSemantics": ["ordered-items", "item-labelling", "add-remove", "item-validation"],
+      "allowedResolutionKinds": ["composition", "generator-owned"]
+    },
+    {
+      "id": "feedback.field-validation",
+      "category": "feedback",
+      "intent": "A field problem is programmatically associated with its input and includes corrective guidance.",
+      "requiredSemantics": ["error-association", "corrective-guidance"],
+      "allowedResolutionKinds": ["component", "composition"]
+    },
+    {
+      "id": "feedback.section-status",
+      "category": "feedback",
+      "intent": "A section-level outcome or problem is announced with its impact and a recoverable next action.",
+      "requiredSemantics": ["status-boundary", "non-color-cue", "recovery-action"],
+      "allowedResolutionKinds": ["component", "composition"]
+    },
+    {
+      "id": "disclosure.confirmation",
+      "category": "disclosure",
+      "intent": "Consequences and affected objects are reviewed before a high-impact commit, with explicit confirm and cancel paths.",
+      "requiredSemantics": ["labelled-boundary", "focus-management", "confirm-cancel", "consequence-summary"],
+      "allowedResolutionKinds": ["composition"]
+    },
+    {
+      "id": "data.status-list",
+      "category": "data",
+      "intent": "Users can scan repeated entities, compare their state, and invoke only actions permitted for each entity.",
+      "requiredSemantics": ["collection-labelling", "state-text", "row-action-name", "reading-order"],
+      "allowedResolutionKinds": ["composition", "generator-owned"]
+    },
+    {
+      "id": "navigation.task-progress",
+      "category": "navigation",
+      "intent": "Users can understand the current task stage, completed stages, and the next permitted transition.",
+      "requiredSemantics": ["current-step", "ordered-steps", "transition-state"],
+      "allowedResolutionKinds": ["component", "composition", "generator-owned"]
+    }
+  ]
+}

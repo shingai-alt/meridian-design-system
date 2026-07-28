@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "ui-generation-session",
+    "id": "session_foundation_reference",
+    "status": "active",
+    "state": "created",
+    "revision": 2,
+    "createdAt": "2026-07-27T00:00:00Z",
+    "updatedAt": "2026-07-27T01:00:00Z"
+  },
+  "project": {
+    "id": "meridian_design_system",
+    "rootRef": "."
+  },
+  "artifacts": [
+    {
+      "id": "request_session_foundation",
+      "type": "user_request",
+      "path": "examples/ui-generation/session-foundation.request.json",
+      "schemaVersion": "0.1.0",
+      "digest": "sha256-b50454e1de20c1472f6e7a8886c0bf5ccc33406eaba2944ed5768189b6be0401",
+      "revision": 1,
+      "ownership": "canonical",
+      "status": "current"
+    },
+    {
+      "id": "project_context_meridian_design_system",
+      "type": "project_context",
+      "path": "examples/ui-generation/meridian.project-context.json",
+      "schemaVersion": "0.1.0",
+      "digest": "sha256-3ff075d53b01d44a14725fbf96112b5196a55dc304b699858f251a58e84525d8",
+      "revision": 1,
+      "ownership": "evidence",
+      "status": "current"
+    }
+  ],
+  "approvals": [],
+  "transitionHistory": [
+    {
+      "id": "initialize_session",
+      "from": null,
+      "to": "created",
+      "actorType": "system",
+      "actorId": "meridian-ui-generation",
+      "occurredAt": "2026-07-27T00:00:00Z",
+      "approvalRef": null,
+      "inputArtifactDigests": [
+        {
+          "artifactId": "request_session_foundation",
+          "digest": "sha256-b50454e1de20c1472f6e7a8886c0bf5ccc33406eaba2944ed5768189b6be0401"
+        }
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "id": "project_config_decision_approval",
+      "kind": "research",
+      "message": "The project configuration format is decision-ready but requires Human Approval before inspect_project may become a formal Session transition.",
+      "artifactRefs": ["project_context_meridian_design_system"],
+      "blocksTransitions": ["inspect_project"],
+      "status": "open"
+    }
+  ],
+  "supersedesSessionId": null
+}

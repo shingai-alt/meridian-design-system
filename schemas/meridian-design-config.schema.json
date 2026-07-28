@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/meridian-design-config.schema.json",
+  "title": "Meridian Design Project Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "project", "inspection", "technology", "designSystem", "quality"],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "const": "0.1.0" },
+    "project": { "$ref": "#/$defs/project" },
+    "inspection": { "$ref": "#/$defs/inspection" },
+    "technology": { "$ref": "#/$defs/technology" },
+    "designSystem": { "$ref": "#/$defs/designSystem" },
+    "quality": { "$ref": "#/$defs/quality" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "path": { "type": "string", "pattern": "^[a-zA-Z0-9.][a-zA-Z0-9._/-]*$" },
+    "pathList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/path" } },
+    "stringList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmpty" } },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "root"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/nonEmpty" },
+        "root": { "const": "." }
+      }
+    },
+    "inspection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asOf", "includePaths", "excludePaths", "packageManifestPaths"],
+      "properties": {
+        "asOf": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "includePaths": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } },
+        "excludePaths": { "$ref": "#/$defs/pathList" },
+        "packageManifestPaths": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } }
+      }
+    },
+    "technology": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runtime", "frameworks", "styling", "languages"],
+      "properties": {
+        "runtime": { "$ref": "#/$defs/declaredTechnology" },
+        "frameworks": { "$ref": "#/$defs/declaredTechnology" },
+        "styling": { "$ref": "#/$defs/declaredTechnology" },
+        "languages": { "$ref": "#/$defs/declaredTechnology" }
+      }
+    },
+    "declaredTechnology": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "values"],
+      "properties": {
+        "mode": { "enum": ["explicit", "auto"] },
+        "values": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "designSystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selectionPolicy", "adapters", "tokens", "themes", "components", "icons"],
+      "properties": {
+        "selectionPolicy": { "const": "project-existing-first" },
+        "adapters": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/adapter" } },
+        "tokens": { "$ref": "#/$defs/tokens" },
+        "themes": { "$ref": "#/$defs/themes" },
+        "components": { "$ref": "#/$defs/components" },
+        "icons": { "$ref": "#/$defs/icons" }
+      }
+    },
+    "adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "status", "priority", "root", "packageName", "componentSources", "tokenSources", "themeSources", "iconSources", "catalogSources"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["project", "external"] },
+        "status": { "enum": ["available", "candidate", "disabled"] },
+        "priority": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "root": { "type": ["string", "null"] },
+        "packageName": { "type": ["string", "null"] },
+        "componentSources": { "$ref": "#/$defs/pathList" },
+        "tokenSources": { "$ref": "#/$defs/pathList" },
+        "themeSources": { "$ref": "#/$defs/pathList" },
+        "iconSources": { "$ref": "#/$defs/pathList" },
+        "catalogSources": { "$ref": "#/$defs/pathList" }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "sources", "generatedOutputs"],
+      "properties": {
+        "format": { "enum": ["dtcg-2025.10", "css-custom-properties", "vendor", "unknown"] },
+        "sources": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } },
+        "generatedOutputs": { "$ref": "#/$defs/pathList" }
+      }
+    },
+    "themes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["modes", "contrastModes", "densityModes", "sources"],
+      "properties": {
+        "modes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "contrastModes": { "$ref": "#/$defs/stringList" },
+        "densityModes": { "$ref": "#/$defs/stringList" },
+        "sources": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } }
+      }
+    },
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contractRoots", "implementationRoots", "catalogRefs"],
+      "properties": {
+        "contractRoots": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } },
+        "implementationRoots": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } },
+        "catalogRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } }
+      }
+    },
+    "icons": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registryRefs", "implementationRoots"],
+      "properties": {
+        "registryRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } },
+        "implementationRoots": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiredViewports", "requiredStates"],
+      "properties": {
+        "requiredViewports": { "type": "array", "minItems": 3, "uniqueItems": true, "items": { "enum": ["desktop", "tablet", "mobile"] } },
+        "requiredStates": { "type": "array", "minItems": 5, "uniqueItems": true, "items": { "enum": ["default", "loading", "empty", "error", "permission"] } }
+      }
+    }
+  }
+}

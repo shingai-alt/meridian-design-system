@@ -1,0 +1,877 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "generic-review-model",
+    "id": "fixture_generation_team_invitation.review-model",
+    "locale": "ja-JP"
+  },
+  "source": {
+    "generationManifestId": "fixture_generation_team_invitation",
+    "generationManifestDigest": "sha256-e037ddd1f01aa1ab8abeee6f03d0759842a6ddac7d5b68761393800a01279df0",
+    "directionRef": "direction_dedicated_stages",
+    "visualProfileRef": "calm-utility",
+    "visualProfileRegistryId": "meridian_ui_generation_visual_profiles",
+    "visualProfileRegistryVersion": 1,
+    "adapterResolutionId": "fixture_resolution_team_invitation",
+    "adapterRefs": [
+      "meridian_html_runtime"
+    ],
+    "layoutRecipeRegistryId": "meridian-layout-recipes",
+    "layoutRecipeRegistryVersion": "0.1.0",
+    "componentRegistryDigest": "sha256-c1a2391c5daceea35375ef3e98425d061c71c9de4948b61831d88553f546a79b",
+    "runtimeVersion": "0.2.0"
+  },
+  "review": {
+    "lenses": [
+      "product",
+      "design",
+      "engineering",
+      "accessibility",
+      "content"
+    ],
+    "viewports": [
+      "desktop",
+      "tablet",
+      "mobile"
+    ]
+  },
+  "screens": [
+    {
+      "id": "team-members",
+      "title": "メンバーと招待",
+      "responsibilityRef": "responsibility_manage",
+      "patternRef": "status-management-list",
+      "root": {
+        "id": "manage-root",
+        "kind": "layout",
+        "decisionRef": "decision-manage-structure",
+        "recipeRef": "stack",
+        "options": [
+          {
+            "name": "gap",
+            "value": "default"
+          },
+          {
+            "name": "width",
+            "value": "wide"
+          }
+        ],
+        "children": [
+          {
+            "id": "manage-heading",
+            "kind": "heading",
+            "decisionRef": "decision-manage-structure",
+            "level": 1,
+            "text": "メンバーと招待"
+          },
+          {
+            "id": "invitation-status-list",
+            "kind": "capability",
+            "decisionRef": "decision-manage-status",
+            "capabilityRequirementRef": "capability_invitation_statuses",
+            "presentation": "status-list",
+            "content": {
+              "columns": [
+                {
+                  "id": "recipient",
+                  "label": "宛先"
+                },
+                {
+                  "id": "role",
+                  "label": "Role"
+                },
+                {
+                  "id": "status",
+                  "label": "状態"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "pending-invite",
+                  "status": "pending",
+                  "actionLabel": "再送",
+                  "cells": [
+                    {
+                      "columnRef": "recipient",
+                      "value": "pending@example.com"
+                    },
+                    {
+                      "columnRef": "role",
+                      "value": "Member"
+                    },
+                    {
+                      "columnRef": "status",
+                      "value": "招待中"
+                    }
+                  ]
+                }
+              ]
+            },
+            "usages": {
+              "table": "invitation-status-list-table",
+              "rows": [
+                {
+                  "status": "invitation-status-list-status-pending-invite",
+                  "action": "invitation-status-list-action-pending-invite"
+                }
+              ]
+            }
+          },
+          {
+            "id": "start-invitation",
+            "kind": "capability",
+            "decisionRef": "decision-primary-action",
+            "capabilityRequirementRef": "capability_primary_actions",
+            "presentation": "action",
+            "content": {
+              "label": "メンバーを招待"
+            },
+            "usages": {
+              "action": "start-invitation-action"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "invite-compose",
+      "title": "招待するメンバー",
+      "responsibilityRef": "responsibility_compose",
+      "patternRef": "batch-entity-creation",
+      "root": {
+        "id": "compose-root",
+        "kind": "layout",
+        "decisionRef": "decision-compose-structure",
+        "recipeRef": "stack",
+        "options": [
+          {
+            "name": "gap",
+            "value": "default"
+          },
+          {
+            "name": "width",
+            "value": "wide"
+          }
+        ],
+        "children": [
+          {
+            "id": "compose-heading",
+            "kind": "heading",
+            "decisionRef": "decision-compose-structure",
+            "level": 1,
+            "text": "招待するメンバー"
+          },
+          {
+            "id": "compose-progress",
+            "kind": "capability",
+            "decisionRef": "decision-stage-progress",
+            "capabilityRequirementRef": "capability_stage_progress",
+            "presentation": "task-progress",
+            "content": {
+              "steps": [
+                {
+                  "id": "input",
+                  "label": "入力",
+                  "description": "宛先とRoleを設定",
+                  "state": "current"
+                },
+                {
+                  "id": "review",
+                  "label": "確認",
+                  "description": "対象と影響を確認",
+                  "state": "default"
+                },
+                {
+                  "id": "result",
+                  "label": "結果",
+                  "description": "送信結果を確認",
+                  "state": "disabled"
+                }
+              ]
+            },
+            "usages": {
+              "steps": [
+                "compose-progress-step-input",
+                "compose-progress-step-review",
+                "compose-progress-step-result"
+              ]
+            }
+          },
+          {
+            "id": "recipient-editor",
+            "kind": "capability",
+            "decisionRef": "decision-batch-editor",
+            "capabilityRequirementRef": "capability_recipient_batch",
+            "presentation": "editable-collection",
+            "content": {
+              "fields": [
+                {
+                  "id": "email",
+                  "label": "メールアドレス",
+                  "value": "member@example.com",
+                  "state": "default",
+                  "message": ""
+                },
+                {
+                  "id": "role",
+                  "label": "Role",
+                  "value": "Member",
+                  "state": "default",
+                  "message": "",
+                  "options": [
+                    {
+                      "id": "member",
+                      "label": "Member",
+                      "value": "Member"
+                    },
+                    {
+                      "id": "admin",
+                      "label": "Admin",
+                      "value": "Admin"
+                    }
+                  ]
+                }
+              ],
+              "actionLabel": "宛先を追加"
+            },
+            "usages": {
+              "fields": [
+                {
+                  "field": "recipient-editor-field-email",
+                  "control": "recipient-editor-control-email",
+                  "message": "recipient-editor-message-email"
+                },
+                {
+                  "field": "recipient-editor-field-role",
+                  "control": "recipient-editor-control-role",
+                  "message": "recipient-editor-message-role"
+                }
+              ],
+              "action": "recipient-editor-action"
+            }
+          },
+          {
+            "id": "compose-next",
+            "kind": "capability",
+            "decisionRef": "decision-primary-action",
+            "capabilityRequirementRef": "capability_primary_actions",
+            "presentation": "action",
+            "content": {
+              "label": "招待内容を確認"
+            },
+            "usages": {
+              "action": "compose-next-action"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "invite-review",
+      "title": "招待内容を確認",
+      "responsibilityRef": "responsibility_review",
+      "patternRef": "review-before-commit",
+      "root": {
+        "id": "review-root",
+        "kind": "layout",
+        "decisionRef": "decision-review-structure",
+        "recipeRef": "section",
+        "options": [
+          {
+            "name": "gap",
+            "value": "default"
+          },
+          {
+            "name": "emphasis",
+            "value": "bordered"
+          }
+        ],
+        "children": [
+          {
+            "id": "review-heading",
+            "kind": "heading",
+            "decisionRef": "decision-review-structure",
+            "level": 1,
+            "text": "招待内容を確認"
+          },
+          {
+            "id": "review-confirmation",
+            "kind": "capability",
+            "decisionRef": "decision-review-confirmation",
+            "capabilityRequirementRef": "capability_review_confirmation",
+            "presentation": "confirmation",
+            "content": {
+              "title": "この内容で招待しますか",
+              "description": "送信前に宛先とRoleを確認してください。",
+              "items": [
+                {
+                  "id": "recipient",
+                  "label": "宛先",
+                  "value": "member@example.com"
+                },
+                {
+                  "id": "role",
+                  "label": "Role",
+                  "value": "Member"
+                }
+              ],
+              "actionLabel": "招待を送信"
+            },
+            "usages": {
+              "trigger": "review-confirmation-trigger",
+              "dialog": "review-confirmation-dialog",
+              "summary": "review-confirmation-summary",
+              "confirm": "review-confirmation-confirm",
+              "cancel": "review-confirmation-cancel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "invite-result",
+      "title": "招待結果",
+      "responsibilityRef": "responsibility_result",
+      "patternRef": "asynchronous-partial-result",
+      "root": {
+        "id": "result-root",
+        "kind": "layout",
+        "decisionRef": "decision-result-structure",
+        "recipeRef": "stack",
+        "options": [
+          {
+            "name": "gap",
+            "value": "default"
+          },
+          {
+            "name": "width",
+            "value": "content"
+          }
+        ],
+        "children": [
+          {
+            "id": "result-heading",
+            "kind": "heading",
+            "decisionRef": "decision-result-structure",
+            "level": 1,
+            "text": "招待結果"
+          },
+          {
+            "id": "result-feedback",
+            "kind": "capability",
+            "decisionRef": "decision-result-feedback",
+            "capabilityRequirementRef": "capability_result_feedback",
+            "presentation": "section-status",
+            "content": {
+              "title": "2件中1件を送信しました",
+              "body": "失敗した宛先だけを修正して再試行できます。",
+              "tone": "warning",
+              "actionLabel": "失敗した宛先を修正"
+            },
+            "usages": {
+              "alert": "result-feedback-alert",
+              "action": "result-feedback-action"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "stateFixtures": [
+    {
+      "id": "fixture-default",
+      "label": "Default",
+      "state": "default",
+      "screenRefs": [
+        "team-members",
+        "invite-compose",
+        "invite-review",
+        "invite-result"
+      ],
+      "overrides": []
+    },
+    {
+      "id": "fixture-loading",
+      "label": "Loading",
+      "state": "loading",
+      "screenRefs": [
+        "team-members",
+        "invite-compose",
+        "invite-review",
+        "invite-result"
+      ],
+      "overrides": [
+        {
+          "nodeRef": "result-feedback",
+          "property": "content.title",
+          "value": "招待を送信しています"
+        }
+      ]
+    },
+    {
+      "id": "fixture-empty",
+      "label": "Empty",
+      "state": "empty",
+      "screenRefs": [
+        "team-members",
+        "invite-compose"
+      ],
+      "overrides": [
+        {
+          "nodeRef": "recipient-editor",
+          "property": "content.description",
+          "value": "最初の宛先を追加してください"
+        }
+      ]
+    },
+    {
+      "id": "fixture-error",
+      "label": "Error",
+      "state": "error",
+      "screenRefs": [
+        "invite-compose",
+        "invite-result"
+      ],
+      "overrides": [
+        {
+          "nodeRef": "result-feedback",
+          "property": "content.title",
+          "value": "一部の招待を送信できませんでした"
+        }
+      ]
+    },
+    {
+      "id": "fixture-permission",
+      "label": "Permission",
+      "state": "permission",
+      "screenRefs": [
+        "team-members",
+        "invite-compose",
+        "invite-review"
+      ],
+      "overrides": [
+        {
+          "nodeRef": "start-invitation",
+          "property": "state",
+          "value": "disabled"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-manage-structure",
+      "reason": "Member管理責務をstatus listと招待開始actionへ限定する。",
+      "sourceRefs": [
+        "responsibility_manage",
+        "selection_status_management"
+      ]
+    },
+    {
+      "id": "decision-manage-status",
+      "reason": "Pending状態、期限、対象別actionを同じreading orderで比較する。",
+      "sourceRefs": [
+        "capability_invitation_statuses",
+        "selection_status_management"
+      ]
+    },
+    {
+      "id": "decision-primary-action",
+      "reason": "各責務の完了点に一つの主要actionを置く。",
+      "sourceRefs": [
+        "capability_primary_actions",
+        "direction_dedicated_stages"
+      ]
+    },
+    {
+      "id": "decision-compose-structure",
+      "reason": "複数宛先の比較編集を専用責務として確保する。",
+      "sourceRefs": [
+        "responsibility_compose",
+        "selection_batch_create"
+      ]
+    },
+    {
+      "id": "decision-stage-progress",
+      "reason": "入力、確認、結果の現在地と到達可能性を示す。",
+      "sourceRefs": [
+        "capability_stage_progress",
+        "direction_dedicated_stages"
+      ]
+    },
+    {
+      "id": "decision-batch-editor",
+      "reason": "宛先ごとのEmailとRoleを対応付けて修正可能にする。",
+      "sourceRefs": [
+        "capability_recipient_batch",
+        "selection_batch_create"
+      ]
+    },
+    {
+      "id": "decision-review-structure",
+      "reason": "送信確定を入力から分離した一責務のsectionにする。",
+      "sourceRefs": [
+        "responsibility_review",
+        "selection_review"
+      ]
+    },
+    {
+      "id": "decision-review-confirmation",
+      "reason": "宛先と高権限の影響を送信前に一度確認する。",
+      "sourceRefs": [
+        "capability_review_confirmation",
+        "selection_review"
+      ]
+    },
+    {
+      "id": "decision-result-structure",
+      "reason": "送信結果の理解と失敗対象の回復だけを扱う。",
+      "sourceRefs": [
+        "responsibility_result",
+        "selection_partial_result"
+      ]
+    },
+    {
+      "id": "decision-result-feedback",
+      "reason": "成功済み対象を保持しながら失敗対象の次行動を示す。",
+      "sourceRefs": [
+        "capability_result_feedback",
+        "selection_partial_result"
+      ]
+    }
+  ],
+  "usageIndex": {
+    "invitation-status-list-table": {
+      "component": "table",
+      "decisionRef": "decision-manage-status",
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "selected",
+        "loading",
+        "empty"
+      ]
+    },
+    "invitation-status-list-status-pending-invite": {
+      "component": "status-indicator",
+      "decisionRef": "decision-manage-status",
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "invitation-status-list-action-pending-invite": {
+      "component": "button",
+      "decisionRef": "decision-manage-status",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "start-invitation-action": {
+      "component": "button",
+      "decisionRef": "decision-primary-action",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "compose-progress-step-input": {
+      "component": "workflow-step",
+      "decisionRef": "decision-stage-progress",
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "current",
+        "success",
+        "disabled",
+        "error"
+      ]
+    },
+    "compose-progress-step-review": {
+      "component": "workflow-step",
+      "decisionRef": "decision-stage-progress",
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "current",
+        "success",
+        "disabled",
+        "error"
+      ]
+    },
+    "compose-progress-step-result": {
+      "component": "workflow-step",
+      "decisionRef": "decision-stage-progress",
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "current",
+        "success",
+        "disabled",
+        "error"
+      ]
+    },
+    "recipient-editor-field-email": {
+      "component": "form-field",
+      "decisionRef": "decision-batch-editor",
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "error"
+      ]
+    },
+    "recipient-editor-control-email": {
+      "component": "text-field",
+      "decisionRef": "decision-batch-editor",
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "error",
+        "disabled",
+        "readonly"
+      ]
+    },
+    "recipient-editor-message-email": {
+      "component": "validation-message",
+      "decisionRef": "decision-batch-editor",
+      "allowedVariants": [
+        "error",
+        "success",
+        "warning"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "recipient-editor-field-role": {
+      "component": "form-field",
+      "decisionRef": "decision-batch-editor",
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "error"
+      ]
+    },
+    "recipient-editor-control-role": {
+      "component": "select",
+      "decisionRef": "decision-batch-editor",
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "focus",
+        "error",
+        "disabled"
+      ]
+    },
+    "recipient-editor-message-role": {
+      "component": "validation-message",
+      "decisionRef": "decision-batch-editor",
+      "allowedVariants": [
+        "error",
+        "success",
+        "warning"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "recipient-editor-action": {
+      "component": "button",
+      "decisionRef": "decision-batch-editor",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "compose-next-action": {
+      "component": "button",
+      "decisionRef": "decision-primary-action",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "review-confirmation-trigger": {
+      "component": "button",
+      "decisionRef": "decision-review-confirmation",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "review-confirmation-dialog": {
+      "component": "dialog",
+      "decisionRef": "decision-review-confirmation",
+      "allowedVariants": [
+        "default",
+        "danger"
+      ],
+      "allowedStates": [
+        "open",
+        "closed",
+        "submitting",
+        "error"
+      ]
+    },
+    "review-confirmation-summary": {
+      "component": "description-list",
+      "decisionRef": "decision-review-confirmation",
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "review-confirmation-confirm": {
+      "component": "button",
+      "decisionRef": "decision-review-confirmation",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "review-confirmation-cancel": {
+      "component": "button",
+      "decisionRef": "decision-review-confirmation",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "result-feedback-alert": {
+      "component": "alert",
+      "decisionRef": "decision-result-feedback",
+      "allowedVariants": [
+        "info",
+        "success",
+        "warning",
+        "danger"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "result-feedback-action": {
+      "component": "button",
+      "decisionRef": "decision-result-feedback",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    }
+  }
+}

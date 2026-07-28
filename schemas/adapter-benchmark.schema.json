@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/adapter-benchmark.schema.json",
+  "title": "Meridian External Adapter Benchmark",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "kind", "status", "generatedAt", "method", "pilots", "candidates", "summary", "browserEvaluation"],
+  "properties": {
+    "schemaVersion": { "const": "0.1.0" },
+    "kind": { "const": "adapter-benchmark" },
+    "status": { "enum": ["researching", "contract-complete", "browser-complete", "decision-ready"] },
+    "generatedAt": { "$ref": "#/$defs/nonEmpty" },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coverageStatuses", "rules"],
+      "properties": {
+        "coverageStatuses": {
+          "type": "array",
+          "minItems": 5,
+          "uniqueItems": true,
+          "items": { "enum": ["native", "composition", "extension", "commercial", "unresolved", "generator-owned"] }
+        },
+        "rules": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmpty" } }
+      }
+    },
+    "pilots": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/pilot" } },
+    "candidates": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/candidate" } },
+    "summary": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/summary" } },
+    "browserEvaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "requiredViewports", "requiredChecks", "artifactRefs", "blockers"],
+      "properties": {
+        "status": { "enum": ["planned", "in-progress", "complete"] },
+        "requiredViewports": { "type": "array", "minItems": 3, "uniqueItems": true, "items": { "enum": ["desktop", "tablet", "mobile"] } },
+        "requiredChecks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "artifactRefs": { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" } },
+        "blockers": { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" } }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "idList": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "pilot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "structuralProfile", "requirementRefs", "capabilities"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/nonEmpty" },
+        "structuralProfile": { "$ref": "#/$defs/nonEmpty" },
+        "requirementRefs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "capabilities": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/capability" } }
+      }
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "required"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "description": { "$ref": "#/$defs/nonEmpty" },
+        "required": { "type": "boolean" }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "package", "version", "versionEvidence", "license", "licenseBoundary", "foundationType", "runtimeDependencies", "evidenceRefs", "pilotCoverage"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/nonEmpty" },
+        "package": { "$ref": "#/$defs/nonEmpty" },
+        "version": { "$ref": "#/$defs/nonEmpty" },
+        "versionEvidence": { "type": "string", "pattern": "^https://" },
+        "license": { "$ref": "#/$defs/nonEmpty" },
+        "licenseBoundary": { "$ref": "#/$defs/nonEmpty" },
+        "foundationType": { "enum": ["open-code-distribution", "unstyled-primitives", "unstyled-components", "visual-design-system"] },
+        "runtimeDependencies": { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" } },
+        "evidenceRefs": { "$ref": "#/$defs/idList" },
+        "pilotCoverage": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/pilotCoverage" } }
+      }
+    },
+    "pilotCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pilotRef", "capabilities"],
+      "properties": {
+        "pilotRef": { "$ref": "#/$defs/id" },
+        "capabilities": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/capabilityCoverage" } }
+      }
+    },
+    "capabilityCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilityRef", "status", "resolution", "evidenceRefs", "notes"],
+      "properties": {
+        "capabilityRef": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["native", "composition", "extension", "commercial", "unresolved", "generator-owned"] },
+        "resolution": { "type": ["string", "null"] },
+        "evidenceRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "notes": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidateRef", "requiredCapabilities", "native", "composition", "extension", "commercial", "unresolved", "generatorOwned", "coverageRatio", "blocking"],
+      "properties": {
+        "candidateRef": { "$ref": "#/$defs/id" },
+        "requiredCapabilities": { "type": "integer", "minimum": 1 },
+        "native": { "type": "integer", "minimum": 0 },
+        "composition": { "type": "integer", "minimum": 0 },
+        "extension": { "type": "integer", "minimum": 0 },
+        "commercial": { "type": "integer", "minimum": 0 },
+        "unresolved": { "type": "integer", "minimum": 0 },
+        "generatorOwned": { "type": "integer", "minimum": 0 },
+        "coverageRatio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "blocking": { "type": "boolean" }
+      }
+    }
+  }
+}

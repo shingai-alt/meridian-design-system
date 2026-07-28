@@ -15,6 +15,7 @@ const mdNames = readdirSync(join(root, 'components'))
 const contracts = contractNames.map((name) => JSON.parse(read(`design/contracts/components/${name}`)));
 const generatedMeta = read('js/generated/component-contract-meta.js');
 const registrySource = read('js/components-registry.js');
+const uiBuildersSource = read('js/ui-builders.js');
 const indexSource = read('index.html');
 const components = vm.runInNewContext(`${generatedMeta}\n${registrySource}\nCOMPONENTS;`);
 const renderSandbox = {
@@ -443,6 +444,61 @@ test('Tag showcase separates the static root from its named 24px remove target',
   assert.match(indexSource, /\.tagc-label\{[^}]*overflow-wrap:anywhere/);
   assert.match(indexSource, /\.tagc-remove\{[^}]*inline-size:var\(--ctl-xs\)[^}]*block-size:var\(--ctl-xs\)/);
   assert.match(indexSource, /\.tagc-remove:focus-visible[^}]*outline:var\(--focus-w\) solid var\(--focus-ring\)/);
+});
+
+test('Avatar is implementation-ready as one non-interactive identity representation', () => {
+  const avatar = contracts.find((contract) => contract.id === 'avatar');
+  assert.equal(avatar.status, 'draft');
+  assert.equal(avatar.contractVersion, '0.2.0');
+  assert.equal(avatar.implementationReadiness.status, 'ready');
+  assert.deepEqual(Object.keys(avatar.variants), ['default']);
+  assert.deepEqual(avatar.states.map(({ id }) => id), ['default', 'loading', 'loaded', 'error']);
+  assert.deepEqual(avatar.props.map(({ name }) => name), ['src', 'alt', 'fallback', 'size', 'ref']);
+  assert.equal(avatar.props.find(({ name }) => name === 'alt').required, true);
+  assert.equal(avatar.props.find(({ name }) => name === 'fallback').required, true);
+  assert.match(avatar.props.find(({ name }) => name === 'ref').type, /HTMLSpanElement/);
+  assert.deepEqual(avatar.runtime.rootElements, ['span']);
+  assert.ok(avatar.runtime.relations.includes('caller-owned-alt'));
+  assert.ok(avatar.runtime.relations.includes('caller-owned-fallback'));
+  assert.ok(avatar.runtime.relations.includes('parent-owned-interaction'));
+  assert.ok(avatar.runtime.relations.includes('parent-owned-collection-summary'));
+  assert.deepEqual(avatar.keyboardInteractions, []);
+  assert.equal(avatar.tokenBindings.coverage, 'complete');
+  assert.deepEqual(avatar.tokenBindings.unboundSlots, []);
+  assert.deepEqual(avatar.openQuestions, []);
+  assert.ok(!avatar.props.some(({ name }) => ['name', 'onClick', 'users', 'max'].includes(name)));
+});
+
+test('Avatar showcase keeps image alternatives, fallback semantics, and interaction ownership explicit', () => {
+  const component = renderedComponents.find(({ id }) => id === 'avatar');
+  const base = { ...renderProps(component), fallback: 'SN', alt: '新谷 尚史', size: 'md' };
+  const fallback = component.render({ ...base, scenario: 'explicit-fallback' });
+  const loaded = component.render({ ...base, scenario: 'loaded' });
+  const error = component.render({ ...base, scenario: 'error' });
+  const decorative = component.render({ ...base, scenario: 'decorative-image' });
+  const adjacent = component.render({ ...base, scenario: 'adjacent-name' });
+  const interactiveParent = component.render({ ...base, scenario: 'interactive-parent' });
+
+  assert.match(fallback, /data-meridian-state="default"/);
+  assert.match(fallback, /class="avatar-fallback" role="img" aria-label="新谷 尚史">SN/);
+  assert.match(loaded, /data-meridian-state="loaded"/);
+  assert.match(loaded, /<img class="avatar-image"[^>]+alt="新谷 尚史">/);
+  assert.match(error, /data-meridian-state="error"/);
+  assert.match(error, /role="img" aria-label="新谷 尚史"/);
+  assert.match(decorative, /<img class="avatar-image"[^>]+alt="">/);
+  assert.match(adjacent, /class="avatar-fallback" aria-hidden="true">SN/);
+  assert.match(adjacent, /<span>新谷 尚史<\/span>/);
+  assert.match(interactiveParent, /^<button type="button"/);
+  assert.match(interactiveParent, /class="avatar-fallback" aria-hidden="true"/);
+  for (const html of [fallback, loaded, error, decorative, adjacent]) {
+    assert.doesNotMatch(html, /(?:title|tabindex|role="button"|onclick)=/i);
+  }
+  assert.doesNotMatch(uiBuildersSource, /function avatar[^\n]+\.slice\(/);
+  assert.doesNotMatch(uiBuildersSource, /function avatar[^\n]+title=/);
+  for (const size of ['xs', 'sm', 'md', 'lg']) {
+    assert.match(indexSource, new RegExp(`\\.avatar\\[data-size="${size}"\\]\\{inline-size:var\\(--ctl-${size}\\);block-size:var\\(--ctl-${size}\\);font-size:var\\(--text-`));
+  }
+  assert.match(indexSource, /\.avatar-image\{display:block;object-fit:cover\}/);
 });
 
 test('Tooltip is implementation-ready as a non-interactive description popup', () => {

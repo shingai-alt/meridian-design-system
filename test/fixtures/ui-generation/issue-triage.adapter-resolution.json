@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "adapter-resolution",
+    "id": "fixture_resolution_issue_triage",
+    "status": "resolved",
+    "generatedAt": "2026-07-27T09:00:00Z"
+  },
+  "policy": {
+    "selectionPolicy": "fixture-approved-adapter",
+    "eligibleAdapterRefs": ["meridian_html_runtime"]
+  },
+  "results": [
+    {
+      "capabilityRequirementRef": "capability_issue_list",
+      "capabilityRef": "data.status-list",
+      "status": "provisional",
+      "adapterRef": "meridian_html_runtime",
+      "resolutionKind": "composition",
+      "targetRefs": ["table", "status-indicator", "button"],
+      "compatibility": { "status": "compatible", "reasons": [] },
+      "provenance": { "adapterVersion": "0.2.0", "bindingIndex": 7 }
+    },
+    {
+      "capabilityRequirementRef": "capability_issue_filter",
+      "capabilityRef": "input.text",
+      "status": "provisional",
+      "adapterRef": "meridian_html_runtime",
+      "resolutionKind": "composition",
+      "targetRefs": ["form-field", "text-field", "validation-message"],
+      "compatibility": { "status": "compatible", "reasons": [] },
+      "provenance": { "adapterVersion": "0.2.0", "bindingIndex": 1 }
+    },
+    {
+      "capabilityRequirementRef": "capability_triage_action",
+      "capabilityRef": "action.trigger",
+      "status": "provisional",
+      "adapterRef": "meridian_html_runtime",
+      "resolutionKind": "component",
+      "targetRefs": ["button"],
+      "compatibility": { "status": "compatible", "reasons": [] },
+      "provenance": { "adapterVersion": "0.2.0", "bindingIndex": 0 }
+    }
+  ],
+  "generationGate": {
+    "status": "pass",
+    "reasons": []
+  }
+}

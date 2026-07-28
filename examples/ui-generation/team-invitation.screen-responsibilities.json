@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "screen-responsibilities",
+    "id": "responsibilities_team_invitation",
+    "status": "ready-for-review",
+    "revision": 1,
+    "createdAt": "2026-07-27T05:05:00Z"
+  },
+  "source": {
+    "designBriefRef": "examples/ui-generation/team-invitation.design-brief.json",
+    "designBriefDigest": "sha256-409421d022df2fdc56bc927ec8ee80f35aafe604ffa4ab343fecbf7c0f027957",
+    "requirementAllocationRef": "examples/ui-generation/team-invitation.requirement-allocation.json",
+    "requirementAllocationDigest": "sha256-9210588b54dafc3e048a935b66af24e6c2cc0fcff7281a471e3dd7bcbef2c245"
+  },
+  "responsibilities": [
+    {
+      "id": "responsibility_manage",
+      "name": "Member and Invitation Management",
+      "responsibility": "参加済みMemberとPending招待の現在状態を比較し、許可された管理操作への入口を提供する。",
+      "primaryTask": "Pending招待の状態、期限、利用可能な再送・取消操作を確認する。",
+      "supportsRequirementRefs": ["req_manage", "req_owner_only", "req_async", "req_expiry", "req_responsive"],
+      "notResponsibleFor": ["新しい招待のEmailとRoleを編集する", "招待内容を最終確定する", "対象別送信結果の回復を完了する"],
+      "entryConditions": ["Workspaceへアクセスできる"],
+      "completionConditions": ["対象の現在状態と次に可能な操作を説明できる"]
+    },
+    {
+      "id": "responsibility_compose",
+      "name": "Invitation Composition",
+      "responsibility": "複数の招待対象についてEmailとRoleを対応付け、送信前に修正可能な入力として完成させる。",
+      "primaryTask": "最大10件の宛先ごとにEmailとRoleを設定し、入力上の問題を解消する。",
+      "supportsRequirementRefs": ["req_compose", "req_batch_limit", "req_recipient_role", "req_responsive", "req_wrong_recipient", "req_duplicate_send"],
+      "notResponsibleFor": ["招待を送信する", "送信済み結果を再試行する", "参加済みMemberを管理する"],
+      "entryConditions": ["Workspace Ownerである", "招待作成を開始している"],
+      "completionConditions": ["全行が有効で、既存Pendingと重複せず、確認へ進める"]
+    },
+    {
+      "id": "responsibility_review",
+      "name": "Invitation Review and Commit",
+      "responsibility": "送信対象、Role、Seat、高権限の影響をまとめて確認し、招待を一度だけ確定する。",
+      "primaryTask": "全宛先とRoleを説明し、高影響事項を確認して送信する。",
+      "supportsRequirementRefs": ["req_send", "req_owner_only", "req_recipient_role", "req_responsive", "req_wrong_recipient", "req_excess_privilege"],
+      "notResponsibleFor": ["Emailの新規入力を行う", "Pending招待を継続管理する", "失敗対象を再試行する"],
+      "entryConditions": ["Invitation Compositionが完了している"],
+      "completionConditions": ["送信が一度だけ開始され、結果処理へ移れる"]
+    },
+    {
+      "id": "responsibility_result",
+      "name": "Invitation Result Recovery",
+      "responsibility": "対象別の成功、Pending、失敗を分離し、成功済み対象を保持したまま失敗だけを回復する。",
+      "primaryTask": "送信結果を理解し、必要なら失敗した宛先だけを修正または再試行する。",
+      "supportsRequirementRefs": ["req_async", "req_responsive", "req_duplicate_send"],
+      "notResponsibleFor": ["成功済み対象を再送する", "新しい招待batchを構成する", "Member全体の権限を編集する"],
+      "entryConditions": ["送信処理が少なくとも一つの対象結果を返している"],
+      "completionConditions": ["成功済み対象を再送せず、失敗対象の次の行動を選べる"]
+    }
+  ]
+}

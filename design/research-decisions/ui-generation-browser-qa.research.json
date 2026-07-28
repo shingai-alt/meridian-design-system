@@ -1,0 +1,179 @@
+{
+  "$schema": "../../schemas/ui-generation-research-decision.schema.json",
+  "schemaVersion": "0.1.0",
+  "kind": "ui-generation-research-decision",
+  "id": "ui-generation-browser-qa",
+  "title": "Browser QA evidence, repair loop, and Generation Report model",
+  "status": "researching",
+  "category": "browser-quality",
+  "question": "Which Browser QA model gives Meridian reproducible viewport and state evidence, behavioral accessibility checks, stale screenshot rejection, bounded repair, and a Human review boundary without treating automated checks as conformance?",
+  "scope": {
+    "milestone": "M7",
+    "summary": "Compare a digest-bound behavioral matrix with screenshot-golden-only testing, then exercise the selected contract against synthetic Team Invitation and Issue Triage fixtures.",
+    "inScope": ["Desktop, Tablet, and Mobile capture", "Five-state evidence", "Keyboard and focus checks", "Semantic integrity", "Screenshot digest", "Finding layer", "Repair limit", "Generation Report"],
+    "outOfScope": ["Final WCAG conformance claim", "VoiceOver automation", "Windows High Contrast automation", "Production Human approvals"]
+  },
+  "triggers": ["new-architecture", "accessibility-or-safety", "benchmark-needed", "uncertainty"],
+  "constraints": [
+    "Automated evidence cannot claim WCAG conformance or replace manual assistive-technology evaluation.",
+    "Every screenshot is bound to the exact Manifest, Review UI, Review Model, Usage Manifest, Policy, browser, and platform.",
+    "Desktop, 768px Tablet, and 375px Mobile are required for every applicable Screen and State.",
+    "Critical or Major findings block final Human review; Direction pairwise comparison remains the earlier M3 gate.",
+    "Visual repair cannot modify locked requirements, responsibilities, selected patterns, selected direction, capability plan, or adapter selection.",
+    "At most two repair rounds are permitted."
+  ],
+  "criteria": [
+    { "id": "evidence-integrity", "name": "Evidence integrity", "description": "Rejects stale, partial, duplicate, or environment-ambiguous capture evidence.", "weight": 35, "measurement": "browser-evaluation" },
+    { "id": "behavioral-coverage", "name": "Behavioral coverage", "description": "Covers viewport reflow, state signals, keyboard reachability, focus visibility, semantics, and runtime provenance.", "weight": 35, "measurement": "browser-evaluation" },
+    { "id": "repair-governance", "name": "Repair governance", "description": "Routes findings to the owning layer, preserves locked structure, enforces a repair limit, and stops before Human review when blockers remain.", "weight": 30, "measurement": "contract-analysis" }
+  ],
+  "candidates": [
+    {
+      "id": "digest-bound-behavioral-matrix",
+      "name": "Digest-bound behavioral Browser QA matrix",
+      "version": "0.1.0",
+      "officialUrl": "https://playwright.dev/docs/emulation",
+      "disposition": "shortlisted",
+      "license": "Meridian owns the evidence contract; Playwright remains under its published project license.",
+      "evidenceRefs": ["playwright-emulation", "playwright-screenshots", "wcag-22", "wai-keyboard", "wai-act"],
+      "assessments": [
+        { "criterionId": "evidence-integrity", "score": null, "confidence": "medium", "evidenceRefs": ["playwright-screenshots", "playwright-visual-comparisons"], "spikeRefs": ["generic-browser-qa-spike"], "notes": "Source and screenshot digests plus an exact derived matrix are implemented; real capture validation is pending execution." },
+        { "criterionId": "behavioral-coverage", "score": null, "confidence": "medium", "evidenceRefs": ["playwright-emulation", "wcag-22", "wai-keyboard", "wai-act"], "spikeRefs": ["generic-browser-qa-spike"], "notes": "The contract combines screenshots with keyboard, focus, semantics, state, overflow, console, and provenance checks." },
+        { "criterionId": "repair-governance", "score": null, "confidence": "medium", "evidenceRefs": ["wcag-22", "wai-act"], "spikeRefs": ["generic-browser-qa-spike"], "notes": "Layer classification, locked-structure digest, bounded repair, Human escalation, and evidence-gated Generation Report are implemented; real Browser evidence remains pending." }
+      ],
+      "limitations": ["Chromium evidence does not cover every browser engine or platform accessibility API.", "Pixel output varies by platform and must retain environment provenance."],
+      "eliminationReason": null
+    },
+    {
+      "id": "screenshot-golden-only",
+      "name": "Screenshot golden comparison only",
+      "version": null,
+      "officialUrl": "https://playwright.dev/docs/test-snapshots",
+      "disposition": "candidate",
+      "license": "Uses Playwright visual comparison APIs under the project license; Meridian owns baselines and review policy.",
+      "evidenceRefs": ["playwright-visual-comparisons", "playwright-screenshots"],
+      "assessments": [
+        { "criterionId": "evidence-integrity", "score": null, "confidence": "medium", "evidenceRefs": ["playwright-visual-comparisons"], "spikeRefs": ["generic-browser-qa-spike"], "notes": "Golden files are reviewable and environment-specific, but do not by themselves prove the complete Manifest-derived matrix." },
+        { "criterionId": "behavioral-coverage", "score": null, "confidence": "high", "evidenceRefs": ["playwright-visual-comparisons", "wai-keyboard"], "spikeRefs": ["generic-browser-qa-spike"], "notes": "Pixel comparison cannot prove keyboard reachability, accessible names, ARIA references, state announcements, or runtime provenance." },
+        { "criterionId": "repair-governance", "score": null, "confidence": "medium", "evidenceRefs": ["playwright-visual-comparisons"], "spikeRefs": ["generic-browser-qa-spike"], "notes": "A changed golden records appearance drift but does not identify the owning design layer or protect locked structure." }
+      ],
+      "limitations": ["Rendering differs across OS, browser, settings, and hardware.", "A visually matching screenshot can retain semantic and keyboard failures."],
+      "eliminationReason": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "playwright-emulation",
+      "title": "Playwright Emulation",
+      "url": "https://playwright.dev/docs/emulation",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "Microsoft Playwright",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["digest-bound-behavioral-matrix"],
+      "criterionRefs": ["evidence-integrity", "behavioral-coverage"],
+      "summary": "Playwright supports explicit browser contexts and viewport, touch, locale, color scheme, and device emulation; viewport size can be fixed per context or page.",
+      "limitations": ["Device emulation does not reproduce every physical device or assistive-technology behavior."]
+    },
+    {
+      "id": "playwright-screenshots",
+      "title": "Playwright Screenshots",
+      "url": "https://playwright.dev/docs/screenshots",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "Microsoft Playwright",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["digest-bound-behavioral-matrix", "screenshot-golden-only"],
+      "criterionRefs": ["evidence-integrity"],
+      "summary": "Playwright can capture full-page, element, file, or buffer screenshots, allowing Meridian to hash the exact PNG bytes.",
+      "limitations": ["The screenshot API does not define Meridian's completeness or stale-source rules."]
+    },
+    {
+      "id": "playwright-visual-comparisons",
+      "title": "Playwright Visual Comparisons",
+      "url": "https://playwright.dev/docs/test-snapshots",
+      "sourceType": "official-documentation",
+      "authority": "primary",
+      "publisher": "Microsoft Playwright",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["digest-bound-behavioral-matrix", "screenshot-golden-only"],
+      "criterionRefs": ["evidence-integrity", "behavioral-coverage", "repair-governance"],
+      "summary": "Playwright stores platform-qualified reference screenshots and warns that rendering varies with OS, version, settings, hardware, power, and headless mode.",
+      "limitations": ["Pixel comparison alone cannot establish semantic or behavioral correctness."]
+    },
+    {
+      "id": "wcag-22",
+      "title": "Web Content Accessibility Guidelines 2.2",
+      "url": "https://www.w3.org/TR/WCAG22/",
+      "sourceType": "standard",
+      "authority": "primary",
+      "publisher": "W3C",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["digest-bound-behavioral-matrix"],
+      "criterionRefs": ["behavioral-coverage", "repair-governance"],
+      "summary": "WCAG 2.2 defines Reflow, Keyboard, Focus Order, Focus Visible, Focus Not Obscured, and Name, Role, Value requirements relevant to the matrix.",
+      "limitations": ["Passing selected automated checks does not establish conformance with all success criteria."]
+    },
+    {
+      "id": "wai-keyboard",
+      "title": "Developing a Keyboard Interface",
+      "url": "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/",
+      "sourceType": "official-guideline",
+      "authority": "primary",
+      "publisher": "W3C Web Accessibility Initiative",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["digest-bound-behavioral-matrix", "screenshot-golden-only"],
+      "criterionRefs": ["behavioral-coverage"],
+      "summary": "APG describes the tab sequence, composite focus management, and the requirement that the visual focus indicator remain visible.",
+      "limitations": ["APG is guidance and not a replacement for normative WCAG evaluation."]
+    },
+    {
+      "id": "wai-act",
+      "title": "Accessibility Conformance Testing Overview",
+      "url": "https://www.w3.org/WAI/standards-guidelines/act/",
+      "sourceType": "standard",
+      "authority": "primary",
+      "publisher": "W3C Web Accessibility Initiative",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["digest-bound-behavioral-matrix"],
+      "criterionRefs": ["behavioral-coverage", "repair-governance"],
+      "summary": "ACT formalizes transparent automated, semi-automated, and manual test rules while keeping individual rules informative rather than equating them with complete conformance.",
+      "limitations": ["Meridian's local checks are ACT-informed but are not claimed as formally approved ACT Rules."]
+    }
+  ],
+  "spikes": [
+    {
+      "id": "generic-browser-qa-spike",
+      "title": "Two-pilot Generic Review UI Browser QA spike",
+      "status": "in-progress",
+      "candidateRefs": ["digest-bound-behavioral-matrix", "screenshot-golden-only"],
+      "hypothesis": "A Manifest-derived matrix with behavioral checks and digest-bound screenshots will detect failures that screenshot-only review cannot classify or safely repair.",
+      "fixtureRefs": ["test/fixtures/ui-generation/team-invitation.generation-manifest.json", "test/fixtures/ui-generation/issue-triage.generation-manifest.json"],
+      "commands": ["npm run generate:team-fixture", "npm run generate:generic-review", "npm run capture:generic-browser-qa", "node --test test/browser-qa.test.js"],
+      "measurements": ["60 expected Screen-State-Viewport scenarios", "Screenshot and source digests", "Horizontal overflow", "Keyboard reachability", "Visible and unobscured focus", "ARIA reference integrity", "Accessible names", "State signals", "Runtime provenance", "Long Japanese and high-density coverage"],
+      "findings": [
+        "QA Policy, Evidence schema, deterministic finding classification, and two synthetic Pilot chains are implemented.",
+        "Issue Triage now contains long Japanese content and ten rows to satisfy explicit stress thresholds.",
+        "The capture runner is pinned to Playwright 1.62.0 and derives every expected scenario from Manifest screenRefs and state fixtures.",
+        "Repair limits, AI locked-layer prohibition, Human escalation, and Generation Report approval digest are implemented and covered by deterministic tests.",
+        "Fixture Generation Reports are generated as evidence-missing and cannot advance to Human approval without real Browser QA evidence.",
+        "Real headless Chromium capture is pending because the current execution permission quota rejected browser launch; no screenshot or pass claim has been recorded."
+      ],
+      "artifactRefs": ["design/ui-generation-browser-qa-policy.json", "schemas/browser-qa-policy.schema.json", "schemas/browser-qa-evidence.schema.json", "schemas/ui-generation-repair-record.schema.json", "schemas/generation-report.schema.json", "scripts/lib/browser-qa.mjs", "scripts/lib/ui-generation-repair.mjs", "scripts/lib/generation-report.mjs", "scripts/capture-generic-browser-qa.mjs", "scripts/generate-generation-report.mjs", "test/browser-qa.test.js"]
+    }
+  ],
+  "decision": {
+    "status": "pending",
+    "recommendedCandidateId": null,
+    "rationale": "",
+    "tradeoffs": [],
+    "rejectedCandidateIds": [],
+    "unresolvedItems": [
+      "Run the complete two-Pilot Chromium capture matrix and validate screenshot digests.",
+      "Compare observed evidence coverage before recommending a candidate.",
+      "Human approval remains required after the decision becomes decision-ready."
+    ],
+    "revisitTriggers": ["Playwright major version changes", "A required browser engine cannot reproduce the evidence", "Manual assistive-technology testing contradicts automated findings", "Repair classification repeatedly points to locked structure"],
+    "approval": null
+  }
+}

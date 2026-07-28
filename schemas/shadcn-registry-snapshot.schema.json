@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/shadcn-registry-snapshot.schema.json",
+  "title": "Meridian shadcn Registry Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "kind",
+    "id",
+    "capturedAt",
+    "cli",
+    "source",
+    "items"
+  ],
+  "properties": {
+    "$schema": { "$ref": "#/$defs/nonEmpty" },
+    "schemaVersion": { "const": "0.1.0" },
+    "kind": { "const": "shadcn-registry-snapshot" },
+    "id": { "$ref": "#/$defs/id" },
+    "capturedAt": { "$ref": "#/$defs/nonEmpty" },
+    "cli": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["package", "version", "command"],
+      "properties": {
+        "package": { "const": "shadcn" },
+        "version": { "$ref": "#/$defs/nonEmpty" },
+        "command": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registry", "packageLockRef", "packageLockSha256"],
+      "properties": {
+        "registry": { "type": "string", "pattern": "^https://" },
+        "packageLockRef": { "$ref": "#/$defs/nonEmpty" },
+        "packageLockSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/item" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "registrySchema", "type", "dependencies", "files"],
+      "properties": {
+        "name": { "$ref": "#/$defs/id" },
+        "registrySchema": { "type": "string", "pattern": "^https://" },
+        "type": { "$ref": "#/$defs/nonEmpty" },
+        "dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmpty" }
+        },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/file" }
+        }
+      }
+    },
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "type", "content", "contentSha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/nonEmpty" },
+        "type": { "$ref": "#/$defs/nonEmpty" },
+        "content": { "$ref": "#/$defs/nonEmpty" },
+        "contentSha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

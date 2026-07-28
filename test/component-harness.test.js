@@ -8,7 +8,8 @@ const root = join(__dirname, '..');
 const read = (path) => readFileSync(join(root, path), 'utf8');
 const readJson = (path) => JSON.parse(read(path));
 
-const pilotIds = ['button', 'text-field', 'select', 'form-field', 'validation-message', 'checkbox', 'alert', 'status-indicator', 'table'];
+const compositionComponentIds = ['button', 'text-field', 'select', 'form-field', 'validation-message', 'checkbox', 'alert', 'status-indicator', 'table'];
+const pilotIds = [...compositionComponentIds, 'dialog', 'description-list', 'workflow-step'];
 
 test('pilot Contracts expose versioned HTML Runtime semantics', () => {
   for (const id of pilotIds) {
@@ -71,7 +72,7 @@ test('Usage Manifest matches composition decisions and generated HTML provenance
   assert.equal(usage.exceptions.length, 0);
   assert.equal(usage.renderSites.length, composition.nodes.length);
   assert.match(usage.validationDigest, /^sha256-[a-f0-9]{64}$/);
-  for (const id of pilotIds) assert.match(html, new RegExp(`meta\\('${id}'`));
+  for (const id of compositionComponentIds) assert.match(html, new RegExp(`meta\\('${id}'`));
   assert.match(html, /data-meridian-contract-version/);
   assert.match(html, /data-meridian-runtime-version/);
   assert.match(html, /data-meridian-decision/);
@@ -103,17 +104,63 @@ test('browser Runtime is syntactically valid and uses native controls', async ()
   const { browserRuntimeSource } = await import('../packages/html-runtime/src/index.mjs');
   const registry = readJson('design/harness/generated/component-registry.json');
   const composition = readJson('examples/phase-2/team-invitation.composition.json');
-  const source = browserRuntimeSource(registry, composition);
+  const runtimeComposition = structuredClone(composition);
+  runtimeComposition.nodes.push(
+    { component: 'dialog', instanceId: 'test-dialog', allowedVariants: ['default'], allowedStates: ['closed', 'open'], decisionRef: 'decision.test-dialog' },
+    { component: 'description-list', instanceId: 'test-description-list', allowedVariants: ['default'], allowedStates: ['default'], decisionRef: 'decision.test-description-list' },
+    { component: 'workflow-step', instanceId: 'test-workflow-step', allowedVariants: ['default'], allowedStates: ['current', 'success', 'disabled', 'error'], decisionRef: 'decision.test-workflow-step' },
+  );
+  const source = browserRuntimeSource(registry, runtimeComposition);
   assert.doesNotThrow(() => new vm.Script(source));
   assert.match(source, /<button type=/);
   assert.match(source, /<input class=/);
   assert.match(source, /<select class=/);
   assert.match(source, /<table class=/);
+  assert.match(source, /<dialog class=/);
+  assert.match(source, /<dl class=/);
+  assert.match(source, /<li class=/);
   assert.doesNotMatch(source, /eval\(|new Function/);
 
+  let dialogCloseListener;
+  let initialFocusCount = 0;
+  let triggerFocusCount = 0;
+  const triggerAttributes = new Map();
+  const initialFocus = { focus() { initialFocusCount += 1; } };
+  const dialogAttributes = new Map([
+    ['data-meridian-instance', 'dialog-1'],
+    ['data-meridian-state', 'closed'],
+  ]);
+  const dialogNode = {
+    open: false,
+    showModal() { this.open = true; },
+    close() { this.open = false; dialogCloseListener?.(); },
+    addEventListener(type, listener) { if (type === 'close') dialogCloseListener = listener; },
+    getAttribute(name) { return dialogAttributes.get(name) ?? null; },
+    setAttribute(name, value) { dialogAttributes.set(name, value); },
+    querySelector(selector) { return selector.startsWith('[data-initial-focus]') ? initialFocus : null; },
+  };
+  const trigger = {
+    setAttribute(name, value) { triggerAttributes.set(name, value); },
+    focus() { triggerFocusCount += 1; },
+  };
+  const failedTriggerAttributes = new Map();
+  const failedTrigger = {
+    setAttribute(name, value) { failedTriggerAttributes.set(name, value); },
+    focus() {},
+  };
+  const failedDialogNode = {
+    showModal() { throw new Error('showModal failed'); },
+    addEventListener() {},
+  };
   const sandbox = {
     window: {},
     document: {
+      activeElement: trigger,
+      getElementById(id) {
+        if (id === 'runtime-dialog') return dialogNode;
+        if (id === 'failed-dialog') return failedDialogNode;
+        return null;
+      },
       createElement() {
         return {
           value: '',
@@ -127,10 +174,55 @@ test('browser Runtime is syntactically valid and uses native controls', async ()
   const runtime = sandbox.window.MeridianHTMLRuntime;
   assert.throws(() => runtime.button({ instanceId: 'rogue', usageId: 'missing-template', variant: 'primary', decisionRef: 'decision.invite-action' }, '送信'));
   assert.throws(() => runtime.button({ instanceId: 'rogue', usageId: 'invite-action', variant: 'danger', decisionRef: 'decision.invite-action' }, '削除'));
+  const dialogTrigger = String(runtime.button({ instanceId: 'dialog-trigger', usageId: 'invite-action', variant: 'primary', ariaHaspopup: 'dialog', ariaControls: 'runtime-dialog', ariaExpanded: 'false', decisionRef: 'decision.invite-action' }, '確認'));
+  assert.match(dialogTrigger, /aria-haspopup="dialog"/);
+  assert.match(dialogTrigger, /aria-controls="runtime-dialog"/);
+  assert.match(dialogTrigger, /aria-expanded="false"/);
   const escapedAlert = String(runtime.alert({ instanceId: 'safe-alert', usageId: 'invite-page-alert', variant: 'warning', decisionRef: 'decision.page-alert' }, '通知', '<img src=x onerror=alert(1)>'));
   assert.doesNotMatch(escapedAlert, /<img/);
   assert.match(escapedAlert, /&lt;img/);
   const injectedValue = String(runtime.textField({ instanceId: 'email-0', usageId: 'invite-email-input', value: 'x\" autofocus onfocus=\"alert(1)', decisionRef: 'decision.email-field' }));
   assert.doesNotMatch(injectedValue, /value="x" autofocus/);
   assert.match(injectedValue, /value="x&amp;quot;|value="x&quot;/);
+
+  const dialog = String(runtime.dialog({ instanceId: 'dialog-1', usageId: 'test-dialog', id: 'runtime-dialog', state: 'closed', variant: 'default', closeLabel: '閉じる <危険>', decisionRef: 'decision.test-dialog' }, '<img src=x>', '<script>alert(1)</script>', runtime.paragraph('キャンセル')));
+  assert.match(dialog, /^<dialog /);
+  assert.doesNotMatch(dialog, /<img|<script>/);
+  assert.match(dialog, /form method="dialog"/);
+  assert.match(dialog, /aria-label="閉じる &lt;危険&gt;"/);
+  assert.throws(() => runtime.dialog({ instanceId: 'dialog-open', usageId: 'test-dialog', state: 'open', variant: 'default', decisionRef: 'decision.test-dialog' }, '開く', '', ''));
+
+  const descriptionList = String(runtime.descriptionList({ instanceId: 'description-list-1', usageId: 'test-description-list', decisionRef: 'decision.test-description-list' }, [{ term: '<dt>', description: '<dd>' }]));
+  assert.match(descriptionList, /^<dl /);
+  assert.match(descriptionList, /<dt>&lt;dt&gt;<\/dt><dd>&lt;dd&gt;<\/dd>/);
+
+  const workflowStep = String(runtime.workflowStep({ instanceId: 'step-1', usageId: 'test-workflow-step', state: 'current', decisionRef: 'decision.test-workflow-step' }, '<確認>', '内容'));
+  assert.match(workflowStep, /^<li /);
+  assert.match(workflowStep, /aria-current="step"/);
+  assert.match(workflowStep, /mrd-workflow-step__status">現在</);
+  assert.doesNotMatch(workflowStep, /mrd-visually-hidden/);
+  assert.match(workflowStep, /&lt;確認&gt;/);
+  const disabledStep = String(runtime.workflowStep({ instanceId: 'step-2', usageId: 'test-workflow-step', state: 'disabled', decisionRef: 'decision.test-workflow-step' }, '送信', '前のstepを完了してください'));
+  assert.match(disabledStep, /aria-disabled="true"/);
+  assert.match(disabledStep, /mrd-workflow-step__status">利用不可</);
+
+  assert.throws(() => runtime.openDialog('failed-dialog', failedTrigger), /showModal failed/);
+  assert.equal(failedTriggerAttributes.get('aria-haspopup'), 'dialog');
+  assert.equal(failedTriggerAttributes.get('aria-controls'), 'failed-dialog');
+  assert.equal(failedTriggerAttributes.has('aria-expanded'), false);
+
+  runtime.openDialog('runtime-dialog', trigger);
+  assert.equal(dialogNode.open, true);
+  assert.equal(triggerAttributes.get('aria-haspopup'), 'dialog');
+  assert.equal(triggerAttributes.get('aria-controls'), 'runtime-dialog');
+  assert.equal(triggerAttributes.get('aria-expanded'), 'true');
+  assert.equal(dialogAttributes.get('data-meridian-state'), 'open');
+  assert.equal(runtime.renderedUsage().find((item) => item.instanceId === 'dialog-1').state, 'open');
+  assert.equal(initialFocusCount, 1);
+  runtime.closeDialog('runtime-dialog');
+  assert.equal(dialogNode.open, false);
+  assert.equal(triggerAttributes.get('aria-expanded'), 'false');
+  assert.equal(dialogAttributes.get('data-meridian-state'), 'closed');
+  assert.equal(runtime.renderedUsage().find((item) => item.instanceId === 'dialog-1').state, 'closed');
+  assert.equal(triggerFocusCount, 1);
 });

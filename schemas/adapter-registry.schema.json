@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/adapter-registry.schema.json",
+  "title": "Meridian UI Adapter Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "kind", "id", "selectionPolicy", "adapters"],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "const": "0.1.0" },
+    "kind": { "const": "adapter-registry" },
+    "id": { "$ref": "#/$defs/id" },
+    "selectionPolicy": { "const": "project-existing-first" },
+    "adapters": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/adapter" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "path": { "type": "string", "minLength": 1 },
+    "adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "version", "priority", "availability", "approval", "sourceRefs", "runtimePackageRef", "tokenStrategy", "bindings"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["project", "external"] },
+        "version": { "$ref": "#/$defs/nonEmpty" },
+        "priority": { "type": "integer", "minimum": 0 },
+        "availability": { "enum": ["available", "candidate", "disabled"] },
+        "approval": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "decisionRef"],
+          "properties": {
+            "status": { "enum": ["project-existing", "approved", "pending", "rejected"] },
+            "decisionRef": { "type": ["string", "null"] }
+          }
+        },
+        "sourceRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } },
+        "runtimePackageRef": { "type": ["string", "null"] },
+        "tokenStrategy": { "enum": ["native", "mapped", "isolated"] },
+        "bindings": { "type": "array", "items": { "$ref": "#/$defs/binding" } }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilityRef", "resolutionKind", "targetRefs", "maturity", "supportedSemantics", "supportedStates"],
+      "properties": {
+        "capabilityRef": { "$ref": "#/$defs/id" },
+        "resolutionKind": { "enum": ["component", "composition", "generator-owned"] },
+        "targetRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "maturity": { "enum": ["stable", "provisional"] },
+        "supportedSemantics": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "supportedStates": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["default", "loading", "empty", "error", "permission", "disabled", "success", "pending"] }
+        }
+      }
+    }
+  }
+}

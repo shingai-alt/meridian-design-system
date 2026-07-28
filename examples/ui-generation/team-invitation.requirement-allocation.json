@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "requirement-allocation",
+    "id": "allocation_team_invitation",
+    "status": "ready-for-review",
+    "revision": 1,
+    "createdAt": "2026-07-27T05:00:00Z"
+  },
+  "source": {
+    "designBriefRef": "examples/ui-generation/team-invitation.design-brief.json",
+    "designBriefDigest": "sha256-409421d022df2fdc56bc927ec8ee80f35aafe604ffa4ab343fecbf7c0f027957"
+  },
+  "requirements": [
+    { "id": "req_compose", "statement": "宛先ごとにEmailとRoleを設定する。", "kind": "task", "priority": "critical", "sourceRefs": ["action:compose_invitations"] },
+    { "id": "req_send", "statement": "確認済み招待を一度だけ送信する。", "kind": "task", "priority": "critical", "sourceRefs": ["action:send_invitations"] },
+    { "id": "req_manage", "statement": "Pending招待を再送または取消する。", "kind": "task", "priority": "high", "sourceRefs": ["action:manage_invitation"] },
+    { "id": "req_owner_only", "statement": "招待とRole付与はWorkspace Ownerだけが実行できる。", "kind": "constraint", "priority": "critical", "sourceRefs": ["constraint:constraint_owner_only"] },
+    { "id": "req_batch_limit", "statement": "1回の送信対象を最大10人に制限する。", "kind": "constraint", "priority": "high", "sourceRefs": ["constraint:constraint_batch_limit"] },
+    { "id": "req_recipient_role", "statement": "各宛先へ許可されたRoleを一つ設定する。", "kind": "constraint", "priority": "critical", "sourceRefs": ["constraint:constraint_per_recipient_role"] },
+    { "id": "req_async", "statement": "非同期送信と対象別の成功・失敗を扱う。", "kind": "state", "priority": "critical", "sourceRefs": ["constraint:constraint_async"] },
+    { "id": "req_expiry", "statement": "招待の7日間の有効期限を管理文脈で示す。", "kind": "state", "priority": "high", "sourceRefs": ["constraint:constraint_expiry"] },
+    { "id": "req_responsive", "statement": "Desktop、Tablet、Mobileで主要タスクと状態を完了可能にする。", "kind": "quality", "priority": "high", "sourceRefs": ["constraint:constraint_responsive"] },
+    { "id": "req_wrong_recipient", "statement": "誤った宛先を送信前に発見して修正できる。", "kind": "risk-control", "priority": "critical", "sourceRefs": ["risk:risk_wrong_recipient"] },
+    { "id": "req_excess_privilege", "statement": "高権限Roleの影響を送信前に明示確認する。", "kind": "risk-control", "priority": "critical", "sourceRefs": ["risk:risk_excess_privilege"] },
+    { "id": "req_duplicate_send", "statement": "Pendingまたは成功済み宛先の重複送信を防ぐ。", "kind": "risk-control", "priority": "critical", "sourceRefs": ["risk:risk_duplicate_send"] }
+  ],
+  "allocations": [
+    { "id": "alloc_compose", "requirementRef": "req_compose", "responsibilityRef": "responsibility_compose", "placement": "workflow", "rationale": "EmailとRoleの対応を同じ編集責務で保持する。" },
+    { "id": "alloc_send", "requirementRef": "req_send", "responsibilityRef": "responsibility_review", "placement": "workflow", "rationale": "送信操作を確認済み内容と同じ確定責務へ置く。" },
+    { "id": "alloc_manage", "requirementRef": "req_manage", "responsibilityRef": "responsibility_manage", "placement": "persistent", "rationale": "Pending管理は一時的な完了画面ではなく継続管理面に置く。" },
+    { "id": "alloc_owner_only_manage", "requirementRef": "req_owner_only", "responsibilityRef": "responsibility_manage", "placement": "persistent", "rationale": "入口で権限境界と利用不可理由を説明する。" },
+    { "id": "alloc_owner_only_review", "requirementRef": "req_owner_only", "responsibilityRef": "responsibility_review", "placement": "workflow", "rationale": "送信直前にも権限喪失を再検証する。" },
+    { "id": "alloc_batch", "requirementRef": "req_batch_limit", "responsibilityRef": "responsibility_compose", "placement": "workflow", "rationale": "行追加時点で上限を理解できるようにする。" },
+    { "id": "alloc_role_compose", "requirementRef": "req_recipient_role", "responsibilityRef": "responsibility_compose", "placement": "workflow", "rationale": "宛先とRoleを同じ編集単位へ配置する。" },
+    { "id": "alloc_role_review", "requirementRef": "req_recipient_role", "responsibilityRef": "responsibility_review", "placement": "workflow", "rationale": "確定前に宛先とRoleの組合せを再確認する。" },
+    { "id": "alloc_async_result", "requirementRef": "req_async", "responsibilityRef": "responsibility_result", "placement": "workflow", "rationale": "対象別結果と回復を結果処理責務で扱う。" },
+    { "id": "alloc_async_manage", "requirementRef": "req_async", "responsibilityRef": "responsibility_manage", "placement": "persistent", "rationale": "処理中とPendingを継続管理面に反映する。" },
+    { "id": "alloc_expiry", "requirementRef": "req_expiry", "responsibilityRef": "responsibility_manage", "placement": "persistent", "rationale": "期限はPending状態と並べて継続的に確認する。" },
+    { "id": "alloc_responsive_manage", "requirementRef": "req_responsive", "responsibilityRef": "responsibility_manage", "placement": "persistent", "rationale": "入口と管理操作を全required viewportで維持する。" },
+    { "id": "alloc_responsive_compose", "requirementRef": "req_responsive", "responsibilityRef": "responsibility_compose", "placement": "workflow", "rationale": "入力行をDesktop比較とMobile field groupへ適応する。" },
+    { "id": "alloc_responsive_review", "requirementRef": "req_responsive", "responsibilityRef": "responsibility_review", "placement": "workflow", "rationale": "確認順序と確定操作を全required viewportで維持する。" },
+    { "id": "alloc_responsive_result", "requirementRef": "req_responsive", "responsibilityRef": "responsibility_result", "placement": "workflow", "rationale": "結果と回復操作を全required viewportで維持する。" },
+    { "id": "alloc_wrong_recipient", "requirementRef": "req_wrong_recipient", "responsibilityRef": "responsibility_compose", "placement": "workflow", "rationale": "入力時validationで対象単位に修正する。" },
+    { "id": "alloc_wrong_recipient_review", "requirementRef": "req_wrong_recipient", "responsibilityRef": "responsibility_review", "placement": "workflow", "rationale": "確定前に全宛先を比較する。" },
+    { "id": "alloc_privilege", "requirementRef": "req_excess_privilege", "responsibilityRef": "responsibility_review", "placement": "workflow", "rationale": "高権限の影響を確定操作へ近接させる。" },
+    { "id": "alloc_duplicate_compose", "requirementRef": "req_duplicate_send", "responsibilityRef": "responsibility_compose", "placement": "workflow", "rationale": "既存Pendingを入力時に検出する。" },
+    { "id": "alloc_duplicate_result", "requirementRef": "req_duplicate_send", "responsibilityRef": "responsibility_result", "placement": "workflow", "rationale": "成功済み対象を再試行対象から除外する。" }
+  ],
+  "coverage": {
+    "required": 12,
+    "allocated": 12,
+    "unallocatedRequirementRefs": []
+  }
+}

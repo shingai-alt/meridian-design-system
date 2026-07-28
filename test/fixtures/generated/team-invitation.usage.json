@@ -1,0 +1,666 @@
+{
+  "schemaVersion": "0.1.0",
+  "conceptId": "fixture_generation_team_invitation",
+  "sourcePackageId": "responsibilities_team_invitation",
+  "compositionId": "fixture_generation_team_invitation.composition",
+  "translationPackDigest": "sha256-c1a2391c5daceea35375ef3e98425d061c71c9de4948b61831d88553f546a79b",
+  "runtimeVersion": "0.2.0",
+  "patterns": [
+    "status-management-list",
+    "batch-entity-creation",
+    "review-before-commit",
+    "asynchronous-partial-result"
+  ],
+  "instances": [
+    {
+      "component": "table",
+      "instanceId": "invitation-status-list-table",
+      "contractVersion": "0.1.0",
+      "props": {
+        "state": "default"
+      },
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "selected",
+        "loading",
+        "empty"
+      ],
+      "decisionRef": "decision-manage-status"
+    },
+    {
+      "component": "status-indicator",
+      "instanceId": "invitation-status-list-status-pending-invite",
+      "repeat": "content.rows",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "idle"
+      },
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-manage-status"
+    },
+    {
+      "component": "button",
+      "instanceId": "invitation-status-list-action-pending-invite",
+      "repeat": "content.rows",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-manage-status"
+    },
+    {
+      "component": "button",
+      "instanceId": "start-invitation-action",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "primary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-primary-action"
+    },
+    {
+      "component": "workflow-step",
+      "instanceId": "compose-progress-step-input",
+      "repeat": "content.steps",
+      "contractVersion": "0.1.0",
+      "props": {
+        "state": "current"
+      },
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "current",
+        "success",
+        "disabled",
+        "error"
+      ],
+      "decisionRef": "decision-stage-progress"
+    },
+    {
+      "component": "workflow-step",
+      "instanceId": "compose-progress-step-review",
+      "repeat": "content.steps",
+      "contractVersion": "0.1.0",
+      "props": {
+        "state": "default"
+      },
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "current",
+        "success",
+        "disabled",
+        "error"
+      ],
+      "decisionRef": "decision-stage-progress"
+    },
+    {
+      "component": "workflow-step",
+      "instanceId": "compose-progress-step-result",
+      "repeat": "content.steps",
+      "contractVersion": "0.1.0",
+      "props": {
+        "state": "disabled"
+      },
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "current",
+        "success",
+        "disabled",
+        "error"
+      ],
+      "decisionRef": "decision-stage-progress"
+    },
+    {
+      "component": "form-field",
+      "instanceId": "recipient-editor-field-email",
+      "repeat": "content.fields",
+      "contractVersion": "0.1.0",
+      "props": {
+        "state": "default"
+      },
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "error"
+      ],
+      "decisionRef": "decision-batch-editor"
+    },
+    {
+      "component": "text-field",
+      "instanceId": "recipient-editor-control-email",
+      "repeat": "content.fields",
+      "contractVersion": "0.1.0",
+      "props": {
+        "state": "default"
+      },
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "error",
+        "disabled",
+        "readonly"
+      ],
+      "decisionRef": "decision-batch-editor"
+    },
+    {
+      "component": "validation-message",
+      "instanceId": "recipient-editor-message-email",
+      "repeat": "content.fields",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "error"
+      },
+      "allowedVariants": [
+        "error",
+        "success",
+        "warning"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-batch-editor"
+    },
+    {
+      "component": "form-field",
+      "instanceId": "recipient-editor-field-role",
+      "repeat": "content.fields",
+      "contractVersion": "0.1.0",
+      "props": {
+        "state": "default"
+      },
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "error"
+      ],
+      "decisionRef": "decision-batch-editor"
+    },
+    {
+      "component": "select",
+      "instanceId": "recipient-editor-control-role",
+      "repeat": "content.fields",
+      "contractVersion": "0.1.0",
+      "props": {
+        "state": "default"
+      },
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "focus",
+        "error",
+        "disabled"
+      ],
+      "decisionRef": "decision-batch-editor"
+    },
+    {
+      "component": "validation-message",
+      "instanceId": "recipient-editor-message-role",
+      "repeat": "content.fields",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "error"
+      },
+      "allowedVariants": [
+        "error",
+        "success",
+        "warning"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-batch-editor"
+    },
+    {
+      "component": "button",
+      "instanceId": "recipient-editor-action",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-batch-editor"
+    },
+    {
+      "component": "button",
+      "instanceId": "compose-next-action",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "primary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-primary-action"
+    },
+    {
+      "component": "button",
+      "instanceId": "review-confirmation-trigger",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "primary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-review-confirmation"
+    },
+    {
+      "component": "dialog",
+      "instanceId": "review-confirmation-dialog",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "default",
+        "state": "closed"
+      },
+      "allowedVariants": [
+        "default",
+        "danger"
+      ],
+      "allowedStates": [
+        "open",
+        "closed",
+        "submitting",
+        "error"
+      ],
+      "decisionRef": "decision-review-confirmation"
+    },
+    {
+      "component": "description-list",
+      "instanceId": "review-confirmation-summary",
+      "contractVersion": "0.1.0",
+      "props": {
+        "state": "default"
+      },
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-review-confirmation"
+    },
+    {
+      "component": "button",
+      "instanceId": "review-confirmation-confirm",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "primary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-review-confirmation"
+    },
+    {
+      "component": "button",
+      "instanceId": "review-confirmation-cancel",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-review-confirmation"
+    },
+    {
+      "component": "alert",
+      "instanceId": "result-feedback-alert",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "warning"
+      },
+      "allowedVariants": [
+        "info",
+        "success",
+        "warning",
+        "danger"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-result-feedback"
+    },
+    {
+      "component": "button",
+      "instanceId": "result-feedback-action",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-result-feedback"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-manage-structure",
+      "reason": "Member管理責務をstatus listと招待開始actionへ限定する。",
+      "sourceRefs": [
+        "responsibility_manage",
+        "selection_status_management"
+      ]
+    },
+    {
+      "id": "decision-manage-status",
+      "reason": "Pending状態、期限、対象別actionを同じreading orderで比較する。",
+      "sourceRefs": [
+        "capability_invitation_statuses",
+        "selection_status_management"
+      ]
+    },
+    {
+      "id": "decision-primary-action",
+      "reason": "各責務の完了点に一つの主要actionを置く。",
+      "sourceRefs": [
+        "capability_primary_actions",
+        "direction_dedicated_stages"
+      ]
+    },
+    {
+      "id": "decision-compose-structure",
+      "reason": "複数宛先の比較編集を専用責務として確保する。",
+      "sourceRefs": [
+        "responsibility_compose",
+        "selection_batch_create"
+      ]
+    },
+    {
+      "id": "decision-stage-progress",
+      "reason": "入力、確認、結果の現在地と到達可能性を示す。",
+      "sourceRefs": [
+        "capability_stage_progress",
+        "direction_dedicated_stages"
+      ]
+    },
+    {
+      "id": "decision-batch-editor",
+      "reason": "宛先ごとのEmailとRoleを対応付けて修正可能にする。",
+      "sourceRefs": [
+        "capability_recipient_batch",
+        "selection_batch_create"
+      ]
+    },
+    {
+      "id": "decision-review-structure",
+      "reason": "送信確定を入力から分離した一責務のsectionにする。",
+      "sourceRefs": [
+        "responsibility_review",
+        "selection_review"
+      ]
+    },
+    {
+      "id": "decision-review-confirmation",
+      "reason": "宛先と高権限の影響を送信前に一度確認する。",
+      "sourceRefs": [
+        "capability_review_confirmation",
+        "selection_review"
+      ]
+    },
+    {
+      "id": "decision-result-structure",
+      "reason": "送信結果の理解と失敗対象の回復だけを扱う。",
+      "sourceRefs": [
+        "responsibility_result",
+        "selection_partial_result"
+      ]
+    },
+    {
+      "id": "decision-result-feedback",
+      "reason": "成功済み対象を保持しながら失敗対象の次行動を示す。",
+      "sourceRefs": [
+        "capability_result_feedback",
+        "selection_partial_result"
+      ]
+    }
+  ],
+  "exceptions": [],
+  "renderSites": [
+    {
+      "usageId": "invitation-status-list-table",
+      "component": "table",
+      "callCount": 1
+    },
+    {
+      "usageId": "invitation-status-list-status-pending-invite",
+      "component": "status-indicator",
+      "callCount": 1
+    },
+    {
+      "usageId": "invitation-status-list-action-pending-invite",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "start-invitation-action",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "compose-progress-step-input",
+      "component": "workflow-step",
+      "callCount": 1
+    },
+    {
+      "usageId": "compose-progress-step-review",
+      "component": "workflow-step",
+      "callCount": 1
+    },
+    {
+      "usageId": "compose-progress-step-result",
+      "component": "workflow-step",
+      "callCount": 1
+    },
+    {
+      "usageId": "recipient-editor-field-email",
+      "component": "form-field",
+      "callCount": 1
+    },
+    {
+      "usageId": "recipient-editor-control-email",
+      "component": "text-field",
+      "callCount": 1
+    },
+    {
+      "usageId": "recipient-editor-message-email",
+      "component": "validation-message",
+      "callCount": 1
+    },
+    {
+      "usageId": "recipient-editor-field-role",
+      "component": "form-field",
+      "callCount": 1
+    },
+    {
+      "usageId": "recipient-editor-control-role",
+      "component": "select",
+      "callCount": 1
+    },
+    {
+      "usageId": "recipient-editor-message-role",
+      "component": "validation-message",
+      "callCount": 1
+    },
+    {
+      "usageId": "recipient-editor-action",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "compose-next-action",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "review-confirmation-trigger",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "review-confirmation-dialog",
+      "component": "dialog",
+      "callCount": 1
+    },
+    {
+      "usageId": "review-confirmation-summary",
+      "component": "description-list",
+      "callCount": 1
+    },
+    {
+      "usageId": "review-confirmation-confirm",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "review-confirmation-cancel",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "result-feedback-alert",
+      "component": "alert",
+      "callCount": 1
+    },
+    {
+      "usageId": "result-feedback-action",
+      "component": "button",
+      "callCount": 1
+    }
+  ],
+  "validationDigest": "sha256-81584128f98d1927002a1071cf8dc5175dcec1b811e604acb6b1cb2459ccb4f3"
+}

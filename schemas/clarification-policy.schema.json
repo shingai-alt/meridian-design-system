@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/clarification-policy.schema.json",
+  "title": "Meridian UI Generation Clarification Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "questionLimit", "structuralImpactWeights", "nonBlockingTopics", "questionLanguage", "invariants"],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "const": "0.1.0" },
+    "questionLimit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum", "maximum"],
+      "properties": {
+        "minimum": { "const": 1 },
+        "maximum": { "const": 3 }
+      }
+    },
+    "structuralImpactWeights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary-task", "screen-count", "pattern", "persistent-information", "permission", "irreversible-action", "data-volume", "device", "none"],
+      "properties": {
+        "primary-task": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "screen-count": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "pattern": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "persistent-information": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "permission": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "irreversible-action": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "data-volume": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "device": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "none": { "const": 0 }
+      }
+    },
+    "nonBlockingTopics": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["content", "technical", "minor"] }
+    },
+    "questionLanguage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prohibitedTerms", "requireBehaviorWording"],
+      "properties": {
+        "prohibitedTerms": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "requireBehaviorWording": { "const": true }
+      }
+    },
+    "invariants": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+  }
+}

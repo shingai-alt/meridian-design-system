@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/adapter-resolution.schema.json",
+  "title": "Meridian Strict Adapter Resolution",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "source", "policy", "results", "summary", "generationGate"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/meta" },
+    "source": { "$ref": "#/$defs/source" },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selectionPolicy", "requestedAdapterRefs", "eligibleAdapterRefs"],
+      "properties": {
+        "selectionPolicy": { "const": "project-existing-first" },
+        "requestedAdapterRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "eligibleAdapterRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }
+      }
+    },
+    "results": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/result" } },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "resolved", "provisional", "partial", "unresolved"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "resolved": { "type": "integer", "minimum": 0 },
+        "provisional": { "type": "integer", "minimum": 0 },
+        "partial": { "type": "integer", "minimum": 0 },
+        "unresolved": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "generationGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reasons"],
+      "properties": {
+        "status": { "enum": ["pass", "blocked"] },
+        "reasons": { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" } }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "digest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "status", "generatedAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" },
+        "kind": { "const": "adapter-resolution" },
+        "id": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["resolved", "blocked"] },
+        "generatedAt": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilityPlanRef", "capabilityPlanDigest", "adapterRegistryRef", "adapterRegistryDigest", "tokenMappingRef", "tokenMappingDigest"],
+      "properties": {
+        "capabilityPlanRef": { "$ref": "#/$defs/nonEmpty" },
+        "capabilityPlanDigest": { "$ref": "#/$defs/digest" },
+        "adapterRegistryRef": { "$ref": "#/$defs/nonEmpty" },
+        "adapterRegistryDigest": { "$ref": "#/$defs/digest" },
+        "tokenMappingRef": { "$ref": "#/$defs/nonEmpty" },
+        "tokenMappingDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilityRequirementRef", "capabilityRef", "status", "adapterRef", "resolutionKind", "targetRefs", "missingSemantics", "missingStates", "compatibility", "provenance"],
+      "properties": {
+        "capabilityRequirementRef": { "$ref": "#/$defs/id" },
+        "capabilityRef": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["resolved", "provisional", "partial", "unresolved"] },
+        "adapterRef": { "type": ["string", "null"] },
+        "resolutionKind": { "type": ["string", "null"], "enum": ["component", "composition", "generator-owned", null] },
+        "targetRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "missingSemantics": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "missingStates": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "compatibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "reasons"],
+          "properties": {
+            "status": { "enum": ["compatible", "incompatible", "not-evaluated"] },
+            "reasons": { "type": "array", "items": { "$ref": "#/$defs/nonEmpty" } }
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["adapterVersion", "bindingIndex"],
+          "properties": {
+            "adapterVersion": { "type": ["string", "null"] },
+            "bindingIndex": { "type": ["integer", "null"], "minimum": 0 }
+          }
+        }
+      }
+    }
+  }
+}

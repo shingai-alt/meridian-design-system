@@ -1,6 +1,30 @@
 {
   "$schema": "../../../schemas/component-contract.schema.json",
   "schemaVersion": "0.1.0",
+  "contractVersion": "0.1.0",
+  "runtime": {
+    "compatibility": ">=0.2.0 <1.0.0",
+    "rootElements": ["li"],
+    "slots": ["indicator", "label", "description"],
+    "attributes": ["aria-current", "aria-disabled", "data-*"],
+    "stateModel": ["data-meridian-state"],
+    "events": [],
+    "relations": ["ordered-step", "current-step", "visible-status-text"],
+    "provenance": ["component", "instance", "variant", "state", "contract-version", "runtime-version", "decision"]
+  },
+  "selectionRules": {
+    "useWhen": ["順序のある少数stepについて現在地、完了、未到達を示す。"],
+    "avoidWhen": ["時刻、log、tool入出力を含む実行履歴を示す。"],
+    "alternatives": ["Execution Timeline", "Progress"]
+  },
+  "negativeExamples": [
+    {
+      "pattern": "現在stepを色だけで区別する。",
+      "reason": "色を認識できない利用者へ現在地が伝わらないため。",
+      "ruleIds": ["STATE_NOT_COLOR_ONLY"]
+    }
+  ],
+  "requiredScenarios": ["default", "current", "success", "disabled", "error", "narrow-viewport"],
   "id": "workflow-step",
   "name": "Workflow Step",
   "status": "draft",
@@ -67,6 +91,26 @@
       "requiredBehavior": [
         "通常状態。意味、label、valueを省略しない。"
       ]
+    },
+    {
+      "id": "current",
+      "description": "利用者が現在取り組んでいるstep。",
+      "requiredBehavior": ["aria-current=stepと可視textまたはindicatorで現在地を示す。"]
+    },
+    {
+      "id": "success",
+      "description": "完了済みstep。",
+      "requiredBehavior": ["完了を色だけでなく記号またはtextでも示す。"]
+    },
+    {
+      "id": "disabled",
+      "description": "まだ到達できないstep。",
+      "requiredBehavior": ["aria-disabledと低い視覚強度を併用し、現在地として扱わない。"]
+    },
+    {
+      "id": "error",
+      "description": "修正または再試行が必要なstep。",
+      "requiredBehavior": ["問題と次の行動を色以外でも識別できるようにする。"]
     }
   ],
   "props": [

@@ -1,0 +1,50 @@
+.adapter-carbon {
+  font-family: "IBM Plex Sans", "Noto Sans JP", system-ui, sans-serif;
+}
+
+.adapter-carbon .surface-card {
+  border-radius: 0;
+}
+
+.adapter-carbon .recipient-row {
+  border-radius: 0;
+  background: #f4f4f4;
+}
+
+.adapter-carbon .carbon-field {
+  min-width: 0;
+}
+
+.adapter-carbon .cds--checkbox-wrapper {
+  margin-block: 0;
+}
+
+.adapter-carbon .cds--checkbox-label {
+  min-height: 24px;
+  align-items: center;
+}
+
+.adapter-carbon input:focus-visible,
+.adapter-carbon select:focus-visible {
+  outline: 3px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+.adapter-carbon .cds--data-table-container {
+  padding-top: 0;
+}
+
+.adapter-carbon .cds--data-table-header {
+  display: none;
+}
+
+.adapter-carbon .cds--modal-footer .cds--btn {
+  width: auto;
+  max-width: none;
+}
+
+.carbon-modal-description {
+  margin-bottom: 18px;
+  color: #525252;
+  line-height: 1.55;
+}

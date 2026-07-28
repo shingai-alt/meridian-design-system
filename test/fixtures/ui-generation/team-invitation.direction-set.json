@@ -1,0 +1,236 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "direction-set",
+    "id": "fixture_directions_team_invitation",
+    "status": "approved",
+    "revision": 1,
+    "createdAt": "2026-07-27T05:15:00Z",
+    "updatedAt": "2026-07-27T10:00:00Z"
+  },
+  "source": {
+    "designBriefRef": "examples/ui-generation/team-invitation.design-brief.json",
+    "designBriefDigest": "sha256-409421d022df2fdc56bc927ec8ee80f35aafe604ffa4ab343fecbf7c0f027957",
+    "requirementAllocationRef": "examples/ui-generation/team-invitation.requirement-allocation.json",
+    "requirementAllocationDigest": "sha256-9210588b54dafc3e048a935b66af24e6c2cc0fcff7281a471e3dd7bcbef2c245",
+    "screenResponsibilitiesRef": "examples/ui-generation/team-invitation.screen-responsibilities.json",
+    "screenResponsibilitiesDigest": "sha256-3937d0d2c42b441915a96d25284f07048347b53bdcdb99d509ac4ca9413acf11",
+    "patternSelectionRef": "examples/ui-generation/team-invitation.pattern-selection.json",
+    "patternSelectionDigest": "sha256-631ebe111b816d610ea8b922268270cc2e04122d96c5ea3aff101975e86e29f5"
+  },
+  "comparisonCriteria": [
+    "誤招待と過剰権限を防げるか",
+    "複数宛先を比較・修正しやすいか",
+    "Partial successから安全に回復できるか",
+    "現在のMembers文脈をどの程度維持できるか",
+    "Desktop、Tablet、Mobileで同じ責務を維持できるか"
+  ],
+  "directions": [
+    {
+      "id": "direction_dedicated_stages",
+      "title": "Dedicated Staged Workspace",
+      "hypothesis": "招待を独立した作業領域にし、入力、確認、結果を明示的な段階へ分けると、複数対象と高Risk事項を最も安全に扱える。",
+      "structure": {
+        "taskModel": "複数対象を比較編集してから段階的に確定する",
+        "informationArchitecture": "Members管理、招待Workspace、確認、結果を同階層の責務単位として分離する",
+        "navigation": "Membersから専用招待routeへ移動し、段階内はBackとContinueで進む",
+        "disclosure": "SeatとRole影響を入力中に要約し、確定時に全詳細を展開する",
+        "actionModel": "入力保存と送信確定を分離し、送信はReview責務に一つだけ置く",
+        "screenBoundary": "管理、入力、確認、結果を四つの明示的なpage stateへ配置する"
+      },
+      "responsibilityPlacement": [
+        {
+          "responsibilityRef": "responsibility_manage",
+          "container": "members route",
+          "sequence": 1
+        },
+        {
+          "responsibilityRef": "responsibility_compose",
+          "container": "dedicated invitation route",
+          "sequence": 2
+        },
+        {
+          "responsibilityRef": "responsibility_review",
+          "container": "dedicated review step",
+          "sequence": 3
+        },
+        {
+          "responsibilityRef": "responsibility_result",
+          "container": "dedicated result step",
+          "sequence": 4
+        }
+      ],
+      "requirementRefs": [
+        "req_compose",
+        "req_send",
+        "req_manage",
+        "req_owner_only",
+        "req_batch_limit",
+        "req_recipient_role",
+        "req_async",
+        "req_expiry",
+        "req_responsive",
+        "req_wrong_recipient",
+        "req_excess_privilege",
+        "req_duplicate_send"
+      ],
+      "benefits": [
+        "複数行と高Risk確認の表示領域を確保できる",
+        "責務とfocus destinationが明確である",
+        "Partial successを独立した回復段階として扱える"
+      ],
+      "risks": [
+        "単一招待には移動量が多い",
+        "Members文脈が一時的に見えなくなる"
+      ],
+      "invalidWhen": [
+        "招待が常に1件でRoleとSeat確認が不要な場合"
+      ]
+    },
+    {
+      "id": "direction_contextual_panel",
+      "title": "Contextual Staged Panel",
+      "hypothesis": "Members一覧を背後の管理文脈として維持しながら、幅広Panel内で入力、確認、結果を段階化すると、文脈維持と安全性を両立できる。",
+      "structure": {
+        "taskModel": "管理文脈を参照しながら複数対象を段階編集する",
+        "informationArchitecture": "Members管理を親とし、招待の入力、確認、結果を一つの補助Workspaceへ入れ子にする",
+        "navigation": "routeを維持したままPanelを開き、Panel内部のstep navigationで進む",
+        "disclosure": "現在のMemberとPendingは背後に保持し、RoleとSeat詳細を必要なstepで段階表示する",
+        "actionModel": "Panel footerの継続actionをstepごとに変え、最終stepだけ送信を許可する",
+        "screenBoundary": "管理はpage、入力・確認・結果は同じPanel内の三つのstepとして配置する"
+      },
+      "responsibilityPlacement": [
+        {
+          "responsibilityRef": "responsibility_manage",
+          "container": "members route",
+          "sequence": 1
+        },
+        {
+          "responsibilityRef": "responsibility_compose",
+          "container": "wide panel step 1",
+          "sequence": 2
+        },
+        {
+          "responsibilityRef": "responsibility_review",
+          "container": "wide panel step 2",
+          "sequence": 3
+        },
+        {
+          "responsibilityRef": "responsibility_result",
+          "container": "wide panel step 3",
+          "sequence": 4
+        }
+      ],
+      "requirementRefs": [
+        "req_compose",
+        "req_send",
+        "req_manage",
+        "req_owner_only",
+        "req_batch_limit",
+        "req_recipient_role",
+        "req_async",
+        "req_expiry",
+        "req_responsive",
+        "req_wrong_recipient",
+        "req_excess_privilege",
+        "req_duplicate_send"
+      ],
+      "benefits": [
+        "MembersとPendingの文脈を維持できる",
+        "段階責務と一度だけの送信を保持できる",
+        "完了後に管理面へ戻りやすい"
+      ],
+      "risks": [
+        "10行と長文でPanelが過密になり得る",
+        "MobileではPanelが実質full-screenとなる"
+      ],
+      "invalidWhen": [
+        "背後のMembers文脈が作業判断に不要で、10行編集の表示領域を優先する場合"
+      ]
+    },
+    {
+      "id": "direction_inline_management",
+      "title": "Inline Management Workspace",
+      "hypothesis": "Members管理面に招待draftとPendingを統合し、Reviewだけを一時的に展開すると、反復管理の速度を最大化できる。",
+      "structure": {
+        "taskModel": "管理一覧の中でdraft、Pending、参加済みを状態別に処理する",
+        "informationArchitecture": "Members、Invitation drafts、Pendingを一つの管理Workspaceのsectionとして並置する",
+        "navigation": "画面遷移を行わずsection anchorとfocus移動で責務間を移る",
+        "disclosure": "通常は行要約を表示し、編集と高権限確認を対象行またはReview regionで展開する",
+        "actionModel": "行単位の保存とbatch review actionを併用し、送信時だけ確定regionを表示する",
+        "screenBoundary": "管理、入力、結果を一つのpageへ統合し、確認だけをtransient regionとして配置する"
+      },
+      "responsibilityPlacement": [
+        {
+          "responsibilityRef": "responsibility_manage",
+          "container": "members workspace section",
+          "sequence": 1
+        },
+        {
+          "responsibilityRef": "responsibility_compose",
+          "container": "invitation drafts section",
+          "sequence": 2
+        },
+        {
+          "responsibilityRef": "responsibility_review",
+          "container": "transient review region",
+          "sequence": 3
+        },
+        {
+          "responsibilityRef": "responsibility_result",
+          "container": "invitation results section",
+          "sequence": 4
+        }
+      ],
+      "requirementRefs": [
+        "req_compose",
+        "req_send",
+        "req_manage",
+        "req_owner_only",
+        "req_batch_limit",
+        "req_recipient_role",
+        "req_async",
+        "req_expiry",
+        "req_responsive",
+        "req_wrong_recipient",
+        "req_excess_privilege",
+        "req_duplicate_send"
+      ],
+      "benefits": [
+        "反復招待とPending管理を一つの文脈で行える",
+        "完了後の状態反映が直接見える",
+        "少数招待では移動が少ない"
+      ],
+      "risks": [
+        "参加済み、draft、Pendingが混在して認知負荷が高い",
+        "高権限確認とPartial successが管理画面を複雑にする",
+        "Mobileで責務境界が不明瞭になりやすい"
+      ],
+      "invalidWhen": [
+        "誤権限Riskを最優先し、入力と管理状態を明確に分離する必要がある場合"
+      ]
+    }
+  ],
+  "recommendation": {
+    "directionRef": "direction_dedicated_stages",
+    "rationale": [
+      "最大10件の比較編集に必要な領域を確保できる。",
+      "入力、送信確定、Partial success回復の責務を最も明確に分離できる。",
+      "既存Phase 1 Pilotで確認されたDialog過密とinline状態混在のRiskを避けられる。"
+    ],
+    "confidence": 0.9
+  },
+  "review": {
+    "status": "approved",
+    "requiredRole": "design-owner",
+    "approval": {
+      "actorType": "human",
+      "actorId": "synthetic-fixture-design-owner",
+      "role": "design-owner",
+      "decision": "approved",
+      "selectedDirectionRef": "direction_dedicated_stages",
+      "directionSetDigest": "sha256-41efaafb63a3a15918af1d0002302506c4335b5d4ab6d8010f08196b60acc626",
+      "decidedAt": "2026-07-27T10:00:00Z"
+    }
+  }
+}

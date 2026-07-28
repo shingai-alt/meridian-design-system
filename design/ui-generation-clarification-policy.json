@@ -1,0 +1,32 @@
+{
+  "$schema": "../schemas/clarification-policy.schema.json",
+  "schemaVersion": "0.1.0",
+  "questionLimit": { "minimum": 1, "maximum": 3 },
+  "structuralImpactWeights": {
+    "primary-task": 100,
+    "screen-count": 90,
+    "pattern": 85,
+    "persistent-information": 75,
+    "permission": 95,
+    "irreversible-action": 100,
+    "data-volume": 70,
+    "device": 65,
+    "none": 0
+  },
+  "nonBlockingTopics": ["content", "technical", "minor"],
+  "questionLanguage": {
+    "prohibitedTerms": ["Master–Detail", "Master-Detail", "Task Queue", "modal", "drawer", "schema", "component", "API"],
+    "requireBehaviorWording": true
+  },
+  "invariants": [
+    "Only open blocking unknowns may become clarification questions.",
+    "A round asks one to three questions, except when no blocking unknown remains.",
+    "Questions are ordered by structural impact and stable unknown ID.",
+    "Questions describe user behavior and outcomes instead of implementation or Product UI Pattern names.",
+    "Open non-blocking unknowns are recorded as explicit assumptions or remain visible; they do not silently disappear.",
+    "A response resolves exactly one selected unknown and records a rationale.",
+    "Answer merge cannot mutate a brief section outside the allowlisted structured update fields.",
+    "Direction generation cannot start while an open blocking unknown remains.",
+    "Only a human can approve or request revision of a Design Brief."
+  ]
+}

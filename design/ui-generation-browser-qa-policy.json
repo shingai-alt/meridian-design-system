@@ -1,0 +1,64 @@
+{
+  "$schema": "../schemas/browser-qa-policy.schema.json",
+  "schemaVersion": "0.1.0",
+  "kind": "browser-qa-policy",
+  "id": "meridian-ui-generation-browser-qa",
+  "version": "0.1.0",
+  "browser": {
+    "engine": "chromium",
+    "playwrightVersion": "1.62.0",
+    "animations": "disabled"
+  },
+  "viewports": [
+    { "id": "desktop", "width": 1440, "height": 1000, "touch": false },
+    { "id": "tablet", "width": 768, "height": 1024, "touch": true },
+    { "id": "mobile", "width": 375, "height": 812, "touch": true }
+  ],
+  "states": ["default", "loading", "empty", "error", "permission"],
+  "checks": [
+    "console",
+    "page-error",
+    "horizontal-overflow",
+    "semantic-integrity",
+    "keyboard-reachability",
+    "visible-focus",
+    "focus-not-obscured",
+    "state-signal",
+    "runtime-provenance"
+  ],
+  "stressCoverage": {
+    "minimumJapaneseTextLength": 80,
+    "minimumDenseRows": 10,
+    "scope": "pilot-suite"
+  },
+  "repair": {
+    "maximumRounds": 2,
+    "limits": {
+      "deterministicValidation": 5,
+      "structuralRepair": 2,
+      "visualRepair": 2,
+      "patternReselection": 1
+    },
+    "lockedLayers": [
+      "requirements",
+      "screen-responsibilities",
+      "selected-patterns",
+      "selected-direction",
+      "capability-plan",
+      "adapter-selection"
+    ],
+    "findingLayers": [
+      "generation-manifest",
+      "layout-recipe",
+      "component-runtime",
+      "content",
+      "browser-environment"
+    ],
+    "blockingSeverities": ["critical", "major"]
+  },
+  "limitations": [
+    "Automated Chromium checks do not establish WCAG conformance.",
+    "VoiceOver, browser UI zoom, and Windows High Contrast remain manual platform evidence.",
+    "Screenshot comparison is meaningful only within the recorded browser and platform environment."
+  ]
+}

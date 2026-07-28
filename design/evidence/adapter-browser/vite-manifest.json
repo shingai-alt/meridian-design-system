@@ -1,0 +1,139 @@
+{
+  "_clsx-CjueKrWZ.js": {
+    "file": "assets/clsx-CjueKrWZ.js",
+    "name": "clsx"
+  },
+  "_dist-BYbysACE.js": {
+    "file": "assets/dist-BYbysACE.js",
+    "name": "dist",
+    "imports": [
+      "_react-dom-Zz8AZq9_.js",
+      "_jsx-runtime-vVZ2Pwds.js",
+      "_floating-ui.react-dom-DB85wki3.js"
+    ]
+  },
+  "_floating-ui.react-dom-DB85wki3.js": {
+    "file": "assets/floating-ui.react-dom-DB85wki3.js",
+    "name": "floating-ui.react-dom",
+    "imports": [
+      "_react-dom-Zz8AZq9_.js"
+    ]
+  },
+  "_helpers-DvoJxsoF.js": {
+    "file": "assets/helpers-DvoJxsoF.js",
+    "name": "helpers",
+    "imports": [
+      "_react-dom-Zz8AZq9_.js"
+    ]
+  },
+  "_jsx-runtime-vVZ2Pwds.js": {
+    "file": "assets/jsx-runtime-vVZ2Pwds.js",
+    "name": "jsx-runtime",
+    "imports": [
+      "_react-dom-Zz8AZq9_.js"
+    ]
+  },
+  "_react-dom-Zz8AZq9_.js": {
+    "file": "assets/react-dom-Zz8AZq9_.js",
+    "name": "react-dom"
+  },
+  "_shim-D_Aoc6N0.js": {
+    "file": "assets/shim-D_Aoc6N0.js",
+    "name": "shim",
+    "imports": [
+      "_react-dom-Zz8AZq9_.js"
+    ]
+  },
+  "index.html": {
+    "file": "assets/index-DkcxV_fw.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "imports": [
+      "_react-dom-Zz8AZq9_.js"
+    ],
+    "dynamicImports": [
+      "src/adapters/shadcn-registry.tsx",
+      "src/adapters/radix.mjs",
+      "src/adapters/react-aria.mjs",
+      "src/adapters/material-ui.mjs",
+      "src/adapters/carbon.mjs"
+    ],
+    "css": [
+      "assets/index-MLvGjRvX.css"
+    ]
+  },
+  "src/adapters/carbon.mjs": {
+    "file": "assets/carbon-DtmAFkUH.js",
+    "name": "carbon",
+    "src": "src/adapters/carbon.mjs",
+    "isDynamicEntry": true,
+    "imports": [
+      "_react-dom-Zz8AZq9_.js",
+      "_jsx-runtime-vVZ2Pwds.js",
+      "_floating-ui.react-dom-DB85wki3.js"
+    ],
+    "css": [
+      "assets/carbon-wJQcnSNX.css"
+    ]
+  },
+  "src/adapters/material-ui.mjs": {
+    "file": "assets/material-ui-DPqg-l4w.js",
+    "name": "material-ui",
+    "src": "src/adapters/material-ui.mjs",
+    "isDynamicEntry": true,
+    "imports": [
+      "_react-dom-Zz8AZq9_.js",
+      "_jsx-runtime-vVZ2Pwds.js",
+      "_clsx-CjueKrWZ.js",
+      "_shim-D_Aoc6N0.js"
+    ],
+    "css": [
+      "assets/material-ui-i9grsred.css"
+    ]
+  },
+  "src/adapters/radix.mjs": {
+    "file": "assets/radix-edAxid9t.js",
+    "name": "radix",
+    "src": "src/adapters/radix.mjs",
+    "isDynamicEntry": true,
+    "imports": [
+      "_react-dom-Zz8AZq9_.js",
+      "_dist-BYbysACE.js",
+      "_helpers-DvoJxsoF.js"
+    ],
+    "css": [
+      "assets/radix-H4kXHb_1.css"
+    ]
+  },
+  "src/adapters/react-aria.mjs": {
+    "file": "assets/react-aria-Cc8t_FG2.js",
+    "name": "react-aria",
+    "src": "src/adapters/react-aria.mjs",
+    "isDynamicEntry": true,
+    "imports": [
+      "_react-dom-Zz8AZq9_.js",
+      "_clsx-CjueKrWZ.js",
+      "_shim-D_Aoc6N0.js",
+      "_helpers-DvoJxsoF.js"
+    ],
+    "css": [
+      "assets/react-aria-ZIAtVxWd.css"
+    ]
+  },
+  "src/adapters/shadcn-registry.tsx": {
+    "file": "assets/shadcn-registry-BtPDPa6G.js",
+    "name": "shadcn-registry",
+    "src": "src/adapters/shadcn-registry.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_react-dom-Zz8AZq9_.js",
+      "_jsx-runtime-vVZ2Pwds.js",
+      "_dist-BYbysACE.js",
+      "_clsx-CjueKrWZ.js"
+    ],
+    "css": [
+      "assets/shadcn-registry-BWpggA-6.css"
+    ]
+  }
+}

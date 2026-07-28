@@ -1,11 +1,11 @@
 {
   "schemaVersion": "0.1.0",
-  "runtimeVersion": "0.1.0",
+  "runtimeVersion": "0.2.0",
   "sourcePackageIds": [
     "phase1_team_invitation"
   ],
   "exceptionApprovals": [],
-  "translationPackDigest": "sha256-8830490d5e9146574daffc9d640d8cdb778eea9dd8e4be5e3176c8755ac0b532",
+  "translationPackDigest": "sha256-c1a2391c5daceea35375ef3e98425d061c71c9de4948b61831d88553f546a79b",
   "draftAllowlist": [
     "button",
     "text-field",
@@ -15,7 +15,10 @@
     "checkbox",
     "alert",
     "status-indicator",
-    "table"
+    "table",
+    "dialog",
+    "description-list",
+    "workflow-step"
   ],
   "draftPatternAllowlist": [
     "interactive-row-group"
@@ -1057,6 +1060,388 @@
         "density": [
           "--cell-y",
           "--row-h"
+        ]
+      }
+    },
+    {
+      "id": "dialog",
+      "name": "Dialog",
+      "status": "draft",
+      "contractVersion": "0.2.0",
+      "source": "design/contracts/components/dialog.contract.json",
+      "sourceDigest": "sha256-4b625e5c8add0372320f640c9c771f9f54100699aae68c7653ba21d0ce16eccd",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "variants": [
+        "default",
+        "danger"
+      ],
+      "states": [
+        "open",
+        "closed",
+        "submitting",
+        "error"
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "trigger",
+          "type": "ReactElement",
+          "required": true,
+          "default": null,
+          "description": "単一のfocusable trigger。aria-haspopup、aria-controls、aria-expanded、open handlerを合成する。"
+        },
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "Dialogを命名する可視title。"
+        },
+        {
+          "name": "description",
+          "type": "ReactNode",
+          "required": false,
+          "default": null,
+          "description": "短く単純なaccessible description。構造化content全体には使わない。"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "Dialog body content。"
+        },
+        {
+          "name": "footer",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "Cancelまたは同等のdismiss actionを含むfooter。"
+        },
+        {
+          "name": "variant",
+          "type": "\"default\" | \"danger\"",
+          "required": false,
+          "default": "default",
+          "description": "Contentとprimary actionのimpact policy。Surface toneは変えない。"
+        },
+        {
+          "name": "role",
+          "type": "\"dialog\" | \"alertdialog\"",
+          "required": false,
+          "default": "dialog",
+          "description": "短い重要messageへ即時responseが必要な場合だけalertdialogを明示する。"
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false,
+          "default": null,
+          "description": "Controlled open state。Native open attributeは直接toggleせずshowModal()/close()へ同期する。"
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Uncontrolled initial open state。"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false,
+          "default": null,
+          "description": "Trigger、Escape、close control、actionを同じopen stateへ通知する。"
+        },
+        {
+          "name": "initialFocusRef",
+          "type": "RefObject<HTMLElement | null>",
+          "required": false,
+          "default": null,
+          "description": "Open時の明示的focus先。Dangerでは最も安全なactionを指定する。"
+        },
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "required": false,
+          "default": "閉じる",
+          "description": "Close Icon Buttonのaccessible name。"
+        },
+        {
+          "name": "ref",
+          "type": "ForwardedRef<HTMLDialogElement>",
+          "required": false,
+          "default": null,
+          "description": "Native dialog elementへforwardするref。"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.2.0 <1.0.0",
+        "rootElements": [
+          "dialog"
+        ],
+        "slots": [
+          "trigger",
+          "backdrop",
+          "surface",
+          "title",
+          "close-control",
+          "description",
+          "body",
+          "footer"
+        ],
+        "attributes": [
+          "open",
+          "role",
+          "aria-labelledby",
+          "aria-describedby",
+          "aria-haspopup",
+          "aria-controls",
+          "aria-expanded",
+          "data-state",
+          "data-variant",
+          "data-*"
+        ],
+        "stateModel": [
+          "native dialog open state",
+          "data-state",
+          "data-variant"
+        ],
+        "events": [
+          "click",
+          "cancel",
+          "close",
+          "keydown",
+          "submit",
+          "openchange"
+        ],
+        "relations": [
+          "trigger-dialog",
+          "visible-title-name",
+          "optional-simple-description",
+          "modal-inert-background",
+          "contained-tab-sequence",
+          "safe-initial-focus",
+          "focus-return"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      },
+      "tokenRefs": {
+        "semanticColor": [
+          "--surface-overlay",
+          "--surface-muted",
+          "--fg",
+          "--fg-muted",
+          "--border",
+          "--border-muted",
+          "--overlay",
+          "--focus-ring"
+        ],
+        "spacing": [
+          "--sp-2",
+          "--sp-3",
+          "--sp-4",
+          "--sp-5",
+          "--sp-8"
+        ],
+        "radius": [
+          "--radius-md",
+          "--radius-xl"
+        ],
+        "sizing": [
+          "--ctl-lg",
+          "--dialog-w-md"
+        ],
+        "motion": [
+          "--dur-normal",
+          "--ease-enter"
+        ],
+        "shadow": [
+          "--shadow-overlay"
+        ]
+      }
+    },
+    {
+      "id": "description-list",
+      "name": "Description List",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/description-list.contract.json",
+      "sourceDigest": "sha256-7e43cd1a895449f07e7290bca04162ab55e570e6d7ce14310a61e53f9330e3b3",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default"
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "Componentの主要content。"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.2.0 <1.0.0",
+        "rootElements": [
+          "dl"
+        ],
+        "slots": [
+          "term",
+          "description"
+        ],
+        "attributes": [
+          "aria-label",
+          "data-*"
+        ],
+        "stateModel": [
+          "data-meridian-state"
+        ],
+        "events": [],
+        "relations": [
+          "term-description",
+          "reading-order"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      },
+      "tokenRefs": {
+        "semanticColor": [
+          "--border",
+          "--border-muted",
+          "--fg",
+          "--fg-muted",
+          "--focus-ring",
+          "--surface",
+          "--surface-muted",
+          "--table-row-hover"
+        ],
+        "density": [
+          "--cell-y",
+          "--row-h"
+        ],
+        "spacing": [
+          "--sp-1",
+          "--sp-2",
+          "--sp-3"
+        ],
+        "typography": [
+          "--text-label"
+        ]
+      }
+    },
+    {
+      "id": "workflow-step",
+      "name": "Workflow Step",
+      "status": "draft",
+      "contractVersion": "0.1.0",
+      "source": "design/contracts/components/workflow-step.contract.json",
+      "sourceDigest": "sha256-c7b7b6407f2565f48fae9b08d6eef3aa9c9793f67db83145c23d270dcfa56358",
+      "pilotScope": [
+        "team-invitation"
+      ],
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "current",
+        "success",
+        "disabled",
+        "error"
+      ],
+      "sizes": [],
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "default": null,
+          "description": "Componentの主要content。"
+        }
+      ],
+      "runtime": {
+        "compatibility": ">=0.2.0 <1.0.0",
+        "rootElements": [
+          "li"
+        ],
+        "slots": [
+          "indicator",
+          "label",
+          "description"
+        ],
+        "attributes": [
+          "aria-current",
+          "aria-disabled",
+          "data-*"
+        ],
+        "stateModel": [
+          "data-meridian-state"
+        ],
+        "events": [],
+        "relations": [
+          "ordered-step",
+          "current-step",
+          "visible-status-text"
+        ],
+        "provenance": [
+          "component",
+          "instance",
+          "variant",
+          "state",
+          "contract-version",
+          "runtime-version",
+          "decision"
+        ]
+      },
+      "tokenRefs": {
+        "semanticColor": [
+          "--border",
+          "--danger",
+          "--fg",
+          "--fg-muted",
+          "--fg-subtle",
+          "--primary",
+          "--success",
+          "--surface",
+          "--surface-muted",
+          "--warning"
+        ],
+        "spacing": [
+          "--sp-2"
+        ],
+        "radius": [
+          "--radius-full"
+        ],
+        "motion": [
+          "--dur-normal"
+        ],
+        "typography": [
+          "--text-label",
+          "--text-small"
         ]
       }
     }

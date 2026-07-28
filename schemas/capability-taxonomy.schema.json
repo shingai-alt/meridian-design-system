@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/capability-taxonomy.schema.json",
+  "title": "Meridian UI Capability Taxonomy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "kind", "id", "status", "capabilities"],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "const": "0.1.0" },
+    "kind": { "const": "capability-taxonomy" },
+    "id": { "$ref": "#/$defs/id" },
+    "status": { "enum": ["active", "superseded"] },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/capability" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "category", "intent", "requiredSemantics", "allowedResolutionKinds"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "category": { "enum": ["action", "input", "collection", "feedback", "disclosure", "data", "navigation"] },
+        "intent": { "$ref": "#/$defs/nonEmpty" },
+        "requiredSemantics": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmpty" }
+        },
+        "allowedResolutionKinds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["component", "composition", "generator-owned"] }
+        }
+      }
+    }
+  }
+}

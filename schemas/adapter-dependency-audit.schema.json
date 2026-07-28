@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/adapter-dependency-audit.schema.json",
+  "title": "Meridian Adapter Dependency Audit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "kind",
+    "id",
+    "status",
+    "queriedAt",
+    "source",
+    "summary",
+    "findings",
+    "selectionImpact"
+  ],
+  "properties": {
+    "$schema": { "$ref": "#/$defs/nonEmpty" },
+    "schemaVersion": { "const": "0.1.0" },
+    "kind": { "const": "adapter-dependency-audit" },
+    "id": { "$ref": "#/$defs/id" },
+    "status": { "enum": ["clean", "open-findings", "resolved"] },
+    "queriedAt": { "$ref": "#/$defs/nonEmpty" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "npmVersion",
+        "invocation",
+        "registry",
+        "packageLockRef",
+        "packageLockSha256",
+        "rawResultRef",
+        "rawResultSha256"
+      ],
+      "properties": {
+        "provider": { "const": "npm audit" },
+        "npmVersion": { "$ref": "#/$defs/nonEmpty" },
+        "invocation": { "const": "npm audit --json" },
+        "registry": { "type": "string", "pattern": "^https://" },
+        "packageLockRef": { "$ref": "#/$defs/nonEmpty" },
+        "packageLockSha256": { "$ref": "#/$defs/sha256" },
+        "rawResultRef": { "$ref": "#/$defs/nonEmpty" },
+        "rawResultSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "info",
+        "low",
+        "moderate",
+        "high",
+        "critical",
+        "total",
+        "productionDependencies",
+        "developmentDependencies",
+        "totalDependencies"
+      ],
+      "properties": {
+        "info": { "type": "integer", "minimum": 0 },
+        "low": { "type": "integer", "minimum": 0 },
+        "moderate": { "type": "integer", "minimum": 0 },
+        "high": { "type": "integer", "minimum": 0 },
+        "critical": { "type": "integer", "minimum": 0 },
+        "total": { "type": "integer", "minimum": 0 },
+        "productionDependencies": { "type": "integer", "minimum": 0 },
+        "developmentDependencies": { "type": "integer", "minimum": 0 },
+        "totalDependencies": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "selectionImpact": { "$ref": "#/$defs/nonEmpty" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "advisoryUrl",
+        "severity",
+        "title",
+        "candidateRefs",
+        "dependencyChain",
+        "reportedVulnerabilityCount",
+        "directRuntimeExposure",
+        "platformScope",
+        "boundary",
+        "resolution",
+        "action"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "advisoryUrl": { "type": "string", "pattern": "^https://" },
+        "severity": { "enum": ["info", "low", "moderate", "high", "critical"] },
+        "title": { "$ref": "#/$defs/nonEmpty" },
+        "candidateRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "dependencyChain": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/nonEmpty" }
+        },
+        "reportedVulnerabilityCount": { "type": "integer", "minimum": 1 },
+        "directRuntimeExposure": { "type": "boolean" },
+        "platformScope": { "$ref": "#/$defs/nonEmpty" },
+        "boundary": { "$ref": "#/$defs/nonEmpty" },
+        "resolution": { "enum": ["open", "mitigated", "resolved", "accepted"] },
+        "action": { "$ref": "#/$defs/nonEmpty" }
+      }
+    }
+  }
+}

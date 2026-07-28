@@ -133,9 +133,10 @@ export function auditRendererUsage({ source, composition }) {
   const rendererToComponent = {
     button: 'button', textField: 'text-field', select: 'select', formField: 'form-field',
     validationMessage: 'validation-message', checkbox: 'checkbox', alert: 'alert',
-    statusIndicator: 'status-indicator', table: 'table',
+    statusIndicator: 'status-indicator', table: 'table', dialog: 'dialog',
+    descriptionList: 'description-list', workflowStep: 'workflow-step',
   };
-  const callPattern = /H\.(button|textField|select|formField|validationMessage|checkbox|alert|statusIndicator|table)\s*\(\s*\{([\s\S]*?)\}\s*[,)]/g;
+  const callPattern = /H\.(button|textField|select|formField|validationMessage|checkbox|alert|statusIndicator|table|dialog|descriptionList|workflowStep)\s*\(\s*\{([\s\S]*?)\}\s*[,)]/g;
   const usagePattern = /usageId\s*:\s*['"]([^'"]+)['"]/;
   const sites = [];
   for (const match of source.matchAll(callPattern)) {
@@ -143,7 +144,7 @@ export function auditRendererUsage({ source, composition }) {
     if (!usage) fail('RENDER_USAGE_DYNAMIC', `H.${match[1]} must declare a literal usageId`);
     sites.push({ component: rendererToComponent[match[1]], usageId: usage[1] });
   }
-  const totalCalls = [...source.matchAll(/H\.(button|textField|select|formField|validationMessage|checkbox|alert|statusIndicator|table)\s*\(/g)].length;
+  const totalCalls = [...source.matchAll(/H\.(button|textField|select|formField|validationMessage|checkbox|alert|statusIndicator|table|dialog|descriptionList|workflowStep)\s*\(/g)].length;
   if (sites.length !== totalCalls) fail('RENDER_USAGE_UNRESOLVED', `Resolved ${sites.length} of ${totalCalls} Runtime component calls`);
   const nodes = new Map(composition.nodes.map((node) => [node.instanceId, node]));
   const counts = new Map();

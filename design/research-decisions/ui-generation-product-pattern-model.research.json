@@ -1,0 +1,176 @@
+{
+  "$schema": "../../schemas/ui-generation-research-decision.schema.json",
+  "schemaVersion": "0.1.0",
+  "kind": "ui-generation-research-decision",
+  "id": "ui-generation-product-pattern-model",
+  "title": "Product UI Pattern taxonomy and structural direction comparison model",
+  "status": "decision-ready",
+  "category": "architecture",
+  "question": "Which intermediate pattern model lets Meridian choose reusable user-task structures without coupling directions to a component library or treating cosmetic variants as alternatives?",
+  "scope": {
+    "milestone": "M3.3",
+    "summary": "Compare task-first, component-first, and page-template-first pattern boundaries and test them against Team Invitation allocation and three structural directions.",
+    "inScope": ["Pattern definition", "Adapter independence", "Applicability and rejection rules", "Structural direction dimensions", "Human direction selection"],
+    "outOfScope": ["External Design System adapter selection", "Component capability resolution", "Visual styling", "Production rendering"]
+  },
+  "triggers": ["new-architecture", "accessibility-or-safety", "conflicting-guidance", "benchmark-needed"],
+  "constraints": [
+    "Pattern names cannot become Design System component names in the library-independent intermediate representation.",
+    "Directions must preserve approved requirements and logical responsibilities.",
+    "Two directions must differ across at least two declared structural dimensions.",
+    "WAI-ARIA APG guidance must remain an accessibility implementation input rather than a product-flow taxonomy.",
+    "Direction selection requires a Human Design Owner."
+  ],
+  "criteria": [
+    { "id": "task-grounding", "name": "Task grounding", "description": "Represents a reusable user goal, applicability, non-applicability, states, and recovery rather than visual resemblance.", "weight": 40, "measurement": "contract-analysis" },
+    { "id": "adapter-independence", "name": "Adapter independence", "description": "Remains stable when the target component library or Design System adapter changes.", "weight": 35, "measurement": "spike" },
+    { "id": "direction-discrimination", "name": "Direction discrimination", "description": "Produces alternatives that differ in task model, information architecture, navigation, disclosure, action model, or screen boundary.", "weight": 25, "measurement": "spike" }
+  ],
+  "candidates": [
+    {
+      "id": "task-first-registry",
+      "name": "Task-first Product UI Pattern registry",
+      "version": "0.1.0",
+      "officialUrl": "https://design-system.service.gov.uk/patterns/",
+      "disposition": "shortlisted",
+      "license": "Meridian owns the registry contract; linked official guidance remains under each publisher's terms.",
+      "evidenceRefs": ["govuk-patterns", "uswds-patterns", "carbon-patterns"],
+      "assessments": [
+        { "criterionId": "task-grounding", "score": 5, "confidence": "high", "evidenceRefs": ["govuk-patterns", "uswds-patterns", "carbon-patterns"], "spikeRefs": ["team-invitation-structure-spike"], "notes": "The model starts from a user problem and requires applicableWhen, avoidWhen, requiredBehaviors, and evidence." },
+        { "criterionId": "adapter-independence", "score": 5, "confidence": "high", "evidenceRefs": ["govuk-patterns", "carbon-patterns"], "spikeRefs": ["team-invitation-structure-spike"], "notes": "No component identifier appears in the Pattern Registry contract; later capability resolution owns adapter mapping." },
+        { "criterionId": "direction-discrimination", "score": 5, "confidence": "high", "evidenceRefs": ["carbon-create-flows"], "spikeRefs": ["team-invitation-structure-spike"], "notes": "The spike distinguishes dedicated stages, contextual panel, and inline management across all six structural dimensions." }
+      ],
+      "limitations": ["A new Pattern needs curated applicability guidance.", "Task-level patterns can overlap and require explicit selection rationale."],
+      "eliminationReason": null
+    },
+    {
+      "id": "component-first-taxonomy",
+      "name": "Component and ARIA-pattern-first taxonomy",
+      "version": null,
+      "officialUrl": "https://www.w3.org/WAI/ARIA/apg/about/introduction/",
+      "disposition": "candidate",
+      "license": "Uses public W3C guidance; Meridian would own product-specific composition and decision rules.",
+      "evidenceRefs": ["wai-aria-apg"],
+      "assessments": [
+        { "criterionId": "task-grounding", "score": 2, "confidence": "high", "evidenceRefs": ["wai-aria-apg"], "spikeRefs": ["team-invitation-structure-spike"], "notes": "APG describes widget purpose, semantics, and keyboard interaction, but explicitly is not a comprehensive Design System or product-flow model." },
+        { "criterionId": "adapter-independence", "score": 2, "confidence": "medium", "evidenceRefs": ["wai-aria-apg"], "spikeRefs": ["team-invitation-structure-spike"], "notes": "Semantic patterns are portable, but starting from widgets pulls allocation toward implementation boundaries before product responsibility is fixed." },
+        { "criterionId": "direction-discrimination", "score": 1, "confidence": "high", "evidenceRefs": ["wai-aria-apg"], "spikeRefs": ["team-invitation-structure-spike"], "notes": "The same Dialog, Table, or Grid semantics can appear in structurally different product directions and therefore cannot prove direction distinctness." }
+      ],
+      "limitations": ["Does not allocate end-to-end user tasks.", "Can confuse accessibility implementation patterns with Product UI Patterns."],
+      "eliminationReason": null
+    },
+    {
+      "id": "page-template-first",
+      "name": "Page-template and container-first taxonomy",
+      "version": null,
+      "officialUrl": "https://carbondesignsystem.com/community/patterns/create-flows/",
+      "disposition": "candidate",
+      "license": "References official Carbon guidance; Meridian would own any neutralized template taxonomy.",
+      "evidenceRefs": ["carbon-create-flows", "carbon-patterns"],
+      "assessments": [
+        { "criterionId": "task-grounding", "score": 3, "confidence": "medium", "evidenceRefs": ["carbon-create-flows", "carbon-patterns"], "spikeRefs": ["team-invitation-structure-spike"], "notes": "Container selection is tied to creation complexity and context, but does not by itself model review, partial result, and ongoing status management." },
+        { "criterionId": "adapter-independence", "score": 3, "confidence": "medium", "evidenceRefs": ["carbon-create-flows"], "spikeRefs": ["team-invitation-structure-spike"], "notes": "Generic page and panel boundaries can transfer, while vendor-specific containers and names still require neutralization." },
+        { "criterionId": "direction-discrimination", "score": 4, "confidence": "high", "evidenceRefs": ["carbon-create-flows"], "spikeRefs": ["team-invitation-structure-spike"], "notes": "Container choices expose screen-boundary differences but can miss differences in task model, disclosure, and action ownership." }
+      ],
+      "limitations": ["Encourages choosing a container before allocating all responsibilities.", "A container difference alone can overstate structural novelty."],
+      "eliminationReason": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "govuk-patterns",
+      "title": "GOV.UK Design System Patterns",
+      "url": "https://design-system.service.gov.uk/patterns/",
+      "sourceType": "official-guideline",
+      "authority": "primary",
+      "publisher": "Government Digital Service",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["task-first-registry"],
+      "criterionRefs": ["task-grounding", "adapter-independence"],
+      "summary": "GOV.UK defines patterns as best-practice solutions for specific user-focused tasks and page types, often using one or more components adapted to context.",
+      "limitations": ["The catalog primarily addresses government service tasks rather than enterprise administration."]
+    },
+    {
+      "id": "uswds-patterns",
+      "title": "U.S. Web Design System Patterns",
+      "url": "https://designsystem.digital.gov/patterns/",
+      "sourceType": "official-guideline",
+      "authority": "primary",
+      "publisher": "U.S. Web Design System",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["task-first-registry"],
+      "criterionRefs": ["task-grounding"],
+      "summary": "USWDS presents patterns as practical guidance and best practices for common user interactions.",
+      "limitations": ["Its current catalog is smaller than Meridian's intended SaaS and admin-tool scope."]
+    },
+    {
+      "id": "carbon-patterns",
+      "title": "Carbon Design System Patterns Overview",
+      "url": "https://carbondesignsystem.com/patterns/overview/",
+      "sourceType": "official-guideline",
+      "authority": "primary",
+      "publisher": "IBM",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["task-first-registry", "page-template-first"],
+      "criterionRefs": ["task-grounding", "adapter-independence"],
+      "summary": "Carbon defines patterns as best-practice solutions for achieving user goals through reusable combinations, sequences, and flows.",
+      "limitations": ["Some additional patterns are community-maintained rather than universally supported."]
+    },
+    {
+      "id": "carbon-create-flows",
+      "title": "Carbon Create Flows",
+      "url": "https://carbondesignsystem.com/community/patterns/create-flows/",
+      "sourceType": "official-guideline",
+      "authority": "primary",
+      "publisher": "IBM",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["task-first-registry", "page-template-first"],
+      "criterionRefs": ["task-grounding", "direction-discrimination"],
+      "summary": "Carbon compares inline, modal, side-panel, tearsheet, and full-page creation based on complexity and whether surrounding context must remain available.",
+      "limitations": ["The create-flow guidance does not fully cover asynchronous partial-result recovery."]
+    },
+    {
+      "id": "wai-aria-apg",
+      "title": "WAI-ARIA Authoring Practices Guide Introduction",
+      "url": "https://www.w3.org/WAI/ARIA/apg/about/introduction/",
+      "sourceType": "official-guideline",
+      "authority": "primary",
+      "publisher": "W3C Web Accessibility Initiative",
+      "accessedAt": "2026-07-27",
+      "candidateRefs": ["component-first-taxonomy"],
+      "criterionRefs": ["task-grounding", "adapter-independence", "direction-discrimination"],
+      "summary": "APG provides accessible widget semantics and keyboard conventions and explicitly states that it is not a comprehensive UI Design System or production-ready code library.",
+      "limitations": ["APG examples are illustrative and not normative product-flow specifications."]
+    }
+  ],
+  "spikes": [
+    {
+      "id": "team-invitation-structure-spike",
+      "title": "Team Invitation allocation and structural direction spike",
+      "status": "complete",
+      "candidateRefs": ["task-first-registry", "component-first-taxonomy", "page-template-first"],
+      "hypothesis": "A task-first registry combined with fixed logical responsibilities and six structural dimensions can preserve 100 percent requirement coverage while rejecting cosmetic alternatives.",
+      "fixtureRefs": ["examples/ui-generation/team-invitation.design-brief.json", "examples/ui-generation/team-invitation.requirement-allocation.json", "examples/ui-generation/team-invitation.screen-responsibilities.json", "examples/ui-generation/team-invitation.pattern-selection.json", "examples/ui-generation/team-invitation.direction-set.json"],
+      "commands": ["node --test test/structure-planning.test.js", "node scripts/validate-system.mjs"],
+      "measurements": ["Brief source coverage", "Requirement allocation coverage", "Responsibility coverage", "Pattern evidence resolution", "Pairwise structural difference count", "Human-only digest approval"],
+      "findings": [
+        "All three Brief actions, six constraints, and three risks map to twelve requirements with 100 percent allocation coverage.",
+        "Four logical responsibilities remain fixed while their physical containers and navigation differ across directions.",
+        "Three alternatives differ across at least two of six structural dimensions; a cloned structure with changed presentation is rejected.",
+        "Component identifiers are absent from the Product UI Pattern registry and remain deferred to capability resolution.",
+        "Direction approval binds the exact reviewable digest and rejects AI actors."
+      ],
+      "artifactRefs": ["design/product-ui-patterns.json", "schemas/product-ui-pattern-registry.schema.json", "schemas/requirement-allocation.schema.json", "schemas/screen-responsibilities.schema.json", "schemas/pattern-selection.schema.json", "schemas/direction-set.schema.json", "scripts/lib/structure-planning.mjs", "test/structure-planning.test.js"]
+    }
+  ],
+  "decision": {
+    "status": "recommended",
+    "recommendedCandidateId": "task-first-registry",
+    "rationale": "The task-first registry is the only candidate that directly models user goals and failure recovery, remains independent of adapter component names, and works with explicit structural dimensions to reject cosmetic direction variants.",
+    "tradeoffs": ["Meridian must curate applicability and non-applicability guidance.", "Overlapping patterns require a selection report with rejected alternatives.", "Container guidance remains useful evidence but is subordinate to responsibility and task allocation."],
+    "rejectedCandidateIds": ["component-first-taxonomy", "page-template-first"],
+    "unresolvedItems": ["Human approval is required before the registry contract becomes the stable M3 pattern boundary.", "Additional structurally different pilot coverage is required before candidate patterns may become supported."],
+    "revisitTriggers": ["A neutral cross-design-system Product UI Pattern standard emerges", "The second pilot cannot be expressed without component-first leakage", "Pairwise structural dimensions fail to distinguish alternatives in usability review", "Adapter changes require Pattern Registry changes"],
+    "approval": null
+  }
+}

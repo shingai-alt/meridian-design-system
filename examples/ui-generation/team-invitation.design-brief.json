@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "design-brief",
+    "id": "brief_team_invitation",
+    "status": "ready-for-review",
+    "revision": 1,
+    "locale": "ja-JP",
+    "createdAt": "2026-07-27T02:00:00Z",
+    "updatedAt": "2026-07-27T02:00:00Z"
+  },
+  "source": {
+    "requestRef": "examples/ui-generation/team-invitation.request.json",
+    "requestDigest": "sha256-f2f440be8a38f3401dbf530b1c0dbc9cd52f5cd2daf3179efb8d48df7c27306e",
+    "projectContextRef": "examples/ui-generation/meridian.project-context.json",
+    "projectContextDigest": "sha256-3ff075d53b01d44a14725fbf96112b5196a55dc304b699858f251a58e84525d8"
+  },
+  "evidence": [
+    { "id": "evidence_user_request", "sourceType": "user-request", "ref": "examples/ui-generation/team-invitation.request.json", "observation": "複数宛先、宛先ごとのRole、非同期招待、Pending管理、7日間の有効期限が要求されている。" },
+    { "id": "evidence_project_context", "sourceType": "project-context", "ref": "examples/ui-generation/meridian.project-context.json", "observation": "Meridian HTML Runtime、既存Component Contract、DTCG Token、Desktop・Tablet・Mobile品質要件が利用できる。" },
+    { "id": "evidence_legacy_phase1", "sourceType": "existing-artifact", "ref": "examples/phase-1/team-invitation.phase1.json", "observation": "既存Phase 1 PilotにはActor、権限、Risk、Assumption、Scope、Human Review履歴が存在する。" }
+  ],
+  "actors": [
+    { "id": "workspace_owner", "role": "Workspace Owner", "description": "メンバー招待と全Role付与を実行できる主要Actor。", "evidenceRefs": ["evidence_user_request", "evidence_legacy_phase1"] },
+    { "id": "workspace_admin", "role": "Workspace Admin", "description": "メンバー状態を閲覧できるが、今回の招待操作は実行できない。", "evidenceRefs": ["evidence_legacy_phase1"] },
+    { "id": "invited_member", "role": "Invited Member", "description": "招待を受け取り、期限内にWorkspaceへ参加するActor。", "evidenceRefs": ["evidence_user_request", "evidence_legacy_phase1"] }
+  ],
+  "primaryGoal": {
+    "statement": "誤った宛先や過剰権限を避けながら、複数メンバーを安全にWorkspaceへ招待する。",
+    "outcomes": ["送信前に宛先とRoleを確認できる", "送信後のPendingと失敗を管理できる", "成功済み宛先を重複送信しない"],
+    "evidenceRefs": ["evidence_user_request", "evidence_legacy_phase1"]
+  },
+  "primaryTask": {
+    "statement": "複数のメールアドレスへ宛先ごとのRoleを設定し、内容を確認して招待を送信する。",
+    "frequency": "occasional",
+    "workMode": "create",
+    "evidenceRefs": ["evidence_user_request", "evidence_legacy_phase1"]
+  },
+  "secondaryTasks": [
+    { "id": "manage_pending", "statement": "Pending招待を確認し、必要な宛先だけ再送または取消する。", "evidenceRefs": ["evidence_user_request", "evidence_legacy_phase1"] },
+    { "id": "recover_partial_failure", "statement": "一部失敗時に成功済み宛先を保持し、失敗した宛先だけ修正する。", "evidenceRefs": ["evidence_legacy_phase1"] }
+  ],
+  "entities": [
+    { "id": "member", "name": "Workspace member", "volume": "many", "sensitivity": "internal", "evidenceRefs": ["evidence_user_request", "evidence_legacy_phase1"] },
+    { "id": "invitation", "name": "Invitation", "volume": "many", "sensitivity": "confidential", "evidenceRefs": ["evidence_user_request", "evidence_legacy_phase1"] },
+    { "id": "role", "name": "Workspace role", "volume": "few", "sensitivity": "internal", "evidenceRefs": ["evidence_user_request", "evidence_legacy_phase1"] },
+    { "id": "seat", "name": "Workspace seat", "volume": "many", "sensitivity": "internal", "evidenceRefs": ["evidence_legacy_phase1"] }
+  ],
+  "actions": [
+    { "id": "compose_invitations", "actorRef": "workspace_owner", "entityRefs": ["invitation", "role"], "verb": "宛先ごとにEmailとRoleを設定する", "frequency": "occasional", "risk": "high-impact", "evidenceRefs": ["evidence_user_request", "evidence_legacy_phase1"] },
+    { "id": "send_invitations", "actorRef": "workspace_owner", "entityRefs": ["invitation", "member", "seat"], "verb": "確認済みの招待を送信する", "frequency": "occasional", "risk": "high-impact", "evidenceRefs": ["evidence_user_request", "evidence_legacy_phase1"] },
+    { "id": "manage_invitation", "actorRef": "workspace_owner", "entityRefs": ["invitation"], "verb": "Pending招待を再送または取消する", "frequency": "occasional", "risk": "reversible", "evidenceRefs": ["evidence_user_request", "evidence_legacy_phase1"] }
+  ],
+  "constraints": [
+    { "id": "constraint_owner_only", "category": "permission", "statement": "招待とRole付与を実行できるのはWorkspace Ownerだけである。", "evidenceRefs": ["evidence_legacy_phase1"] },
+    { "id": "constraint_batch_limit", "category": "business", "statement": "1回の送信対象は最大10人である。", "evidenceRefs": ["evidence_user_request"] },
+    { "id": "constraint_per_recipient_role", "category": "business", "statement": "各宛先にOwner、Admin、Member、Viewerのいずれかを設定する。", "evidenceRefs": ["evidence_user_request", "evidence_legacy_phase1"] },
+    { "id": "constraint_async", "category": "technical", "statement": "招待送信は非同期で、一部成功と一部失敗が発生し得る。", "evidenceRefs": ["evidence_user_request", "evidence_legacy_phase1"] },
+    { "id": "constraint_expiry", "category": "business", "statement": "招待は送信後7日間有効である。", "evidenceRefs": ["evidence_user_request"] },
+    { "id": "constraint_responsive", "category": "device", "statement": "Desktop、Tablet、Mobileで主要タスクと主要状態を検証する。", "evidenceRefs": ["evidence_project_context"] }
+  ],
+  "risks": [
+    { "id": "risk_wrong_recipient", "statement": "誤ったEmailへ招待を送信する。", "severity": "high", "mitigation": "送信前Reviewと行単位validationを必須にする。", "evidenceRefs": ["evidence_legacy_phase1"] },
+    { "id": "risk_excess_privilege", "statement": "意図しない高権限Roleを付与する。", "severity": "critical", "mitigation": "Roleの影響説明とOwner付与時の明示確認を行う。", "evidenceRefs": ["evidence_legacy_phase1"] },
+    { "id": "risk_duplicate_send", "statement": "既存Pendingまたは成功済み宛先を再送する。", "severity": "high", "mitigation": "既存状態を検出し、成功行を再試行対象から除外する。", "evidenceRefs": ["evidence_legacy_phase1"] }
+  ],
+  "assumptions": [
+    { "id": "assumption_pending_billing", "statement": "Pendingは課金上の使用Seatに含めないが、送信可能数では予約Seatとして扱う。", "impact": "high", "status": "active", "sourceUnknownRef": null, "evidenceRefs": ["evidence_legacy_phase1"] },
+    { "id": "assumption_partial_success", "statement": "一部失敗時は正常な宛先だけ送信し、失敗行を入力状態で保持する。", "impact": "high", "status": "active", "sourceUnknownRef": null, "evidenceRefs": ["evidence_legacy_phase1"] }
+  ],
+  "unknowns": [
+    {
+      "id": "unknown_competitor_keyboard_observation",
+      "question": "競合製品の認証後画面で、複数招待時のKeyboard操作を追加観察する必要があるか。",
+      "topic": "technical",
+      "structuralImpacts": ["none"],
+      "impact": "non-blocking",
+      "priority": 0,
+      "status": "open",
+      "answer": null,
+      "resolutionRationale": null,
+      "evidenceRefs": ["evidence_legacy_phase1"]
+    }
+  ],
+  "scope": {
+    "in": ["複数宛先入力", "宛先ごとのRole設定", "送信前確認", "非同期送信", "Partial success", "Pending管理", "再送", "取消"],
+    "out": ["SSO provisioning", "CSV import", "Production backend", "Billing seat purchase"]
+  },
+  "acceptance": [
+    "全Actor、Entity、Action、Constraint、RiskがEvidenceへ接続されている",
+    "Blocking unknownが0件である",
+    "Ownerが送信前に全宛先とRoleを説明できる",
+    "Partial success後に失敗宛先だけ修正できる",
+    "HumanがBriefを承認または差し戻せる"
+  ],
+  "review": {
+    "status": "pending",
+    "requiredRole": "product-owner",
+    "approval": null
+  }
+}

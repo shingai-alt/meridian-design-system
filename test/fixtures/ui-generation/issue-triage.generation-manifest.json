@@ -1,0 +1,289 @@
+{
+  "$schema": "../../../schemas/generation-manifest.schema.json",
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "generation-manifest",
+    "id": "fixture_generation_issue_triage",
+    "status": "ready",
+    "mode": "fixture",
+    "createdAt": "2026-07-27T09:00:00Z"
+  },
+  "directionRef": "fixture_direction_queue_first",
+  "visualProfileRef": "dense-operations",
+  "source": {
+    "adapterResolution": {
+      "ref": "test/fixtures/ui-generation/issue-triage.adapter-resolution.json",
+      "digest": "sha256-75f211a8c6cf4377575bb8567970cd2fad4241974352c07f6a4550f1a12b1bc4"
+    },
+    "screenResponsibilities": {
+      "ref": "test/fixtures/ui-generation/issue-triage.screen-responsibilities.json",
+      "digest": "sha256-b3a689bb76dfd08657bcb3e2833d5f1e3e4ed546dcb78027c4091420f767da99"
+    },
+    "patternSelection": {
+      "ref": "test/fixtures/ui-generation/issue-triage.pattern-selection.json",
+      "digest": "sha256-8604a7912ed5e7fbb1966920fecf428839f716ec170b8b2de38c340685598a57"
+    },
+    "directionSet": {
+      "ref": "test/fixtures/ui-generation/issue-triage.direction-set.json",
+      "digest": "sha256-1b9a5910f7df24805f0c3585e4d7df2f297400da424ed722f8c36b86f3883669"
+    },
+    "visualProfiles": {
+      "ref": "design/ui-generation-visual-profiles.json",
+      "digest": "sha256-86371af92cd0883a2e87417c452cdd30b67a48a13c34e402750f18990a9fd3c3"
+    },
+    "layoutRecipes": {
+      "ref": "design/layout-recipe-registry.json",
+      "digest": "sha256-63fc4e77f1f5fdbb75e20f67cecc9b915192ec14976ec0eac052995ec2ae1eda"
+    },
+    "componentRegistry": {
+      "ref": "design/harness/generated/component-registry.json",
+      "digest": "sha256-1efe7d1e6aab2c77684d281bc3a586c2ed908252f14f8792649840e33f49b02c"
+    }
+  },
+  "output": {
+    "reviewUi": "test/fixtures/generated/issue-triage.review.html",
+    "reviewModel": "test/fixtures/generated/issue-triage.review-model.json",
+    "usageManifest": "test/fixtures/generated/issue-triage.usage.json"
+  },
+  "review": {
+    "lenses": ["product", "design", "engineering", "accessibility", "content"],
+    "viewports": ["desktop", "tablet", "mobile"]
+  },
+  "screens": [
+    {
+      "id": "issue-triage",
+      "title": "Issue Triage",
+      "responsibilityRef": "responsibility_triage_queue",
+      "patternRef": "filterable-status-list",
+      "root": {
+        "id": "triage-root",
+        "kind": "layout",
+        "decisionRef": "decision-triage-structure",
+        "recipeRef": "stack",
+        "options": [
+          { "name": "gap", "value": "default" },
+          { "name": "width", "value": "wide" }
+        ],
+        "children": [
+          {
+            "id": "triage-heading",
+            "kind": "heading",
+            "decisionRef": "decision-triage-structure",
+            "level": 1,
+            "text": "Issue Triage"
+          },
+          {
+            "id": "triage-intro",
+            "kind": "text",
+            "decisionRef": "decision-triage-structure",
+            "text": "優先度、状態、影響範囲、再現性、担当候補を一つずつ確認し、利用者への影響が大きく回復手段の少ないIssueから次に対応する対象を決めます。判断根拠を一覧内で比較し、分類だけで終わらず次の担当と行動へ確実につなげます。",
+            "tone": "muted"
+          },
+          {
+            "id": "triage-filter",
+            "kind": "capability",
+            "decisionRef": "decision-filter-before-list",
+            "capabilityRequirementRef": "capability_issue_filter",
+            "presentation": "text-input",
+            "content": {
+              "fields": [
+                {
+                  "id": "query",
+                  "label": "Issueを絞り込む",
+                  "value": "authentication",
+                  "state": "default",
+                  "message": "検索条件を確認してください。"
+                }
+              ]
+            }
+          },
+          {
+            "id": "triage-list",
+            "kind": "capability",
+            "decisionRef": "decision-status-evidence",
+            "capabilityRequirementRef": "capability_issue_list",
+            "presentation": "status-list",
+            "content": {
+              "columns": [
+                { "id": "issue", "label": "Issue" },
+                { "id": "priority", "label": "優先度" },
+                { "id": "status", "label": "状態" }
+              ],
+              "rows": [
+                {
+                  "id": "issue-1042",
+                  "status": "pending",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    { "columnRef": "issue", "value": "ISSUE-1042 Session expires early" },
+                    { "columnRef": "priority", "value": "High" },
+                    { "columnRef": "status", "value": "未対応" }
+                  ]
+                },
+                {
+                  "id": "issue-1038",
+                  "status": "success",
+                  "actionLabel": "詳細を見る",
+                  "cells": [
+                    { "columnRef": "issue", "value": "ISSUE-1038 Audit log delay" },
+                    { "columnRef": "priority", "value": "Medium" },
+                    { "columnRef": "status", "value": "分類済み" }
+                  ]
+                },
+                {
+                  "id": "issue-1031",
+                  "status": "warning",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    { "columnRef": "issue", "value": "ISSUE-1031 Role update conflict" },
+                    { "columnRef": "priority", "value": "High" },
+                    { "columnRef": "status", "value": "要確認" }
+                  ]
+                },
+                {
+                  "id": "issue-1027",
+                  "status": "pending",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    { "columnRef": "issue", "value": "ISSUE-1027 Export remains queued" },
+                    { "columnRef": "priority", "value": "Medium" },
+                    { "columnRef": "status", "value": "未対応" }
+                  ]
+                },
+                {
+                  "id": "issue-1024",
+                  "status": "success",
+                  "actionLabel": "詳細を見る",
+                  "cells": [
+                    { "columnRef": "issue", "value": "ISSUE-1024 Duplicate notification" },
+                    { "columnRef": "priority", "value": "Low" },
+                    { "columnRef": "status", "value": "分類済み" }
+                  ]
+                },
+                {
+                  "id": "issue-1019",
+                  "status": "pending",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    { "columnRef": "issue", "value": "ISSUE-1019 Search misses aliases" },
+                    { "columnRef": "priority", "value": "Medium" },
+                    { "columnRef": "status", "value": "未対応" }
+                  ]
+                },
+                {
+                  "id": "issue-1015",
+                  "status": "warning",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    { "columnRef": "issue", "value": "ISSUE-1015 Billing retry ambiguity" },
+                    { "columnRef": "priority", "value": "High" },
+                    { "columnRef": "status", "value": "要確認" }
+                  ]
+                },
+                {
+                  "id": "issue-1012",
+                  "status": "success",
+                  "actionLabel": "詳細を見る",
+                  "cells": [
+                    { "columnRef": "issue", "value": "ISSUE-1012 Mobile filter reset" },
+                    { "columnRef": "priority", "value": "Low" },
+                    { "columnRef": "status", "value": "分類済み" }
+                  ]
+                },
+                {
+                  "id": "issue-1008",
+                  "status": "pending",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    { "columnRef": "issue", "value": "ISSUE-1008 Webhook delivery lag" },
+                    { "columnRef": "priority", "value": "Medium" },
+                    { "columnRef": "status", "value": "未対応" }
+                  ]
+                },
+                {
+                  "id": "issue-1003",
+                  "status": "warning",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    { "columnRef": "issue", "value": "ISSUE-1003 Owner transfer race" },
+                    { "columnRef": "priority", "value": "High" },
+                    { "columnRef": "status", "value": "要確認" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "triage-primary-action",
+            "kind": "capability",
+            "decisionRef": "decision-primary-triage-action",
+            "capabilityRequirementRef": "capability_triage_action",
+            "presentation": "action",
+            "content": {
+              "label": "選択したIssueをTriage"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "stateFixtures": [
+    {
+      "id": "fixture-default",
+      "label": "Default",
+      "state": "default",
+      "screenRefs": ["issue-triage"],
+      "overrides": []
+    },
+    {
+      "id": "fixture-loading",
+      "label": "Loading",
+      "state": "loading",
+      "screenRefs": ["issue-triage"],
+      "overrides": []
+    },
+    {
+      "id": "fixture-empty",
+      "label": "Empty",
+      "state": "empty",
+      "screenRefs": ["issue-triage"],
+      "overrides": []
+    },
+    {
+      "id": "fixture-error",
+      "label": "Error",
+      "state": "error",
+      "screenRefs": ["issue-triage"],
+      "overrides": []
+    },
+    {
+      "id": "fixture-permission",
+      "label": "Permission",
+      "state": "permission",
+      "screenRefs": ["issue-triage"],
+      "overrides": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-triage-structure",
+      "reason": "Keep the queue heading, filtering, evidence, and action in DOM task order.",
+      "sourceRefs": ["responsibility_triage_queue", "fixture_direction_queue_first"]
+    },
+    {
+      "id": "decision-filter-before-list",
+      "reason": "Place the filter before the results it changes.",
+      "sourceRefs": ["filterable-status-list", "fixture_req_filter"]
+    },
+    {
+      "id": "decision-status-evidence",
+      "reason": "Expose priority and workflow status before actions.",
+      "sourceRefs": ["filterable-status-list", "fixture_req_prioritize"]
+    },
+    {
+      "id": "decision-primary-triage-action",
+      "reason": "Keep one explicit primary action after the evidence list.",
+      "sourceRefs": ["responsibility_triage_queue", "fixture_req_prioritize"]
+    }
+  ]
+}

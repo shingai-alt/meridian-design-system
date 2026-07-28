@@ -4,6 +4,20 @@ Seed color 駆動のカラーシステムと、Reference(Primitive) → Semantic
 
 プロジェクトの長期的な北極星は [`VISION.md`](./VISION.md) に、AI 画面生成の中間仕様は [`docs/ai-generation/specs.md`](./docs/ai-generation/specs.md) に、AI-assisted Agile の Sprint 0 計画は [`docs/agile/sprint-0.md`](./docs/agile/sprint-0.md) にまとめています。
 
+外部Design Systemを交換可能なAdapterとして利用し、要件整理からBrowser QA、Generation Reportまでを正式機能化する開発目標と段階計画は [`docs/ai-generation/ui-generation-roadmap.md`](./docs/ai-generation/ui-generation-roadmap.md) にまとめています。
+
+正式UI生成のDesign Intake、構造影響に基づくClarification、Human Brief Approvalの契約は [`docs/ai-generation/design-intake.md`](./docs/ai-generation/design-intake.md) にまとめています。
+
+Requirement Allocation、Screen Responsibility、Product UI Pattern、構造的に異なるDirectionとHuman選択Gateは [`docs/ai-generation/structure-planning.md`](./docs/ai-generation/structure-planning.md) にまとめています。
+
+外部Design System候補のversion・license・共通Capability比較、30 scenarioの自動Browser Evidence、残る手動確認と選定禁止条件は [`docs/ai-generation/external-adapter-research.md`](./docs/ai-generation/external-adapter-research.md) にまとめています。
+
+Library非依存Capability Plan、交換可能Adapter Registry、strict resolution、partial / unresolved停止条件は [`docs/ai-generation/capability-resolution.md`](./docs/ai-generation/capability-resolution.md) にまとめています。
+
+Capability Resolution、Named Layout Recipe、5状態、3 viewportから専用Rendererなしで決定論的にReview UIを生成するM6の契約とCLIは [`docs/ai-generation/generic-review-generator.md`](./docs/ai-generation/generic-review-generator.md) にまとめています。
+
+Adapterとは独立したVisual Profile、Browser QA証拠、locked layerを守る修復制御、Human承認付きGeneration Reportは [`docs/ai-generation/browser-qa-and-generation-report.md`](./docs/ai-generation/browser-qa-and-generation-report.md) にまとめています。
+
 Overview → Foundations → Tokens → Components を継続的にブラッシュアップする共通手順は [`docs/system/refinement-workflow.md`](./docs/system/refinement-workflow.md) にあります。対象、依存関係、進捗の機械可読な台帳は [`design/system-registry.json`](./design/system-registry.json)、各レビューの判断記録は `design/reviews/*.review.json` です。
 
 102項目を最初に一周した時点の変更内容、検証結果、現在残っている作業は [`docs/system/refinement-report-2026-07-14.md`](./docs/system/refinement-report-2026-07-14.md) にまとめています。
@@ -47,6 +61,7 @@ npm run refine:start -- foundations.color --force  # 完了済みitemを明示�
 npm run refine:complete-impacts -- --validated --impact-cycle=<cycle-id>  # 検証済みの影響itemを依存順に閉じる
 npm run check:system   # schema、registry、binding、AI spec、生成物、JS構文、全テストを一括検証
 npm run build:tokens   # tokens/src/*.json から tokens/build/tokens.css を再生成
+npm run generate:generic-review  # 承認済みfixtureから汎用Review UIを生成
 npm run design:build   # design sourceからAI向けDESIGN.mdを再生成
 npm test               # カラーエンジンと検証基盤の単体テスト
 ```

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/adapter-browser-evaluation-plan.schema.json",
+  "title": "Meridian Adapter Browser Evaluation Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "kind",
+    "id",
+    "status",
+    "benchmarkRef",
+    "candidateRefs",
+    "pilotRefs",
+    "viewports",
+    "checks",
+    "completionRule"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "const": "0.1.0" },
+    "kind": { "const": "adapter-browser-evaluation-plan" },
+    "id": { "$ref": "#/$defs/id" },
+    "status": { "const": "approved-for-research-execution" },
+    "benchmarkRef": { "$ref": "#/$defs/nonEmpty" },
+    "candidateRefs": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "pilotRefs": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "viewports": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "$ref": "#/$defs/viewport" }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/check" }
+    },
+    "completionRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requiredScenarioCount",
+        "automatedBlockingSeverities",
+        "manualAssistiveTechnologyRequiredForSelection",
+        "allowAutomatedEvidenceToClaimConformance"
+      ],
+      "properties": {
+        "requiredScenarioCount": { "type": "integer", "minimum": 1 },
+        "automatedBlockingSeverities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["critical", "major", "minor", "observation"] }
+        },
+        "manualAssistiveTechnologyRequiredForSelection": { "const": true },
+        "allowAutomatedEvidenceToClaimConformance": { "const": false }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "viewport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "width", "height", "fixture"],
+      "properties": {
+        "id": { "enum": ["desktop", "tablet", "mobile"] },
+        "width": { "type": "integer", "minimum": 320 },
+        "height": { "type": "integer", "minimum": 568 },
+        "fixture": { "enum": ["default", "rtl", "forced-colors"] }
+      }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "automated"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "description": { "$ref": "#/$defs/nonEmpty" },
+        "automated": { "type": "boolean" }
+      }
+    }
+  }
+}

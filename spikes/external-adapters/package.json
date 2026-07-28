@@ -1,0 +1,43 @@
+{
+  "name": "@meridian/spike-external-adapters",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Isolated, reproducible browser comparison for Meridian external Design System adapter candidates.",
+  "scripts": {
+    "build": "npm run materialize:shadcn-registry && vite build",
+    "materialize:shadcn-registry": "node scripts/materialize-shadcn-registry.mjs",
+    "dev": "vite --host 127.0.0.1",
+    "capture:shadcn-registry": "node scripts/capture-shadcn-registry.mjs",
+    "evaluate": "npm run build && node scripts/run-browser-evaluation.mjs",
+    "check": "npm run build && node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@carbon/react": "1.112.0",
+    "@carbon/styles": "1.111.0",
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.1",
+    "@mui/material": "9.2.0",
+    "@mui/x-data-grid": "9.10.1",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "lucide-react": "1.27.0",
+    "radix-ui": "1.6.7",
+    "react": "19.2.8",
+    "react-aria-components": "1.19.0",
+    "react-dom": "19.2.8",
+    "tailwind-merge": "3.6.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.3.3",
+    "@vitejs/plugin-react": "5.2.0",
+    "playwright": "1.62.0",
+    "shadcn": "4.8.3",
+    "tailwindcss": "4.3.3",
+    "tw-animate-css": "1.4.0",
+    "vite": "8.1.5"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

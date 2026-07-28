@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/clarification-round.schema.json",
+  "title": "Meridian UI Generation Clarification Round",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "briefRef", "briefRevision", "briefDigest", "questions", "deferredUnknownRefs", "responses"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/meta" },
+    "briefRef": { "$ref": "#/$defs/nonEmpty" },
+    "briefRevision": { "type": "integer", "minimum": 1 },
+    "briefDigest": { "$ref": "#/$defs/digest" },
+    "questions": { "type": "array", "maxItems": 3, "items": { "$ref": "#/$defs/question" } },
+    "deferredUnknownRefs": { "$ref": "#/$defs/idList" },
+    "responses": { "type": "array", "maxItems": 3, "items": { "$ref": "#/$defs/response" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "pattern": ".*\\S.*" },
+    "idList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "digest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "status", "createdAt", "mergedAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" },
+        "kind": { "const": "clarification-round" },
+        "id": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["no-questions", "awaiting-answers", "answered", "merged"] },
+        "createdAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$" },
+        "mergedAt": { "type": ["string", "null"] }
+      }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unknownRef", "rank", "prompt", "whyNow", "answerType", "options"],
+      "properties": {
+        "unknownRef": { "$ref": "#/$defs/id" },
+        "rank": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "prompt": { "$ref": "#/$defs/nonEmpty" },
+        "whyNow": { "$ref": "#/$defs/nonEmpty" },
+        "answerType": { "enum": ["choice", "free-text", "yes-no"] },
+        "options": { "type": "array", "maxItems": 3, "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmpty" } }
+      }
+    },
+    "briefUpdate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["targetSection", "targetId", "field", "value"],
+      "properties": {
+        "targetSection": { "enum": ["primary-goal", "primary-task", "actor", "entity", "action", "constraint", "risk"] },
+        "targetId": { "type": ["string", "null"] },
+        "field": { "enum": ["statement", "outcomes", "frequency", "workMode", "role", "description", "name", "volume", "sensitivity", "verb", "risk", "mitigation"] },
+        "value": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unknownRef", "resolution", "answer", "rationale", "assumption", "briefUpdates"],
+      "properties": {
+        "unknownRef": { "$ref": "#/$defs/id" },
+        "resolution": { "enum": ["answered", "assumed", "dismissed"] },
+        "answer": { "$ref": "#/$defs/nonEmpty" },
+        "rationale": { "$ref": "#/$defs/nonEmpty" },
+        "assumption": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["id", "statement", "impact"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" },
+            "statement": { "$ref": "#/$defs/nonEmpty" },
+            "impact": { "enum": ["low", "medium", "high"] }
+          }
+        },
+        "briefUpdates": { "type": "array", "items": { "$ref": "#/$defs/briefUpdate" } }
+      }
+    }
+  }
+}

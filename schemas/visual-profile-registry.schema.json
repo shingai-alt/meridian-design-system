@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/visual-profile-registry.schema.json",
+  "title": "Meridian UI Generation Visual Profile Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "meta", "selectionPolicy", "profiles"],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "meta": { "$ref": "#/$defs/meta" },
+    "selectionPolicy": { "$ref": "#/$defs/selectionPolicy" },
+    "profiles": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "$ref": "#/$defs/profile" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9._-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "nonEmptyList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/nonEmpty" }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "version", "status", "updatedAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" },
+        "kind": { "const": "visual-profile-registry" },
+        "id": { "$ref": "#/$defs/id" },
+        "version": { "type": "integer", "minimum": 1 },
+        "status": { "const": "active" },
+        "updatedAt": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "selectionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["defaultProfileRef", "requiresExplicitManifestSelection", "adapterIndependent", "structuralMutationAllowed"],
+      "properties": {
+        "defaultProfileRef": { "$ref": "#/$defs/id" },
+        "requiresExplicitManifestSelection": { "const": true },
+        "adapterIndependent": { "const": true },
+        "structuralMutationAllowed": { "const": false }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "intent", "bestFor", "avoidWhen", "presentation"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "$ref": "#/$defs/nonEmpty" },
+        "intent": { "$ref": "#/$defs/nonEmpty" },
+        "bestFor": { "$ref": "#/$defs/nonEmptyList" },
+        "avoidWhen": { "$ref": "#/$defs/nonEmptyList" },
+        "presentation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["density", "sectionRhythm", "surfaceEmphasis", "dataEmphasis", "workspaceExpression"],
+          "properties": {
+            "density": { "enum": ["comfortable", "compact", "spacious"] },
+            "sectionRhythm": { "enum": ["balanced", "tight", "expansive"] },
+            "surfaceEmphasis": { "enum": ["quiet", "structured", "expressive"] },
+            "dataEmphasis": { "enum": ["balanced", "high", "supporting"] },
+            "workspaceExpression": { "enum": ["restrained", "operational", "branded"] }
+          }
+        }
+      }
+    }
+  }
+}

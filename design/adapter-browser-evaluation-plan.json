@@ -1,0 +1,72 @@
+{
+  "$schema": "../schemas/adapter-browser-evaluation-plan.schema.json",
+  "schemaVersion": "0.1.0",
+  "kind": "adapter-browser-evaluation-plan",
+  "id": "external-adapter-browser-evaluation-v1",
+  "status": "approved-for-research-execution",
+  "benchmarkRef": "design/adapter-benchmark.json",
+  "candidateRefs": [
+    "shadcn-ui",
+    "radix-primitives",
+    "react-aria",
+    "material-ui",
+    "carbon"
+  ],
+  "pilotRefs": [
+    "team_invitation",
+    "issue_triage"
+  ],
+  "viewports": [
+    { "id": "desktop", "width": 1440, "height": 1000, "fixture": "default" },
+    { "id": "tablet", "width": 768, "height": 1024, "fixture": "rtl" },
+    { "id": "mobile", "width": 375, "height": 812, "fixture": "forced-colors" }
+  ],
+  "checks": [
+    {
+      "id": "business-journey",
+      "description": "Pilot-specific primary path, partial failure, sort, selection, pagination, row action, and detail disclosure.",
+      "automated": true
+    },
+    {
+      "id": "keyboard-focus",
+      "description": "Tab order, visible focus, dialog containment, Escape close, and trigger focus restoration.",
+      "automated": true
+    },
+    {
+      "id": "accessible-names",
+      "description": "Visible interactive elements expose non-empty accessibility snapshots.",
+      "automated": true
+    },
+    {
+      "id": "responsive-overflow",
+      "description": "Desktop, Tablet, Mobile, RTL, long Japanese, and 200 percent zoom do not create document-level horizontal overflow.",
+      "automated": true
+    },
+    {
+      "id": "forced-colors",
+      "description": "Forced-colors media is active and the Pilot remains operable.",
+      "automated": true
+    },
+    {
+      "id": "touch-targets",
+      "description": "Visible interactive controls expose an effective target of at least 24 by 24 CSS pixels.",
+      "automated": true
+    },
+    {
+      "id": "runtime-stability",
+      "description": "Page errors, unhandled rejections, console errors, resource footprint, and build warnings are recorded.",
+      "automated": true
+    },
+    {
+      "id": "assistive-technology",
+      "description": "Manual VoiceOver plus Chrome check; no conformance may be inferred from automated evidence.",
+      "automated": false
+    }
+  ],
+  "completionRule": {
+    "requiredScenarioCount": 30,
+    "automatedBlockingSeverities": ["critical", "major"],
+    "manualAssistiveTechnologyRequiredForSelection": true,
+    "allowAutomatedEvidenceToClaimConformance": false
+  }
+}

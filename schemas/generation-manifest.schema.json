@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/generation-manifest.schema.json",
+  "title": "Meridian Generic Review UI Generation Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "meta", "directionRef", "visualProfileRef", "source", "output", "review", "screens", "stateFixtures", "decisions"],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "meta": { "$ref": "#/$defs/meta" },
+    "directionRef": { "$ref": "#/$defs/id" },
+    "visualProfileRef": { "$ref": "#/$defs/id" },
+    "source": { "$ref": "#/$defs/source" },
+    "output": { "$ref": "#/$defs/output" },
+    "review": { "$ref": "#/$defs/review" },
+    "screens": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/screen" }
+    },
+    "stateFixtures": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "$ref": "#/$defs/stateFixture" }
+    },
+    "decisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/decision" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9._-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "digest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+    "ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "digest"],
+      "properties": {
+        "ref": { "$ref": "#/$defs/nonEmpty" },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "status", "mode", "createdAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" },
+        "kind": { "const": "generation-manifest" },
+        "id": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["ready", "blocked"] },
+        "mode": { "enum": ["production", "fixture"] },
+        "createdAt": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapterResolution", "screenResponsibilities", "patternSelection", "directionSet", "visualProfiles", "layoutRecipes", "componentRegistry"],
+      "properties": {
+        "adapterResolution": { "$ref": "#/$defs/ref" },
+        "screenResponsibilities": { "$ref": "#/$defs/ref" },
+        "patternSelection": { "$ref": "#/$defs/ref" },
+        "directionSet": { "$ref": "#/$defs/ref" },
+        "visualProfiles": { "$ref": "#/$defs/ref" },
+        "layoutRecipes": { "$ref": "#/$defs/ref" },
+        "componentRegistry": { "$ref": "#/$defs/ref" }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewUi", "reviewModel", "usageManifest"],
+      "properties": {
+        "reviewUi": { "$ref": "#/$defs/nonEmpty" },
+        "reviewModel": { "$ref": "#/$defs/nonEmpty" },
+        "usageManifest": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lenses", "viewports"],
+      "properties": {
+        "lenses": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["product", "design", "engineering", "accessibility", "content"] }
+        },
+        "viewports": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": { "enum": ["desktop", "tablet", "mobile"] }
+        }
+      }
+    },
+    "screen": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "responsibilityRef", "patternRef", "root"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "$ref": "#/$defs/nonEmpty" },
+        "responsibilityRef": { "$ref": "#/$defs/id" },
+        "patternRef": { "$ref": "#/$defs/id" },
+        "root": { "$ref": "#/$defs/node" }
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "decisionRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["layout", "heading", "text", "capability"] },
+        "decisionRef": { "$ref": "#/$defs/id" },
+        "recipeRef": { "$ref": "#/$defs/id" },
+        "options": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/optionValue" }
+        },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/node" }
+        },
+        "level": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "text": { "$ref": "#/$defs/nonEmpty" },
+        "tone": { "enum": ["default", "muted", "danger", "success"] },
+        "capabilityRequirementRef": { "$ref": "#/$defs/id" },
+        "presentation": {
+          "enum": ["action", "text-input", "choice-input", "editable-collection", "field-validation", "section-status", "confirmation", "status-list", "task-progress"]
+        },
+        "content": { "$ref": "#/$defs/content" }
+      }
+    },
+    "optionValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value"],
+      "properties": {
+        "name": { "$ref": "#/$defs/id" },
+        "value": { "$ref": "#/$defs/id" }
+      }
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "label": { "$ref": "#/$defs/nonEmpty" },
+        "title": { "$ref": "#/$defs/nonEmpty" },
+        "body": { "$ref": "#/$defs/nonEmpty" },
+        "description": { "$ref": "#/$defs/nonEmpty" },
+        "tone": { "enum": ["info", "success", "warning", "danger"] },
+        "fields": { "type": "array", "items": { "$ref": "#/$defs/field" } },
+        "columns": { "type": "array", "items": { "$ref": "#/$defs/item" } },
+        "rows": { "type": "array", "items": { "$ref": "#/$defs/row" } },
+        "items": { "type": "array", "items": { "$ref": "#/$defs/item" } },
+        "steps": { "type": "array", "items": { "$ref": "#/$defs/step" } },
+        "actionLabel": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "value", "state"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "$ref": "#/$defs/nonEmpty" },
+        "value": { "type": "string" },
+        "state": { "enum": ["default", "loading", "empty", "error", "disabled"] },
+        "message": { "type": "string" },
+        "options": { "type": "array", "items": { "$ref": "#/$defs/item" } }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "$ref": "#/$defs/nonEmpty" },
+        "value": { "type": "string" },
+        "description": { "type": "string" },
+        "status": { "enum": ["default", "loading", "empty", "error", "disabled", "success", "warning", "pending", "permission"] },
+        "actionLabel": { "type": "string" }
+      }
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "cells", "status"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "cells": { "type": "array", "items": { "$ref": "#/$defs/cell" } },
+        "status": { "enum": ["default", "loading", "empty", "error", "disabled", "success", "warning", "pending", "permission"] },
+        "actionLabel": { "type": "string" }
+      }
+    },
+    "cell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["columnRef", "value"],
+      "properties": {
+        "columnRef": { "$ref": "#/$defs/id" },
+        "value": { "type": "string" }
+      }
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "state"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "$ref": "#/$defs/nonEmpty" },
+        "description": { "type": "string" },
+        "state": { "enum": ["default", "current", "success", "disabled", "error"] }
+      }
+    },
+    "stateFixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "state", "screenRefs", "overrides"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "$ref": "#/$defs/nonEmpty" },
+        "state": { "enum": ["default", "loading", "empty", "error", "permission"] },
+        "screenRefs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/id" } },
+        "overrides": { "type": "array", "items": { "$ref": "#/$defs/override" } }
+      }
+    },
+    "override": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodeRef", "property", "value"],
+      "properties": {
+        "nodeRef": { "$ref": "#/$defs/id" },
+        "property": { "enum": ["state", "content.title", "content.body", "content.description"] },
+        "value": { "type": ["string", "boolean"] }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "reason", "sourceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "reason": { "$ref": "#/$defs/nonEmpty" },
+        "sourceRefs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmpty" } }
+      }
+    }
+  }
+}

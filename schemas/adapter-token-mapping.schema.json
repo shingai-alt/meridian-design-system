@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/adapter-token-mapping.schema.json",
+  "title": "Meridian Adapter Token and Runtime Compatibility Mapping",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "meta", "source", "adapters"],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "meta": { "$ref": "#/$defs/meta" },
+    "source": { "$ref": "#/$defs/source" },
+    "adapters": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/adapter" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "digest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+    "ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "digest"],
+      "properties": {
+        "ref": { "$ref": "#/$defs/nonEmpty" },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "generatedAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" },
+        "kind": { "const": "adapter-token-mapping" },
+        "id": { "$ref": "#/$defs/id" },
+        "generatedAt": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapterRegistry", "cssOutput", "contexts"],
+      "properties": {
+        "adapterRegistry": { "$ref": "#/$defs/ref" },
+        "cssOutput": { "$ref": "#/$defs/ref" },
+        "contexts": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "theme", "contrast", "ref", "digest"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "theme": { "enum": ["light", "dark"] },
+              "contrast": { "enum": ["standard", "high"] },
+              "ref": { "$ref": "#/$defs/nonEmpty" },
+              "digest": { "$ref": "#/$defs/digest" }
+            }
+          }
+        }
+      }
+    },
+    "adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapterRef", "tokenStrategy", "status", "runtime", "targets", "mappings", "unmappedOutputRefs", "incompatibilities"],
+      "properties": {
+        "adapterRef": { "$ref": "#/$defs/id" },
+        "tokenStrategy": { "enum": ["native", "mapped", "isolated"] },
+        "status": { "enum": ["complete", "partial", "incompatible"] },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["packageRef", "packageDigest", "packageName", "version", "implementationRef", "implementationDigest", "catalogRef", "catalogDigest"],
+          "properties": {
+            "packageRef": { "$ref": "#/$defs/nonEmpty" },
+            "packageDigest": { "$ref": "#/$defs/digest" },
+            "packageName": { "$ref": "#/$defs/nonEmpty" },
+            "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+            "implementationRef": { "$ref": "#/$defs/nonEmpty" },
+            "implementationDigest": { "$ref": "#/$defs/digest" },
+            "catalogRef": { "$ref": "#/$defs/nonEmpty" },
+            "catalogDigest": { "$ref": "#/$defs/digest" }
+          }
+        },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["targetRef", "contractRef", "contractDigest", "contractVersion", "contractStatus", "runtimeRange", "runtimeImplemented", "runtimeCompatible", "requiredOutputRefs"],
+            "properties": {
+              "targetRef": { "$ref": "#/$defs/id" },
+              "contractRef": { "$ref": "#/$defs/nonEmpty" },
+              "contractDigest": { "$ref": "#/$defs/digest" },
+              "contractVersion": { "type": ["string", "null"], "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+              "contractStatus": { "enum": ["draft", "stable", "deprecated"] },
+              "runtimeRange": { "type": ["string", "null"] },
+              "runtimeImplemented": { "type": "boolean" },
+              "runtimeCompatible": { "type": "boolean" },
+              "requiredOutputRefs": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "type": "string", "pattern": "^--[a-z0-9-]+$" }
+              }
+            }
+          }
+        },
+        "mappings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["outputRef", "strategy", "modifiers", "sources", "usedByTargetRefs"],
+            "properties": {
+              "outputRef": { "type": "string", "pattern": "^--[a-z0-9-]+$" },
+              "strategy": { "enum": ["direct", "alias", "contextual"] },
+              "modifiers": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": { "enum": ["theme", "contrast", "density", "reduced-motion"] }
+              },
+              "sources": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["contextRef", "tokenPath", "tokenType"],
+                  "properties": {
+                    "contextRef": { "$ref": "#/$defs/id" },
+                    "tokenPath": { "$ref": "#/$defs/nonEmpty" },
+                    "tokenType": { "$ref": "#/$defs/nonEmpty" }
+                  }
+                }
+              },
+              "usedByTargetRefs": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "$ref": "#/$defs/id" }
+              }
+            }
+          }
+        },
+        "unmappedOutputRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^--[a-z0-9-]+$" }
+        },
+        "incompatibilities": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/nonEmpty" }
+        }
+      }
+    }
+  }
+}

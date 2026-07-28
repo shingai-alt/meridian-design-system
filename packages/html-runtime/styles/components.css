@@ -1,3 +1,15 @@
+.mrd-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
 .mrd-button,
 .mrd-text-field,
 .mrd-select {
@@ -48,6 +60,139 @@
   border-top: 0;
   color: var(--fg-muted);
   font-size: var(--text-label);
+}
+
+.mrd-dialog {
+  inline-size: min(var(--dialog-w-md), calc(100vw - var(--sp-8)));
+  max-block-size: calc(100dvh - var(--sp-8));
+  padding: 0;
+  overflow: hidden;
+  color: var(--fg);
+  background: var(--surface-overlay);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-overlay);
+}
+
+.mrd-dialog::backdrop {
+  background: var(--overlay);
+}
+
+.mrd-dialog__header {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: start;
+  justify-content: space-between;
+  padding-block: var(--sp-4);
+  padding-inline: var(--sp-5);
+}
+
+.mrd-dialog__close-form {
+  margin: 0;
+}
+
+.mrd-dialog__close {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: var(--ctl-lg);
+  min-block-size: var(--ctl-lg);
+  padding: var(--sp-2);
+  color: var(--fg-muted);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.mrd-dialog__close:hover {
+  color: var(--fg);
+  background: var(--surface-muted);
+}
+
+.mrd-dialog__close:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.mrd-dialog__body {
+  padding-block: var(--sp-4);
+  padding-inline: var(--sp-5);
+  overflow: auto;
+  border-block: 1px solid var(--border-muted);
+}
+
+.mrd-dialog__footer {
+  display: flex;
+  gap: var(--sp-2);
+  justify-content: flex-end;
+  padding-block: var(--sp-3);
+  padding-inline: var(--sp-5);
+}
+
+.mrd-description-list {
+  display: grid;
+  gap: var(--sp-2);
+  margin: 0;
+}
+
+.mrd-description-list__item {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.4fr) 1fr;
+  gap: var(--sp-3);
+  padding-block: var(--cell-y);
+  border-block-end: 1px solid var(--border-muted);
+}
+
+.mrd-description-list dt {
+  color: var(--fg-muted);
+  font-size: var(--text-label);
+}
+
+.mrd-description-list dd {
+  margin: 0;
+  color: var(--fg);
+}
+
+.mrd-workflow-step {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: start;
+  color: var(--fg-muted);
+}
+
+.mrd-workflow-step[aria-current="step"] {
+  color: var(--primary);
+}
+
+.mrd-workflow-step[data-meridian-state="success"] {
+  color: var(--success);
+}
+
+.mrd-workflow-step[data-meridian-state="error"] {
+  color: var(--danger);
+}
+
+.mrd-workflow-step[data-meridian-state="disabled"] {
+  color: var(--fg-subtle);
+}
+
+.mrd-workflow-step__status {
+  display: block;
+  color: inherit;
+  font-size: var(--text-small);
+}
+
+.mrd-workflow-step__description {
+  display: block;
+  color: var(--fg-subtle);
+  font-size: var(--text-small);
+}
+
+@media (max-width: 600px) {
+  .mrd-description-list__item {
+    grid-template-columns: 1fr;
+    gap: var(--sp-1);
+  }
 }
 
 :focus {

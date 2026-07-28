@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/ui-generation-research-policy.schema.json",
+  "title": "Meridian UI Generation Research Decision Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "appliesTo",
+    "sourcePolicy",
+    "comparison",
+    "scoring",
+    "spikes",
+    "approval",
+    "freshness",
+    "invariants"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "appliesTo": {
+      "type": "array",
+      "minItems": 9,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/category" }
+    },
+    "sourcePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["priority", "allowedTypes", "minimumPrimaryPerCandidate", "secondarySourceRule"],
+      "properties": {
+        "priority": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "allowedTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/sourceType" }
+        },
+        "minimumPrimaryPerCandidate": { "type": "integer", "minimum": 1 },
+        "secondarySourceRule": { "type": "string", "minLength": 1 }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiredFor", "minimumCandidates", "eliminationRequiresReason"],
+      "properties": {
+        "requiredFor": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/category" }
+        },
+        "minimumCandidates": { "type": "integer", "minimum": 2 },
+        "eliminationRequiresReason": { "const": true }
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiredTotalWeight", "minimumScore", "maximumScore", "scoreMeaning"],
+      "properties": {
+        "requiredTotalWeight": { "type": "integer", "minimum": 1 },
+        "minimumScore": { "type": "integer", "minimum": 0 },
+        "maximumScore": { "type": "integer", "minimum": 1 },
+        "scoreMeaning": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["score", "meaning"],
+            "properties": {
+              "score": { "type": "integer", "minimum": 0 },
+              "meaning": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "spikes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiredFor", "comparisonSpikeRequired", "completedEvidenceRequired"],
+      "properties": {
+        "requiredFor": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/category" }
+        },
+        "comparisonSpikeRequired": { "const": true },
+        "completedEvidenceRequired": { "const": true }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiredFor", "humanOnly", "decisionReadyBeforeApproval"],
+      "properties": {
+        "requiredFor": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/category" }
+        },
+        "humanOnly": { "const": true },
+        "decisionReadyBeforeApproval": { "const": true }
+      }
+    },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["defaultWindowDays", "ecosystemWindowDays", "licenseWindowDays"],
+      "properties": {
+        "defaultWindowDays": { "type": "integer", "minimum": 1 },
+        "ecosystemWindowDays": { "type": "integer", "minimum": 1 },
+        "licenseWindowDays": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "$defs": {
+    "category": {
+      "enum": [
+        "architecture",
+        "schema-contract",
+        "dependency",
+        "design-system-adapter",
+        "runtime",
+        "browser-quality",
+        "accessibility",
+        "governance",
+        "security",
+        "licensing"
+      ]
+    },
+    "sourceType": {
+      "enum": [
+        "standard",
+        "official-guideline",
+        "official-documentation",
+        "official-repository",
+        "license",
+        "security-advisory",
+        "research-paper",
+        "secondary-analysis"
+      ]
+    }
+  }
+}

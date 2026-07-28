@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/browser-qa-policy.schema.json",
+  "title": "Meridian UI Generation Browser QA Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "kind", "id", "version", "browser", "viewports", "states", "checks", "stressCoverage", "repair", "limitations"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "0.1.0" },
+    "kind": { "const": "browser-qa-policy" },
+    "id": { "$ref": "#/$defs/id" },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "browser": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engine", "playwrightVersion", "animations"],
+      "properties": {
+        "engine": { "const": "chromium" },
+        "playwrightVersion": { "const": "1.62.0" },
+        "animations": { "const": "disabled" }
+      }
+    },
+    "viewports": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "width", "height", "touch"],
+        "properties": {
+          "id": { "enum": ["desktop", "tablet", "mobile"] },
+          "width": { "type": "integer", "minimum": 320 },
+          "height": { "type": "integer", "minimum": 600 },
+          "touch": { "type": "boolean" }
+        }
+      }
+    },
+    "states": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": { "enum": ["default", "loading", "empty", "error", "permission"] }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": ["console", "page-error", "horizontal-overflow", "semantic-integrity", "keyboard-reachability", "visible-focus", "focus-not-obscured", "state-signal", "runtime-provenance"]
+      }
+    },
+    "stressCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimumJapaneseTextLength", "minimumDenseRows", "scope"],
+      "properties": {
+        "minimumJapaneseTextLength": { "type": "integer", "minimum": 40 },
+        "minimumDenseRows": { "type": "integer", "minimum": 5 },
+        "scope": { "const": "pilot-suite" }
+      }
+    },
+    "repair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximumRounds", "limits", "lockedLayers", "findingLayers", "blockingSeverities"],
+      "properties": {
+        "maximumRounds": { "const": 2 },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["deterministicValidation", "structuralRepair", "visualRepair", "patternReselection"],
+          "properties": {
+            "deterministicValidation": { "const": 5 },
+            "structuralRepair": { "const": 2 },
+            "visualRepair": { "const": 2 },
+            "patternReselection": { "const": 1 }
+          }
+        },
+        "lockedLayers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["requirements", "screen-responsibilities", "selected-patterns", "selected-direction", "capability-plan", "adapter-selection"] }
+        },
+        "findingLayers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["generation-manifest", "layout-recipe", "component-runtime", "content", "browser-environment"] }
+        },
+        "blockingSeverities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["critical", "major"] }
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9._-]*$" }
+  }
+}

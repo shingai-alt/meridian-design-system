@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.1.0",
-  "runtimeVersion": "0.1.0",
+  "runtimeVersion": "0.2.0",
   "sourcePackageIds": ["phase1_team_invitation"],
   "exceptionApprovals": [],
   "components": [
@@ -12,7 +12,10 @@
     "checkbox",
     "alert",
     "status-indicator",
-    "table"
+    "table",
+    "dialog",
+    "description-list",
+    "workflow-step"
   ],
   "patterns": ["interactive-row-group"],
   "draftPatternAllowlist": ["interactive-row-group"],
@@ -25,6 +28,9 @@
     "checkbox",
     "alert",
     "status-indicator",
-    "table"
+    "table",
+    "dialog",
+    "description-list",
+    "workflow-step"
   ]
 }

@@ -1,0 +1,129 @@
+.adapter-react-aria {
+  --candidate-accent: #1769e0;
+}
+
+.aria-button {
+  min-height: 38px;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.aria-button-primary {
+  color: white;
+  background: #1769e0;
+}
+
+.aria-button-secondary {
+  color: #0f55bb;
+  border-color: #9ec5f8;
+  background: #f3f8ff;
+}
+
+.aria-button-quiet {
+  color: #1555a3;
+  background: transparent;
+}
+
+.aria-button[data-disabled] {
+  opacity: 0.45;
+}
+
+.aria-input,
+.aria-select-trigger {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 11px;
+  color: #102a4c;
+  border: 1px solid #a6b8d0;
+  border-radius: 8px;
+  background: white;
+}
+
+.aria-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.aria-popover {
+  min-width: var(--trigger-width);
+  padding: 5px;
+  border: 1px solid #b7c8de;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 16px 38px rgb(26 69 123 / 20%);
+}
+
+.aria-listbox {
+  outline: none;
+}
+
+.aria-listbox-item {
+  padding: 8px 10px;
+  border-radius: 5px;
+  outline: none;
+}
+
+.aria-listbox-item[data-focused] {
+  background: #e5f0ff;
+}
+
+.aria-listbox-item[data-selected] {
+  color: #0f55bb;
+  font-weight: 800;
+}
+
+.aria-checkbox-box {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: white;
+  border: 1px solid #7289a8;
+  border-radius: 4px;
+  background: white;
+}
+
+.aria-checkbox[data-selected] .aria-checkbox-box {
+  border-color: #1769e0;
+  background: #1769e0;
+}
+
+.aria-modal-overlay {
+  position: fixed;
+  z-index: 90;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(7 26 52 / 55%);
+}
+
+.aria-modal {
+  width: min(540px, calc(100vw - 28px));
+  max-height: min(720px, calc(100vh - 28px));
+  overflow: auto;
+  border: 1px solid #c5d2e4;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 25px 70px rgb(6 38 81 / 28%);
+}
+
+.aria-dialog {
+  padding: 24px;
+  position: relative;
+  outline: none;
+}
+
+.aria-dialog h2 {
+  margin-right: 36px;
+}
+
+.aria-table [role="columnheader"],
+.aria-table [role="cell"] {
+  padding: 13px 12px;
+  border-bottom: 1px solid #e5eaf1;
+}

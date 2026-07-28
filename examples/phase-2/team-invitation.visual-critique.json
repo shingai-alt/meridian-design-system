@@ -10,8 +10,8 @@
     {
       "candidateId": "baseline",
       "evidence": [
-        { "viewport": "desktop", "path": "examples/generated/visual-review/baseline.desktop.png", "digest": "sha256-fdbf1bb2a8227ac42009ec3d2f65d40f12887174c36c8abe357e78b95c9ed529" },
-        { "viewport": "mobile", "path": "examples/generated/visual-review/baseline.mobile.png", "digest": "sha256-b9dd50cf169b99068e7e5bb2f39d1b9c705d17320ff647d65acbecaf434c86d1" }
+        { "viewport": "desktop", "path": "examples/generated/visual-review/baseline.desktop.png", "digest": "sha256-246880963e5bf3ab0e3cd952a285bd84a6fe13105066e1602afd11e8e310d8c5" },
+        { "viewport": "mobile", "path": "examples/generated/visual-review/baseline.mobile.png", "digest": "sha256-d7010d19dbfba8e998f66b894b28dacf24097148b93d06e0599cbc91adefe5b6" }
       ],
       "rubricScores": [
         { "criterion": "task-clarity", "score": 3, "rationale": "招待目的は明確だが、4枚のSeatカードが入力より先に強く現れる。" },
@@ -33,8 +33,8 @@
     {
       "candidateId": "task-focus",
       "evidence": [
-        { "viewport": "desktop", "path": "examples/generated/visual-review/task-focus.desktop.png", "digest": "sha256-88bdd2df9858ed6cb80a7c16975a7656d887ea56d9bc86b6d02d9c12aacfc050" },
-        { "viewport": "mobile", "path": "examples/generated/visual-review/task-focus.mobile.png", "digest": "sha256-316b87f2ff6e860987e40b1d40721c1473a32ba9e811484fe8fc1118d2bbe65c" }
+        { "viewport": "desktop", "path": "examples/generated/visual-review/task-focus.desktop.png", "digest": "sha256-c63cf1718980a56085c0a19323539b52487dfbbf5247dd31d685f9140f43bab0" },
+        { "viewport": "mobile", "path": "examples/generated/visual-review/task-focus.mobile.png", "digest": "sha256-d401f9eb0c83edc53d0c89b22765c5acedb3b5b3838a7366a9534fdea0943309" }
       ],
       "rubricScores": [
         { "criterion": "task-clarity", "score": 4, "rationale": "headingからcapacity strip、editorへ短い読み順が成立する。" },
@@ -56,8 +56,8 @@
     {
       "candidateId": "context-aside",
       "evidence": [
-        { "viewport": "desktop", "path": "examples/generated/visual-review/context-aside.desktop.png", "digest": "sha256-26574657dddcf88b6025c0c8d2618c613141635113237e7047a7386302185848" },
-        { "viewport": "mobile", "path": "examples/generated/visual-review/context-aside.mobile.png", "digest": "sha256-2156418f817196a845cf24d674bd7d1d89138523bb6a31f54bc95d73cd7bb712" }
+        { "viewport": "desktop", "path": "examples/generated/visual-review/context-aside.desktop.png", "digest": "sha256-4cff0f31f0e3bc43fb7e18e9ba1f72fb95d5ce8efc17abdca9bf2e449e0b02bd" },
+        { "viewport": "mobile", "path": "examples/generated/visual-review/context-aside.mobile.png", "digest": "sha256-ce04f5d42adbfcd8c28b1f63f531dd6afc8276bcda8ce35d8b285e4e70401133" }
       ],
       "rubricScores": [
         { "criterion": "task-clarity", "score": 4, "rationale": "main editorは明確だが、DesktopではSeat asideにも視線が分散する。" },
@@ -79,8 +79,8 @@
     {
       "candidateId": "guided-flow",
       "evidence": [
-        { "viewport": "desktop", "path": "examples/generated/visual-review/guided-flow.desktop.png", "digest": "sha256-37d29e24682c59cbde32347630fdcc4eb3a32d2b6e5a2db42f149548a60eca88" },
-        { "viewport": "mobile", "path": "examples/generated/visual-review/guided-flow.mobile.png", "digest": "sha256-b131f3a30573ae0d217dcc55cf444023842acc8887547803a2b3a4f6d431deeb" }
+        { "viewport": "desktop", "path": "examples/generated/visual-review/guided-flow.desktop.png", "digest": "sha256-d441a4f30bb66d6e59560d76cbfe03faa93312f8a566167ffef06569bd3af867" },
+        { "viewport": "mobile", "path": "examples/generated/visual-review/guided-flow.mobile.png", "digest": "sha256-ab9a58b7f4d3fc6c8171be6ba9eb51fa7fce4b66087f24a916de170a2d3ea912" }
       ],
       "rubricScores": [
         { "criterion": "task-clarity", "score": 4, "rationale": "現在stepは理解できるが、単純な入力に対してflowが追加概念になる。" },

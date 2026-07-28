@@ -1,0 +1,232 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "adapter-resolution",
+    "id": "resolution_team_invitation_meridian",
+    "status": "blocked",
+    "generatedAt": "2026-07-27T07:05:00Z"
+  },
+  "source": {
+    "capabilityPlanRef": "examples/ui-generation/team-invitation.capability-plan.json",
+    "capabilityPlanDigest": "sha256-6247aaee843a2172d1ccdc29a578c06b4907d7a64c74e553eb3895d8eb27ead0",
+    "adapterRegistryRef": "design/adapter-registry.json",
+    "adapterRegistryDigest": "sha256-e0571158c477608df3975076bfb0fa39ff53f5f78d727e2f97fc1e4873476bf2",
+    "tokenMappingRef": "design/generated/adapter-token-mapping.json",
+    "tokenMappingDigest": "sha256-c7872bbea32f4c727406307da38cfbc874b5fa4b4c5ad45ad94221860de800ab"
+  },
+  "policy": {
+    "selectionPolicy": "project-existing-first",
+    "requestedAdapterRefs": [],
+    "eligibleAdapterRefs": [
+      "meridian_html_runtime"
+    ]
+  },
+  "results": [
+    {
+      "capabilityRequirementRef": "capability_recipient_email",
+      "capabilityRef": "input.text",
+      "status": "provisional",
+      "adapterRef": "meridian_html_runtime",
+      "resolutionKind": "composition",
+      "targetRefs": [
+        "form-field",
+        "text-field",
+        "validation-message"
+      ],
+      "missingSemantics": [],
+      "missingStates": [],
+      "compatibility": {
+        "status": "compatible",
+        "reasons": []
+      },
+      "provenance": {
+        "adapterVersion": "0.2.0",
+        "bindingIndex": 1
+      }
+    },
+    {
+      "capabilityRequirementRef": "capability_recipient_role",
+      "capabilityRef": "input.choice",
+      "status": "provisional",
+      "adapterRef": "meridian_html_runtime",
+      "resolutionKind": "composition",
+      "targetRefs": [
+        "form-field",
+        "select",
+        "validation-message"
+      ],
+      "missingSemantics": [],
+      "missingStates": [],
+      "compatibility": {
+        "status": "compatible",
+        "reasons": []
+      },
+      "provenance": {
+        "adapterVersion": "0.2.0",
+        "bindingIndex": 2
+      }
+    },
+    {
+      "capabilityRequirementRef": "capability_recipient_batch",
+      "capabilityRef": "collection.editable",
+      "status": "provisional",
+      "adapterRef": "meridian_html_runtime",
+      "resolutionKind": "composition",
+      "targetRefs": [
+        "form-field",
+        "text-field",
+        "select",
+        "button",
+        "validation-message"
+      ],
+      "missingSemantics": [],
+      "missingStates": [],
+      "compatibility": {
+        "status": "compatible",
+        "reasons": []
+      },
+      "provenance": {
+        "adapterVersion": "0.2.0",
+        "bindingIndex": 3
+      }
+    },
+    {
+      "capabilityRequirementRef": "capability_inline_correction",
+      "capabilityRef": "feedback.field-validation",
+      "status": "provisional",
+      "adapterRef": "meridian_html_runtime",
+      "resolutionKind": "component",
+      "targetRefs": [
+        "validation-message"
+      ],
+      "missingSemantics": [],
+      "missingStates": [],
+      "compatibility": {
+        "status": "compatible",
+        "reasons": []
+      },
+      "provenance": {
+        "adapterVersion": "0.2.0",
+        "bindingIndex": 4
+      }
+    },
+    {
+      "capabilityRequirementRef": "capability_review_confirmation",
+      "capabilityRef": "disclosure.confirmation",
+      "status": "provisional",
+      "adapterRef": "meridian_html_runtime",
+      "resolutionKind": "composition",
+      "targetRefs": [
+        "dialog",
+        "description-list",
+        "button"
+      ],
+      "missingSemantics": [],
+      "missingStates": [],
+      "compatibility": {
+        "status": "compatible",
+        "reasons": []
+      },
+      "provenance": {
+        "adapterVersion": "0.2.0",
+        "bindingIndex": 6
+      }
+    },
+    {
+      "capabilityRequirementRef": "capability_primary_actions",
+      "capabilityRef": "action.trigger",
+      "status": "provisional",
+      "adapterRef": "meridian_html_runtime",
+      "resolutionKind": "component",
+      "targetRefs": [
+        "button"
+      ],
+      "missingSemantics": [],
+      "missingStates": [],
+      "compatibility": {
+        "status": "compatible",
+        "reasons": []
+      },
+      "provenance": {
+        "adapterVersion": "0.2.0",
+        "bindingIndex": 0
+      }
+    },
+    {
+      "capabilityRequirementRef": "capability_invitation_statuses",
+      "capabilityRef": "data.status-list",
+      "status": "provisional",
+      "adapterRef": "meridian_html_runtime",
+      "resolutionKind": "composition",
+      "targetRefs": [
+        "table",
+        "status-indicator",
+        "button"
+      ],
+      "missingSemantics": [],
+      "missingStates": [],
+      "compatibility": {
+        "status": "compatible",
+        "reasons": []
+      },
+      "provenance": {
+        "adapterVersion": "0.2.0",
+        "bindingIndex": 7
+      }
+    },
+    {
+      "capabilityRequirementRef": "capability_result_feedback",
+      "capabilityRef": "feedback.section-status",
+      "status": "provisional",
+      "adapterRef": "meridian_html_runtime",
+      "resolutionKind": "composition",
+      "targetRefs": [
+        "alert",
+        "button"
+      ],
+      "missingSemantics": [],
+      "missingStates": [],
+      "compatibility": {
+        "status": "compatible",
+        "reasons": []
+      },
+      "provenance": {
+        "adapterVersion": "0.2.0",
+        "bindingIndex": 5
+      }
+    },
+    {
+      "capabilityRequirementRef": "capability_stage_progress",
+      "capabilityRef": "navigation.task-progress",
+      "status": "provisional",
+      "adapterRef": "meridian_html_runtime",
+      "resolutionKind": "component",
+      "targetRefs": [
+        "workflow-step"
+      ],
+      "missingSemantics": [],
+      "missingStates": [],
+      "compatibility": {
+        "status": "compatible",
+        "reasons": []
+      },
+      "provenance": {
+        "adapterVersion": "0.2.0",
+        "bindingIndex": 8
+      }
+    }
+  ],
+  "summary": {
+    "total": 9,
+    "resolved": 0,
+    "provisional": 9,
+    "partial": 0,
+    "unresolved": 0
+  },
+  "generationGate": {
+    "status": "blocked",
+    "reasons": [
+      "Capability Plan is not ready because its structural direction is not Human-approved."
+    ]
+  }
+}

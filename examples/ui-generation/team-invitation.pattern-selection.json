@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "pattern-selection",
+    "id": "patterns_team_invitation",
+    "status": "ready-for-review",
+    "revision": 1,
+    "createdAt": "2026-07-27T05:10:00Z"
+  },
+  "source": {
+    "requirementAllocationRef": "examples/ui-generation/team-invitation.requirement-allocation.json",
+    "requirementAllocationDigest": "sha256-9210588b54dafc3e048a935b66af24e6c2cc0fcff7281a471e3dd7bcbef2c245",
+    "screenResponsibilitiesRef": "examples/ui-generation/team-invitation.screen-responsibilities.json",
+    "screenResponsibilitiesDigest": "sha256-3937d0d2c42b441915a96d25284f07048347b53bdcdb99d509ac4ca9413acf11",
+    "registryRef": "design/product-ui-patterns.json"
+  },
+  "selections": [
+    {
+      "id": "selection_batch_create",
+      "patternRef": "batch-entity-creation",
+      "responsibilityRefs": ["responsibility_compose"],
+      "requirementRefs": ["req_compose", "req_batch_limit", "req_recipient_role", "req_wrong_recipient", "req_duplicate_send"],
+      "rationale": "複数宛先へ対象別Roleを設定し、行単位validationと比較を必要とするため。",
+      "evidenceRefs": ["evidence_carbon_patterns", "evidence_carbon_create", "evidence_team_invitation"],
+      "rejectedAlternatives": [
+        { "patternRef": "status-management-list", "reason": "状態管理には適するが、新規入力と対象別validationを主責務にできない。" }
+      ]
+    },
+    {
+      "id": "selection_review",
+      "patternRef": "review-before-commit",
+      "responsibilityRefs": ["responsibility_review"],
+      "requirementRefs": ["req_send", "req_owner_only", "req_recipient_role", "req_wrong_recipient", "req_excess_privilege"],
+      "rationale": "誤宛先と過剰権限が高Riskで、複数対象を一度に確定するため。",
+      "evidenceRefs": ["evidence_govuk_patterns", "evidence_team_invitation"],
+      "rejectedAlternatives": [
+        { "patternRef": "batch-entity-creation", "reason": "入力責務だけでは高権限とSeat影響の独立した最終確認を保証できない。" }
+      ]
+    },
+    {
+      "id": "selection_partial_result",
+      "patternRef": "asynchronous-partial-result",
+      "responsibilityRefs": ["responsibility_result"],
+      "requirementRefs": ["req_async", "req_duplicate_send"],
+      "rationale": "対象ごとにSuccess、Pending、Failedが混在し、失敗だけを回復する必要があるため。",
+      "evidenceRefs": ["evidence_carbon_patterns", "evidence_apg", "evidence_team_invitation"],
+      "rejectedAlternatives": [
+        { "patternRef": "review-before-commit", "reason": "送信前確認では送信後の対象別非同期状態を管理できない。" }
+      ]
+    },
+    {
+      "id": "selection_status_management",
+      "patternRef": "status-management-list",
+      "responsibilityRefs": ["responsibility_manage"],
+      "requirementRefs": ["req_manage", "req_owner_only", "req_async", "req_expiry"],
+      "rationale": "参加済みとPendingを継続的に比較し、期限と状態別操作を扱うため。",
+      "evidenceRefs": ["evidence_govuk_patterns", "evidence_uswds_patterns", "evidence_team_invitation"],
+      "rejectedAlternatives": [
+        { "patternRef": "asynchronous-partial-result", "reason": "単一operationの結果回復では長期的なPending管理責務を満たさない。" }
+      ]
+    }
+  ],
+  "unresolved": [
+    "PatternはM3 Pilotではcandidateであり、system-wide supportedへの昇格には別Human Reviewが必要である。"
+  ]
+}

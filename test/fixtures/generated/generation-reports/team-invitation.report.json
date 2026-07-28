@@ -1,0 +1,167 @@
+{
+  "$schema": "../../../schemas/generation-report.schema.json",
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "generation-report",
+    "id": "generation-report-fixture_generation_team_invitation",
+    "pilotId": "team-invitation",
+    "status": "evidence-missing",
+    "generatedAt": "2026-07-27T12:00:00Z"
+  },
+  "source": {
+    "generationManifest": {
+      "ref": "test/fixtures/ui-generation/team-invitation.generation-manifest.json",
+      "digest": "sha256-dadbead0fab87c009a6817e4a64dd9aeb9c33654464c1e49e005556a2301abcd"
+    },
+    "browserQa": null,
+    "repairRecord": null
+  },
+  "screens": [
+    {
+      "id": "team-members",
+      "title": "メンバーと招待",
+      "responsibilityRef": "responsibility_manage",
+      "responsibility": "参加済みMemberとPending招待の現在状態を比較し、許可された管理操作への入口を提供する。",
+      "patternRef": "status-management-list"
+    },
+    {
+      "id": "invite-compose",
+      "title": "招待するメンバー",
+      "responsibilityRef": "responsibility_compose",
+      "responsibility": "複数の招待対象についてEmailとRoleを対応付け、送信前に修正可能な入力として完成させる。",
+      "patternRef": "batch-entity-creation"
+    },
+    {
+      "id": "invite-review",
+      "title": "招待内容を確認",
+      "responsibilityRef": "responsibility_review",
+      "responsibility": "送信対象、Role、Seat、高権限の影響をまとめて確認し、招待を一度だけ確定する。",
+      "patternRef": "review-before-commit"
+    },
+    {
+      "id": "invite-result",
+      "title": "招待結果",
+      "responsibilityRef": "responsibility_result",
+      "responsibility": "対象別の成功、Pending、失敗を分離し、成功済み対象を保持したまま失敗だけを回復する。",
+      "patternRef": "asynchronous-partial-result"
+    }
+  ],
+  "design": {
+    "directionRef": "direction_dedicated_stages",
+    "visualProfileRef": "calm-utility",
+    "adapterRefs": [
+      "meridian_html_runtime"
+    ]
+  },
+  "componentAllocation": [
+    {
+      "adapterRef": "meridian_html_runtime",
+      "status": "selected",
+      "capabilityRefs": [
+        "input.text",
+        "input.choice",
+        "collection.editable",
+        "feedback.field-validation",
+        "disclosure.confirmation",
+        "action.trigger",
+        "data.status-list",
+        "feedback.section-status",
+        "navigation.task-progress"
+      ],
+      "targetRefs": [
+        "form-field",
+        "text-field",
+        "validation-message",
+        "select",
+        "button",
+        "dialog",
+        "description-list",
+        "table",
+        "status-indicator",
+        "alert",
+        "workflow-step"
+      ]
+    }
+  ],
+  "excluded": [
+    "新しい招待のEmailとRoleを編集する",
+    "招待内容を最終確定する",
+    "対象別送信結果の回復を完了する",
+    "招待を送信する",
+    "送信済み結果を再試行する",
+    "参加済みMemberを管理する",
+    "Emailの新規入力を行う",
+    "Pending招待を継続管理する",
+    "失敗対象を再試行する",
+    "成功済み対象を再送する",
+    "新しい招待batchを構成する",
+    "Member全体の権限を編集する"
+  ],
+  "directions": [
+    {
+      "id": "direction_dedicated_stages",
+      "title": "Dedicated Staged Workspace",
+      "benefits": [
+        "複数行と高Risk確認の表示領域を確保できる",
+        "責務とfocus destinationが明確である",
+        "Partial successを独立した回復段階として扱える"
+      ],
+      "risks": [
+        "単一招待には移動量が多い",
+        "Members文脈が一時的に見えなくなる"
+      ]
+    },
+    {
+      "id": "direction_contextual_panel",
+      "title": "Contextual Staged Panel",
+      "benefits": [
+        "MembersとPendingの文脈を維持できる",
+        "段階責務と一度だけの送信を保持できる",
+        "完了後に管理面へ戻りやすい"
+      ],
+      "risks": [
+        "10行と長文でPanelが過密になり得る",
+        "MobileではPanelが実質full-screenとなる"
+      ]
+    },
+    {
+      "id": "direction_inline_management",
+      "title": "Inline Management Workspace",
+      "benefits": [
+        "反復招待とPending管理を一つの文脈で行える",
+        "完了後の状態反映が直接見える",
+        "少数招待では移動が少ない"
+      ],
+      "risks": [
+        "参加済み、draft、Pendingが混在して認知負荷が高い",
+        "高権限確認とPartial successが管理画面を複雑にする",
+        "Mobileで責務境界が不明瞭になりやすい"
+      ]
+    }
+  ],
+  "recommendation": {
+    "directionRef": "direction_dedicated_stages",
+    "selectedDirectionRef": "direction_dedicated_stages",
+    "rationale": [
+      "最大10件の比較編集に必要な領域を確保できる。",
+      "入力、送信確定、Partial success回復の責務を最も明確に分離できる。",
+      "既存Phase 1 Pilotで確認されたDialog過密とinline状態混在のRiskを避けられる。"
+    ]
+  },
+  "validation": {
+    "status": "not-run",
+    "scenarioSummary": null,
+    "limitations": [
+      "Automated Chromium checks do not establish WCAG conformance.",
+      "VoiceOver, browser UI zoom, and Windows High Contrast remain manual platform evidence.",
+      "Screenshot comparison is meaningful only within the recorded browser and platform environment."
+    ]
+  },
+  "fixes": [],
+  "unresolved": [],
+  "humanReview": {
+    "status": "pending",
+    "requiredRole": "design-owner",
+    "approval": null
+  }
+}

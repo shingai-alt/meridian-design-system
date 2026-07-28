@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "0.1.0",
+  "kind": "ui-generation-request",
+  "id": "request_team_invitation",
+  "locale": "ja-JP",
+  "request": "管理者が複数のメンバーを適切な権限で招待でき、送信後のPending状態を安全に管理できるフローを設計する。",
+  "suppliedRequirements": [
+    "1回最大10人",
+    "宛先ごとにRoleを設定する",
+    "招待は7日間有効",
+    "招待は非同期",
+    "Pending招待の再送と取消を扱う",
+    "CSV import、SSO provisioning、billing seat purchaseは対象外"
+  ],
+  "submittedAt": "2026-07-14",
+  "legacySourceRef": "examples/phase-1/team-invitation.phase1.json"
+}

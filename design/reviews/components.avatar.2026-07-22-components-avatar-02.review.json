@@ -1,0 +1,126 @@
+{
+  "$schema": "../../schemas/review-record.schema.json",
+  "schemaVersion": "0.1.0",
+  "itemId": "components.avatar",
+  "cycleId": "2026-07-22-components-avatar-02",
+  "supersedesCycleId": "2026-07-13-components-avatar-01",
+  "reviewType": "follow-up",
+  "status": "complete",
+  "startedAt": "2026-07-22",
+  "completedAt": "2026-07-22",
+  "reviewedSources": [
+    "design/research-policy.json",
+    "design/implementation-readiness.json",
+    "components/avatar.md",
+    "design/contracts/components/avatar.contract.json",
+    "components/text.md",
+    "components/status-indicator.md",
+    "components/badge.md",
+    "components/icon-button.md",
+    "components/user-menu.md",
+    "js/components-registry.js",
+    "js/ui-builders.js",
+    "js/templates.js",
+    "index.html",
+    "test/component-specs.test.js",
+    "test/implementation-readiness.test.js"
+  ],
+  "research": {
+    "status": "complete",
+    "scope": {
+      "itemId": "components.avatar",
+      "summary": "Avatarの単一identity責務、画像/fallback DOM、informative/decorative alternative、load/error、親interaction・collection境界をReact実装前Contractとして確定する。"
+    },
+    "triggers": ["standard-or-regulation", "accessibility-or-safety", "new-pattern-or-api", "cross-platform-behavior"],
+    "questions": [
+      "画像とfallbackで同じtext alternativeをどう維持するか。",
+      "隣接可視名がある場合と単独表示でaltをどう分けるか。",
+      "fallback生成、interaction、AvatarStack、+NをAvatarと親のどちらが所有するか。"
+    ],
+    "evidence": [
+      {
+        "id": "wai-decorative-images",
+        "title": "W3C WAI: Decorative Images",
+        "url": "https://www.w3.org/WAI/tutorials/images/decorative/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "隣接textと重複する画像や純粋な装飾画像は空のaltを使い、支援技術から無視できるようにする。",
+        "supportedDecisions": ["explicit-alt-semantics", "adjacent-name-decorative"]
+      },
+      {
+        "id": "wai-informative-images",
+        "title": "W3C WAI: Informative Images",
+        "url": "https://www.w3.org/WAI/tutorials/images/informative/",
+        "sourceType": "official-guideline",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "informative imageは画像が伝える本質的情報を簡潔なtext alternativeとして提供する。",
+        "supportedDecisions": ["explicit-alt-semantics", "stable-fallback-semantics"]
+      },
+      {
+        "id": "whatwg-images-alt",
+        "title": "WHATWG HTML: Images",
+        "url": "https://html.spec.whatwg.org/dev/images.html",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "altは画像の適切な代替であり、隣接proseの反復を避け、decorative imageでは空にする。",
+        "supportedDecisions": ["native-img-loaded", "adjacent-name-decorative"]
+      },
+      {
+        "id": "wai-aria-img-role",
+        "title": "WAI-ARIA 1.2: img role",
+        "url": "https://www.w3.org/TR/wai-aria/#img",
+        "sourceType": "standard",
+        "authority": "primary",
+        "accessedAt": "2026-07-22",
+        "summary": "img roleはauthor-provided accessible nameを必要とし、その子孫はpresentationalとして扱われる。",
+        "supportedDecisions": ["stable-fallback-semantics"]
+      }
+    ],
+    "synthesis": "Avatarは非interactiveな単一identity representationとし、loaded時はnative img alt、fallback時は同じaltによるimg semanticsを使う。altとfallbackを必須にして自動生成を禁止し、interaction、集合summary、overlap、+Nは親へ委譲する。",
+    "decisionImpact": "Contract 0.2.0、human spec、Showcase、既存composition、CSS、回帰testを同じ画像/fallback semanticsと共通implementation-readiness gateへ同期した。",
+    "notRequiredReason": null
+  },
+  "decisions": [
+    { "id": "single-identity-boundary", "summary": "Avatarを単一対象の非interactiveな視覚識別子へ限定する。", "rationale": "名前、状態、action、collection summaryとの責務混在を避けるため。" },
+    { "id": "explicit-alt-semantics", "summary": "altを必須stringとし、informativeは対象名、重複時は空文字を明示する。", "rationale": "画像と利用文脈を知る呼び出し側だけがalternativeの要否を判断できるため。" },
+    { "id": "adjacent-name-decorative", "summary": "隣接可視名または親control名と重複するAvatarはaltを空文字にする。", "rationale": "同じ対象名の二重読み上げを避けるため。" },
+    { "id": "caller-owned-fallback", "summary": "fallbackを必須の1〜2 grapheme clusterとし、自動生成しない。", "rationale": "locale、grapheme、呼称規則をAvatarが推測できないため。" },
+    { "id": "native-img-loaded", "summary": "loaded時はnative imgへaltをそのまま渡す。", "rationale": "native image semanticsとdecorative empty-alt behaviorを保持するため。" },
+    { "id": "stable-fallback-semantics", "summary": "informative fallbackだけrole=imgとaria-label=alt、decorative fallbackはaria-hidden=trueにする。", "rationale": "load/errorをまたいで対象のtext alternativeを変えないため。" },
+    { "id": "parent-owned-interaction", "summary": "action、focus、target sizeはButtonやUser Menuなどの親controlへ委譲する。", "rationale": "Avatar rootを表示専用に保ち、小geometryへcustom control semanticsを混在させないため。" },
+    { "id": "parent-owned-collection", "summary": "AvatarStack、overlap、+N、集合summaryは親compositionへ委譲する。", "rationale": "単一対象とcollection truncationで異なるnameとstate ownerを分離するため。" },
+    { "id": "density-token-reuse", "summary": "4 sizeを既存control geometryとtext scaleへ結線し、Avatar固有tokenを追加しない。", "rationale": "既存density scaleで全文脈を表現でき、独立変更のpolicy triggerがないため。" },
+    { "id": "shared-readiness-gate", "summary": "Button、Icon Button、Link、Text、Tagと同じ8基準でReact実装前readyを判定する。", "rationale": "全component精査へ同じ出口条件を適用するため。" }
+  ],
+  "differences": [
+    { "classification": "cross-layer-conflict", "description": "旧仕様は単一Avatarと未登録AvatarStackを同じAPI例で扱っていた。", "action": "単一identityだけをAvatarへ残し、overlap、+N、集合summaryを親compositionへ移した。", "status": "resolved" },
+    { "classification": "missing-contract", "description": "src、alt、fallback、ref、load/error DOMとinformative/decorative境界が未確定だった。", "action": "Contract 0.2.0へ必須alt/fallback、native img、fallback semantics、runtime relationを追加した。", "status": "resolved" },
+    { "classification": "implementation-stale", "description": "旧Showcaseはnameからsliceした文字をtitleとaria-labelで重複命名し、+NもAvatarとして描画していた。", "action": "明示fallback/alt、native img、decorative hidden、親summary、独立avcountへ更新した。", "status": "resolved" },
+    { "classification": "missing-token", "description": "旧ContractはAvatar geometryをcontrol densityへ不完全に結線しcoverage partialだった。", "action": "既存density/color/radius tokenで全公開visual slotをcompleteにし、不要な固有token追加を避けた。", "status": "resolved" }
+  ],
+  "changes": [
+    { "path": "components/avatar.md", "summary": "単一identity責務、API freeze、DOM、alt/fallback、親境界を確定。" },
+    { "path": "design/contracts/components/avatar.contract.json", "summary": "Contract 0.2.0、runtime、selection rules、complete bindings、readiness evidenceを追加。" },
+    { "path": "js/ui-builders.js", "summary": "native imgと明示fallback semanticsを実装し、既存compositionのAvatar利用を更新。" },
+    { "path": "js/components-registry.js", "summary": "Showcase scenarios、usage、Do/Don't、React code例を確定Contractへ同期。" },
+    { "path": "js/templates.js", "summary": "隣接名、単独identity、collection summaryのalt ownerを明示。" },
+    { "path": "index.html", "summary": "画像clip/object-fit、density size、fallback layout、collection countをtokenized CSSで実装。" },
+    { "path": "test/component-specs.test.js", "summary": "Avatar API、DOM、naming、state、size、親interaction境界の回帰testを追加。" }
+  ],
+  "validations": [
+    { "command": "node --test test/component-specs.test.js test/implementation-readiness.test.js test/component-tokens.test.js", "status": "passed", "notes": "API freeze、image/fallback DOM、alt ownership、token binding、共通gateを検証。" },
+    { "command": "Automated browser viewport QA", "status": "not-run", "notes": "ローカルHTTPサーバー起動が環境の利用制限で拒否され、in-app browserもfile URLをsecurity policyで拒否したため未実施。" },
+    { "command": "npm run check:system", "status": "passed", "notes": "Schema、review cycles、generated artifacts、18/74 implementation-ready gateを含む167 testが通過。" },
+    { "command": "Structured local code review", "status": "passed", "notes": "Critical/Important 0件。Contract、human spec、Showcase、既存composition、generated artifactsを照合。requesting-code-review skillのsubagent手順は上位ルールによりlocal reviewへ置換。" }
+  ],
+  "openQuestions": [
+    { "question": "許可されたbrowser runnerでAvatar ShowcaseのDesktop/Mobileとtheme/density matrixを確認する。", "owner": "components.avatar", "exitCriteria": "default/loading/loaded/error、informative/decorative、4 size、overflow、consoleを実browserで確認すること。" },
+    { "question": "Contract 0.2.0に基づくReact実装とload/error unit test、visual regressionを完了しstableへ昇格する。", "owner": "components.avatar", "exitCriteria": "React component、required scenariosのunit/integration test、visual regressionがCIで通ること。" }
+  ],
+  "acknowledgedImpacts": [],
+  "impactedItems": [],
+  "nextRecommendedItems": ["components.skeleton"]
+}

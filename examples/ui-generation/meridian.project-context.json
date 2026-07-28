@@ -1,0 +1,413 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "project-context",
+    "id": "project_context_meridian_design_system",
+    "status": "current",
+    "revision": 1,
+    "createdAt": "2026-07-27"
+  },
+  "project": {
+    "id": "meridian_design_system",
+    "name": "Meridian Design System",
+    "root": ".",
+    "configRef": "meridian.design.json"
+  },
+  "inspection": {
+    "inspectorVersion": "0.1.0",
+    "configDigest": "sha256-7194fa7caa0ab4df2ccd29dc1060d34de3176b0a51ed93e16ae9e41b8753f022",
+    "asOf": "2026-07-27",
+    "scannedPaths": [
+      "package.json",
+      "packages",
+      "src",
+      "js",
+      "components",
+      "design",
+      "tokens",
+      "schemas"
+    ],
+    "excludedPaths": [
+      ".git",
+      "node_modules",
+      "examples/generated"
+    ]
+  },
+  "findings": [
+    {
+      "id": "configured_runtime",
+      "category": "runtime",
+      "values": [
+        "framework-agnostic-html-runtime",
+        "node-build-tooling"
+      ],
+      "provenance": "explicit",
+      "confidence": 1,
+      "evidence": [
+        {
+          "path": "meridian.design.json",
+          "sourceType": "config",
+          "observation": "runtime values are explicitly configured and are not inferred from package names."
+        }
+      ]
+    },
+    {
+      "id": "configured_framework",
+      "category": "framework",
+      "values": [
+        "framework-agnostic-primary",
+        "react-pilot"
+      ],
+      "provenance": "explicit",
+      "confidence": 1,
+      "evidence": [
+        {
+          "path": "meridian.design.json",
+          "sourceType": "config",
+          "observation": "frameworks values are explicitly configured and are not inferred from package names."
+        }
+      ]
+    },
+    {
+      "id": "configured_styling",
+      "category": "styling",
+      "values": [
+        "css-custom-properties",
+        "plain-css"
+      ],
+      "provenance": "explicit",
+      "confidence": 1,
+      "evidence": [
+        {
+          "path": "meridian.design.json",
+          "sourceType": "config",
+          "observation": "styling values are explicitly configured and are not inferred from package names."
+        }
+      ]
+    },
+    {
+      "id": "configured_language",
+      "category": "language",
+      "values": [
+        "javascript-es-modules",
+        "typescript-react-pilot",
+        "json"
+      ],
+      "provenance": "explicit",
+      "confidence": 1,
+      "evidence": [
+        {
+          "path": "meridian.design.json",
+          "sourceType": "config",
+          "observation": "languages values are explicitly configured and are not inferred from package names."
+        }
+      ]
+    },
+    {
+      "id": "inferred_package_manager",
+      "category": "package-manager",
+      "values": [
+        "pnpm@10.33.2"
+      ],
+      "provenance": "inferred",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "path": "package.json",
+          "sourceType": "package-manifest",
+          "observation": "The root packageManager field declares the contributor package manager and version."
+        }
+      ]
+    },
+    {
+      "id": "configured_token_format",
+      "category": "token-format",
+      "values": [
+        "dtcg-2025.10"
+      ],
+      "provenance": "explicit",
+      "confidence": 1,
+      "evidence": [
+        {
+          "path": "meridian.design.json",
+          "sourceType": "config",
+          "observation": "Token interchange format is explicitly configured."
+        },
+        {
+          "path": "tokens/src",
+          "sourceType": "token-source",
+          "observation": "Configured token source exists in the project."
+        }
+      ]
+    },
+    {
+      "id": "configured_themes",
+      "category": "theme",
+      "values": [
+        "theme:light",
+        "theme:dark",
+        "contrast:standard",
+        "contrast:high",
+        "density:compact",
+        "density:default",
+        "density:comfortable"
+      ],
+      "provenance": "explicit",
+      "confidence": 1,
+      "evidence": [
+        {
+          "path": "meridian.design.json",
+          "sourceType": "config",
+          "observation": "Theme, contrast, and density axes are explicitly configured."
+        }
+      ]
+    },
+    {
+      "id": "configured_component_system",
+      "category": "component-system",
+      "values": [
+        "design/contracts/components",
+        "packages/html-runtime/src",
+        "packages/html-runtime/styles",
+        "js"
+      ],
+      "provenance": "explicit",
+      "confidence": 1,
+      "evidence": [
+        {
+          "path": "meridian.design.json",
+          "sourceType": "config",
+          "observation": "Component contract and implementation roots are explicitly configured."
+        }
+      ]
+    },
+    {
+      "id": "configured_icon_system",
+      "category": "icon-system",
+      "values": [
+        "design/iconography.json",
+        "js/generated/iconography-meta.js"
+      ],
+      "provenance": "explicit",
+      "confidence": 1,
+      "evidence": [
+        {
+          "path": "meridian.design.json",
+          "sourceType": "config",
+          "observation": "Icon registry and implementation roots are explicitly configured."
+        }
+      ]
+    },
+    {
+      "id": "configured_catalogs",
+      "category": "catalog",
+      "values": [
+        "design/system-registry.json",
+        "design/harness/generated/component-registry.json"
+      ],
+      "provenance": "explicit",
+      "confidence": 1,
+      "evidence": [
+        {
+          "path": "meridian.design.json",
+          "sourceType": "config",
+          "observation": "Machine-readable component catalogs are explicitly configured."
+        }
+      ]
+    },
+    {
+      "id": "inferred_form_system",
+      "category": "form-system",
+      "values": [
+        "components.text-field",
+        "components.form-field",
+        "components.select",
+        "components.textarea",
+        "components.checkbox",
+        "components.radio",
+        "components.switch"
+      ],
+      "provenance": "inferred",
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "path": "design/system-registry.json",
+          "sourceType": "registry",
+          "observation": "Registry contains form control and field component entries."
+        }
+      ]
+    },
+    {
+      "id": "inferred_table_system",
+      "category": "table-system",
+      "values": [
+        "components.table",
+        "components.pagination"
+      ],
+      "provenance": "inferred",
+      "confidence": 0.98,
+      "evidence": [
+        {
+          "path": "design/system-registry.json",
+          "sourceType": "registry",
+          "observation": "Registry contains table and data navigation component entries."
+        }
+      ]
+    },
+    {
+      "id": "resolved_adapter_selection",
+      "category": "adapter",
+      "values": [
+        "meridian_html_runtime"
+      ],
+      "provenance": "inferred",
+      "confidence": 0.99,
+      "evidence": [
+        {
+          "path": "packages/html-runtime",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_html_runtime."
+        },
+        {
+          "path": "packages/html-runtime/src",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_html_runtime."
+        },
+        {
+          "path": "packages/html-runtime/styles",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_html_runtime."
+        },
+        {
+          "path": "design/contracts/components",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_html_runtime."
+        },
+        {
+          "path": "tokens/src",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_html_runtime."
+        },
+        {
+          "path": "tokens/build",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_html_runtime."
+        },
+        {
+          "path": "design/iconography.json",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_html_runtime."
+        },
+        {
+          "path": "js/generated/iconography-meta.js",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_html_runtime."
+        },
+        {
+          "path": "design/system-registry.json",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_html_runtime."
+        },
+        {
+          "path": "design/harness/generated/component-registry.json",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_html_runtime."
+        },
+        {
+          "path": "packages/html-runtime/package.json",
+          "sourceType": "package-manifest",
+          "observation": "Evidence for configured project adapter meridian_html_runtime."
+        },
+        {
+          "path": "packages/react",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_react_pilot."
+        },
+        {
+          "path": "packages/react/src",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_react_pilot."
+        },
+        {
+          "path": "tokens/build",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_react_pilot."
+        },
+        {
+          "path": "design/iconography.json",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_react_pilot."
+        },
+        {
+          "path": "design/system-registry.json",
+          "sourceType": "source",
+          "observation": "Evidence for configured project adapter meridian_react_pilot."
+        },
+        {
+          "path": "packages/react/package.json",
+          "sourceType": "package-manifest",
+          "observation": "Evidence for configured project adapter meridian_react_pilot."
+        }
+      ]
+    }
+  ],
+  "unresolved": [],
+  "adapterSelection": {
+    "policy": "project-existing-first",
+    "candidates": [
+      {
+        "id": "meridian_html_runtime",
+        "kind": "project",
+        "configuredStatus": "available",
+        "priority": 10,
+        "availability": "available",
+        "evidencePaths": [
+          "packages/html-runtime",
+          "packages/html-runtime/src",
+          "packages/html-runtime/styles",
+          "design/contracts/components",
+          "tokens/src",
+          "tokens/build",
+          "design/iconography.json",
+          "js/generated/iconography-meta.js",
+          "design/system-registry.json",
+          "design/harness/generated/component-registry.json",
+          "packages/html-runtime/package.json"
+        ],
+        "unresolvedReasons": []
+      },
+      {
+        "id": "meridian_react_pilot",
+        "kind": "project",
+        "configuredStatus": "candidate",
+        "priority": 20,
+        "availability": "candidate",
+        "evidencePaths": [
+          "packages/react",
+          "packages/react/src",
+          "tokens/build",
+          "design/iconography.json",
+          "design/system-registry.json",
+          "packages/react/package.json"
+        ],
+        "unresolvedReasons": []
+      }
+    ],
+    "selectedAdapterId": "meridian_html_runtime",
+    "reason": "Selected available project adapter meridian_html_runtime before any external adapter."
+  },
+  "qualityRequirements": {
+    "requiredViewports": [
+      "desktop",
+      "tablet",
+      "mobile"
+    ],
+    "requiredStates": [
+      "default",
+      "loading",
+      "empty",
+      "error",
+      "permission"
+    ]
+  }
+}

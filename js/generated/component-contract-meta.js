@@ -779,11 +779,14 @@ const COMPONENT_CONTRACTS={
     "status": "draft",
     "intent": {
       "whenToUse": [
-        "担当者・作成者の表示",
-        "メンバーリスト"
+        "人物、チーム、resourceを一覧やsummaryで補助的に識別する。",
+        "画像を取得できない間も、呼び出し側が決めた短いfallbackで同じ対象を識別する。"
       ],
       "whenNotToUse": [
-        "装飾目的のアイコン"
+        "対象名の唯一の可視表現にはTextを使う。",
+        "presence、availability、system statusにはStatus IndicatorまたはBadgeを使う。",
+        "クリック、menu opening、selectionをAvatar rootへ持たせず、Button、Icon Button、User Menuなどの親controlを使う。",
+        "重なり、人数省略、+N、集合全体の要約はAvatarではなく親collection/compositionが所有する。"
       ],
       "principles": [
         1,
@@ -797,17 +800,17 @@ const COMPONENT_CONTRACTS={
       {
         "part": "root",
         "required": true,
-        "description": "Semantic display root."
+        "description": "意味やfocusを追加しない非interactiveなspan root。"
       },
       {
-        "part": "content",
-        "required": true,
-        "description": "Primary perceivable content."
-      },
-      {
-        "part": "supporting",
+        "part": "image",
         "required": false,
-        "description": "Optional metadata or visual reinforcement."
+        "description": "srcがloadedのときだけ表示するnative img。altをそのまま渡す。"
+      },
+      {
+        "part": "fallback",
+        "required": true,
+        "description": "no-src、loading、errorで表示するcaller-providedの1〜2 grapheme cluster。自動生成しない。"
       }
     ],
     "variants": [
@@ -822,118 +825,178 @@ const COMPONENT_CONTRACTS={
     "states": [
       {
         "id": "default",
-        "description": "通常状態。意味、label、valueを省略しない。",
+        "description": "srcがなくfallbackを表示する。",
         "requiredBehavior": [
-          "通常状態。意味、label、valueを省略しない。"
+          "altが空ならfallbackをaccessibility treeから除外し、空でなければ同じaltでimg roleを提供する。"
+        ]
+      },
+      {
+        "id": "loading",
+        "description": "画像取得中にfallbackを表示する。",
+        "requiredBehavior": [
+          "layoutを変えず、画像の代わりに同じfallback semanticsを維持する。"
+        ]
+      },
+      {
+        "id": "loaded",
+        "description": "取得済み画像をnative imgで表示する。",
+        "requiredBehavior": [
+          "img altへpropをそのまま渡し、object-fit coverでgeometryを保つ。"
+        ]
+      },
+      {
+        "id": "error",
+        "description": "画像取得に失敗しfallbackへ戻る。",
+        "requiredBehavior": [
+          "fallbackへ切り替え、error textやretry UIはAvatar自身に追加しない。"
         ]
       }
     ],
     "props": [
       {
+        "name": "src",
+        "type": "string | undefined",
+        "required": false,
+        "default": null,
+        "description": "人物・チーム・resource画像のURL。未指定時はfallbackを表示する。"
+      },
+      {
+        "name": "alt",
+        "type": "string",
+        "required": true,
+        "default": null,
+        "description": "画像のtext alternative。隣接する可視名や親control名と重複する場合は明示的に空文字を渡す。"
+      },
+      {
+        "name": "fallback",
+        "type": "string",
+        "required": true,
+        "default": null,
+        "description": "呼び出し側がlocaleと対象文脈から決める1〜2 grapheme cluster。nameから自動生成・切り詰めしない。"
+      },
+      {
         "name": "size",
         "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
         "required": false,
         "default": "md",
-        "description": "Density内の相対sizeを選ぶ。"
+        "description": "非interactiveな識別子geometry。選択値はviewportから暗黙変更せず、各値はsystem densityへ追従する。"
       },
       {
-        "name": "name",
-        "type": "string",
+        "name": "ref",
+        "type": "ForwardedRef<HTMLSpanElement>",
         "required": false,
         "default": null,
-        "description": "Name"
+        "description": "非interactive root spanへforwardするref。"
       }
     ],
     "tokenRefs": {
       "semanticColor": [
-        "--surface",
-        "--border",
-        "--fg",
-        "--fg-muted"
+        "--primary-muted",
+        "--primary",
+        "--border"
       ],
       "density": [
         "--ctl-xs",
         "--ctl-sm",
         "--ctl-md",
         "--ctl-lg",
+        "--text-micro",
+        "--text-small",
         "--text-label"
       ],
-      "spacing": [
-        "--sp-2"
+      "radius": [
+        "--radius-full"
       ]
     },
     "accessibility": {
       "requirements": [
-        "表示専用rootを不要にtab順へ追加しない。",
-        "状態は色だけで表さずtext、icon、shapeを併用する。"
+        "Avatar rootは非interactiveでtab stop、button role、click handlerを持たない。",
+        "単独で対象を伝えるinformative Avatarは空でないaltを持つ。",
+        "隣接する可視名または親controlのaccessible nameと重複するAvatarはaltを空文字にする。",
+        "fallback文字列をaccessible nameとして推測せず、空でないaltだけをfallbackのaria-labelへ使う。",
+        "画像、fallback、load/errorの切替で対象のtext alternativeを変えない。"
       ],
       "aria": [
-        "Native semanticsを優先し、ARIAは不足する関係と状態だけを補う。"
+        "loaded時はnative img altを使う。",
+        "informative fallbackだけrole=imgとaria-label=altを持つ。",
+        "decorative fallbackはaria-hidden=trueにする。",
+        "title、aria-live、aria-busy、aria-pressed、aria-selectedをAvatarへ追加しない。"
       ],
       "focus": [
-        "Nested controlがある場合だけ、そのcontrolがfocusを受け取る。"
+        "Avatarはfocusを受け取らない。操作文脈では親native controlだけがfocusを所有する。"
       ]
     },
     "keyboardInteractions": [],
     "usagePatterns": [
       {
-        "id": "recommended-1",
-        "title": "Primary context",
-        "description": "担当者・作成者の表示",
+        "id": "adjacent-name",
+        "title": "Adjacent visible name",
+        "description": "可視名を補助する装飾Avatar。",
         "recommended": [
-          "画像が無い場合はイニシャルにフォールバックする。"
+          "alt=\"\"を渡し、Textまたは親controlを唯一の名前にする。"
         ],
         "avoid": [
-          "装飾目的のアイコン"
+          "同じ人物名を画像と隣接Textで二重に読み上げる。"
         ]
       },
       {
-        "id": "recommended-2",
-        "title": "Secondary context",
-        "description": "メンバーリスト",
+        "id": "standalone-identity",
+        "title": "Standalone identity",
+        "description": "Avatar自身が対象を伝えるinformative image。",
         "recommended": [
-          "重ね表示(AvatarStack)は 3〜4 個で省略し「+N」を付ける。"
+          "対象を簡潔に識別するlocalized altを渡す。",
+          "loading/errorでも同じaltを維持する。"
         ],
         "avoid": [
-          "装飾目的のアイコン"
+          "fallback文字列やfile nameからaltを自動生成する。"
+        ]
+      },
+      {
+        "id": "collection-boundary",
+        "title": "Collection composition",
+        "description": "複数Avatarの重なり、+N、集合要約は親が管理する。",
+        "recommended": [
+          "子Avatarはalt=\"\"とし、親collectionへ対象名と残数を含む要約を付ける。"
+        ],
+        "avoid": [
+          "+NをAvatarのfallbackとして表す。",
+          "Avatar APIへmaxやusersを追加する。"
         ]
       }
     ],
     "responsiveBehavior": {
       "desktop": {
-        "summary": "DesktopでのAvatar。",
+        "summary": "固定された4 sizeから文脈に合うものを明示選択する。",
         "rules": [
-          "Contentと周辺layoutに応じたintrinsic sizeを使う。",
-          "Viewportだけを理由にdensityを変更しない。"
+          "画像とfallbackで同じgeometryを維持する。",
+          "集合のoverlapとspacingは親layoutが管理する。"
         ],
         "avoid": [
-          "Hoverだけで状態や操作を伝えない。"
+          "hoverだけで対象名を提供する。"
         ]
       },
       "mobile": {
-        "summary": "MobileでのAvatar。",
+        "summary": "同じ意味、alt、fallback、size APIを保つ。",
         "rules": [
-          "意味とDOM順を変えず、wrapとavailable widthで適応する。",
-          "省略した情報へ別経路から到達できるようにする。"
+          "viewportだけを理由にaltやfallbackを省略しない。",
+          "必要なら親layoutが別sizeを明示指定する。"
         ],
         "avoid": [
-          "PC用とSP用に意味やAPIの異なるcomponentを複製しない。"
+          "mobile専用Avatarを複製する。"
         ]
       },
       "touch": {
-        "summary": "Touch入力でのAvatar。",
+        "summary": "Avatarはtargetではなく、親controlがtarget sizeを所有する。",
         "rules": [
-          "表示専用rootをtab順へ追加しない。",
-          "内包する操作がある場合だけ、その操作targetを24px minimum、主要touch操作を原則44px以上にする。"
+          "操作可能に見せる場合はAvatarをButtonやUser Menu trigger内へ配置する。",
+          "主要touch操作の親controlは原則44px以上にする。"
         ],
         "avoid": [
-          "小さな隣接targetやgestureだけの操作を作らない。"
+          "20〜40pxのAvatar rootへ直接onClickを付ける。"
         ]
       }
     },
-    "openQuestions": [
-      "React package実装時にDOM/ref/event APIと全visual slot bindingを確定し、coverage completeでstableへ移行する。"
-    ]
+    "openQuestions": []
   },
   "badge": {
     "id": "badge",
@@ -3716,6 +3779,11 @@ const COMPONENT_CONTRACTS={
         "--cell-y",
         "--row-h"
       ],
+      "spacing": [
+        "--sp-1",
+        "--sp-2",
+        "--sp-3"
+      ],
       "typography": [
         "--text-label"
       ]
@@ -3987,6 +4055,7 @@ const COMPONENT_CONTRACTS={
     "tokenRefs": {
       "semanticColor": [
         "--surface-overlay",
+        "--surface-muted",
         "--fg",
         "--fg-muted",
         "--border",
@@ -4002,9 +4071,11 @@ const COMPONENT_CONTRACTS={
         "--sp-8"
       ],
       "radius": [
+        "--radius-md",
         "--radius-xl"
       ],
       "sizing": [
+        "--ctl-lg",
         "--dialog-w-md"
       ],
       "motion": [
@@ -13988,6 +14059,34 @@ const COMPONENT_CONTRACTS={
         "description": "通常状態。意味、label、valueを省略しない。",
         "requiredBehavior": [
           "通常状態。意味、label、valueを省略しない。"
+        ]
+      },
+      {
+        "id": "current",
+        "description": "利用者が現在取り組んでいるstep。",
+        "requiredBehavior": [
+          "aria-current=stepと可視textまたはindicatorで現在地を示す。"
+        ]
+      },
+      {
+        "id": "success",
+        "description": "完了済みstep。",
+        "requiredBehavior": [
+          "完了を色だけでなく記号またはtextでも示す。"
+        ]
+      },
+      {
+        "id": "disabled",
+        "description": "まだ到達できないstep。",
+        "requiredBehavior": [
+          "aria-disabledと低い視覚強度を併用し、現在地として扱わない。"
+        ]
+      },
+      {
+        "id": "error",
+        "description": "修正または再試行が必要なstep。",
+        "requiredBehavior": [
+          "問題と次の行動を色以外でも識別できるようにする。"
         ]
       }
     ],

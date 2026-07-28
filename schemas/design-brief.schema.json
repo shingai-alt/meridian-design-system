@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/design-brief.schema.json",
+  "title": "Meridian UI Generation Design Brief",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "source", "evidence", "actors", "primaryGoal", "primaryTask", "secondaryTasks", "entities", "actions", "constraints", "risks", "assumptions", "unknowns", "scope", "acceptance", "review"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/meta" },
+    "source": { "$ref": "#/$defs/source" },
+    "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
+    "actors": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/actor" } },
+    "primaryGoal": { "$ref": "#/$defs/goal" },
+    "primaryTask": { "$ref": "#/$defs/task" },
+    "secondaryTasks": { "type": "array", "items": { "$ref": "#/$defs/secondaryTask" } },
+    "entities": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/entity" } },
+    "actions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/action" } },
+    "constraints": { "type": "array", "items": { "$ref": "#/$defs/constraint" } },
+    "risks": { "type": "array", "items": { "$ref": "#/$defs/risk" } },
+    "assumptions": { "type": "array", "items": { "$ref": "#/$defs/assumption" } },
+    "unknowns": { "type": "array", "items": { "$ref": "#/$defs/unknown" } },
+    "scope": { "$ref": "#/$defs/scope" },
+    "acceptance": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmpty" } },
+    "review": { "$ref": "#/$defs/review" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "pattern": ".*\\S.*" },
+    "stringList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmpty" } },
+    "idList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "digest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "status", "revision", "locale", "createdAt", "updatedAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" },
+        "kind": { "const": "design-brief" },
+        "id": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["draft", "clarification-required", "ready-for-review", "approved", "revision-requested", "superseded"] },
+        "revision": { "type": "integer", "minimum": 1 },
+        "locale": { "$ref": "#/$defs/nonEmpty" },
+        "createdAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$" },
+        "updatedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requestRef", "requestDigest", "projectContextRef", "projectContextDigest"],
+      "properties": {
+        "requestRef": { "$ref": "#/$defs/nonEmpty" },
+        "requestDigest": { "$ref": "#/$defs/digest" },
+        "projectContextRef": { "$ref": "#/$defs/nonEmpty" },
+        "projectContextDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "sourceType", "ref", "observation"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "sourceType": { "enum": ["user-request", "project-context", "existing-artifact", "research", "human-answer"] },
+        "ref": { "$ref": "#/$defs/nonEmpty" },
+        "observation": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role", "description", "evidenceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "role": { "$ref": "#/$defs/nonEmpty" },
+        "description": { "$ref": "#/$defs/nonEmpty" },
+        "evidenceRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "goal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement", "outcomes", "evidenceRefs"],
+      "properties": {
+        "statement": { "$ref": "#/$defs/nonEmpty" },
+        "outcomes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "evidenceRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement", "frequency", "workMode", "evidenceRefs"],
+      "properties": {
+        "statement": { "$ref": "#/$defs/nonEmpty" },
+        "frequency": { "enum": ["continuous", "daily", "weekly", "occasional", "one-time", "unknown"] },
+        "workMode": { "enum": ["compare", "process-one", "create", "review", "monitor", "configure", "explore", "unknown"] },
+        "evidenceRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "secondaryTask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "evidenceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "statement": { "$ref": "#/$defs/nonEmpty" },
+        "evidenceRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "volume", "sensitivity", "evidenceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/nonEmpty" },
+        "volume": { "enum": ["single", "few", "many", "unknown"] },
+        "sensitivity": { "enum": ["public", "internal", "confidential", "restricted", "unknown"] },
+        "evidenceRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "actorRef", "entityRefs", "verb", "frequency", "risk", "evidenceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "actorRef": { "$ref": "#/$defs/id" },
+        "entityRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "verb": { "$ref": "#/$defs/nonEmpty" },
+        "frequency": { "enum": ["continuous", "daily", "weekly", "occasional", "one-time", "unknown"] },
+        "risk": { "enum": ["reversible", "irreversible", "high-impact", "unknown"] },
+        "evidenceRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "category", "statement", "evidenceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "category": { "enum": ["business", "permission", "data", "device", "localization", "accessibility", "technical", "scope"] },
+        "statement": { "$ref": "#/$defs/nonEmpty" },
+        "evidenceRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "risk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "severity", "mitigation", "evidenceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "statement": { "$ref": "#/$defs/nonEmpty" },
+        "severity": { "enum": ["low", "medium", "high", "critical"] },
+        "mitigation": { "type": ["string", "null"] },
+        "evidenceRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "assumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "impact", "status", "sourceUnknownRef", "evidenceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "statement": { "$ref": "#/$defs/nonEmpty" },
+        "impact": { "enum": ["low", "medium", "high"] },
+        "status": { "enum": ["active", "confirmed", "rejected"] },
+        "sourceUnknownRef": { "type": ["string", "null"] },
+        "evidenceRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "unknown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "question", "topic", "structuralImpacts", "impact", "priority", "status", "answer", "resolutionRationale", "evidenceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "question": { "$ref": "#/$defs/nonEmpty" },
+        "topic": { "enum": ["work-mode", "screen-boundary", "persistence", "permission", "irreversibility", "data-volume", "device", "primary-task", "content", "technical", "minor"] },
+        "structuralImpacts": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["primary-task", "screen-count", "pattern", "persistent-information", "permission", "irreversible-action", "data-volume", "device", "none"] }
+        },
+        "impact": { "enum": ["blocking", "non-blocking"] },
+        "priority": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "status": { "enum": ["open", "answered", "assumed", "dismissed"] },
+        "answer": { "type": ["string", "null"] },
+        "resolutionRationale": { "type": ["string", "null"] },
+        "evidenceRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["in", "out"],
+      "properties": {
+        "in": { "$ref": "#/$defs/stringList" },
+        "out": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actorType", "actorId", "role", "decision", "decidedAt", "briefDigest", "notes"],
+      "properties": {
+        "actorType": { "const": "human" },
+        "actorId": { "$ref": "#/$defs/nonEmpty" },
+        "role": { "$ref": "#/$defs/nonEmpty" },
+        "decision": { "enum": ["approved", "revision-requested"] },
+        "decidedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T" },
+        "briefDigest": { "$ref": "#/$defs/digest" },
+        "notes": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "requiredRole", "approval"],
+      "properties": {
+        "status": { "enum": ["pending", "approved", "revision-requested"] },
+        "requiredRole": { "$ref": "#/$defs/nonEmpty" },
+        "approval": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["actorType", "actorId", "role", "decision", "decidedAt", "briefDigest", "notes"],
+          "properties": {
+            "actorType": { "const": "human" },
+            "actorId": { "$ref": "#/$defs/nonEmpty" },
+            "role": { "$ref": "#/$defs/nonEmpty" },
+            "decision": { "enum": ["approved", "revision-requested"] },
+            "decidedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T" },
+            "briefDigest": { "$ref": "#/$defs/digest" },
+            "notes": { "$ref": "#/$defs/nonEmpty" }
+          }
+        }
+      }
+    }
+  }
+}

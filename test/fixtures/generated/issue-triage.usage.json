@@ -1,0 +1,724 @@
+{
+  "schemaVersion": "0.1.0",
+  "conceptId": "fixture_generation_issue_triage",
+  "sourcePackageId": "fixture_responsibilities_issue_triage",
+  "compositionId": "fixture_generation_issue_triage.composition",
+  "translationPackDigest": "sha256-c1a2391c5daceea35375ef3e98425d061c71c9de4948b61831d88553f546a79b",
+  "runtimeVersion": "0.2.0",
+  "patterns": [
+    "filterable-status-list"
+  ],
+  "instances": [
+    {
+      "component": "form-field",
+      "instanceId": "triage-filter-field-query",
+      "repeat": "content.fields",
+      "contractVersion": "0.1.0",
+      "props": {
+        "state": "default"
+      },
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "error"
+      ],
+      "decisionRef": "decision-filter-before-list"
+    },
+    {
+      "component": "text-field",
+      "instanceId": "triage-filter-control-query",
+      "repeat": "content.fields",
+      "contractVersion": "0.1.0",
+      "props": {
+        "state": "default"
+      },
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "error",
+        "disabled",
+        "readonly"
+      ],
+      "decisionRef": "decision-filter-before-list"
+    },
+    {
+      "component": "validation-message",
+      "instanceId": "triage-filter-message-query",
+      "repeat": "content.fields",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "error"
+      },
+      "allowedVariants": [
+        "error",
+        "success",
+        "warning"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-filter-before-list"
+    },
+    {
+      "component": "table",
+      "instanceId": "triage-list-table",
+      "contractVersion": "0.1.0",
+      "props": {
+        "state": "default"
+      },
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "selected",
+        "loading",
+        "empty"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "status-indicator",
+      "instanceId": "triage-list-status-issue-1042",
+      "repeat": "content.rows",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "idle"
+      },
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "button",
+      "instanceId": "triage-list-action-issue-1042",
+      "repeat": "content.rows",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "status-indicator",
+      "instanceId": "triage-list-status-issue-1038",
+      "repeat": "content.rows",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "idle"
+      },
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "button",
+      "instanceId": "triage-list-action-issue-1038",
+      "repeat": "content.rows",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "status-indicator",
+      "instanceId": "triage-list-status-issue-1031",
+      "repeat": "content.rows",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "idle"
+      },
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "button",
+      "instanceId": "triage-list-action-issue-1031",
+      "repeat": "content.rows",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "status-indicator",
+      "instanceId": "triage-list-status-issue-1027",
+      "repeat": "content.rows",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "idle"
+      },
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "button",
+      "instanceId": "triage-list-action-issue-1027",
+      "repeat": "content.rows",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "status-indicator",
+      "instanceId": "triage-list-status-issue-1024",
+      "repeat": "content.rows",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "idle"
+      },
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "button",
+      "instanceId": "triage-list-action-issue-1024",
+      "repeat": "content.rows",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "status-indicator",
+      "instanceId": "triage-list-status-issue-1019",
+      "repeat": "content.rows",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "idle"
+      },
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "button",
+      "instanceId": "triage-list-action-issue-1019",
+      "repeat": "content.rows",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "status-indicator",
+      "instanceId": "triage-list-status-issue-1015",
+      "repeat": "content.rows",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "idle"
+      },
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "button",
+      "instanceId": "triage-list-action-issue-1015",
+      "repeat": "content.rows",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "status-indicator",
+      "instanceId": "triage-list-status-issue-1012",
+      "repeat": "content.rows",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "idle"
+      },
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "button",
+      "instanceId": "triage-list-action-issue-1012",
+      "repeat": "content.rows",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "status-indicator",
+      "instanceId": "triage-list-status-issue-1008",
+      "repeat": "content.rows",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "idle"
+      },
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "button",
+      "instanceId": "triage-list-action-issue-1008",
+      "repeat": "content.rows",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "status-indicator",
+      "instanceId": "triage-list-status-issue-1003",
+      "repeat": "content.rows",
+      "contractVersion": "0.1.0",
+      "props": {
+        "variant": "idle"
+      },
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "button",
+      "instanceId": "triage-list-action-issue-1003",
+      "repeat": "content.rows",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "secondary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-status-evidence"
+    },
+    {
+      "component": "button",
+      "instanceId": "triage-primary-action-action",
+      "contractVersion": "0.2.0",
+      "props": {
+        "variant": "primary"
+      },
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "decisionRef": "decision-primary-triage-action"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-triage-structure",
+      "reason": "Keep the queue heading, filtering, evidence, and action in DOM task order.",
+      "sourceRefs": [
+        "responsibility_triage_queue",
+        "fixture_direction_queue_first"
+      ]
+    },
+    {
+      "id": "decision-filter-before-list",
+      "reason": "Place the filter before the results it changes.",
+      "sourceRefs": [
+        "filterable-status-list",
+        "fixture_req_filter"
+      ]
+    },
+    {
+      "id": "decision-status-evidence",
+      "reason": "Expose priority and workflow status before actions.",
+      "sourceRefs": [
+        "filterable-status-list",
+        "fixture_req_prioritize"
+      ]
+    },
+    {
+      "id": "decision-primary-triage-action",
+      "reason": "Keep one explicit primary action after the evidence list.",
+      "sourceRefs": [
+        "responsibility_triage_queue",
+        "fixture_req_prioritize"
+      ]
+    }
+  ],
+  "exceptions": [],
+  "renderSites": [
+    {
+      "usageId": "triage-filter-field-query",
+      "component": "form-field",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-filter-control-query",
+      "component": "text-field",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-filter-message-query",
+      "component": "validation-message",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-table",
+      "component": "table",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-status-issue-1042",
+      "component": "status-indicator",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-action-issue-1042",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-status-issue-1038",
+      "component": "status-indicator",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-action-issue-1038",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-status-issue-1031",
+      "component": "status-indicator",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-action-issue-1031",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-status-issue-1027",
+      "component": "status-indicator",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-action-issue-1027",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-status-issue-1024",
+      "component": "status-indicator",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-action-issue-1024",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-status-issue-1019",
+      "component": "status-indicator",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-action-issue-1019",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-status-issue-1015",
+      "component": "status-indicator",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-action-issue-1015",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-status-issue-1012",
+      "component": "status-indicator",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-action-issue-1012",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-status-issue-1008",
+      "component": "status-indicator",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-action-issue-1008",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-status-issue-1003",
+      "component": "status-indicator",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-list-action-issue-1003",
+      "component": "button",
+      "callCount": 1
+    },
+    {
+      "usageId": "triage-primary-action-action",
+      "component": "button",
+      "callCount": 1
+    }
+  ],
+  "validationDigest": "sha256-5827395c4007d799c177ea96ca4968f7fdd349a1a7cc5e3155ca192fcab430d5"
+}

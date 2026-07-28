@@ -1,7 +1,7 @@
 # Meridian AI Component Index
 
-- Translation Pack: `sha256-8830490d5e9146574daffc9d640d8cdb778eea9dd8e4be5e3176c8755ac0b532`
-- Runtime: `0.1.0`
+- Translation Pack: `sha256-c1a2391c5daceea35375ef3e98425d061c71c9de4948b61831d88553f546a79b`
+- Runtime: `0.2.0`
 - Generated from Contract, Token policy, and Accessibility policy. Do not edit.
 
 ## Button `button`
@@ -262,6 +262,94 @@ Avoid when:
 
 Negative examples:
 - divだけでtable visualを再現する。 — captionとheader relationを失うため。 (INTERACTIVE_NAME_REQUIRED)
+
+Accessibility:
+- 表示専用rootを不要にtab順へ追加しない。
+- 状態は色だけで表さずtext、icon、shapeを併用する。
+
+## Dialog `dialog`
+
+- Status: draft
+- Contract: 0.2.0
+- Source: `design/contracts/components/dialog.contract.json`
+- Source digest: `sha256-4b625e5c8add0372320f640c9c771f9f54100699aae68c7653ba21d0ce16eccd`
+- Variants: default, danger
+- States: open, closed, submitting, error
+- Sizes: none
+- Runtime compatibility: >=0.2.0 <1.0.0
+- Pilot scope: team-invitation
+- Required scenarios: open, closed, default, danger, default-form, danger-confirmation, submitting, error, simple-message, narrow-viewport
+
+Use when:
+- 現在の作業を中断して回答が必要な、短い確認または単一目的のform。
+- 削除、法的同意、金融取引など、実行前のreviewまたは確認が必要な高影響action。
+- 続行不能な短い重要messageへ即時responseを求める場合。
+
+Avoid when:
+- 背景を参照しながら行う補助task、quick edit、filterはDrawerまたはPopoverを使う。
+- 長いform、multi-step workflow、固有URLが必要なtaskは専用pageを使う。
+- 判断を要求しない一時的な結果はToast、文脈内で残す情報はAlertを使う。
+- 通常の保存や軽微な操作へ毎回確認を挟まず、可能ならUndoを優先する。
+
+Negative examples:
+- div role=dialogへaria-modal=trueだけを付け、背景を操作可能なままにする。 — ARIA宣言と実際のmodalityが一致せず、支援技術利用者から背景だけを隠すため。 (FOCUS_VISIBLE_REQUIRED)
+- Native dialogのopen属性をReact renderだけで追加・削除する。 — close/cancel event、top layer、document blockingを壊すため。 (FOCUS_VISIBLE_REQUIRED)
+- Danger primary actionへinitial focusを置く。 — 不可逆actionの誤実行を誘発し、最も安全な選択を既定にできないため。 (FOCUS_VISIBLE_REQUIRED)
+- Backdrop tapまたはswipeだけでDialogを閉じる。 — Keyboard、touch、支援技術で一貫したdismiss経路を失うため。 (INTERACTIVE_NAME_REQUIRED, TARGET_SIZE_MINIMUM)
+- List、table、複数paragraphをまとめてaria-describedbyへ接続する。 — 構造を一続きの文字列として読み上げ、内容理解とnavigationを妨げるため。 (INTERACTIVE_NAME_REQUIRED)
+
+Accessibility:
+- Native dialogをshowModal()で開き、背景contentを実際にinertにする。
+- Visible title、常時visibleなclose control、footerのdismiss action、24px minimum targetを持つ。
+- High-impact submissionはreversible、checked、confirmedの少なくとも一つを満たす。
+
+## Description List `description-list`
+
+- Status: draft
+- Contract: 0.1.0
+- Source: `design/contracts/components/description-list.contract.json`
+- Source digest: `sha256-7e43cd1a895449f07e7290bca04162ab55e570e6d7ce14310a61e53f9330e3b3`
+- Variants: default
+- States: default
+- Sizes: none
+- Runtime compatibility: >=0.2.0 <1.0.0
+- Pilot scope: team-invitation
+- Required scenarios: default, long-value, empty-value, narrow-viewport
+
+Use when:
+- 1つの対象の属性をkey/valueで参照するとき。
+
+Avoid when:
+- 複数対象を列比較する場合はTableを使う。
+
+Negative examples:
+- Termとvalueを意味のないdivだけで並べる。 — 名前と値のprogrammaticな関係を失うため。 (CONTRAST_AA_MINIMUM)
+
+Accessibility:
+- 表示専用rootを不要にtab順へ追加しない。
+- 状態は色だけで表さずtext、icon、shapeを併用する。
+
+## Workflow Step `workflow-step`
+
+- Status: draft
+- Contract: 0.1.0
+- Source: `design/contracts/components/workflow-step.contract.json`
+- Source digest: `sha256-c7b7b6407f2565f48fae9b08d6eef3aa9c9793f67db83145c23d270dcfa56358`
+- Variants: default
+- States: default, current, success, disabled, error
+- Sizes: none
+- Runtime compatibility: >=0.2.0 <1.0.0
+- Pilot scope: team-invitation
+- Required scenarios: default, current, success, disabled, error, narrow-viewport
+
+Use when:
+- 順序のある少数stepの現在位置と結果を示すとき。
+
+Avoid when:
+- 時刻やtool入出力まで確認する場合はExecution Timelineを使う。
+
+Negative examples:
+- 現在stepを色だけで区別する。 — 色を認識できない利用者へ現在地が伝わらないため。 (STATE_NOT_COLOR_ONLY)
 
 Accessibility:
 - 表示専用rootを不要にtab順へ追加しない。

@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "clarification-round",
+    "id": "clarification_brief_team_invitation_1",
+    "status": "no-questions",
+    "createdAt": "2026-07-27T02:05:00Z",
+    "mergedAt": null
+  },
+  "briefRef": "examples/ui-generation/team-invitation.design-brief.json",
+  "briefRevision": 1,
+  "briefDigest": "sha256-409421d022df2fdc56bc927ec8ee80f35aafe604ffa4ab343fecbf7c0f027957",
+  "questions": [],
+  "deferredUnknownRefs": [],
+  "responses": []
+}

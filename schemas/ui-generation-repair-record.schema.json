@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/ui-generation-repair-record.schema.json",
+  "title": "Meridian UI Generation Repair Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "meta", "source", "lockedStructureDigest", "attempts", "summary"],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "pilotId", "status", "updatedAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" },
+        "kind": { "const": "ui-generation-repair-record" },
+        "id": { "$ref": "#/$defs/id" },
+        "pilotId": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["not-required", "repaired", "blocked", "human-review-required"] },
+        "updatedAt": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "generationManifest", "initialBrowserQa", "currentBrowserQa"],
+      "properties": {
+        "policy": { "$ref": "#/$defs/binding" },
+        "generationManifest": { "$ref": "#/$defs/binding" },
+        "initialBrowserQa": { "$ref": "#/$defs/binding" },
+        "currentBrowserQa": { "$ref": "#/$defs/binding" }
+      }
+    },
+    "lockedStructureDigest": { "$ref": "#/$defs/digest" },
+    "attempts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/attempt" }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["deterministicValidation", "structuralRepair", "visualRepair", "patternReselection", "resolvedFindingRefs", "unresolvedFindingRefs"],
+      "properties": {
+        "deterministicValidation": { "type": "integer", "minimum": 0 },
+        "structuralRepair": { "type": "integer", "minimum": 0 },
+        "visualRepair": { "type": "integer", "minimum": 0 },
+        "patternReselection": { "type": "integer", "minimum": 0 },
+        "resolvedFindingRefs": { "$ref": "#/$defs/idList" },
+        "unresolvedFindingRefs": { "$ref": "#/$defs/idList" }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9._-]*$" },
+    "idList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "digest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "digest"],
+      "properties": {
+        "ref": { "$ref": "#/$defs/nonEmpty" },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "sequence", "category", "findingRefs", "targetLayer", "actorType", "outcome", "changedRefs", "lockedStructureDigestBefore", "lockedStructureDigestAfter"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "category": { "enum": ["deterministic-validation", "structural-repair", "visual-repair", "pattern-reselection"] },
+        "findingRefs": { "$ref": "#/$defs/idList" },
+        "targetLayer": { "enum": ["generation-manifest", "layout-recipe", "component-runtime", "content", "browser-environment", "requirements", "screen-responsibilities", "selected-patterns", "selected-direction", "capability-plan", "adapter-selection"] },
+        "actorType": { "enum": ["ai", "human"] },
+        "outcome": { "enum": ["resolved", "unresolved", "escalated", "no-change"] },
+        "changedRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmpty" } },
+        "lockedStructureDigestBefore": { "$ref": "#/$defs/digest" },
+        "lockedStructureDigestAfter": { "$ref": "#/$defs/digest" }
+      }
+    }
+  }
+}

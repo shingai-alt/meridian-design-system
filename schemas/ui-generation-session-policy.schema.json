@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/ui-generation-session-policy.schema.json",
+  "title": "Meridian UI Generation Session Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "artifactTypes", "states", "transitions", "integrity", "invariants"],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "artifactTypes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/artifactType" }
+    },
+    "states": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/state" }
+    },
+    "transitions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/transition" }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digestAlgorithm", "pathScope", "currentDigestRequired", "artifactSchemaVersionRequired", "revisionMonotonic"],
+      "properties": {
+        "digestAlgorithm": { "const": "sha256" },
+        "pathScope": { "const": "repository-relative" },
+        "currentDigestRequired": { "const": true },
+        "artifactSchemaVersionRequired": { "const": true },
+        "revisionMonotonic": { "const": true }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "stringList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "artifactType": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ownership", "description"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "ownership": { "enum": ["canonical", "derived", "evidence"] },
+        "description": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "phase", "terminal", "requiredArtifactTypes", "description"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "phase": { "$ref": "#/$defs/nonEmpty" },
+        "terminal": { "type": "boolean" },
+        "requiredArtifactTypes": { "$ref": "#/$defs/stringList" },
+        "description": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "from", "to", "gate", "requiredApprovalRole", "requiredArtifactTypes"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "from": { "$ref": "#/$defs/id" },
+        "to": { "$ref": "#/$defs/id" },
+        "gate": { "enum": ["automatic", "human"] },
+        "requiredApprovalRole": { "type": ["string", "null"] },
+        "requiredArtifactTypes": { "$ref": "#/$defs/stringList" }
+      }
+    }
+  }
+}

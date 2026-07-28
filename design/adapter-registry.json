@@ -1,0 +1,116 @@
+{
+  "$schema": "../schemas/adapter-registry.schema.json",
+  "schemaVersion": "0.1.0",
+  "kind": "adapter-registry",
+  "id": "meridian_adapter_registry_v1",
+  "selectionPolicy": "project-existing-first",
+  "adapters": [
+    {
+      "id": "meridian_html_runtime",
+      "kind": "project",
+      "version": "0.2.0",
+      "priority": 10,
+      "availability": "available",
+      "approval": {
+        "status": "project-existing",
+        "decisionRef": "meridian.design.json#designSystem.adapters/0"
+      },
+      "sourceRefs": [
+        "packages/html-runtime/src/index.mjs",
+        "design/contracts/components",
+        "design/harness/generated/component-registry.json"
+      ],
+      "runtimePackageRef": "packages/html-runtime/package.json",
+      "tokenStrategy": "native",
+      "bindings": [
+        {
+          "capabilityRef": "action.trigger",
+          "resolutionKind": "component",
+          "targetRefs": ["button"],
+          "maturity": "provisional",
+          "supportedSemantics": ["accessible-name", "native-activation", "disabled-state", "busy-state"],
+          "supportedStates": ["default", "loading", "disabled"]
+        },
+        {
+          "capabilityRef": "input.text",
+          "resolutionKind": "composition",
+          "targetRefs": ["form-field", "text-field", "validation-message"],
+          "maturity": "provisional",
+          "supportedSemantics": ["programmatic-label", "value-editing", "error-association"],
+          "supportedStates": ["default", "error", "disabled"]
+        },
+        {
+          "capabilityRef": "input.choice",
+          "resolutionKind": "composition",
+          "targetRefs": ["form-field", "select", "validation-message"],
+          "maturity": "provisional",
+          "supportedSemantics": ["programmatic-label", "single-selection", "keyboard-selection"],
+          "supportedStates": ["default", "error", "disabled"]
+        },
+        {
+          "capabilityRef": "collection.editable",
+          "resolutionKind": "composition",
+          "targetRefs": ["form-field", "text-field", "select", "button", "validation-message"],
+          "maturity": "provisional",
+          "supportedSemantics": ["ordered-items", "item-labelling", "add-remove", "item-validation"],
+          "supportedStates": ["default", "error", "disabled"]
+        },
+        {
+          "capabilityRef": "feedback.field-validation",
+          "resolutionKind": "component",
+          "targetRefs": ["validation-message"],
+          "maturity": "provisional",
+          "supportedSemantics": ["error-association", "corrective-guidance"],
+          "supportedStates": ["default", "error"]
+        },
+        {
+          "capabilityRef": "feedback.section-status",
+          "resolutionKind": "composition",
+          "targetRefs": ["alert", "button"],
+          "maturity": "provisional",
+          "supportedSemantics": ["status-boundary", "non-color-cue", "recovery-action"],
+          "supportedStates": ["default", "loading", "error", "success", "pending"]
+        },
+        {
+          "capabilityRef": "disclosure.confirmation",
+          "resolutionKind": "composition",
+          "targetRefs": ["dialog", "description-list", "button"],
+          "maturity": "provisional",
+          "supportedSemantics": ["labelled-boundary", "focus-management", "confirm-cancel", "consequence-summary"],
+          "supportedStates": ["default", "loading", "error"]
+        },
+        {
+          "capabilityRef": "data.status-list",
+          "resolutionKind": "composition",
+          "targetRefs": ["table", "status-indicator", "button"],
+          "maturity": "provisional",
+          "supportedSemantics": ["collection-labelling", "state-text", "row-action-name", "reading-order"],
+          "supportedStates": ["default", "loading", "empty", "error", "permission", "pending"]
+        },
+        {
+          "capabilityRef": "navigation.task-progress",
+          "resolutionKind": "component",
+          "targetRefs": ["workflow-step"],
+          "maturity": "provisional",
+          "supportedSemantics": ["current-step", "ordered-steps", "transition-state"],
+          "supportedStates": ["default", "disabled", "success"]
+        }
+      ]
+    },
+    {
+      "id": "meridian_react_pilot",
+      "kind": "project",
+      "version": "0.1.0",
+      "priority": 20,
+      "availability": "candidate",
+      "approval": {
+        "status": "pending",
+        "decisionRef": null
+      },
+      "sourceRefs": ["packages/react/src"],
+      "runtimePackageRef": "packages/react/package.json",
+      "tokenStrategy": "native",
+      "bindings": []
+    }
+  ]
+}

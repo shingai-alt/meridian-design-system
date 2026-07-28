@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.local/schemas/capability-plan.schema.json",
+  "title": "Meridian Library-independent Capability Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "meta", "source", "direction", "requirements", "coverage", "blockers"],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "meta": { "$ref": "#/$defs/meta" },
+    "source": { "$ref": "#/$defs/source" },
+    "direction": { "$ref": "#/$defs/direction" },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/requirement" }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiredRequirementRefs", "coveredRequirementRefs", "uncoveredRequirementRefs"],
+      "properties": {
+        "requiredRequirementRefs": { "$ref": "#/$defs/idList" },
+        "coveredRequirementRefs": { "$ref": "#/$defs/idList" },
+        "uncoveredRequirementRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/nonEmpty" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]*$" },
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "digest": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+    "idList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "id", "status", "revision", "createdAt"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0" },
+        "kind": { "const": "capability-plan" },
+        "id": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["draft", "blocked", "ready", "superseded"] },
+        "revision": { "type": "integer", "minimum": 1 },
+        "createdAt": { "$ref": "#/$defs/nonEmpty" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["directionSetRef", "directionSetDigest", "taxonomyRef", "taxonomyDigest"],
+      "properties": {
+        "directionSetRef": { "$ref": "#/$defs/nonEmpty" },
+        "directionSetDigest": { "$ref": "#/$defs/digest" },
+        "taxonomyRef": { "$ref": "#/$defs/nonEmpty" },
+        "taxonomyDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "direction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["directionRef", "selectionBasis", "approvalDigest"],
+      "properties": {
+        "directionRef": { "$ref": "#/$defs/id" },
+        "selectionBasis": { "enum": ["recommendation", "human-approval"] },
+        "approvalDigest": { "type": ["string", "null"], "pattern": "^sha256-[a-f0-9]{64}$" }
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "capabilityRef", "responsibilityRefs", "requirementRefs", "requiredSemantics", "requiredStates", "priority", "rationale"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "capabilityRef": { "$ref": "#/$defs/id" },
+        "responsibilityRefs": { "$ref": "#/$defs/idList" },
+        "requirementRefs": { "$ref": "#/$defs/idList" },
+        "requiredSemantics": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmpty" }
+        },
+        "requiredStates": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["default", "loading", "empty", "error", "permission", "disabled", "success", "pending"] }
+        },
+        "priority": { "enum": ["required", "optional"] },
+        "rationale": { "$ref": "#/$defs/nonEmpty" }
+      }
+    }
+  }
+}

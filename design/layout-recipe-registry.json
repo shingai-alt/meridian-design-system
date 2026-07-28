@@ -1,0 +1,82 @@
+{
+  "$schema": "../schemas/layout-recipe-registry.schema.json",
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "layout-recipe-registry",
+    "id": "meridian-layout-recipes",
+    "version": "0.1.0",
+    "status": "draft"
+  },
+  "presets": [
+    { "id": "gap-compact", "category": "gap", "valueRef": "--sp-2" },
+    { "id": "gap-default", "category": "gap", "valueRef": "--sp-4" },
+    { "id": "gap-relaxed", "category": "gap", "valueRef": "--sp-6" },
+    { "id": "width-narrow", "category": "max-width", "valueRef": "--reading-max" },
+    { "id": "width-content", "category": "max-width", "valueRef": "--content-max" },
+    { "id": "width-wide", "category": "max-width", "valueRef": "--content-wide" },
+    { "id": "columns-two", "category": "columns", "valueRef": "layout-policy.columns.two" },
+    { "id": "columns-three", "category": "columns", "valueRef": "layout-policy.columns.three" },
+    { "id": "breakpoint-mobile", "category": "breakpoint", "valueRef": "layout-policy.breakpoint.mobile" },
+    { "id": "breakpoint-tablet", "category": "breakpoint", "valueRef": "layout-policy.breakpoint.tablet" }
+  ],
+  "recipes": [
+    {
+      "id": "stack",
+      "kind": "stack",
+      "className": "mrd-layout-stack",
+      "purpose": "意味上のreading orderを保ったまま要素を縦方向へ積む。",
+      "options": [
+        { "name": "gap", "allowedValues": ["compact", "default", "relaxed"], "defaultValue": "default" },
+        { "name": "width", "allowedValues": ["narrow", "content", "wide", "full"], "defaultValue": "content" }
+      ],
+      "preservesDomOrder": true
+    },
+    {
+      "id": "cluster",
+      "kind": "cluster",
+      "className": "mrd-layout-cluster",
+      "purpose": "関連する短いcontrolまたはmetadataを折り返し可能な一群として配置する。",
+      "options": [
+        { "name": "gap", "allowedValues": ["compact", "default", "relaxed"], "defaultValue": "default" },
+        { "name": "justify", "allowedValues": ["start", "between", "end"], "defaultValue": "start" },
+        { "name": "align", "allowedValues": ["start", "center", "end"], "defaultValue": "center" }
+      ],
+      "preservesDomOrder": true
+    },
+    {
+      "id": "grid",
+      "kind": "grid",
+      "className": "mrd-layout-grid",
+      "purpose": "同格の比較対象を名前付き列presetで配置し、狭い幅ではDOM順を保ってstackする。",
+      "options": [
+        { "name": "gap", "allowedValues": ["compact", "default", "relaxed"], "defaultValue": "default" },
+        { "name": "columns", "allowedValues": ["two", "three", "auto-fit"], "defaultValue": "two" },
+        { "name": "collapse-at", "allowedValues": ["mobile", "tablet", "never"], "defaultValue": "tablet" }
+      ],
+      "preservesDomOrder": true
+    },
+    {
+      "id": "section",
+      "kind": "section",
+      "className": "mrd-layout-section",
+      "purpose": "一つの責務内にあるheadingとcontentをsemantic sectionとして束ねる。",
+      "options": [
+        { "name": "gap", "allowedValues": ["compact", "default", "relaxed"], "defaultValue": "default" },
+        { "name": "emphasis", "allowedValues": ["plain", "subtle", "bordered"], "defaultValue": "plain" }
+      ],
+      "preservesDomOrder": true
+    },
+    {
+      "id": "responsive-switch",
+      "kind": "responsive-switch",
+      "className": "mrd-layout-responsive-switch",
+      "purpose": "同じ情報モデルをviewportに適したpresentationへ切り替え、内容とreading orderを維持する。",
+      "options": [
+        { "name": "breakpoint", "allowedValues": ["mobile", "tablet"], "defaultValue": "tablet" },
+        { "name": "wide-layout", "allowedValues": ["grid", "split"], "defaultValue": "grid" },
+        { "name": "narrow-layout", "allowedValues": ["stack"], "defaultValue": "stack" }
+      ],
+      "preservesDomOrder": true
+    }
+  ]
+}

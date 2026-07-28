@@ -1,0 +1,128 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "ui-generation-migration-map",
+    "id": "migration_team_invitation",
+    "title": "Team Invitation legacy Phase 1 and Phase 2 migration",
+    "status": "validated",
+    "createdAt": "2026-07-27"
+  },
+  "sourceArtifacts": [
+    { "id": "legacy_phase1_team_invitation", "legacyKind": "phase-1-package", "path": "examples/phase-1/team-invitation.phase1.json", "schemaVersion": "0.1.0", "digest": "sha256-ad454fcfaad6c4ac5281c803af8231baffa2710461209a6ebf723ba4b19d78dd" },
+    { "id": "legacy_screen_team_members", "legacyKind": "screen-spec", "path": "examples/specs/team-members.screen.json", "schemaVersion": "0.1.0", "digest": "sha256-58f1533713b48b60ea6651a00835e0b1a18404884407fe97d61be2e30f80c143" },
+    { "id": "legacy_screen_invite_member", "legacyKind": "screen-spec", "path": "examples/specs/invite-member-dialog.screen.json", "schemaVersion": "0.1.0", "digest": "sha256-10ab26984653e6f9775361c74feee06ee204335590b1c3b17a70d8446bad7629" },
+    { "id": "legacy_screen_invite_review", "legacyKind": "screen-spec", "path": "examples/specs/invite-review.screen.json", "schemaVersion": "0.1.0", "digest": "sha256-e0b5d3b29275b4911d3ec3576281462ec006b8f278d2814c41e83ece61c52df9" },
+    { "id": "legacy_screen_invite_success", "legacyKind": "screen-spec", "path": "examples/specs/invite-success.screen.json", "schemaVersion": "0.1.0", "digest": "sha256-f6e5a60aa04bec7365cfcef4479abd40c4c6fc2fb32c8d88ec203de66d549c9d" },
+    { "id": "legacy_flow_team_invite", "legacyKind": "flow-spec", "path": "examples/specs/team-invite.flow.json", "schemaVersion": "0.1.0", "digest": "sha256-f4447d542ebf96f693099ed82c5aa51841a30cb2f3d41aa542d39f222637caae" },
+    { "id": "legacy_phase2_team_invitation", "legacyKind": "phase-2-concept", "path": "examples/phase-2/team-invitation.phase2.json", "schemaVersion": "0.1.0", "digest": "sha256-2c84b04c74ea1dd4b6a0f05a24af555de27494ba6eef05f9013738b0d186da61" },
+    { "id": "legacy_team_invitation_composition", "legacyKind": "component-composition", "path": "examples/phase-2/team-invitation.composition.json", "schemaVersion": "0.1.0", "digest": "sha256-9482d6742d34526a73d0a567a514e36577b8fefb7c738e5bf219e5ca9ba7c5f3" },
+    { "id": "legacy_team_invitation_usage", "legacyKind": "component-usage", "path": "examples/generated/team-invitation.phase2.usage.json", "schemaVersion": "0.1.0", "digest": "sha256-a36e7b81a9dde67d6575499903a44388424ead5521f9dcc15675c1c0a16ca7b5" },
+    { "id": "legacy_team_invitation_review_ui", "legacyKind": "review-ui", "path": "examples/generated/team-invitation.phase2.html", "schemaVersion": "0.2.0", "digest": "sha256-b909888aba1269a5cf351b7b46cc33b1cdfab81adbeac4b590fe1e9928654c20" },
+    { "id": "legacy_team_invitation_visual_review", "legacyKind": "visual-review", "path": "examples/generated/team-invitation.visual-review.json", "schemaVersion": "0.1.0", "digest": "sha256-e79144359d064f27a34fce7a8b4f7c822005b9e41febbbdf7900025e1c9b2f37" }
+  ],
+  "mappings": [
+    {
+      "id": "map_phase1_product_decisions",
+      "sourceArtifactRefs": ["legacy_phase1_team_invitation"],
+      "targetArtifactTypes": ["user_request", "design_brief", "pattern_selection", "direction_set"],
+      "strategy": "extract",
+      "status": "requires-transformation",
+      "preservedContent": ["Original request and constraints", "Design Brief", "Research evidence and limitations", "Three directions and recommendation", "Pattern contract", "Human Phase 1 review"],
+      "notes": "Content is sufficient, but standalone target artifacts and digest-bound Session approval records must be emitted."
+    },
+    {
+      "id": "map_legacy_project_evidence",
+      "sourceArtifactRefs": ["legacy_phase1_team_invitation", "legacy_flow_team_invite"],
+      "targetArtifactTypes": ["project_context"],
+      "strategy": "evidence-only",
+      "status": "blocked",
+      "preservedContent": ["Known internal evidence", "Existing FlowSpec reference", "Existing component contract reference"],
+      "notes": "Legacy research is preserved but is not a current evidence-backed project inspection."
+    },
+    {
+      "id": "map_requirements_and_responsibilities",
+      "sourceArtifactRefs": ["legacy_phase1_team_invitation", "legacy_screen_team_members", "legacy_screen_invite_member", "legacy_screen_invite_review", "legacy_screen_invite_success", "legacy_flow_team_invite"],
+      "targetArtifactTypes": ["requirement_allocation", "screen_responsibilities"],
+      "strategy": "combine",
+      "status": "requires-transformation",
+      "preservedContent": ["Flow goal and actors", "Four screen purposes", "Screen primary and secondary tasks", "Transitions, states, constraints, and risks"],
+      "notes": "Requirements can be traced, but explicit allocation IDs and notResponsibleFor declarations do not yet exist."
+    },
+    {
+      "id": "map_component_intent",
+      "sourceArtifactRefs": ["legacy_phase1_team_invitation", "legacy_team_invitation_composition"],
+      "targetArtifactTypes": ["capability_plan"],
+      "strategy": "derive",
+      "status": "requires-transformation",
+      "preservedContent": ["Component purposes", "Allowed variants and states", "Decision reasons", "Pattern usage"],
+      "notes": "The legacy composition names Meridian components directly and must be translated into library-independent capabilities."
+    },
+    {
+      "id": "map_component_resolution",
+      "sourceArtifactRefs": ["legacy_team_invitation_composition", "legacy_team_invitation_usage"],
+      "targetArtifactTypes": ["adapter_resolution"],
+      "strategy": "combine",
+      "status": "requires-transformation",
+      "preservedContent": ["Resolved component IDs", "Contract versions", "Runtime version", "Translation Pack digest", "Usage instances"],
+      "notes": "Resolution evidence is preserved, but it predates the exchangeable Adapter contract and lacks adapter identity."
+    },
+    {
+      "id": "map_generation_inputs",
+      "sourceArtifactRefs": ["legacy_phase2_team_invitation", "legacy_team_invitation_composition", "legacy_team_invitation_usage"],
+      "targetArtifactTypes": ["generation_manifest"],
+      "strategy": "combine",
+      "status": "requires-transformation",
+      "preservedContent": ["Source package", "Renderer and output paths", "Review scenarios", "Composition and usage provenance", "Acceptance checks"],
+      "notes": "The Phase 2 concept is the predecessor of Generation Manifest but does not bind every new Session artifact digest."
+    },
+    {
+      "id": "map_review_ui",
+      "sourceArtifactRefs": ["legacy_team_invitation_review_ui"],
+      "targetArtifactTypes": ["review_ui"],
+      "strategy": "direct",
+      "status": "ready",
+      "preservedContent": ["Standalone interactive review HTML"],
+      "notes": "The artifact can be retained unchanged as historical review output."
+    },
+    {
+      "id": "map_visual_review",
+      "sourceArtifactRefs": ["legacy_team_invitation_visual_review"],
+      "targetArtifactTypes": ["browser_quality_report"],
+      "strategy": "extract",
+      "status": "requires-transformation",
+      "preservedContent": ["Candidate scores", "Major findings after repair", "Desktop and Mobile screenshot references", "Pending human comparisons"],
+      "notes": "Existing evidence omits Tablet coverage and is not a browser task/state quality report."
+    }
+  ],
+  "targetCoverage": [
+    { "targetArtifactType": "user_request", "status": "ready", "mappingRefs": ["map_phase1_product_decisions"], "gap": null },
+    { "targetArtifactType": "project_context", "status": "partial", "mappingRefs": ["map_legacy_project_evidence"], "gap": "Current project inspection, confidence, and unresolved evidence are missing." },
+    { "targetArtifactType": "design_brief", "status": "ready", "mappingRefs": ["map_phase1_product_decisions"], "gap": null },
+    { "targetArtifactType": "requirement_allocation", "status": "partial", "mappingRefs": ["map_requirements_and_responsibilities"], "gap": "Requirements are embedded but do not have stable IDs and explicit surface allocation." },
+    { "targetArtifactType": "screen_responsibilities", "status": "partial", "mappingRefs": ["map_requirements_and_responsibilities"], "gap": "Screen purposes exist but notResponsibleFor boundaries are absent." },
+    { "targetArtifactType": "pattern_selection", "status": "ready", "mappingRefs": ["map_phase1_product_decisions"], "gap": null },
+    { "targetArtifactType": "direction_set", "status": "ready", "mappingRefs": ["map_phase1_product_decisions"], "gap": null },
+    { "targetArtifactType": "capability_plan", "status": "partial", "mappingRefs": ["map_component_intent"], "gap": "The current representation uses Meridian component IDs instead of library-independent capabilities." },
+    { "targetArtifactType": "adapter_resolution", "status": "partial", "mappingRefs": ["map_component_resolution"], "gap": "Adapter identity, adapter version, and project-first resolution provenance are missing." },
+    { "targetArtifactType": "generation_manifest", "status": "partial", "mappingRefs": ["map_generation_inputs"], "gap": "The legacy manifest does not bind all new source artifact digests and versions." },
+    { "targetArtifactType": "review_ui", "status": "ready", "mappingRefs": ["map_review_ui"], "gap": null },
+    { "targetArtifactType": "browser_quality_report", "status": "partial", "mappingRefs": ["map_visual_review"], "gap": "Tablet, task completion, required state coverage, and browser accessibility results are missing." },
+    { "targetArtifactType": "structured_feedback", "status": "missing", "mappingRefs": [], "gap": "No approved structured feedback import exists." },
+    { "targetArtifactType": "repair_plan", "status": "missing", "mappingRefs": [], "gap": "Legacy repair rounds do not identify the responsible source artifact layer." },
+    { "targetArtifactType": "generation_report", "status": "missing", "mappingRefs": [], "gap": "No final cross-artifact provenance and coverage report exists." }
+  ],
+  "placement": {
+    "recommendedState": "created",
+    "canEnter": true,
+    "nextState": "project_inspected",
+    "blockingTargetTypes": ["project_context"],
+    "reason": "The original request can be preserved losslessly, but the new workflow must inspect the current project before it may reuse later legacy decisions."
+  },
+  "blockers": [
+    { "id": "block_current_project_inspection", "targetArtifactTypes": ["project_context"], "message": "Legacy internal evidence is not a current project inspection.", "resolution": "Run M1 Project Inspector and record explicit versus inferred findings." },
+    { "id": "block_structural_boundaries", "targetArtifactTypes": ["requirement_allocation", "screen_responsibilities"], "message": "Legacy requirements and screen purposes lack stable allocation and exclusion boundaries.", "resolution": "Extract requirements, assign stable IDs, and add responsibility plus notResponsibleFor per screen." },
+    { "id": "block_adapter_abstraction", "targetArtifactTypes": ["capability_plan", "adapter_resolution"], "message": "Legacy composition resolves directly to Meridian component IDs.", "resolution": "Translate intent to capability requirements, then rerun through the selected project-first Adapter." },
+    { "id": "block_quality_coverage", "targetArtifactTypes": ["browser_quality_report"], "message": "Existing visual evidence covers Desktop and Mobile screenshots but not the full browser quality contract.", "resolution": "Add Tablet, task, required-state, keyboard, accessibility, and browser findings." },
+    { "id": "block_repair_and_report", "targetArtifactTypes": ["structured_feedback", "repair_plan", "generation_report"], "message": "Legacy outputs do not close the governed repair and reporting loop.", "resolution": "Import feedback with source-layer ownership, perform a governed repair cycle, and emit Generation Report." }
+  ]
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
@@ -20,7 +20,10 @@ const digestFile = (path) => `sha256-${createHash('sha256').update(readFileSync(
 const outputDirectory = join(root, 'examples/generated/visual-review');
 mkdirSync(outputDirectory, { recursive: true });
 
-const browser = await chromium.launch({ headless: true });
+const systemChrome = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const executablePath = process.env.PLAYWRIGHT_CHROME_EXECUTABLE
+  || (existsSync(systemChrome) ? systemChrome : undefined);
+const browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
 const page = await browser.newPage({ viewport: { width: 1600, height: 1200 }, deviceScaleFactor: 1 });
 const pageErrors = [];
 const captures = [];

@@ -1,0 +1,861 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "generic-review-model",
+    "id": "fixture_generation_issue_triage.review-model",
+    "locale": "ja-JP"
+  },
+  "source": {
+    "generationManifestId": "fixture_generation_issue_triage",
+    "generationManifestDigest": "sha256-6bfbc51f462f69a5755e785120a52583b3fb4c94d0dc7da5fea1ce854ba91e43",
+    "directionRef": "fixture_direction_queue_first",
+    "visualProfileRef": "dense-operations",
+    "visualProfileRegistryId": "meridian_ui_generation_visual_profiles",
+    "visualProfileRegistryVersion": 1,
+    "adapterResolutionId": "fixture_resolution_issue_triage",
+    "adapterRefs": [
+      "meridian_html_runtime"
+    ],
+    "layoutRecipeRegistryId": "meridian-layout-recipes",
+    "layoutRecipeRegistryVersion": "0.1.0",
+    "componentRegistryDigest": "sha256-c1a2391c5daceea35375ef3e98425d061c71c9de4948b61831d88553f546a79b",
+    "runtimeVersion": "0.2.0"
+  },
+  "review": {
+    "lenses": [
+      "product",
+      "design",
+      "engineering",
+      "accessibility",
+      "content"
+    ],
+    "viewports": [
+      "desktop",
+      "tablet",
+      "mobile"
+    ]
+  },
+  "screens": [
+    {
+      "id": "issue-triage",
+      "title": "Issue Triage",
+      "responsibilityRef": "responsibility_triage_queue",
+      "patternRef": "filterable-status-list",
+      "root": {
+        "id": "triage-root",
+        "kind": "layout",
+        "decisionRef": "decision-triage-structure",
+        "recipeRef": "stack",
+        "options": [
+          {
+            "name": "gap",
+            "value": "default"
+          },
+          {
+            "name": "width",
+            "value": "wide"
+          }
+        ],
+        "children": [
+          {
+            "id": "triage-heading",
+            "kind": "heading",
+            "decisionRef": "decision-triage-structure",
+            "level": 1,
+            "text": "Issue Triage"
+          },
+          {
+            "id": "triage-intro",
+            "kind": "text",
+            "decisionRef": "decision-triage-structure",
+            "text": "優先度、状態、影響範囲、再現性、担当候補を一つずつ確認し、利用者への影響が大きく回復手段の少ないIssueから次に対応する対象を決めます。判断根拠を一覧内で比較し、分類だけで終わらず次の担当と行動へ確実につなげます。",
+            "tone": "muted"
+          },
+          {
+            "id": "triage-filter",
+            "kind": "capability",
+            "decisionRef": "decision-filter-before-list",
+            "capabilityRequirementRef": "capability_issue_filter",
+            "presentation": "text-input",
+            "content": {
+              "fields": [
+                {
+                  "id": "query",
+                  "label": "Issueを絞り込む",
+                  "value": "authentication",
+                  "state": "default",
+                  "message": "検索条件を確認してください。"
+                }
+              ]
+            },
+            "usages": {
+              "fields": [
+                {
+                  "field": "triage-filter-field-query",
+                  "control": "triage-filter-control-query",
+                  "message": "triage-filter-message-query"
+                }
+              ]
+            }
+          },
+          {
+            "id": "triage-list",
+            "kind": "capability",
+            "decisionRef": "decision-status-evidence",
+            "capabilityRequirementRef": "capability_issue_list",
+            "presentation": "status-list",
+            "content": {
+              "columns": [
+                {
+                  "id": "issue",
+                  "label": "Issue"
+                },
+                {
+                  "id": "priority",
+                  "label": "優先度"
+                },
+                {
+                  "id": "status",
+                  "label": "状態"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "issue-1042",
+                  "status": "pending",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    {
+                      "columnRef": "issue",
+                      "value": "ISSUE-1042 Session expires early"
+                    },
+                    {
+                      "columnRef": "priority",
+                      "value": "High"
+                    },
+                    {
+                      "columnRef": "status",
+                      "value": "未対応"
+                    }
+                  ]
+                },
+                {
+                  "id": "issue-1038",
+                  "status": "success",
+                  "actionLabel": "詳細を見る",
+                  "cells": [
+                    {
+                      "columnRef": "issue",
+                      "value": "ISSUE-1038 Audit log delay"
+                    },
+                    {
+                      "columnRef": "priority",
+                      "value": "Medium"
+                    },
+                    {
+                      "columnRef": "status",
+                      "value": "分類済み"
+                    }
+                  ]
+                },
+                {
+                  "id": "issue-1031",
+                  "status": "warning",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    {
+                      "columnRef": "issue",
+                      "value": "ISSUE-1031 Role update conflict"
+                    },
+                    {
+                      "columnRef": "priority",
+                      "value": "High"
+                    },
+                    {
+                      "columnRef": "status",
+                      "value": "要確認"
+                    }
+                  ]
+                },
+                {
+                  "id": "issue-1027",
+                  "status": "pending",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    {
+                      "columnRef": "issue",
+                      "value": "ISSUE-1027 Export remains queued"
+                    },
+                    {
+                      "columnRef": "priority",
+                      "value": "Medium"
+                    },
+                    {
+                      "columnRef": "status",
+                      "value": "未対応"
+                    }
+                  ]
+                },
+                {
+                  "id": "issue-1024",
+                  "status": "success",
+                  "actionLabel": "詳細を見る",
+                  "cells": [
+                    {
+                      "columnRef": "issue",
+                      "value": "ISSUE-1024 Duplicate notification"
+                    },
+                    {
+                      "columnRef": "priority",
+                      "value": "Low"
+                    },
+                    {
+                      "columnRef": "status",
+                      "value": "分類済み"
+                    }
+                  ]
+                },
+                {
+                  "id": "issue-1019",
+                  "status": "pending",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    {
+                      "columnRef": "issue",
+                      "value": "ISSUE-1019 Search misses aliases"
+                    },
+                    {
+                      "columnRef": "priority",
+                      "value": "Medium"
+                    },
+                    {
+                      "columnRef": "status",
+                      "value": "未対応"
+                    }
+                  ]
+                },
+                {
+                  "id": "issue-1015",
+                  "status": "warning",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    {
+                      "columnRef": "issue",
+                      "value": "ISSUE-1015 Billing retry ambiguity"
+                    },
+                    {
+                      "columnRef": "priority",
+                      "value": "High"
+                    },
+                    {
+                      "columnRef": "status",
+                      "value": "要確認"
+                    }
+                  ]
+                },
+                {
+                  "id": "issue-1012",
+                  "status": "success",
+                  "actionLabel": "詳細を見る",
+                  "cells": [
+                    {
+                      "columnRef": "issue",
+                      "value": "ISSUE-1012 Mobile filter reset"
+                    },
+                    {
+                      "columnRef": "priority",
+                      "value": "Low"
+                    },
+                    {
+                      "columnRef": "status",
+                      "value": "分類済み"
+                    }
+                  ]
+                },
+                {
+                  "id": "issue-1008",
+                  "status": "pending",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    {
+                      "columnRef": "issue",
+                      "value": "ISSUE-1008 Webhook delivery lag"
+                    },
+                    {
+                      "columnRef": "priority",
+                      "value": "Medium"
+                    },
+                    {
+                      "columnRef": "status",
+                      "value": "未対応"
+                    }
+                  ]
+                },
+                {
+                  "id": "issue-1003",
+                  "status": "warning",
+                  "actionLabel": "Triageする",
+                  "cells": [
+                    {
+                      "columnRef": "issue",
+                      "value": "ISSUE-1003 Owner transfer race"
+                    },
+                    {
+                      "columnRef": "priority",
+                      "value": "High"
+                    },
+                    {
+                      "columnRef": "status",
+                      "value": "要確認"
+                    }
+                  ]
+                }
+              ]
+            },
+            "usages": {
+              "table": "triage-list-table",
+              "rows": [
+                {
+                  "status": "triage-list-status-issue-1042",
+                  "action": "triage-list-action-issue-1042"
+                },
+                {
+                  "status": "triage-list-status-issue-1038",
+                  "action": "triage-list-action-issue-1038"
+                },
+                {
+                  "status": "triage-list-status-issue-1031",
+                  "action": "triage-list-action-issue-1031"
+                },
+                {
+                  "status": "triage-list-status-issue-1027",
+                  "action": "triage-list-action-issue-1027"
+                },
+                {
+                  "status": "triage-list-status-issue-1024",
+                  "action": "triage-list-action-issue-1024"
+                },
+                {
+                  "status": "triage-list-status-issue-1019",
+                  "action": "triage-list-action-issue-1019"
+                },
+                {
+                  "status": "triage-list-status-issue-1015",
+                  "action": "triage-list-action-issue-1015"
+                },
+                {
+                  "status": "triage-list-status-issue-1012",
+                  "action": "triage-list-action-issue-1012"
+                },
+                {
+                  "status": "triage-list-status-issue-1008",
+                  "action": "triage-list-action-issue-1008"
+                },
+                {
+                  "status": "triage-list-status-issue-1003",
+                  "action": "triage-list-action-issue-1003"
+                }
+              ]
+            }
+          },
+          {
+            "id": "triage-primary-action",
+            "kind": "capability",
+            "decisionRef": "decision-primary-triage-action",
+            "capabilityRequirementRef": "capability_triage_action",
+            "presentation": "action",
+            "content": {
+              "label": "選択したIssueをTriage"
+            },
+            "usages": {
+              "action": "triage-primary-action-action"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "stateFixtures": [
+    {
+      "id": "fixture-default",
+      "label": "Default",
+      "state": "default",
+      "screenRefs": [
+        "issue-triage"
+      ],
+      "overrides": []
+    },
+    {
+      "id": "fixture-loading",
+      "label": "Loading",
+      "state": "loading",
+      "screenRefs": [
+        "issue-triage"
+      ],
+      "overrides": []
+    },
+    {
+      "id": "fixture-empty",
+      "label": "Empty",
+      "state": "empty",
+      "screenRefs": [
+        "issue-triage"
+      ],
+      "overrides": []
+    },
+    {
+      "id": "fixture-error",
+      "label": "Error",
+      "state": "error",
+      "screenRefs": [
+        "issue-triage"
+      ],
+      "overrides": []
+    },
+    {
+      "id": "fixture-permission",
+      "label": "Permission",
+      "state": "permission",
+      "screenRefs": [
+        "issue-triage"
+      ],
+      "overrides": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-triage-structure",
+      "reason": "Keep the queue heading, filtering, evidence, and action in DOM task order.",
+      "sourceRefs": [
+        "responsibility_triage_queue",
+        "fixture_direction_queue_first"
+      ]
+    },
+    {
+      "id": "decision-filter-before-list",
+      "reason": "Place the filter before the results it changes.",
+      "sourceRefs": [
+        "filterable-status-list",
+        "fixture_req_filter"
+      ]
+    },
+    {
+      "id": "decision-status-evidence",
+      "reason": "Expose priority and workflow status before actions.",
+      "sourceRefs": [
+        "filterable-status-list",
+        "fixture_req_prioritize"
+      ]
+    },
+    {
+      "id": "decision-primary-triage-action",
+      "reason": "Keep one explicit primary action after the evidence list.",
+      "sourceRefs": [
+        "responsibility_triage_queue",
+        "fixture_req_prioritize"
+      ]
+    }
+  ],
+  "usageIndex": {
+    "triage-filter-field-query": {
+      "component": "form-field",
+      "decisionRef": "decision-filter-before-list",
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "error"
+      ]
+    },
+    "triage-filter-control-query": {
+      "component": "text-field",
+      "decisionRef": "decision-filter-before-list",
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "error",
+        "disabled",
+        "readonly"
+      ]
+    },
+    "triage-filter-message-query": {
+      "component": "validation-message",
+      "decisionRef": "decision-filter-before-list",
+      "allowedVariants": [
+        "error",
+        "success",
+        "warning"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "triage-list-table": {
+      "component": "table",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "default"
+      ],
+      "allowedStates": [
+        "default",
+        "selected",
+        "loading",
+        "empty"
+      ]
+    },
+    "triage-list-status-issue-1042": {
+      "component": "status-indicator",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "triage-list-action-issue-1042": {
+      "component": "button",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "triage-list-status-issue-1038": {
+      "component": "status-indicator",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "triage-list-action-issue-1038": {
+      "component": "button",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "triage-list-status-issue-1031": {
+      "component": "status-indicator",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "triage-list-action-issue-1031": {
+      "component": "button",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "triage-list-status-issue-1027": {
+      "component": "status-indicator",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "triage-list-action-issue-1027": {
+      "component": "button",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "triage-list-status-issue-1024": {
+      "component": "status-indicator",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "triage-list-action-issue-1024": {
+      "component": "button",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "triage-list-status-issue-1019": {
+      "component": "status-indicator",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "triage-list-action-issue-1019": {
+      "component": "button",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "triage-list-status-issue-1015": {
+      "component": "status-indicator",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "triage-list-action-issue-1015": {
+      "component": "button",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "triage-list-status-issue-1012": {
+      "component": "status-indicator",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "triage-list-action-issue-1012": {
+      "component": "button",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "triage-list-status-issue-1008": {
+      "component": "status-indicator",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "triage-list-action-issue-1008": {
+      "component": "button",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "triage-list-status-issue-1003": {
+      "component": "status-indicator",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "success",
+        "running",
+        "warning",
+        "error",
+        "idle"
+      ],
+      "allowedStates": [
+        "default"
+      ]
+    },
+    "triage-list-action-issue-1003": {
+      "component": "button",
+      "decisionRef": "decision-status-evidence",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    },
+    "triage-primary-action-action": {
+      "component": "button",
+      "decisionRef": "decision-primary-triage-action",
+      "allowedVariants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "ghost",
+        "danger"
+      ],
+      "allowedStates": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ]
+    }
+  }
+}

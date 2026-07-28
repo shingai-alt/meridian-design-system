@@ -1,0 +1,310 @@
+{
+  "schemaVersion": "0.1.0",
+  "kind": "adapter-benchmark",
+  "status": "contract-complete",
+  "generatedAt": "2026-07-27T07:00:00Z",
+  "method": {
+    "coverageStatuses": ["native", "composition", "extension", "commercial", "unresolved", "generator-owned"],
+    "rules": [
+      "全Candidateを同一Pilot・同一Capability集合で評価する。",
+      "nativeはCandidateの公式packageが直接提供する安定API、compositionは同Candidateの公開APIだけを組み合わせる解決とする。",
+      "extensionは追加のMeridian codeまたは別dependencyを必要とし、commercialは有料license境界、unresolvedは安全な解決を確認できない状態とする。",
+      "responsive layoutはComponent libraryへ偽装せず、Meridian generator-owned capabilityとして分離する。",
+      "公式documentationによるcontract coverageと実Browser evidenceを分離し、Browser Matrix完了前にReference Adapterを推薦しない。"
+    ]
+  },
+  "pilots": [
+    {
+      "id": "team_invitation",
+      "name": "Team Invitation",
+      "structuralProfile": "複数Entity作成、対象別属性、Review before commit、非同期Partial result。",
+      "requirementRefs": ["req_compose", "req_send", "req_owner_only", "req_recipient_role", "req_async", "req_responsive", "req_excess_privilege", "req_duplicate_send"],
+      "capabilities": [
+        { "id": "field-input", "description": "Label、description、errorへ関連付いたtext input。", "required": true },
+        { "id": "option-selection", "description": "Keyboard操作可能な単一option selection。", "required": true },
+        { "id": "boolean-confirmation", "description": "高影響事項を明示確認するnamed boolean control。", "required": true },
+        { "id": "modal-focus", "description": "必要時にfocus lifecycleを所有するmodal boundary。", "required": true },
+        { "id": "repeatable-editor", "description": "対象別field groupを追加、削除、検証する反復editor。", "required": true },
+        { "id": "async-status", "description": "非同期処理と対象別結果を非色依存で通知する。", "required": true },
+        { "id": "token-theme", "description": "Project semantic tokenとLight、Dark、High Contrastを対応付ける。", "required": true },
+        { "id": "responsive-reflow", "description": "同じfield relationをDesktop、Tablet、Mobileへ適応する。", "required": true },
+        { "id": "rtl-locale", "description": "長い翻訳、locale data、RTL方向へ対応する。", "required": true }
+      ]
+    },
+    {
+      "id": "issue_triage",
+      "name": "Issue Triage",
+      "structuralProfile": "高密度Collection比較、sorting、selection、row action、detail disclosure、継続処理。",
+      "requirementRefs": ["sort-issues", "select-issues", "filter-issues", "inspect-details", "perform-row-action", "process-large-collection", "keyboard-complete", "responsive-complete"],
+      "capabilities": [
+        { "id": "sortable-collection", "description": "列または属性で並び替え可能な比較Collection。", "required": true },
+        { "id": "multi-selection", "description": "対象を複数選択し選択状態を支援技術へ伝える。", "required": true },
+        { "id": "collection-filtering", "description": "条件を追加・解除し結果件数を更新する。", "required": true },
+        { "id": "collection-pagination", "description": "大量Collectionを位置情報付きで分割移動する。", "required": true },
+        { "id": "row-actions", "description": "対象を明示した行単位ActionをKeyboardで実行する。", "required": true },
+        { "id": "detail-disclosure", "description": "選択対象の詳細を文脈とfocusを保って開閉する。", "required": true },
+        { "id": "density-control", "description": "意味と操作性を維持して作業密度を切り替える。", "required": true },
+        { "id": "collection-virtualization", "description": "大量データでも意味、focus、selectionを維持して描画量を制御する。", "required": true },
+        { "id": "keyboard-collection", "description": "Collection内navigation、sorting、selection、ActionをKeyboardで完了する。", "required": true },
+        { "id": "responsive-master-detail", "description": "Desktop比較とMobile一件処理を同じ責務・data modelで提供する。", "required": true },
+        { "id": "token-theme", "description": "Project semantic tokenとLight、Dark、High Contrastを対応付ける。", "required": true },
+        { "id": "rtl-locale", "description": "長い翻訳、locale data、RTL方向へ対応する。", "required": true }
+      ]
+    }
+  ],
+  "candidates": [
+    {
+      "id": "shadcn-ui",
+      "name": "shadcn/ui",
+      "package": "shadcn CLI and source registry",
+      "version": "CLI 4.8.3; registry snapshot 2026-07-27",
+      "versionEvidence": "https://ui.shadcn.com/docs/changelog/2026-05-shadcn-eject",
+      "license": "MIT for official source",
+      "licenseBoundary": "Copied registry items become project-owned source; every transitive base, icon, table, date, and registry dependency still requires item-level license and version provenance.",
+      "foundationType": "open-code-distribution",
+      "runtimeDependencies": ["Selected base: React Aria, Radix, or Base UI", "Tailwind CSS", "Item-specific dependencies"],
+      "evidenceRefs": ["shadcn-introduction", "shadcn-registry", "shadcn-rtl", "shadcn-eject"],
+      "pilotCoverage": [
+        {
+          "pilotRef": "team_invitation",
+          "capabilities": [
+            { "capabilityRef": "field-input", "status": "native", "resolution": "Input and Field source items", "evidenceRefs": ["shadcn-introduction"], "notes": "Generated source remains locally inspectable." },
+            { "capabilityRef": "option-selection", "status": "native", "resolution": "Select source item using the selected base", "evidenceRefs": ["shadcn-introduction"], "notes": "Behavior version follows the chosen base and must be recorded separately." },
+            { "capabilityRef": "boolean-confirmation", "status": "native", "resolution": "Checkbox source item", "evidenceRefs": ["shadcn-introduction"], "notes": "Label and description composition remains application-owned." },
+            { "capabilityRef": "modal-focus", "status": "native", "resolution": "Dialog source item", "evidenceRefs": ["shadcn-introduction"], "notes": "Focus behavior follows the chosen base package." },
+            { "capabilityRef": "repeatable-editor", "status": "composition", "resolution": "Form fields, table or grouped rows, validation, and row actions", "evidenceRefs": ["shadcn-registry"], "notes": "No single canonical batch editor; Meridian owns data and focus coordination." },
+            { "capabilityRef": "async-status", "status": "composition", "resolution": "Button pending state, Alert, and project live region", "evidenceRefs": ["shadcn-registry"], "notes": "Target-by-target partial result is application composition." },
+            { "capabilityRef": "token-theme", "status": "native", "resolution": "Project-owned CSS variables and preset application", "evidenceRefs": ["shadcn-eject"], "notes": "Open-code ownership supports direct DTCG alias output but increases drift responsibility." },
+            { "capabilityRef": "responsive-reflow", "status": "generator-owned", "resolution": "Meridian layout recipe and logical source order", "evidenceRefs": [], "notes": "Responsive responsibility is not delegated to a component registry." },
+            { "capabilityRef": "rtl-locale", "status": "native", "resolution": "CLI RTL transform with logical utilities and RTL examples", "evidenceRefs": ["shadcn-rtl"], "notes": "Locale data and translated strings remain application inputs." }
+          ]
+        },
+        {
+          "pilotRef": "issue_triage",
+          "capabilities": [
+            { "capabilityRef": "sortable-collection", "status": "composition", "resolution": "Data Table composition with a table engine", "evidenceRefs": ["shadcn-registry"], "notes": "Sorting behavior is not owned by the core Table source item." },
+            { "capabilityRef": "multi-selection", "status": "composition", "resolution": "Checkbox and Data Table state composition", "evidenceRefs": ["shadcn-registry"], "notes": "Selection semantics depend on the chosen table engine." },
+            { "capabilityRef": "collection-filtering", "status": "composition", "resolution": "Input, Select, badges, and table state", "evidenceRefs": ["shadcn-registry"], "notes": "Result announcement is application-owned." },
+            { "capabilityRef": "collection-pagination", "status": "composition", "resolution": "Pagination source with table state", "evidenceRefs": ["shadcn-registry"], "notes": "Position and page-size messages require application content." },
+            { "capabilityRef": "row-actions", "status": "composition", "resolution": "Dropdown Menu or visible Buttons per row", "evidenceRefs": ["shadcn-registry"], "notes": "Accessible naming must include the issue target." },
+            { "capabilityRef": "detail-disclosure", "status": "composition", "resolution": "Sheet, Collapsible, or route detail", "evidenceRefs": ["shadcn-registry"], "notes": "Direction Set chooses the boundary before adapter resolution." },
+            { "capabilityRef": "density-control", "status": "extension", "resolution": "Meridian density tokens applied to copied source", "evidenceRefs": ["shadcn-eject"], "notes": "No shared density contract across arbitrary registry items." },
+            { "capabilityRef": "collection-virtualization", "status": "extension", "resolution": "Additional virtualizer integrated with table state", "evidenceRefs": ["shadcn-registry"], "notes": "Requires a separately approved dependency." },
+            { "capabilityRef": "keyboard-collection", "status": "extension", "resolution": "Selected table engine plus explicit keyboard and focus contract", "evidenceRefs": ["shadcn-registry"], "notes": "Core semantic table does not imply grid-style keyboard navigation." },
+            { "capabilityRef": "responsive-master-detail", "status": "generator-owned", "resolution": "Meridian responsive-switch layout recipe", "evidenceRefs": [], "notes": "Preserves one data model across table and process-one presentation." },
+            { "capabilityRef": "token-theme", "status": "native", "resolution": "Project-owned CSS variables", "evidenceRefs": ["shadcn-eject"], "notes": "Direct mapping is possible but update merges remain project-owned." },
+            { "capabilityRef": "rtl-locale", "status": "native", "resolution": "CLI RTL transform and logical utilities", "evidenceRefs": ["shadcn-rtl"], "notes": "Third-party table engines need separate RTL verification." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "radix-primitives",
+      "name": "Radix Primitives",
+      "package": "radix-ui",
+      "version": "1.6.7",
+      "versionEvidence": "https://www.npmjs.com/package/radix-ui",
+      "license": "MIT",
+      "licenseBoundary": "The package license is MIT; data collections, text-field validation, virtualization, styling, and icons require project code or separately licensed dependencies.",
+      "foundationType": "unstyled-primitives",
+      "runtimeDependencies": ["React", "React DOM", "radix-ui"],
+      "evidenceRefs": ["radix-introduction", "radix-accessibility", "radix-releases"],
+      "pilotCoverage": [
+        {
+          "pilotRef": "team_invitation",
+          "capabilities": [
+            { "capabilityRef": "field-input", "status": "extension", "resolution": "Native input with Meridian Field and validation contract", "evidenceRefs": ["radix-introduction"], "notes": "Radix is not a complete form-field system." },
+            { "capabilityRef": "option-selection", "status": "native", "resolution": "Radix Select", "evidenceRefs": ["radix-accessibility"], "notes": "Keyboard and focus behavior are provided by the primitive." },
+            { "capabilityRef": "boolean-confirmation", "status": "native", "resolution": "Radix Checkbox", "evidenceRefs": ["radix-accessibility"], "notes": "Visible impact explanation remains application content." },
+            { "capabilityRef": "modal-focus", "status": "native", "resolution": "Radix Dialog", "evidenceRefs": ["radix-accessibility"], "notes": "Recent releases include ARIA-reference and focus fixes, so exact version is pinned." },
+            { "capabilityRef": "repeatable-editor", "status": "extension", "resolution": "Meridian composition over native fields and Radix controls", "evidenceRefs": ["radix-introduction"], "notes": "No collection or batch-editor primitive." },
+            { "capabilityRef": "async-status", "status": "composition", "resolution": "Radix Toast plus persistent result region", "evidenceRefs": ["radix-releases"], "notes": "Partial result data model remains Meridian-owned." },
+            { "capabilityRef": "token-theme", "status": "extension", "resolution": "Meridian CSS variables style unstyled primitive parts", "evidenceRefs": ["radix-introduction"], "notes": "Strong styling freedom but no finished theme mapping." },
+            { "capabilityRef": "responsive-reflow", "status": "generator-owned", "resolution": "Meridian layout recipe", "evidenceRefs": [], "notes": "Layout stays outside primitive resolution." },
+            { "capabilityRef": "rtl-locale", "status": "composition", "resolution": "Direction provider and logical Meridian CSS", "evidenceRefs": ["radix-introduction"], "notes": "Application owns translated content and formatting." }
+          ]
+        },
+        {
+          "pilotRef": "issue_triage",
+          "capabilities": [
+            { "capabilityRef": "sortable-collection", "status": "unresolved", "resolution": null, "evidenceRefs": ["radix-introduction"], "notes": "No first-party table or collection sorting primitive." },
+            { "capabilityRef": "multi-selection", "status": "extension", "resolution": "Native table or list with Radix Checkbox and Meridian selection state", "evidenceRefs": ["radix-accessibility"], "notes": "Collection semantics and range selection are application-owned." },
+            { "capabilityRef": "collection-filtering", "status": "extension", "resolution": "Native input plus Meridian query state", "evidenceRefs": ["radix-introduction"], "notes": "No first-party data collection filter contract." },
+            { "capabilityRef": "collection-pagination", "status": "unresolved", "resolution": null, "evidenceRefs": ["radix-introduction"], "notes": "No first-party pagination or position contract." },
+            { "capabilityRef": "row-actions", "status": "composition", "resolution": "Dropdown Menu or visible controls", "evidenceRefs": ["radix-accessibility"], "notes": "Target naming remains Meridian-owned." },
+            { "capabilityRef": "detail-disclosure", "status": "native", "resolution": "Collapsible, Dialog, or Popover selected by approved Direction", "evidenceRefs": ["radix-introduction"], "notes": "Primitive supports the boundary; Meridian owns master-detail state." },
+            { "capabilityRef": "density-control", "status": "extension", "resolution": "Meridian density tokens", "evidenceRefs": ["radix-introduction"], "notes": "Primitives are unstyled." },
+            { "capabilityRef": "collection-virtualization", "status": "unresolved", "resolution": null, "evidenceRefs": ["radix-introduction"], "notes": "Requires another collection library." },
+            { "capabilityRef": "keyboard-collection", "status": "unresolved", "resolution": null, "evidenceRefs": ["radix-accessibility"], "notes": "Primitive keyboard behavior does not supply a table or grid navigation model." },
+            { "capabilityRef": "responsive-master-detail", "status": "generator-owned", "resolution": "Meridian responsive-switch layout recipe", "evidenceRefs": [], "notes": "Not a primitive responsibility." },
+            { "capabilityRef": "token-theme", "status": "extension", "resolution": "Meridian CSS variables", "evidenceRefs": ["radix-introduction"], "notes": "No vendor theme lock-in, but Meridian must author all visuals." },
+            { "capabilityRef": "rtl-locale", "status": "composition", "resolution": "Direction provider and logical CSS", "evidenceRefs": ["radix-introduction"], "notes": "Collection extensions need separate RTL verification." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "react-aria",
+      "name": "React Aria Components",
+      "package": "react-aria-components",
+      "version": "1.19.0",
+      "versionEvidence": "https://www.npmjs.com/package/react-aria-components",
+      "license": "Apache-2.0",
+      "licenseBoundary": "Core components are Apache-2.0; Meridian supplies visual styling, DTCG mapping, layout recipes, and any non-core virtualization or pagination extension.",
+      "foundationType": "unstyled-components",
+      "runtimeDependencies": ["React", "React DOM", "react-aria-components"],
+      "evidenceRefs": ["react-aria-getting-started", "react-aria-package", "react-spectrum-repository"],
+      "pilotCoverage": [
+        {
+          "pilotRef": "team_invitation",
+          "capabilities": [
+            { "capabilityRef": "field-input", "status": "native", "resolution": "TextField, Label, Input, Text, FieldError", "evidenceRefs": ["react-aria-getting-started"], "notes": "Field relations and interaction states are first-party." },
+            { "capabilityRef": "option-selection", "status": "native", "resolution": "Select, Button, Popover, ListBox", "evidenceRefs": ["react-aria-getting-started"], "notes": "Composition exposes each semantic part." },
+            { "capabilityRef": "boolean-confirmation", "status": "native", "resolution": "Checkbox", "evidenceRefs": ["react-aria-getting-started"], "notes": "Application supplies visible impact copy." },
+            { "capabilityRef": "modal-focus", "status": "native", "resolution": "Modal, Dialog, DialogTrigger", "evidenceRefs": ["react-aria-getting-started"], "notes": "Behavior is provided without a fixed visual language." },
+            { "capabilityRef": "repeatable-editor", "status": "composition", "resolution": "Field components with application collection state", "evidenceRefs": ["react-aria-getting-started"], "notes": "Meridian owns row identity, add/remove, and partial validation." },
+            { "capabilityRef": "async-status", "status": "composition", "resolution": "Button pending state, Toast, and persistent status region", "evidenceRefs": ["react-spectrum-repository"], "notes": "Target-by-target result model remains application-owned." },
+            { "capabilityRef": "token-theme", "status": "extension", "resolution": "Meridian CSS variables bound through className and data states", "evidenceRefs": ["react-aria-getting-started"], "notes": "Style-free API makes mapping direct but requires a full visual adapter." },
+            { "capabilityRef": "responsive-reflow", "status": "generator-owned", "resolution": "Meridian layout recipe", "evidenceRefs": [], "notes": "DOM order and layout stay under generator control." },
+            { "capabilityRef": "rtl-locale", "status": "native", "resolution": "Built-in internationalization, input modality, and RTL behavior", "evidenceRefs": ["react-aria-package", "react-spectrum-repository"], "notes": "Application still localizes product strings." }
+          ]
+        },
+        {
+          "pilotRef": "issue_triage",
+          "capabilities": [
+            { "capabilityRef": "sortable-collection", "status": "native", "resolution": "Table with sortable Columns and collection state", "evidenceRefs": ["react-aria-package"], "notes": "Browser spike must verify the exact current Table API." },
+            { "capabilityRef": "multi-selection", "status": "native", "resolution": "Table selection model", "evidenceRefs": ["react-aria-package"], "notes": "Supports keyboard and assistive-technology selection semantics." },
+            { "capabilityRef": "collection-filtering", "status": "composition", "resolution": "SearchField, Select, TagGroup, and application query state", "evidenceRefs": ["react-aria-getting-started"], "notes": "Result count announcement remains application-owned." },
+            { "capabilityRef": "collection-pagination", "status": "extension", "resolution": "Meridian pagination composition over Button and collection state", "evidenceRefs": ["react-aria-getting-started"], "notes": "No confirmed first-party Pagination component in the pinned package." },
+            { "capabilityRef": "row-actions", "status": "composition", "resolution": "Table Row with MenuTrigger or visible Button", "evidenceRefs": ["react-aria-package"], "notes": "Target-specific naming is required." },
+            { "capabilityRef": "detail-disclosure", "status": "composition", "resolution": "Table selection with Dialog, Popover, or route detail", "evidenceRefs": ["react-aria-getting-started"], "notes": "Approved Direction chooses the physical boundary." },
+            { "capabilityRef": "density-control", "status": "extension", "resolution": "Meridian density tokens and layout styles", "evidenceRefs": ["react-aria-getting-started"], "notes": "Unstyled foundation does not define visual density." },
+            { "capabilityRef": "collection-virtualization", "status": "extension", "resolution": "Pinned and separately verified virtualizer integration", "evidenceRefs": ["react-spectrum-repository"], "notes": "Virtualization stability must be proven in the browser spike." },
+            { "capabilityRef": "keyboard-collection", "status": "native", "resolution": "Table collection keyboard and focus behavior", "evidenceRefs": ["react-aria-package"], "notes": "A primary selection strength requiring browser confirmation." },
+            { "capabilityRef": "responsive-master-detail", "status": "generator-owned", "resolution": "Meridian responsive-switch layout recipe", "evidenceRefs": [], "notes": "Same data and responsibility feed alternate presentations." },
+            { "capabilityRef": "token-theme", "status": "extension", "resolution": "Meridian CSS variables and state selectors", "evidenceRefs": ["react-aria-getting-started"], "notes": "High Contrast styling remains adapter work." },
+            { "capabilityRef": "rtl-locale", "status": "native", "resolution": "Built-in RTL and internationalized interactions", "evidenceRefs": ["react-aria-package"], "notes": "Long Japanese and RTL need browser fixtures." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "material-ui",
+      "name": "Material UI and MUI X",
+      "package": "@mui/material and @mui/x-data-grid",
+      "version": "@mui/material 9.2.0; @mui/x-data-grid 9.10.1",
+      "versionEvidence": "https://www.npmjs.com/package/@mui/material",
+      "license": "MIT core and Community; commercial Pro and Premium tiers",
+      "licenseBoundary": "Material UI and MUI X Community are MIT. Advanced MUI X Pro/Premium features, including direct enterprise data capabilities, require a paid commercial license and v9 license key.",
+      "foundationType": "visual-design-system",
+      "runtimeDependencies": ["React", "React DOM", "@mui/material", "@emotion/react", "@emotion/styled", "Optional @mui/x-data-grid"],
+      "evidenceRefs": ["mui-overview", "mui-x-licensing", "mui-localization", "mui-pricing-2026"],
+      "pilotCoverage": [
+        {
+          "pilotRef": "team_invitation",
+          "capabilities": [
+            { "capabilityRef": "field-input", "status": "native", "resolution": "TextField and FormControl family", "evidenceRefs": ["mui-overview"], "notes": "Comprehensive visual and behavioral component." },
+            { "capabilityRef": "option-selection", "status": "native", "resolution": "Select, Autocomplete, or RadioGroup", "evidenceRefs": ["mui-overview"], "notes": "Adapter must constrain the valid choice for each capability." },
+            { "capabilityRef": "boolean-confirmation", "status": "native", "resolution": "Checkbox with FormControlLabel", "evidenceRefs": ["mui-overview"], "notes": "Application supplies impact explanation." },
+            { "capabilityRef": "modal-focus", "status": "native", "resolution": "Dialog", "evidenceRefs": ["mui-overview"], "notes": "Finished visual boundary with theming API." },
+            { "capabilityRef": "repeatable-editor", "status": "composition", "resolution": "Table, form controls, and row actions", "evidenceRefs": ["mui-overview"], "notes": "Batch editing remains application composition." },
+            { "capabilityRef": "async-status", "status": "composition", "resolution": "LoadingButton or Button state, Alert, Snackbar, and persistent results", "evidenceRefs": ["mui-overview"], "notes": "Partial result model remains Meridian-owned." },
+            { "capabilityRef": "token-theme", "status": "native", "resolution": "MUI theme and CSS theme variables mapped from Meridian semantic roles", "evidenceRefs": ["mui-overview"], "notes": "Material visual defaults create the highest profile adaptation cost." },
+            { "capabilityRef": "responsive-reflow", "status": "generator-owned", "resolution": "Meridian layout recipe using MUI layout primitives only after structure selection", "evidenceRefs": [], "notes": "Avoids viewport-specific component identity." },
+            { "capabilityRef": "rtl-locale", "status": "native", "resolution": "Theme locale packs and RTL setup", "evidenceRefs": ["mui-localization"], "notes": "MUI X has separate locale text configuration." }
+          ]
+        },
+        {
+          "pilotRef": "issue_triage",
+          "capabilities": [
+            { "capabilityRef": "sortable-collection", "status": "native", "resolution": "MUI X Data Grid Community sorting", "evidenceRefs": ["mui-x-licensing"], "notes": "Community feature boundary must be pinned in the adapter." },
+            { "capabilityRef": "multi-selection", "status": "native", "resolution": "MUI X Data Grid selection", "evidenceRefs": ["mui-x-licensing"], "notes": "License tier must be rechecked for any advanced selection behavior." },
+            { "capabilityRef": "collection-filtering", "status": "native", "resolution": "MUI X Data Grid Community filtering", "evidenceRefs": ["mui-x-licensing"], "notes": "Advanced multi-filter capabilities may cross into paid plans." },
+            { "capabilityRef": "collection-pagination", "status": "native", "resolution": "Data Grid pagination", "evidenceRefs": ["mui-x-licensing"], "notes": "Server-side limits and page sizes need explicit adapter configuration." },
+            { "capabilityRef": "row-actions", "status": "native", "resolution": "Data Grid actions column", "evidenceRefs": ["mui-x-licensing"], "notes": "Target naming and visible alternatives remain required." },
+            { "capabilityRef": "detail-disclosure", "status": "commercial", "resolution": "MUI X Pro detail panel", "evidenceRefs": ["mui-x-licensing", "mui-pricing-2026"], "notes": "The direct Data Grid detail-panel capability requires a paid commercial Pro/Premium license; an MIT composition is a separate fallback requiring evaluation." },
+            { "capabilityRef": "density-control", "status": "native", "resolution": "Data Grid density modes and theme sizing", "evidenceRefs": ["mui-overview"], "notes": "Adapter must map Meridian density semantics rather than expose vendor values." },
+            { "capabilityRef": "collection-virtualization", "status": "native", "resolution": "MUI X Data Grid virtualization", "evidenceRefs": ["mui-x-licensing"], "notes": "Feature and limit boundaries must be verified for Community." },
+            { "capabilityRef": "keyboard-collection", "status": "native", "resolution": "Data Grid keyboard navigation", "evidenceRefs": ["mui-overview"], "notes": "Requires browser and assistive-technology verification." },
+            { "capabilityRef": "responsive-master-detail", "status": "generator-owned", "resolution": "Meridian responsive-switch layout recipe", "evidenceRefs": [], "notes": "Data Grid is not silently forced into an unusable narrow viewport." },
+            { "capabilityRef": "token-theme", "status": "native", "resolution": "MUI theme mapping", "evidenceRefs": ["mui-overview"], "notes": "Adapter records every semantic-role conversion." },
+            { "capabilityRef": "rtl-locale", "status": "native", "resolution": "MUI and Data Grid locale packs with RTL theme", "evidenceRefs": ["mui-localization"], "notes": "Separate Material and Data Grid locale inputs must remain synchronized." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "carbon",
+      "name": "Carbon Design System",
+      "package": "@carbon/react",
+      "version": "1.112.0",
+      "versionEvidence": "https://www.npmjs.com/package/@carbon/react",
+      "license": "Apache-2.0",
+      "licenseBoundary": "Core @carbon/react is Apache-2.0. Sass compilation, IBM Plex and Carbon visual conventions are integration costs; no first-party RTL or large-collection virtualization guarantee was found in the reviewed evidence.",
+      "foundationType": "visual-design-system",
+      "runtimeDependencies": ["React", "React DOM", "@carbon/react", "Dart Sass"],
+      "evidenceRefs": ["carbon-repository", "carbon-components", "carbon-data-table", "carbon-data-table-a11y", "carbon-themes"],
+      "pilotCoverage": [
+        {
+          "pilotRef": "team_invitation",
+          "capabilities": [
+            { "capabilityRef": "field-input", "status": "native", "resolution": "TextInput and Form components", "evidenceRefs": ["carbon-components"], "notes": "Finished enterprise visual component." },
+            { "capabilityRef": "option-selection", "status": "native", "resolution": "Select, Dropdown, or ComboBox", "evidenceRefs": ["carbon-components"], "notes": "Adapter selects based on behavior requirements." },
+            { "capabilityRef": "boolean-confirmation", "status": "native", "resolution": "Checkbox", "evidenceRefs": ["carbon-components"], "notes": "Application provides high-impact explanation." },
+            { "capabilityRef": "modal-focus", "status": "native", "resolution": "Modal", "evidenceRefs": ["carbon-components"], "notes": "Feature-flag state must be pinned when applicable." },
+            { "capabilityRef": "repeatable-editor", "status": "composition", "resolution": "Form controls with Data Table or grouped rows", "evidenceRefs": ["carbon-data-table"], "notes": "Editable batch behavior remains Meridian-owned." },
+            { "capabilityRef": "async-status", "status": "native", "resolution": "InlineLoading, Notification, and status presentation", "evidenceRefs": ["carbon-components"], "notes": "Partial-result data ownership remains in the application." },
+            { "capabilityRef": "token-theme", "status": "native", "resolution": "Carbon role tokens and theme CSS custom properties", "evidenceRefs": ["carbon-themes"], "notes": "DTCG-to-Carbon mapping must not make Carbon tokens canonical." },
+            { "capabilityRef": "responsive-reflow", "status": "generator-owned", "resolution": "Meridian layout recipe", "evidenceRefs": [], "notes": "Component identity remains stable across viewports." },
+            { "capabilityRef": "rtl-locale", "status": "unresolved", "resolution": null, "evidenceRefs": ["carbon-components"], "notes": "Reviewed official sources did not establish complete RTL and locale behavior for the required Pilot." }
+          ]
+        },
+        {
+          "pilotRef": "issue_triage",
+          "capabilities": [
+            { "capabilityRef": "sortable-collection", "status": "native", "resolution": "Carbon Data Table sortable variant", "evidenceRefs": ["carbon-data-table", "carbon-data-table-a11y"], "notes": "Documented keyboard sorting and aria-sort behavior." },
+            { "capabilityRef": "multi-selection", "status": "native", "resolution": "Data Table selection and batch actions", "evidenceRefs": ["carbon-data-table"], "notes": "Built for enterprise collection workflows." },
+            { "capabilityRef": "collection-filtering", "status": "composition", "resolution": "Table toolbar search and filter controls", "evidenceRefs": ["carbon-data-table"], "notes": "Complex filter state remains application-owned." },
+            { "capabilityRef": "collection-pagination", "status": "native", "resolution": "Pagination component with Data Table", "evidenceRefs": ["carbon-data-table"], "notes": "Pagination is documented as a separate component." },
+            { "capabilityRef": "row-actions", "status": "native", "resolution": "Data Table row and batch action patterns", "evidenceRefs": ["carbon-data-table"], "notes": "Keyboard controls remain in normal tab order." },
+            { "capabilityRef": "detail-disclosure", "status": "native", "resolution": "Expandable Data Table row or side boundary", "evidenceRefs": ["carbon-data-table"], "notes": "Direction decides whether row expansion is appropriate." },
+            { "capabilityRef": "density-control", "status": "native", "resolution": "Five Data Table row sizes", "evidenceRefs": ["carbon-data-table"], "notes": "Meridian maps its density semantics to supported sizes." },
+            { "capabilityRef": "collection-virtualization", "status": "unresolved", "resolution": null, "evidenceRefs": ["carbon-data-table"], "notes": "Reviewed official Data Table guidance did not establish first-party virtualization." },
+            { "capabilityRef": "keyboard-collection", "status": "native", "resolution": "Data Table sorting, controls, and expandable-row keyboard behavior", "evidenceRefs": ["carbon-data-table-a11y"], "notes": "Official accessibility status includes keyboard and manual screen-reader testing." },
+            { "capabilityRef": "responsive-master-detail", "status": "generator-owned", "resolution": "Meridian responsive-switch layout recipe", "evidenceRefs": [], "notes": "Narrow viewport flow is generator-owned." },
+            { "capabilityRef": "token-theme", "status": "native", "resolution": "Carbon themes and role tokens", "evidenceRefs": ["carbon-themes"], "notes": "Sass and CSS-variable output add build integration cost." },
+            { "capabilityRef": "rtl-locale", "status": "unresolved", "resolution": null, "evidenceRefs": ["carbon-components"], "notes": "Complete Pilot RTL behavior remains unproven." }
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": [
+    { "candidateRef": "shadcn-ui", "requiredCapabilities": 21, "native": 8, "composition": 8, "extension": 3, "commercial": 0, "unresolved": 0, "generatorOwned": 2, "coverageRatio": 1, "blocking": false },
+    { "candidateRef": "radix-primitives", "requiredCapabilities": 21, "native": 4, "composition": 4, "extension": 7, "commercial": 0, "unresolved": 4, "generatorOwned": 2, "coverageRatio": 0.8095, "blocking": true },
+    { "candidateRef": "react-aria", "requiredCapabilities": 21, "native": 9, "composition": 5, "extension": 5, "commercial": 0, "unresolved": 0, "generatorOwned": 2, "coverageRatio": 1, "blocking": false },
+    { "candidateRef": "material-ui", "requiredCapabilities": 21, "native": 16, "composition": 2, "extension": 0, "commercial": 1, "unresolved": 0, "generatorOwned": 2, "coverageRatio": 0.9524, "blocking": true },
+    { "candidateRef": "carbon", "requiredCapabilities": 21, "native": 14, "composition": 2, "extension": 0, "commercial": 0, "unresolved": 3, "generatorOwned": 2, "coverageRatio": 0.8571, "blocking": true }
+  ],
+  "browserEvaluation": {
+    "status": "in-progress",
+    "requiredViewports": ["desktop", "tablet", "mobile"],
+    "requiredChecks": [
+      "Team Invitation primary path and partial failure",
+      "Issue Triage sorting, selection, row action, detail disclosure, and large collection",
+      "Keyboard order, visible focus, accessible names, state announcements, and focus restoration",
+      "Long Japanese, RTL, 200 percent zoom, High Contrast, and touch targets",
+      "Rendered output size, dependency footprint, runtime warnings, client mount stability, and touch target geometry"
+    ],
+    "artifactRefs": [
+      "design/adapter-browser-evaluation-plan.json",
+      "design/evidence/adapter-browser/manifest.json"
+    ],
+    "blockers": [
+      "VoiceOver plus Chrome manual journeys are pending for every candidate and both Pilots.",
+      "Browser UI zoom at 200 percent is pending; automated CSS zoom is supporting evidence only.",
+      "Windows High Contrast evaluation is pending in a Windows environment.",
+      "Automated browser evidence cannot establish accessibility conformance or select a candidate."
+    ]
+  }
+}

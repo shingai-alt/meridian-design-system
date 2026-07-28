@@ -1,0 +1,90 @@
+{
+  "$schema": "../../../schemas/generation-report.schema.json",
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "generation-report",
+    "id": "generation-report-fixture_generation_issue_triage",
+    "pilotId": "issue-triage",
+    "status": "evidence-missing",
+    "generatedAt": "2026-07-27T12:00:00Z"
+  },
+  "source": {
+    "generationManifest": {
+      "ref": "test/fixtures/ui-generation/issue-triage.generation-manifest.json",
+      "digest": "sha256-a789f3d8bb9942f01f075c32b71fe561c3b999297462c53cedee1fb213bce8ab"
+    },
+    "browserQa": null,
+    "repairRecord": null
+  },
+  "screens": [
+    {
+      "id": "issue-triage",
+      "title": "Issue Triage",
+      "responsibilityRef": "responsibility_triage_queue",
+      "responsibility": "Unknown responsibility",
+      "patternRef": "filterable-status-list"
+    }
+  ],
+  "design": {
+    "directionRef": "fixture_direction_queue_first",
+    "visualProfileRef": "dense-operations",
+    "adapterRefs": [
+      "meridian_html_runtime"
+    ]
+  },
+  "componentAllocation": [
+    {
+      "adapterRef": "meridian_html_runtime",
+      "status": "selected",
+      "capabilityRefs": [
+        "data.status-list",
+        "input.text",
+        "action.trigger"
+      ],
+      "targetRefs": [
+        "table",
+        "status-indicator",
+        "button",
+        "form-field",
+        "text-field",
+        "validation-message"
+      ]
+    }
+  ],
+  "excluded": [],
+  "directions": [
+    {
+      "id": "fixture_direction_queue_first",
+      "title": "Queue-first synthetic fixture",
+      "benefits": [
+        "Synthetic fixture direction used to verify report portability."
+      ],
+      "risks": [
+        "Synthetic fixture does not represent a production direction comparison."
+      ]
+    }
+  ],
+  "recommendation": {
+    "directionRef": "fixture_direction_queue_first",
+    "selectedDirectionRef": "fixture_direction_queue_first",
+    "rationale": [
+      "The queue remains the primary work surface while filters progressively narrow the task."
+    ]
+  },
+  "validation": {
+    "status": "not-run",
+    "scenarioSummary": null,
+    "limitations": [
+      "Automated Chromium checks do not establish WCAG conformance.",
+      "VoiceOver, browser UI zoom, and Windows High Contrast remain manual platform evidence.",
+      "Screenshot comparison is meaningful only within the recorded browser and platform environment."
+    ]
+  },
+  "fixes": [],
+  "unresolved": [],
+  "humanReview": {
+    "status": "pending",
+    "requiredRole": "design-owner",
+    "approval": null
+  }
+}

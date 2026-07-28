@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "schemaVersion": "0.1.0",
+    "kind": "direction-set",
+    "id": "fixture_directions_issue_triage",
+    "status": "fixture-only"
+  },
+  "recommendation": {
+    "directionRef": "fixture_direction_queue_first",
+    "rationale": ["The queue remains the primary work surface while filters progressively narrow the task."]
+  },
+  "directions": [
+    {
+      "id": "fixture_direction_queue_first",
+      "title": "Queue-first synthetic fixture"
+    }
+  ],
+  "review": {
+    "status": "approved",
+    "requiredRole": "design-owner",
+    "approval": {
+      "actorType": "human",
+      "actorId": "fixture-design-owner",
+      "role": "design-owner",
+      "decision": "approved",
+      "selectedDirectionRef": "fixture_direction_queue_first",
+      "directionSetDigest": "sha256-1111111111111111111111111111111111111111111111111111111111111111",
+      "decidedAt": "2026-07-27T09:00:00Z",
+      "scope": "synthetic-test-fixture-only"
+    }
+  }
+}

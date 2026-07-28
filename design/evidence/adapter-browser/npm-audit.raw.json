@@ -1,0 +1,80 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "@hono/node-server": {
+      "name": "@hono/node-server",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1124006,
+          "name": "@hono/node-server",
+          "dependency": "@hono/node-server",
+          "title": "Node.js Adapter for Hono: Path traversal in `serve-static` on Windows via encoded backslash (`%5C`)",
+          "url": "https://github.com/advisories/GHSA-frvp-7c67-39w9",
+          "severity": "moderate",
+          "cwe": ["CWE-22"],
+          "cvss": {
+            "score": 5.9,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+          },
+          "range": "<2.0.5"
+        }
+      ],
+      "effects": ["@modelcontextprotocol/sdk"],
+      "range": "<2.0.5",
+      "nodes": ["node_modules/@hono/node-server"],
+      "fixAvailable": {
+        "name": "shadcn",
+        "version": "3.8.3",
+        "isSemVerMajor": true
+      }
+    },
+    "@modelcontextprotocol/sdk": {
+      "name": "@modelcontextprotocol/sdk",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": ["@hono/node-server"],
+      "effects": ["shadcn"],
+      "range": ">=1.25.0",
+      "nodes": ["node_modules/@modelcontextprotocol/sdk"],
+      "fixAvailable": {
+        "name": "shadcn",
+        "version": "3.8.3",
+        "isSemVerMajor": true
+      }
+    },
+    "shadcn": {
+      "name": "shadcn",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": ["@modelcontextprotocol/sdk"],
+      "effects": [],
+      "range": "<=0.0.0-beta.d74c6d3 || >=3.8.4",
+      "nodes": ["node_modules/shadcn"],
+      "fixAvailable": {
+        "name": "shadcn",
+        "version": "3.8.3",
+        "isSemVerMajor": true
+      }
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 3,
+      "high": 0,
+      "critical": 0,
+      "total": 3
+    },
+    "dependencies": {
+      "prod": 221,
+      "dev": 414,
+      "optional": 71,
+      "peer": 20,
+      "peerOptional": 0,
+      "total": 653
+    }
+  }
+}

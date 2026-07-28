@@ -6,6 +6,51 @@ import { validateAgainstSchema } from './lib/schema-validator.mjs';
 import { validateResearchGate } from './lib/research-gate.mjs';
 import { validatePhaseTwoCoverage } from './lib/phase-2-validation.mjs';
 import { validateImplementationReadiness } from './lib/implementation-readiness.mjs';
+import { validateUiGenerationResearchDecision } from './lib/ui-generation-research-decision.mjs';
+import {
+  validateUiGenerationSession,
+  validateUiGenerationSessionPolicy,
+} from './lib/ui-generation-session.mjs';
+import { validateUiGenerationMigrationMap } from './lib/ui-generation-migration.mjs';
+import {
+  validateMeridianDesignConfig,
+  validateProjectContext,
+} from './lib/project-inspector.mjs';
+import {
+  validateClarificationRound,
+  validateDesignBrief,
+} from './lib/design-intake.mjs';
+import {
+  validateDirectionSet,
+  validatePatternSelection,
+  validateProductUiPatternRegistry,
+  validateRequirementAllocation,
+  validateScreenResponsibilities,
+} from './lib/structure-planning.mjs';
+import {
+  validateAdapterRegistry,
+  validateAdapterResolution,
+  validateCapabilityPlan,
+  validateCapabilityTaxonomy,
+} from './lib/capability-resolution.mjs';
+import { validateAdapterTokenMapping } from './lib/adapter-token-mapping.mjs';
+import { validateAdapterBenchmark } from './lib/adapter-benchmark.mjs';
+import {
+  validateBrowserQaEvidence,
+  validateBrowserQaPolicy,
+} from './lib/browser-qa.mjs';
+import {
+  validateGenerationManifest,
+  validateLayoutRecipeRegistry,
+  validateVisualProfileRegistry,
+} from './lib/generic-generation.mjs';
+import { validateGenerationReport } from './lib/generation-report.mjs';
+import {
+  validateAdapterDependencyAudit,
+  validateAdapterBrowserEvaluationPlan,
+  validateAdapterBrowserEvidence,
+  validateShadcnRegistrySnapshot,
+} from './lib/adapter-browser-evidence.mjs';
 import { createVisualReviewReport, validateVisualCaptureManifest, validateVisualQualityRelations } from './lib/visual-quality.mjs';
 import {
   assertGroundingReady,
@@ -65,15 +110,146 @@ function assertUnique(values, label) {
 }
 
 const policy = validateJson('design/token-policy.json', 'schemas/token-policy.schema.json');
+const meridianDesignConfig = validateJson('meridian.design.json', 'schemas/meridian-design-config.schema.json');
+const meridianProjectContext = validateJson('examples/ui-generation/meridian.project-context.json', 'schemas/project-context.schema.json');
 const researchPolicy = validateJson('design/research-policy.json', 'schemas/research-policy.schema.json');
+const uiGenerationResearchPolicy = validateJson('design/ui-generation-research-policy.json', 'schemas/ui-generation-research-policy.schema.json');
+const uiGenerationSessionPolicy = validateJson('design/ui-generation-session-policy.json', 'schemas/ui-generation-session-policy.schema.json');
+const clarificationPolicy = validateJson('design/ui-generation-clarification-policy.json', 'schemas/clarification-policy.schema.json');
+const productUiPatterns = validateJson('design/product-ui-patterns.json', 'schemas/product-ui-pattern-registry.schema.json');
+const capabilityTaxonomy = validateJson('design/capability-taxonomy.json', 'schemas/capability-taxonomy.schema.json');
+const adapterRegistry = validateJson('design/adapter-registry.json', 'schemas/adapter-registry.schema.json');
+const adapterTokenMapping = validateJson(
+  'design/generated/adapter-token-mapping.json',
+  'schemas/adapter-token-mapping.schema.json',
+);
+const adapterBenchmark = validateJson('design/adapter-benchmark.json', 'schemas/adapter-benchmark.schema.json');
+const browserQaPolicy = validateJson(
+  'design/ui-generation-browser-qa-policy.json',
+  'schemas/browser-qa-policy.schema.json',
+);
+const adapterBrowserPlan = validateJson(
+  'design/adapter-browser-evaluation-plan.json',
+  'schemas/adapter-browser-evaluation-plan.schema.json',
+);
+const adapterBrowserEvidence = validateJson(
+  'design/evidence/adapter-browser/manifest.json',
+  'schemas/adapter-browser-evidence.schema.json',
+);
+const adapterDependencyAudit = validateJson(
+  'design/evidence/adapter-browser/dependency-audit.json',
+  'schemas/adapter-dependency-audit.schema.json',
+);
+const shadcnRegistrySnapshot = validateJson(
+  'design/evidence/adapter-browser/shadcn-registry-snapshot.json',
+  'schemas/shadcn-registry-snapshot.schema.json',
+);
 const implementationReadinessPolicy = validateJson('design/implementation-readiness.json', 'schemas/implementation-readiness.schema.json');
 const registry = validateJson('design/system-registry.json', 'schemas/system-registry.schema.json');
 validateJson('design/iconography.json', 'schemas/iconography.schema.json');
 const accessibility = validateJson('design/accessibility.json', 'schemas/accessibility.schema.json');
 const contentGuidelines = validateJson('design/content-guidelines.json', 'schemas/content-guidelines.schema.json');
 const harnessRegistry = readJson('design/harness/generated/component-registry.json');
+const layoutRecipeRegistry = validateJson(
+  'design/layout-recipe-registry.json',
+  'schemas/layout-recipe-registry.schema.json',
+);
+const visualProfileRegistry = validateJson(
+  'design/ui-generation-visual-profiles.json',
+  'schemas/visual-profile-registry.schema.json',
+);
 const rules = readJson('design/rules.json') ?? [];
 const ruleIds = new Set(rules.map((rule) => rule.id));
+
+if (meridianDesignConfig) {
+  for (const configError of validateMeridianDesignConfig(meridianDesignConfig, { root })) {
+    errors.push(`meridian.design.json: ${configError}`);
+  }
+}
+if (meridianProjectContext) {
+  for (const contextError of validateProjectContext(meridianProjectContext, { root })) {
+    errors.push(`examples/ui-generation/meridian.project-context.json: ${contextError}`);
+  }
+}
+if (productUiPatterns) {
+  for (const registryError of validateProductUiPatternRegistry(productUiPatterns)) {
+    errors.push(`design/product-ui-patterns.json: ${registryError}`);
+  }
+}
+if (capabilityTaxonomy) {
+  for (const taxonomyError of validateCapabilityTaxonomy(capabilityTaxonomy)) {
+    errors.push(`design/capability-taxonomy.json: ${taxonomyError}`);
+  }
+}
+if (adapterRegistry && capabilityTaxonomy && meridianDesignConfig) {
+  const componentStatusEntries = readdirSync(join(root, 'design/contracts/components'))
+    .filter((name) => name.endsWith('.contract.json') && !name.startsWith('_'))
+    .map((name) => {
+      const contract = readJson(`design/contracts/components/${name}`);
+      return [name.replace(/\.contract\.json$/, ''), contract?.status];
+    });
+  for (const registryError of validateAdapterRegistry(adapterRegistry, capabilityTaxonomy, meridianDesignConfig, {
+    root,
+    knownComponentRefs: componentStatusEntries.map(([id]) => id),
+    componentStatuses: componentStatusEntries,
+  })) {
+    errors.push(`design/adapter-registry.json: ${registryError}`);
+  }
+}
+if (adapterTokenMapping && adapterRegistry) {
+  for (const mappingError of validateAdapterTokenMapping(adapterTokenMapping, adapterRegistry, { root })) {
+    errors.push(`design/generated/adapter-token-mapping.json: ${mappingError}`);
+  }
+}
+if (adapterBenchmark) {
+  for (const benchmarkError of validateAdapterBenchmark(adapterBenchmark)) {
+    errors.push(`design/adapter-benchmark.json: ${benchmarkError}`);
+  }
+}
+if (browserQaPolicy) {
+  for (const policyError of validateBrowserQaPolicy(browserQaPolicy)) {
+    errors.push(`design/ui-generation-browser-qa-policy.json: ${policyError}`);
+  }
+}
+if (adapterBrowserPlan && adapterBenchmark) {
+  for (const planError of validateAdapterBrowserEvaluationPlan(adapterBrowserPlan, adapterBenchmark)) {
+    errors.push(`design/adapter-browser-evaluation-plan.json: ${planError}`);
+  }
+}
+if (adapterBrowserEvidence && adapterBrowserPlan && adapterBenchmark) {
+  for (const evidenceError of validateAdapterBrowserEvidence(
+    adapterBrowserEvidence,
+    adapterBrowserPlan,
+    adapterBenchmark,
+    { root },
+  )) {
+    errors.push(`design/evidence/adapter-browser/manifest.json: ${evidenceError}`);
+  }
+}
+if (adapterDependencyAudit && adapterBrowserPlan) {
+  for (const auditError of validateAdapterDependencyAudit(adapterDependencyAudit, adapterBrowserPlan, {
+    root,
+  })) {
+    errors.push(`design/evidence/adapter-browser/dependency-audit.json: ${auditError}`);
+  }
+}
+if (shadcnRegistrySnapshot) {
+  for (const snapshotError of validateShadcnRegistrySnapshot(shadcnRegistrySnapshot, { root })) {
+    errors.push(`design/evidence/adapter-browser/shadcn-registry-snapshot.json: ${snapshotError}`);
+  }
+}
+if (layoutRecipeRegistry) {
+  for (const recipeError of validateLayoutRecipeRegistry(layoutRecipeRegistry, {
+    css: readFileSync(join(root, 'tokens/build/tokens.css'), 'utf8'),
+  })) {
+    errors.push(`design/layout-recipe-registry.json: ${recipeError}`);
+  }
+}
+if (visualProfileRegistry) {
+  for (const profileError of validateVisualProfileRegistry(visualProfileRegistry)) {
+    errors.push(`design/ui-generation-visual-profiles.json: ${profileError}`);
+  }
+}
 
 const reviewPaths = listJsonFiles('design/reviews', (name) => name.endsWith('.review.json') && !name.startsWith('_'));
 validateJson('design/reviews/_template.review.json', 'schemas/review-record.schema.json');
@@ -122,13 +298,311 @@ for (const patternPath of patternPaths) {
   }
 }
 
+const uiGenerationResearchDecisionPaths = listJsonFiles(
+  'design/research-decisions',
+  (name) => name.endsWith('.research.json')
+);
+let uiGenerationResearchDecisionCount = 0;
+for (const decisionPath of uiGenerationResearchDecisionPaths) {
+  const decision = validateJson(decisionPath, 'schemas/ui-generation-research-decision.schema.json');
+  if (!decision) continue;
+  uiGenerationResearchDecisionCount += 1;
+  if (uiGenerationResearchPolicy) {
+    for (const decisionError of validateUiGenerationResearchDecision(decision, uiGenerationResearchPolicy)) {
+      errors.push(`${decisionPath}: ${decisionError}`);
+    }
+  }
+  for (const spike of decision.spikes.filter((item) => item.status === 'complete')) {
+    for (const artifactRef of spike.artifactRefs) assertPathExists(artifactRef, `${decisionPath} spike ${spike.id}`);
+  }
+}
+
+const uiGenerationSessionPaths = listJsonFiles(
+  'examples/ui-generation',
+  (name) => name.endsWith('.session.json')
+);
+let uiGenerationSessionCount = 0;
+for (const sessionPath of uiGenerationSessionPaths) {
+  const session = validateJson(sessionPath, 'schemas/ui-generation-session.schema.json');
+  if (!session) continue;
+  uiGenerationSessionCount += 1;
+  if (uiGenerationSessionPolicy) {
+    for (const sessionError of validateUiGenerationSession(session, uiGenerationSessionPolicy, { root })) {
+      errors.push(`${sessionPath}: ${sessionError}`);
+    }
+  }
+}
+
+const uiGenerationMigrationPaths = listJsonFiles(
+  'examples/ui-generation',
+  (name) => name.endsWith('.migration.json')
+);
+let uiGenerationMigrationCount = 0;
+for (const migrationPath of uiGenerationMigrationPaths) {
+  const migration = validateJson(migrationPath, 'schemas/ui-generation-migration-map.schema.json');
+  if (!migration) continue;
+  uiGenerationMigrationCount += 1;
+  if (uiGenerationSessionPolicy) {
+    for (const migrationError of validateUiGenerationMigrationMap(migration, uiGenerationSessionPolicy, { root })) {
+      errors.push(`${migrationPath}: ${migrationError}`);
+    }
+  }
+}
+
+const designBriefPaths = listJsonFiles(
+  'examples/ui-generation',
+  (name) => name.endsWith('.design-brief.json')
+);
+const designBriefsByPath = new Map();
+let designBriefCount = 0;
+for (const briefPath of designBriefPaths) {
+  const brief = validateJson(briefPath, 'schemas/design-brief.schema.json');
+  if (!brief) continue;
+  designBriefCount += 1;
+  designBriefsByPath.set(briefPath, brief);
+  for (const briefError of validateDesignBrief(brief, { root, policy: clarificationPolicy })) {
+    errors.push(`${briefPath}: ${briefError}`);
+  }
+}
+
+const requirementAllocationPaths = listJsonFiles(
+  'examples/ui-generation',
+  (name) => name.endsWith('.requirement-allocation.json')
+);
+const requirementAllocationsByPath = new Map();
+let requirementAllocationCount = 0;
+for (const allocationPath of requirementAllocationPaths) {
+  const allocation = validateJson(allocationPath, 'schemas/requirement-allocation.schema.json');
+  if (!allocation) continue;
+  requirementAllocationCount += 1;
+  requirementAllocationsByPath.set(allocationPath, allocation);
+  const brief = designBriefsByPath.get(allocation.source.designBriefRef) ?? readJson(allocation.source.designBriefRef);
+  if (brief) {
+    for (const allocationError of validateRequirementAllocation(allocation, brief, { root })) {
+      errors.push(`${allocationPath}: ${allocationError}`);
+    }
+  }
+}
+
+const screenResponsibilityPaths = listJsonFiles(
+  'examples/ui-generation',
+  (name) => name.endsWith('.screen-responsibilities.json')
+);
+const screenResponsibilitiesByPath = new Map();
+let screenResponsibilitiesCount = 0;
+for (const responsibilityPath of screenResponsibilityPaths) {
+  const responsibilities = validateJson(responsibilityPath, 'schemas/screen-responsibilities.schema.json');
+  if (!responsibilities) continue;
+  screenResponsibilitiesCount += 1;
+  screenResponsibilitiesByPath.set(responsibilityPath, responsibilities);
+  const allocation = requirementAllocationsByPath.get(responsibilities.source.requirementAllocationRef)
+    ?? readJson(responsibilities.source.requirementAllocationRef);
+  if (allocation) {
+    for (const responsibilityError of validateScreenResponsibilities(responsibilities, allocation, { root })) {
+      errors.push(`${responsibilityPath}: ${responsibilityError}`);
+    }
+  }
+}
+
+const patternSelectionPaths = listJsonFiles(
+  'examples/ui-generation',
+  (name) => name.endsWith('.pattern-selection.json')
+);
+const patternSelectionsByPath = new Map();
+let patternSelectionCount = 0;
+for (const selectionPath of patternSelectionPaths) {
+  const selection = validateJson(selectionPath, 'schemas/pattern-selection.schema.json');
+  if (!selection) continue;
+  patternSelectionCount += 1;
+  patternSelectionsByPath.set(selectionPath, selection);
+  const allocation = requirementAllocationsByPath.get(selection.source.requirementAllocationRef)
+    ?? readJson(selection.source.requirementAllocationRef);
+  const responsibilities = screenResponsibilitiesByPath.get(selection.source.screenResponsibilitiesRef)
+    ?? readJson(selection.source.screenResponsibilitiesRef);
+  if (allocation && responsibilities && productUiPatterns) {
+    for (const selectionError of validatePatternSelection(selection, allocation, responsibilities, productUiPatterns, { root })) {
+      errors.push(`${selectionPath}: ${selectionError}`);
+    }
+  }
+}
+
+const directionSetPaths = listJsonFiles(
+  'examples/ui-generation',
+  (name) => name.endsWith('.direction-set.json')
+);
+const directionSetsByPath = new Map();
+let directionSetCount = 0;
+for (const directionPath of directionSetPaths) {
+  const directionSet = validateJson(directionPath, 'schemas/direction-set.schema.json');
+  if (!directionSet) continue;
+  directionSetCount += 1;
+  directionSetsByPath.set(directionPath, directionSet);
+  const allocation = requirementAllocationsByPath.get(directionSet.source.requirementAllocationRef)
+    ?? readJson(directionSet.source.requirementAllocationRef);
+  const responsibilities = screenResponsibilitiesByPath.get(directionSet.source.screenResponsibilitiesRef)
+    ?? readJson(directionSet.source.screenResponsibilitiesRef);
+  const patternSelection = patternSelectionsByPath.get(directionSet.source.patternSelectionRef)
+    ?? readJson(directionSet.source.patternSelectionRef);
+  if (allocation && responsibilities && patternSelection && productUiPatterns) {
+    for (const directionError of validateDirectionSet(directionSet, allocation, responsibilities, patternSelection, productUiPatterns, { root })) {
+      errors.push(`${directionPath}: ${directionError}`);
+    }
+  }
+}
+
+const capabilityPlanPaths = listJsonFiles(
+  'examples/ui-generation',
+  (name) => name.endsWith('.capability-plan.json')
+);
+const capabilityPlansByPath = new Map();
+let capabilityPlanCount = 0;
+for (const planPath of capabilityPlanPaths) {
+  const plan = validateJson(planPath, 'schemas/capability-plan.schema.json');
+  if (!plan) continue;
+  capabilityPlanCount += 1;
+  capabilityPlansByPath.set(planPath, plan);
+  const directionSet = directionSetsByPath.get(plan.source.directionSetRef) ?? readJson(plan.source.directionSetRef);
+  const allocation = directionSet
+    ? requirementAllocationsByPath.get(directionSet.source.requirementAllocationRef) ?? readJson(directionSet.source.requirementAllocationRef)
+    : null;
+  const responsibilities = directionSet
+    ? screenResponsibilitiesByPath.get(directionSet.source.screenResponsibilitiesRef) ?? readJson(directionSet.source.screenResponsibilitiesRef)
+    : null;
+  if (directionSet && allocation && responsibilities && capabilityTaxonomy) {
+    for (const planError of validateCapabilityPlan(plan, directionSet, capabilityTaxonomy, responsibilities, allocation, { root })) {
+      errors.push(`${planPath}: ${planError}`);
+    }
+  }
+}
+
+const adapterResolutionPaths = listJsonFiles(
+  'examples/ui-generation',
+  (name) => name.endsWith('.adapter-resolution.json')
+);
+let adapterResolutionCount = 0;
+for (const resolutionPath of adapterResolutionPaths) {
+  const resolution = validateJson(resolutionPath, 'schemas/adapter-resolution.schema.json');
+  if (!resolution) continue;
+  adapterResolutionCount += 1;
+  const plan = capabilityPlansByPath.get(resolution.source.capabilityPlanRef) ?? readJson(resolution.source.capabilityPlanRef);
+  if (plan && adapterRegistry) {
+    const stableProjectTargetRefs = readdirSync(join(root, 'design/contracts/components'))
+      .filter((name) => name.endsWith('.contract.json') && !name.startsWith('_'))
+      .filter((name) => readJson(`design/contracts/components/${name}`)?.status === 'stable')
+      .map((name) => name.replace(/\.contract\.json$/, ''));
+    for (const resolutionError of validateAdapterResolution(resolution, plan, adapterRegistry, {
+      root,
+      stableProjectTargetRefs,
+      tokenMapping: adapterTokenMapping,
+    })) {
+      errors.push(`${resolutionPath}: ${resolutionError}`);
+    }
+  }
+}
+
+const generationManifestPaths = [
+  ...listJsonFiles('examples/ui-generation', (name) => name.endsWith('.generation-manifest.json')),
+  ...listJsonFiles('test/fixtures/ui-generation', (name) => name.endsWith('.generation-manifest.json')),
+];
+const generationManifestsByPath = new Map();
+let generationManifestCount = 0;
+for (const manifestPath of generationManifestPaths) {
+  const manifest = validateJson(manifestPath, 'schemas/generation-manifest.schema.json');
+  if (!manifest) continue;
+  generationManifestCount += 1;
+  generationManifestsByPath.set(manifestPath, manifest);
+  for (const manifestError of validateGenerationManifest(manifest, { root })) {
+    errors.push(`${manifestPath}: ${manifestError}`);
+  }
+  if (manifest.meta.status === 'ready') {
+    assertPathExists(manifest.output.reviewUi, manifestPath);
+    assertPathExists(manifest.output.reviewModel, manifestPath);
+    validateJson(manifest.output.usageManifest, 'schemas/component-usage.schema.json');
+  }
+}
+
+const generationReportPaths = listJsonFiles(
+  'test/fixtures/generated/generation-reports',
+  (name) => name.endsWith('.report.json'),
+);
+for (const reportPath of generationReportPaths) {
+  const report = validateJson(reportPath, 'schemas/generation-report.schema.json');
+  if (!report) continue;
+  const manifest = generationManifestsByPath.get(report.source.generationManifest.ref)
+    ?? readJson(report.source.generationManifest.ref);
+  if (!manifest) continue;
+  const sources = Object.fromEntries(
+    Object.entries(manifest.source).map(([name, binding]) => [name, readJson(binding.ref)]),
+  );
+  if (Object.values(sources).some((value) => !value)) continue;
+  const browserEvidence = report.source.browserQa
+    ? validateJson(report.source.browserQa.ref, 'schemas/browser-qa-evidence.schema.json')
+    : null;
+  const repairRecord = report.source.repairRecord
+    ? validateJson(report.source.repairRecord.ref, 'schemas/ui-generation-repair-record.schema.json')
+    : null;
+  for (const reportError of validateGenerationReport(report, manifest, sources, {
+    root,
+    browserEvidence,
+    repairRecord,
+    policy: browserQaPolicy,
+    policyRef: 'design/ui-generation-browser-qa-policy.json',
+  })) {
+    errors.push(`${reportPath}: ${reportError}`);
+  }
+}
+
+const browserQaEvidenceDirectory = 'test/fixtures/generated/browser-qa';
+if (browserQaPolicy && existsSync(join(root, browserQaEvidenceDirectory))) {
+  const browserQaEvidencePaths = listJsonFiles(
+    browserQaEvidenceDirectory,
+    (name) => name.endsWith('.evidence.json'),
+  );
+  for (const evidencePath of browserQaEvidencePaths) {
+    const evidence = validateJson(evidencePath, 'schemas/browser-qa-evidence.schema.json');
+    if (!evidence) continue;
+    const manifest = readJson(evidence.source.generationManifest.ref);
+    if (manifest) {
+      for (const evidenceError of validateBrowserQaEvidence(evidence, manifest, browserQaPolicy, {
+        root,
+        manifestRef: evidence.source.generationManifest.ref,
+        policyRef: 'design/ui-generation-browser-qa-policy.json',
+      })) {
+        errors.push(`${evidencePath}: ${evidenceError}`);
+      }
+    }
+  }
+}
+
+const clarificationRoundPaths = listJsonFiles(
+  'examples/ui-generation',
+  (name) => name.endsWith('.clarification.json')
+);
+let clarificationRoundCount = 0;
+for (const roundPath of clarificationRoundPaths) {
+  const round = validateJson(roundPath, 'schemas/clarification-round.schema.json');
+  if (!round) continue;
+  clarificationRoundCount += 1;
+  assertPathExists(round.briefRef, roundPath);
+  const brief = designBriefsByPath.get(round.briefRef) ?? readJson(round.briefRef);
+  if (brief && clarificationPolicy) {
+    for (const roundError of validateClarificationRound(round, brief, clarificationPolicy, { root })) {
+      errors.push(`${roundPath}: ${roundError}`);
+    }
+  }
+}
+
 const specPaths = listJsonFiles('examples/specs');
 let specCount = 0;
 for (const specPath of specPaths) {
   if (specPath.endsWith('.screen.json')) {
     if (validateJson(specPath, 'schemas/screen-spec.schema.json')) specCount += 1;
   } else if (specPath.endsWith('.flow.json')) {
-    if (validateJson(specPath, 'schemas/flow-spec.schema.json')) specCount += 1;
+    const flow = validateJson(specPath, 'schemas/flow-spec.schema.json');
+    if (flow) {
+      specCount += 1;
+      for (const screen of flow.screens) assertPathExists(screen.screenSpecRef, `${specPath} screen ${screen.screenId}`);
+    }
   } else {
     errors.push(`${specPath}: expected .screen.json or .flow.json suffix`);
   }
@@ -137,7 +611,12 @@ for (const specPath of specPaths) {
 const phaseOnePaths = listJsonFiles('examples/phase-1', (name) => name.endsWith('.phase1.json'));
 let phaseOneCount = 0;
 for (const artifactPath of phaseOnePaths) {
-  if (validateJson(artifactPath, 'schemas/phase-1-package.schema.json')) phaseOneCount += 1;
+  const phaseOne = validateJson(artifactPath, 'schemas/phase-1-package.schema.json');
+  if (phaseOne) {
+    phaseOneCount += 1;
+    for (const screenSpecRef of phaseOne.screenSpecRefs) assertPathExists(screenSpecRef, `${artifactPath} screenSpecRefs`);
+    if (phaseOne.flowSpecRef !== null) assertPathExists(phaseOne.flowSpecRef, `${artifactPath} flowSpecRef`);
+  }
 }
 
 const phaseTwoPaths = listJsonFiles('examples/phase-2', (name) => name.endsWith('.phase2.json'));
@@ -263,6 +742,39 @@ if (researchPolicy) {
   if (researchPolicy.sourcePolicy.minimumEvidence.primary > researchPolicy.sourcePolicy.minimumEvidence.total) {
     errors.push('design/research-policy.json: minimum primary evidence cannot exceed total evidence');
   }
+}
+
+if (uiGenerationResearchPolicy) {
+  const requiredCategories = [
+    'architecture',
+    'schema-contract',
+    'dependency',
+    'design-system-adapter',
+    'runtime',
+    'browser-quality',
+    'accessibility',
+    'governance',
+    'security',
+    'licensing',
+  ];
+  if (uiGenerationResearchPolicy.appliesTo.join(',') !== requiredCategories.join(',')) {
+    errors.push('design/ui-generation-research-policy.json: appliesTo must include every UI Generation decision category in policy order');
+  }
+  assertUnique(uiGenerationResearchPolicy.scoring.scoreMeaning.map((item) => item.score), 'design/ui-generation-research-policy.json score meanings');
+  if (uiGenerationResearchPolicy.scoring.minimumScore >= uiGenerationResearchPolicy.scoring.maximumScore) {
+    errors.push('design/ui-generation-research-policy.json: maximum score must be greater than minimum score');
+  }
+}
+
+if (uiGenerationSessionPolicy) {
+  for (const policyError of validateUiGenerationSessionPolicy(uiGenerationSessionPolicy)) {
+    errors.push(`design/ui-generation-session-policy.json: ${policyError}`);
+  }
+}
+if (clarificationPolicy) {
+  assertUnique(clarificationPolicy.questionLanguage.prohibitedTerms.map((term) => term.toLocaleLowerCase()), 'design/ui-generation-clarification-policy.json prohibited terms');
+  if (clarificationPolicy.structuralImpactWeights.none !== 0) errors.push('design/ui-generation-clarification-policy.json: none impact weight must be 0');
+  if (clarificationPolicy.questionLimit.maximum > 3) errors.push('design/ui-generation-clarification-policy.json: no round may ask more than 3 questions');
 }
 
 if (accessibility) {
@@ -467,5 +979,5 @@ if (errors.length > 0) {
   errors.forEach((error) => console.error(`- ${error}`));
   process.exitCode = 1;
 } else {
-console.log(`System validation passed: ${allItems.size} registry items, ${reviewRecords.length} review cycles, ${contracts.length} component contracts, ${specCount} AI specs, ${phaseOneCount} Phase 1 packages, ${phaseTwoCount} Phase 2 concepts.`);
+console.log(`System validation passed: ${allItems.size} registry items, ${reviewRecords.length} review cycles, ${contracts.length} component contracts, ${specCount} AI specs, ${phaseOneCount} Phase 1 packages, ${phaseTwoCount} Phase 2 concepts, ${uiGenerationResearchDecisionCount} UI Generation research decisions, ${uiGenerationSessionCount} UI Generation sessions, ${uiGenerationMigrationCount} UI Generation migration maps, ${designBriefCount} Design Briefs, ${clarificationRoundCount} Clarification Rounds, ${requirementAllocationCount} Requirement Allocations, ${screenResponsibilitiesCount} Screen Responsibility sets, ${patternSelectionCount} Pattern Selections, ${directionSetCount} Direction Sets, ${capabilityPlanCount} Capability Plans, ${adapterResolutionCount} Adapter Resolutions.`);
 }
